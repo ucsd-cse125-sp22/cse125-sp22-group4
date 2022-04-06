@@ -95,14 +95,6 @@ Cube::Cube(glm::vec3 cubeMin, glm::vec3 cubeMax) {
     bindBuffers();
 }
 
-Cube::~Cube() {
-    // delete the VBOs and the VAO.
-    glDeleteBuffers(1, &VBO_vertices);
-    glDeleteBuffers(1, &VBO_normals);
-    glDeleteBuffers(1, &EBO);
-    glDeleteVertexArrays(1, &VAO);
-}
-
 void Cube::update() {
     spin(5.0f);
 }
