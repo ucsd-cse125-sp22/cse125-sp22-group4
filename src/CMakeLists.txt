@@ -10,7 +10,18 @@ add_executable(Client
 
 target_include_directories(Client PRIVATE
     bindings
-    ${GRAPHICS_SOURCE_DIR}/include
+    ${GRAPHICS_INCLUDE}
+)
+
+# make header files visible in visual studio
+target_sources(Client PRIVATE
+    ${GRAPHICS_INCLUDE}/main.h
+    ${GRAPHICS_INCLUDE}/Cube.h
+    ${GRAPHICS_INCLUDE}/Mesh.h
+    ${GRAPHICS_INCLUDE}/Client.h
+    ${GRAPHICS_INCLUDE}/Shader.h
+    ${GRAPHICS_INCLUDE}/Camera.h
+    ${GRAPHICS_INCLUDE}/GraphicObject.h
 )
 
 target_link_libraries(Client

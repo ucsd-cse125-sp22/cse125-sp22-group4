@@ -15,9 +15,10 @@ cmake ..
 
 ## If Using Visual Studio
 
-Right click on solution Client, select "Set as Startup Project"
+- Right click on solution Client, select "Set as Startup Project".
 
-Go to Properties of solution Client, go to Debug, change working directory to `$(ProjectDir)/../..`
+- Go to Properties of solution Client, go to Debugging, change working directory to `$(ProjectDir)/../..`
 
-On the top menu, Change compile option to `Release` and `x64`
+- On the top menu, change compile option to `Release` and `x64`.
+
 
