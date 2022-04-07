@@ -2,6 +2,10 @@
 
 // state variables
 static Cube* cube;
+static ObjectLoader* teapot;
+static ObjectLoader* bunny;
+static ObjectLoader* tyra;
+static ObjectLoader* suzanne;
 static GLuint shader;
 static Camera* camera;
 static bool pause = false;
@@ -49,7 +53,7 @@ void Client::setupGLSettings() {
     glEnable(GL_MULTISAMPLE);
     glDepthFunc(GL_LEQUAL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glClearColor(0.25f, 0.35f, 0.5f, 1.0f);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 }
 
 /**
@@ -59,6 +63,8 @@ void Client::setupGLSettings() {
 **/
 bool Client::initializeClient() {
     shader = Shader::loadShaders("shaders/shader.vert", "shaders/shader.frag");
+    //shader = Shader::loadShaders("shaders/basicShader.vert", "shaders/basicShader.frag");
+    //shader = Shader::loadShaders("shaders/normalShader.vert", "shaders/normalShader.frag");
     if (!shader) {
         spdlog::error("Failed to initialize shader programs.");
         return false;
@@ -66,6 +72,10 @@ bool Client::initializeClient() {
 
     camera = new Camera();
     cube = new Cube();
+    teapot = new ObjectLoader("objects/teapot.obj");
+    bunny = new ObjectLoader("objects/bunny.obj");
+    tyra = new ObjectLoader("objects/tyra.obj");
+    suzanne = new ObjectLoader("objects/suzanne.obj");
 
     return true;
 }
@@ -74,7 +84,10 @@ bool Client::initializeClient() {
  * Display objects
 **/
 void Client::displayCallback() {
-    cube->draw(camera->viewProjMat, shader);
+    //cube->draw(camera->viewProjMat, shader);
+    //teapot->draw(camera->viewProjMat, shader);
+    tyra->draw(camera->viewProjMat, shader);
+    //bunny->draw(camera->viewProjMat, shader);
 }
 
 /**
@@ -83,7 +96,10 @@ void Client::displayCallback() {
 void Client::idleCallback() {
     camera->update();
     if (!pause) {
-        cube->update();
+        //cube->update();
+        //teapot->update();
+        tyra->update();
+        //bunny->update();
     }
 }
 
@@ -94,6 +110,10 @@ void Client::cleanup() {
     glDeleteProgram(shader);
     delete cube;
     delete camera;
+    delete teapot;
+    delete bunny;
+    delete tyra;
+    delete suzanne;
 }
 
 /**

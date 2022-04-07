@@ -15,7 +15,7 @@ out vec3 worldPos;
 
 void main() {
     // OpenGL maintains the D matrix so you only need to multiply by P, V (aka C inverse), and M
-    gl_Position = viewProj * model * vec4(position, 1);
+    gl_Position = viewProj * model * vec4(position, 1.0f);
 
     // for shading
     worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
