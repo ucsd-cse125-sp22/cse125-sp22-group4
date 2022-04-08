@@ -93,7 +93,7 @@ bool Client::initializeClient() {
     bunny = new ObjectLoader("objects/bunny.obj");
     tyra = new ObjectLoader("objects/tyra.obj");
     suzanne = new ObjectLoader("objects/suzanne.obj");
-    ourModel = new Model("objects/suzanne.obj");
+    ourModel = new Model("objects/backpack.obj");
 
     return true;
 }
@@ -108,8 +108,11 @@ void Client::displayCallback() {
     glUniform1i(glGetUniformLocation(shader, "lightCount"), lightCount);
     glUniform4fv(glGetUniformLocation(shader, "lightPosn"), lightCount, (float*)lightPosn.data());
     glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
-    glUseProgram(0);
+   // glUseProgram(0);
 
+    glm::mat4 model = glm::mat4(1.0f);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(camera->viewProjMat));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
     //cube->draw(camera->viewProjMat, shader);
     //teapot->draw(camera->viewProjMat, shader);
     //tyra->draw(camera->viewProjMat, shader);
