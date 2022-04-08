@@ -102,6 +102,8 @@ bool Client::initializeClient() {
  * Display objects
 **/
 void Client::displayCallback() {
+    //glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // activate the shader program and send some values
     glUseProgram(shader);
     glUniform3fv(glGetUniformLocation(shader, "eyePos"), 1, glm::value_ptr(camera->pos));
