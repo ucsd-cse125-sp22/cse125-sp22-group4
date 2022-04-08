@@ -1,13 +1,20 @@
 #include "Client.h"
 
-// state variables
+// shader, camera and light
+static GLuint shader;
+static Camera* camera;
+static int lightCount;
+static std::vector<glm::vec4> lightPosn;
+static std::vector<glm::vec4> lightColorn;
+
+// objects
 static Cube* cube;
 static ObjectLoader* teapot;
 static ObjectLoader* bunny;
 static ObjectLoader* tyra;
 static ObjectLoader* suzanne;
-static GLuint shader;
-static Camera* camera;
+
+// state variables
 static bool pause = false;
 static bool middlePressed = false;
 static double prevXPos;
@@ -62,15 +69,23 @@ void Client::setupGLSettings() {
  * @return  True if success, False otherwise
 **/
 bool Client::initializeClient() {
-    shader = Shader::loadShaders("shaders/shader.vert", "shaders/shader.frag");
+    // initialize shader
     //shader = Shader::loadShaders("shaders/basicShader.vert", "shaders/basicShader.frag");
     //shader = Shader::loadShaders("shaders/normalShader.vert", "shaders/normalShader.frag");
+    shader = Shader::loadShaders("shaders/shader.vert", "shaders/shader.frag");
     if (!shader) {
         spdlog::error("Failed to initialize shader programs.");
         return false;
     }
 
+    // initialize camera
     camera = new Camera();
+    // initialize light sources
+    lightCount = 2;
+    lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1} };
+    lightColorn = { {0.9, 0.6, 0, 1}, {0, 0.6, 0.9, 1} };
+
+    // initialize objects
     cube = new Cube();
     teapot = new ObjectLoader("objects/teapot.obj");
     bunny = new ObjectLoader("objects/bunny.obj");
@@ -84,6 +99,14 @@ bool Client::initializeClient() {
  * Display objects
 **/
 void Client::displayCallback() {
+    // activate the shader program and send some values
+    glUseProgram(shader);
+    glUniform3fv(glGetUniformLocation(shader, "eyePos"), 1, glm::value_ptr(camera->pos));
+    glUniform1i(glGetUniformLocation(shader, "lightCount"), lightCount);
+    glUniform4fv(glGetUniformLocation(shader, "lightPosn"), lightCount, (float*)lightPosn.data());
+    glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
+    glUseProgram(0);
+
     //cube->draw(camera->viewProjMat, shader);
     //teapot->draw(camera->viewProjMat, shader);
     tyra->draw(camera->viewProjMat, shader);
@@ -151,7 +174,7 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
     glfwGetFramebufferSize(window, &width, &height);
 #endif
     glViewport(0, 0, width, height);
-    camera->setAspectRatio(float(width) / float(height));
+    camera->aspectRatio = float(width) / float(height);
 }
 
 /**

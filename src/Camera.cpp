@@ -48,24 +48,6 @@ void Camera::update() {
 }
 
 /**
- * Set FOV angle of the camera
- *
- * @param   fov  New FOV
-**/
-void Camera::setFOV(float fov) {
-    FOV = fov;
-}
-
-/**
- * Set aspect ratio of the camera
- *
- * @param   aspect  New aspect ratio
-**/
-void Camera::setAspectRatio(float aspect) {
-    aspectRatio = aspect;
-}
-
-/**
  * Move the camera
  *
  * @param   v   Vector of displacement

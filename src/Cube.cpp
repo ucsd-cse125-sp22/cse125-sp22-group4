@@ -1,7 +1,13 @@
 #include "Cube.h"
 
 Cube::Cube(glm::vec3 cubeMin, glm::vec3 cubeMax) {
-    color = glm::vec3(0, 0.9, 0.8);
+    phongMat = {
+        {0.1, 0.1, 0.1, 1},
+        {0, 0.9, 0.8, 1},
+        {0.1, 0.4, 0.4, 1},
+        {0, 0, 0, 1},
+        10
+    };
 
     // specify vertices
     vertices = {

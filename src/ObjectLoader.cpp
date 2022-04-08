@@ -1,7 +1,13 @@
 #include "ObjectLoader.h"
 
 ObjectLoader::ObjectLoader(std::string filename) {
-    color = glm::vec3(0, 0.9, 0.8);
+	phongMat = {
+		{0.1, 0.1, 0.1, 1},
+		{0.1, 0.8, 0.5, 1},
+		{0.1, 0.8, 0.4, 1},
+		{0, 0, 0, 1},
+		100
+	};
 
 	FILE* fp;
 	float x, y, z;

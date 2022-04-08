@@ -7,12 +7,6 @@
 
 class Camera {
 private:
-    glm::vec3 pos;
-    glm::vec3 lookAt;
-    glm::vec3 upVec;
-    float FOV;
-    float aspectRatio;
-
     const glm::vec3 defaultPos;
     const glm::vec3 defaultLookAt;
     const glm::vec3 defaultUpVec;
@@ -20,6 +14,12 @@ private:
     const float defaultAspectRatio;
  
 public:
+    glm::vec3 pos;
+    glm::vec3 lookAt;
+    glm::vec3 upVec;
+    float FOV;
+    float aspectRatio;
+
     glm::mat4 viewProjMat;
 
     Camera();
@@ -27,8 +27,6 @@ public:
 
     void reset();
     void update();
-    void setFOV(float fov);
-    void setAspectRatio(float aspect);
     void move(glm::vec3 v);
     void zoom(float ratio);
     void yaw(float angle);

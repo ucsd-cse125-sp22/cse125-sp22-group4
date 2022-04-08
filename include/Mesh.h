@@ -1,6 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include "ShaderUtil.h"
 #include "GraphicObject.h"
 #include <vector>
 
@@ -8,8 +9,8 @@ class Mesh : public GraphicObject {
 protected:
     GLuint VAO;
     GLuint VBO_vertices, VBO_normals, EBO;
-    glm::vec3 color;
     glm::mat4 model;
+    PhongMaterial phongMat;
 
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec3> normals;
@@ -52,7 +53,7 @@ public:
     Mesh() {
         VAO = VBO_vertices = VBO_normals = EBO = 0;
         model = glm::mat4(1);
-        color = glm::vec3(1);
+        phongMat = { glm::vec4(0), glm::vec4(0), glm::vec4(0), glm::vec4(0), 0 };
     }
 
     ~Mesh() {
@@ -67,8 +68,13 @@ public:
         // activate the shader program
         glUseProgram(shader);
         // get the locations and send the uniforms to the shader
-        glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, (float*)&viewProjMat);
-        glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, (float*)&model);
+        glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
+        glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
+        glUniform4fv(glGetUniformLocation(shader, "ambient"), 1, glm::value_ptr(phongMat.ambient));
+        glUniform4fv(glGetUniformLocation(shader, "diffuse"), 1, glm::value_ptr(phongMat.diffuse));
+        glUniform4fv(glGetUniformLocation(shader, "specular"), 1, glm::value_ptr(phongMat.specular));
+        glUniform4fv(glGetUniformLocation(shader, "emission"), 1, glm::value_ptr(phongMat.emission));
+        glUniform1f(glGetUniformLocation(shader, "shininess"), phongMat.shininess);
 
         // bind the VAO
         glBindVertexArray(VAO);
