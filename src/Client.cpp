@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "Model.h"
 
 // shader, camera and light
 static GLuint shader;
@@ -13,6 +14,7 @@ static ObjectLoader* teapot;
 static ObjectLoader* bunny;
 static ObjectLoader* tyra;
 static ObjectLoader* suzanne;
+static Model* ourModel;
 
 // state variables
 static bool pause = false;
@@ -91,6 +93,7 @@ bool Client::initializeClient() {
     bunny = new ObjectLoader("objects/bunny.obj");
     tyra = new ObjectLoader("objects/tyra.obj");
     suzanne = new ObjectLoader("objects/suzanne.obj");
+    ourModel = new Model("objects/suzanne.obj");
 
     return true;
 }
@@ -109,8 +112,9 @@ void Client::displayCallback() {
 
     //cube->draw(camera->viewProjMat, shader);
     //teapot->draw(camera->viewProjMat, shader);
-    tyra->draw(camera->viewProjMat, shader);
+    //tyra->draw(camera->viewProjMat, shader);
     //bunny->draw(camera->viewProjMat, shader);
+    ourModel->Draw(shader);
 }
 
 /**
@@ -121,7 +125,7 @@ void Client::idleCallback() {
     if (!pause) {
         //cube->update();
         //teapot->update();
-        tyra->update();
+       // tyra->update();
         //bunny->update();
     }
 }
@@ -137,6 +141,7 @@ void Client::cleanup() {
     delete bunny;
     delete tyra;
     delete suzanne;
+    delete ourModel;
 }
 
 /**
