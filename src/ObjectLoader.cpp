@@ -81,3 +81,4 @@ void ObjectLoader::spin(float deg) {
 void ObjectLoader::translate(glm::vec3 amount) {
 	model = glm::translate(model, amount);
 }
+
