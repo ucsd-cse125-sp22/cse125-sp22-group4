@@ -113,3 +113,7 @@ void Cube::spin(float deg) {
 void Cube::translate(glm::vec3 amount) {
     model = glm::translate(model, amount);
 }
+
+void Cube::move(glm::vec3 v) {
+    model = glm::translate(model, v);
+}

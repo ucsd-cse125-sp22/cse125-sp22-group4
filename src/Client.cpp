@@ -371,7 +371,6 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
         case GLFW_KEY_RIGHT_CONTROL:
             camera->move(glm::vec3(0, -0.5, 0));
             break;
-            
         case GLFW_KEY_RIGHT:
             tyra->move(glm::vec3(1.0f, 0.0f, 0.0f));
             break;
@@ -387,6 +386,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
         case GLFW_KEY_DOWN:
             tyra->move(glm::vec3(0.0f, -1.0f, 0.0f));
             break;
+            
 
         }
     }

@@ -82,3 +82,7 @@ void ObjectLoader::translate(glm::vec3 amount) {
 	model = glm::translate(model, amount);
 }
 
+void ObjectLoader::move(glm::vec3 v) {
+	model = glm::translate(model, v);
+}
+
