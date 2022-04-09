@@ -77,3 +77,7 @@ void ObjectLoader::spin(float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+void ObjectLoader::move(glm::vec3 v) {
+	model = glm::translate(model, v);
+}
+

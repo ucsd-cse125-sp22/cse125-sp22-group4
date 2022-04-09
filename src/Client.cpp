@@ -108,7 +108,7 @@ void Client::displayCallback() {
     glUseProgram(0);
 
     //cube->draw(camera->viewProjMat, shader);
-    //teapot->draw(camera->viewProjMat, shader);
+    teapot->draw(camera->viewProjMat, shader);
     tyra->draw(camera->viewProjMat, shader);
     //bunny->draw(camera->viewProjMat, shader);
 }
@@ -121,7 +121,7 @@ void Client::idleCallback() {
     if (!pause) {
         //cube->update();
         //teapot->update();
-        tyra->update();
+        //tyra->update();
         //bunny->update();
     }
 }
@@ -290,6 +290,23 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
         case GLFW_KEY_RIGHT_CONTROL:
             camera->move(glm::vec3(0, -0.5, 0));
             break;
+            
+        case GLFW_KEY_RIGHT:
+            tyra->move(glm::vec3(1.0f, 0.0f, 0.0f));
+            break;
+
+        case GLFW_KEY_LEFT:
+            tyra->move(glm::vec3(-1.0f, 0.0f, 0.0f));
+            break;
+
+        case GLFW_KEY_UP:
+            tyra->move(glm::vec3(0.0f, 1.0f, 0.0f));
+            break;
+
+        case GLFW_KEY_DOWN:
+            tyra->move(glm::vec3(0.0f, -1.0f, 0.0f));
+            break;
+
         }
     }
 }

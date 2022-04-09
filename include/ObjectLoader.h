@@ -16,5 +16,6 @@ public:
 
     void update() override;
     void spin(float deg);
+    void move(glm::vec3 v);
 };
 #endif // !CUBE_H
