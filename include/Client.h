@@ -4,6 +4,7 @@
 
 #include "Cube.h"
 #include "Camera.h"
+#include "ThirdPersonCamera.h"
 #include "Shader.h"
 #include "spdlog/spdlog.h"
 #include "GL/glew.h"

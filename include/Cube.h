@@ -13,5 +13,6 @@ public:
 
     void update() override;
     void spin(float deg);
+    void translate(glm::vec3 amount);
 };
 #endif // !CUBE_H
