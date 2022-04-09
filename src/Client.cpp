@@ -93,10 +93,11 @@ bool Client::initializeClient() {
     // initialize objects
     cube = new Cube();
     ground = new Cube(glm::vec3 (-10, -1, -10), glm::vec3(10, 1, 10));
-    ground->translate(glm::vec3(0, -3, 0));
+    ground->move(glm::vec3(0, -3, 0));
     teapot = new ObjectLoader("objects/teapot.obj");
+    teapot->move(glm::vec3(-5, -0.8, -5));
     bunny = new ObjectLoader("objects/bunny.obj");
-    bunny->translate(glm::vec3(5, -0.8, -5));
+    bunny->move(glm::vec3(5, -0.8, -5));
     tyra = new ObjectLoader("objects/tyra.obj");
     suzanne = new ObjectLoader("objects/suzanne.obj");
 
@@ -125,10 +126,11 @@ void Client::displayCallback() {
     glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
     glUseProgram(0);
 
-    tyra->draw(tempCam->viewProjMat, shader);
+    Player->draw(tempCam->viewProjMat, shader);
     bunny->draw(tempCam->viewProjMat, shader);
-    //teapot->draw(camera->viewProjMat, shader);
-    tyra->draw(camera->viewProjMat, shader);
+    ground->draw(tempCam->viewProjMat, shader);
+    teapot->draw(tempCam->viewProjMat, shader);
+    //tyra->draw(camera->viewProjMat, shader);
     //bunny->draw(camera->viewProjMat, shader);
 }
 
@@ -144,7 +146,7 @@ void Client::idleCallback() {
     }
     if (!pause) {
         //cube->update();
-        //teapot->update();
+        teapot->update();
         bunny->update();
         //bunny->update();
     }
@@ -312,23 +314,21 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             else {
                 camera->reset();
             }
-            
             break;
 
         case GLFW_KEY_W:
             if (isThirdPersonCam) {
-                Player->translate(glm::vec3(0, 0, -0.2));
+                Player->move(glm::vec3(0, 0, -0.2));
                 thirdPersonCamera->translateForward(-0.2);
             }
             else {
                 camera->move(glm::vec3(0, 0, -0.5));
             }
-
             break;
 
         case GLFW_KEY_S:
             if (isThirdPersonCam) {
-                Player->translate(glm::vec3(0, 0, 0.2));
+                Player->move(glm::vec3(0, 0, 0.2));
                 thirdPersonCamera->translateBackward(-0.2);
             }
             else {
@@ -338,7 +338,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_A:
             if (isThirdPersonCam) {
-                Player->translate(glm::vec3(-0.2, 0, 0));
+                Player->move(glm::vec3(-0.2, 0, 0));
                 thirdPersonCamera->translateLeft(-0.2);
             }
             else {
@@ -348,7 +348,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_D:
             if (isThirdPersonCam) {
-                Player->translate(glm::vec3(0.2, 0, 0));
+                Player->move(glm::vec3(0.2, 0, 0));
                 thirdPersonCamera->translateRight(-0.2);
             }
             else {
@@ -371,6 +371,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
         case GLFW_KEY_RIGHT_CONTROL:
             camera->move(glm::vec3(0, -0.5, 0));
             break;
+
         case GLFW_KEY_RIGHT:
             tyra->move(glm::vec3(1.0f, 0.0f, 0.0f));
             break;
