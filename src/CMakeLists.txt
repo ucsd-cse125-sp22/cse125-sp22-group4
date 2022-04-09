@@ -5,6 +5,7 @@ add_executable(Client
     Shader.cpp
     Camera.cpp
     ObjectLoader.cpp
+    ThirdPersonCamera.cpp
     bindings/imgui_impl_glfw.cpp
     bindings/imgui_impl_opengl3.cpp
 )
@@ -22,6 +23,7 @@ target_sources(Client PRIVATE
     ${GRAPHICS_INCLUDE}/Client.h
     ${GRAPHICS_INCLUDE}/Shader.h
     ${GRAPHICS_INCLUDE}/Camera.h
+    ${GRAPHICS_INCLUDE}/ThirdPersonCamera.h
     ${GRAPHICS_INCLUDE}/ShaderUtil.h
     ${GRAPHICS_INCLUDE}/ObjectLoader.h
     ${GRAPHICS_INCLUDE}/GraphicObject.h
