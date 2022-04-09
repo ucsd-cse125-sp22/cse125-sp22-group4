@@ -15,7 +15,7 @@ static ObjectLoader* teapot;
 static ObjectLoader* bunny;
 static ObjectLoader* tyra;
 static ObjectLoader* suzanne;
-static ObjectLoader* Player;
+static ObjectLoader* player;
 
 // state variables
 static bool pause = false;
@@ -42,6 +42,8 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 GLFWwindow* Client::createWindow(int width, int height, std::string windowTitle) {
     glfwWindowHint(GLFW_SAMPLES, 4);
     GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
+    prevXPos = (double) width / 2;
+    prevYPos = (double) height / 2;
     return window;
 }
 
@@ -101,8 +103,8 @@ bool Client::initializeClient() {
     tyra = new ObjectLoader("objects/tyra.obj");
     suzanne = new ObjectLoader("objects/suzanne.obj");
 
-    Player = tyra;
-    thirdPersonCamera = new ThirdPersonCamera(Player);
+    player = tyra;
+    thirdPersonCamera = new ThirdPersonCamera(player);
     
     return true;
 }
@@ -126,7 +128,7 @@ void Client::displayCallback() {
     glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
     glUseProgram(0);
 
-    Player->draw(tempCam->viewProjMat, shader);
+    player->draw(tempCam->viewProjMat, shader);
     bunny->draw(tempCam->viewProjMat, shader);
     ground->draw(tempCam->viewProjMat, shader);
     teapot->draw(tempCam->viewProjMat, shader);
@@ -216,11 +218,9 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
 static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
     ImGui_ImplGlfw_CursorPosCallback(window, xPos, yPos);
     if (isThirdPersonCam) {
-        yPos -= 400;
         if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
             double yawAngle = -0.5 * (xPos - prevXPos);
-            double pitchAngle = -0.003 * (yPos - prevYPos);
-            //thirdPersonCamera->yaw((float)yawAngle);
+            double pitchAngle = -0.5 * (yPos - prevYPos);
             tyra->spin(yawAngle);
             thirdPersonCamera->yaw((float)yawAngle);
             thirdPersonCamera->pitch((float)pitchAngle);
@@ -231,8 +231,8 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
     } else {
         if (middlePressed) {
             if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
-                double yawAngle = -0.005 * (xPos - prevXPos);
-                double pitchAngle = -0.005 * (yPos - prevYPos);
+                double yawAngle = -0.5 * (xPos - prevXPos);
+                double pitchAngle = -0.5 * (yPos - prevYPos);
                 camera->yaw((float)yawAngle);
                 camera->pitch((float)pitchAngle);
             }
@@ -309,7 +309,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_R:
             if (isThirdPersonCam) {
-                //thirdPersonCamera->reset();
+                thirdPersonCamera->reset();
             }
             else {
                 camera->reset();
@@ -318,7 +318,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_W:
             if (isThirdPersonCam) {
-                Player->move(glm::vec3(0, 0, -0.2));
+                player->move(glm::vec3(0, 0, -0.2));
                 thirdPersonCamera->translateForward(-0.2);
             }
             else {
@@ -328,7 +328,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_S:
             if (isThirdPersonCam) {
-                Player->move(glm::vec3(0, 0, 0.2));
+                player->move(glm::vec3(0, 0, 0.2));
                 thirdPersonCamera->translateBackward(-0.2);
             }
             else {
@@ -338,7 +338,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_A:
             if (isThirdPersonCam) {
-                Player->move(glm::vec3(-0.2, 0, 0));
+                player->move(glm::vec3(-0.2, 0, 0));
                 thirdPersonCamera->translateLeft(-0.2);
             }
             else {
@@ -348,7 +348,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_D:
             if (isThirdPersonCam) {
-                Player->move(glm::vec3(0.2, 0, 0));
+                player->move(glm::vec3(0.2, 0, 0));
                 thirdPersonCamera->translateRight(-0.2);
             }
             else {
@@ -387,8 +387,6 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
         case GLFW_KEY_DOWN:
             tyra->move(glm::vec3(0.0f, -1.0f, 0.0f));
             break;
-            
-
         }
     }
 }

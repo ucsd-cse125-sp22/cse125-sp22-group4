@@ -34,7 +34,7 @@ ObjectLoader::ObjectLoader(std::string filename) {
 
 		if ((c1 == 'v') && (c2 == ' ')) {
 			fscanf(fp, "%f %f %f", &x, &y, &z);
-			vertices.push_back(vec3(x, y, z));
+			vertices.push_back(glm::vec3(x, y, z));
 			if (y < minY) minY = y;
 			if (z < minZ) minZ = z;
 			if (y > maxY) maxY = y;
@@ -43,7 +43,7 @@ ObjectLoader::ObjectLoader(std::string filename) {
 		else if ((c1 == 'v') && (c2 == 'n')) {
 			fscanf(fp, "%f %f %f", &x, &y, &z);
 			// Ignore the normals in mytest2, as we use a solid color for the teapot.
-			normals.push_back(glm::normalize(vec3(x, y, z)));
+			normals.push_back(glm::normalize(glm::vec3(x, y, z)));
 		}
 		else if ((c1 == 'f'))
 		{
@@ -60,7 +60,7 @@ ObjectLoader::ObjectLoader(std::string filename) {
 	float avgY = (minY + maxY) / 2.0f - 0.02f;
 	float avgZ = (minZ + maxZ) / 2.0f;
 	for (unsigned int i = 0; i < vertices.size(); ++i) {
-		vec3 shiftedVertex = (vertices[i] - vec3(0.0f, avgY, avgZ)) * vec3(1.58f, 1.58f, 1.58f);
+		glm::vec3 shiftedVertex = (vertices[i] - glm::vec3(0.0f, avgY, avgZ)) * glm::vec3(1.58f, 1.58f, 1.58f);
 		vertices[i] = shiftedVertex;
 	}
 
@@ -70,7 +70,6 @@ ObjectLoader::ObjectLoader(std::string filename) {
 
 void ObjectLoader::update() {
     spin(0.5f);
-	//translate(glm::vec3(0, 0.01, 0.01));
 }
 
 void ObjectLoader::spin(float deg) {

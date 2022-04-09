@@ -87,7 +87,8 @@ public:
         glUseProgram(0);
     }
 
-  
+    const glm::mat4& getModel() const {
+        return model;
+    }
 };
-
 #endif // !MESH_H

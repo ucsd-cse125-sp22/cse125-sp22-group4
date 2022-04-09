@@ -25,8 +25,8 @@ public:
     Camera();
     Camera(glm::vec3 _pos, glm::vec3 _lookAt, glm::vec3 _upVec, float _FOV, float _aspectRatio);
 
-    void reset();
-    void update();
+    virtual void reset();
+    virtual void update();
     void move(glm::vec3 v);
     void zoom(float ratio);
     void yaw(float angle);

@@ -77,12 +77,12 @@ void Camera::zoom(float ratio) {
  *
  * @param   angle   Angle to yaw
 **/
-void Camera::yaw(float angle) {
+void Camera::yaw(float deg) {
     // yaw against (0, 1, 0) if upVec pointing upward, yaw against (0, -1, 0) otherwise
     glm::vec3 axis = glm::vec3(0, 1, 0);
     axis = upVec.y > 0 ? axis : -axis;
 
-    glm::mat4 rotMatrix = glm::rotate(glm::mat4(1), angle, axis);
+    glm::mat4 rotMatrix = glm::rotate(glm::mat4(1), glm::radians(deg), axis);
     pos = glm::vec3(rotMatrix * glm::vec4(pos - lookAt, 1)) + lookAt;
     upVec = glm::vec3(rotMatrix * glm::vec4(upVec, 0));
 }
@@ -92,12 +92,12 @@ void Camera::yaw(float angle) {
  *
  * @param   angle   Angle to pitch
 **/
-void Camera::pitch(float angle) {
+void Camera::pitch(float deg) {
     // pitch against camera X coordinate
     glm::vec3 cameraZ = normalize(pos - lookAt);
     glm::vec3 axis = normalize(cross(upVec, cameraZ));
 
-    glm::mat4 rotMatrix = glm::rotate(glm::mat4(1), angle, axis);
+    glm::mat4 rotMatrix = glm::rotate(glm::mat4(1), glm::radians(deg), axis);
     pos = glm::vec3(rotMatrix * glm::vec4(pos - lookAt, 1)) + lookAt;
     upVec = glm::vec3(rotMatrix * glm::vec4(upVec, 0));
 }

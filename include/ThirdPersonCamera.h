@@ -13,13 +13,10 @@ public:
     ThirdPersonCamera(ObjectLoader* _player);
     ~ThirdPersonCamera() = default;
 
-    void update();
-    void yaw(float angle);
-    void pitch(float angle);
-    void reset();
-    void translateForward(float amount);
-    void translateBackward(float amount);
+    void reset() override;
     void translateLeft(float amount);
     void translateRight(float amount);
+    void translateForward(float amount);
+    void translateBackward(float amount);
 };
 #endif // !CUBE_H
