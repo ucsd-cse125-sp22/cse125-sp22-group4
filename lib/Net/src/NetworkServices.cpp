@@ -11,3 +11,9 @@ int NetworkServices::receiveMessage(SOCKET curSocket, char* buffer, int bufSize)
 {
 	return recv(curSocket, buffer, bufSize, 0);
 }
+
+unsigned short GetPacketType(char* data) {
+    unsigned short packet_type;
+    memcpy(&packet_type, data, sizeof(packet_type));
+    return packet_type;
+}

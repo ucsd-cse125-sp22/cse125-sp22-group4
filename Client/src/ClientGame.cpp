@@ -1,4 +1,6 @@
-#include "ClientGame.h" 
+#include "ClientGame.h"
+#include <string>
+#include <iostream>
 
 ClientGame::ClientGame(void)
 {
@@ -6,34 +8,41 @@ ClientGame::ClientGame(void)
     network = new ClientNetwork();
 
     // send init packet
-    const unsigned int packet_size = sizeof(Packet);
-    char packet_data[packet_size];
+    const unsigned int packet_size = sizeof(SimplePacket);
 
-    Packet packet;
+    SimplePacket packet;
     packet.packet_type = INIT_CONNECTION;
 
-    packet.serialize(packet_data);
-
-    NetworkServices::sendMessage(network->ConnectSocket, packet_data, packet_size);
+    NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
 }
 
 void ClientGame::sendActionPackets()
 {
     // send action packet
-    const unsigned int packet_size = sizeof(Packet);
+    /*
+    const unsigned int packet_size = sizeof(SimplePacket);
     char packet_data[packet_size];
 
-    Packet packet;
-    packet.packet_type = ACTION_EVENT;
+    SimplePacket packet;
+    packet.packet_type = PING;
 
-    packet.serialize(packet_data);
+    NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
+    */
+    const unsigned int packet_size = sizeof(StatePacket);
+    char packet_data[packet_size];
+    char message[14] = "Hello, world!";
+    StatePacket packet;
+    packet.packet_type = MESSAGE;
+    memcpy(packet.payload, message, sizeof(message));
 
-    NetworkServices::sendMessage(network->ConnectSocket, packet_data, packet_size);
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+    NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
+    free(packet_bytes);
 }
 
 void ClientGame::update()
 {
-    Packet packet;
+    SimplePacket packet;
     int data_length = network->receivePackets(network_data);
 
     if (data_length <= 0)
@@ -43,26 +52,38 @@ void ClientGame::update()
     }
 
     int i = 0;
-    while (i < (unsigned int)data_length)
-    {
-        packet.deserialize(&(network_data[i]));
-        i += sizeof(Packet);
+    while (i < (unsigned int)data_length) {
+    
+        ushort packet_class = get_packet_class(&(network_data[i]));
+        switch (packet_class) {
+        case SIMPLE:
+			{
+				SimplePacket* x = (SimplePacket*)malloc(sizeof(SimplePacket));
+				memcpy(x, &network_data[i], sizeof(SimplePacket));
+                //handleSimplePackets(x);
+                sendActionPackets();
+                i += sizeof(SimplePacket);
 
-        switch (packet.packet_type) {
+                free(x);
+                break;
+			}
+        case STATE:
+			{
+				StatePacket* y = (StatePacket*)malloc(sizeof(StatePacket));
+				memcpy(y, &network_data[i], sizeof(StatePacket));
+                //handleActionPackets(y);
+                sendActionPackets();
+                if (y->packet_type == MESSAGE) {
+                    std::cout << "[Server]: " << y->payload << std::endl;
+                }
 
-        case ACTION_EVENT:
-
-            printf("client received action event packet from server\n");
-
-            sendActionPackets();
-
-            break;
-
-        default:
-
-            printf("error in packet types\n");
-
-            break;
+                i += sizeof(StatePacket);
+                free(y);
+                break;
+			}
+            default:
+                printf("error in packet types\n");
+                break;
         }
     }
 }

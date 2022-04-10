@@ -1,5 +1,5 @@
 #include "ServerNetwork.h"
-#include "Network/include/NetworkData.h"
+#include "Network/include/Packets.h"
 
 class ServerGame
 {

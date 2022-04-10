@@ -1,5 +1,6 @@
 //#include "stdafx.h" 
 #include "ServerGame.h"
+#include <iostream>
 
 unsigned int ServerGame::client_id;
 
@@ -28,8 +29,6 @@ void ServerGame::update()
 void ServerGame::receiveFromClients()
 {
 
-    Packet packet;
-
     // go through all clients
     std::map<unsigned int, SOCKET>::iterator iter;
 
@@ -44,35 +43,37 @@ void ServerGame::receiveFromClients()
         }
 
         int i = 0;
-        while (i < (unsigned int)data_length)
+        ushort packet_class = get_packet_class(&(network_data[i]));
+        switch (packet_class) {
+        case SIMPLE:
         {
-            packet.deserialize(&(network_data[i]));
-            i += sizeof(Packet);
+            SimplePacket* x = (SimplePacket*)malloc(sizeof(SimplePacket));
+            memcpy(x, &network_data[i], sizeof(SimplePacket));
+            //handleSimplePackets(x);
+            sendActionPackets();
+            printf("simple");
+            i += sizeof(SimplePacket);
+            free(x);
+            break;
+        }
+        case STATE:
+        {
+            StatePacket* y = (StatePacket*)malloc(sizeof(StatePacket));
+            memcpy(y, &network_data[i], sizeof(StatePacket));
 
-            switch (packet.packet_type) {
-
-            case INIT_CONNECTION:
-
-                printf("server received init packet from client\n");
-
-                sendActionPackets();
-
-                break;
-
-            case ACTION_EVENT:
-
-                printf("server received action event packet from client\n");
-
-                sendActionPackets();
-
-                break;
-
-            default:
-
-                printf("error in packet types\n");
-
-                break;
+            // TODO: Replace with actual handler
+            if (y->packet_type == MESSAGE) {
+                std::cout << "[Player " << iter->first << "]: " << y->payload << std::endl;
             }
+            //handleActionPackets(y);
+            sendActionPackets();
+            i += sizeof(StatePacket);
+            free(y);
+            break;
+        }
+        default:
+            printf("error in packet types\n");
+            break;
         }
     }
 }
@@ -80,13 +81,22 @@ void ServerGame::receiveFromClients()
 void ServerGame::sendActionPackets()
 {
     // send action packet
-    const unsigned int packet_size = sizeof(Packet);
+    /*
+    const unsigned int packet_size = sizeof(SimplePacket);
     char packet_data[packet_size];
 
-    Packet packet;
-    packet.packet_type = ACTION_EVENT;
+    SimplePacket packet;
+    packet.packet_type = PING;
+    */
 
-    packet.serialize(packet_data);
+    const unsigned int packet_size = sizeof(StatePacket);
+    char packet_data[packet_size];
+    char message[15] = "Hello, player!";
+    StatePacket packet;
+    packet.packet_type = MESSAGE;
+    memcpy(packet.payload, message, sizeof(message));
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
 
-    network->sendToAll(packet_data, packet_size);
+    network->sendToAll(packet_bytes, packet_size);
+    free(packet_bytes);
 }

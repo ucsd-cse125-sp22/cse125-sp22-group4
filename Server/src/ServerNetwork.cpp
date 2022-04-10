@@ -1,5 +1,6 @@
 //#include "stdafx.h" 
 #include "ServerNetwork.h"
+#include "Network/include/NetworkData.h"
 
 ServerNetwork::ServerNetwork(void)
 {
