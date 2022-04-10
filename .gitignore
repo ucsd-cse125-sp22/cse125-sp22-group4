@@ -3,3 +3,4 @@ Debug/
 *.vcxproj.user
 x86/
 x64/
+build/

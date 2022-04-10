@@ -19,5 +19,6 @@ target_sources(Network PRIVATE
 )
 
 target_link_libraries(Network
-    NETWORK
+    wsock32
+    ws2_32
 )

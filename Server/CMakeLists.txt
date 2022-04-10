@@ -16,5 +16,5 @@ target_sources(Server PRIVATE
 )
 
 target_link_libraries(Server
-    NETWORK
+    Network
 )

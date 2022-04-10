@@ -16,5 +16,5 @@ target_sources(Client PRIVATE
 )
 
 target_link_libraries(Client
-    NETWORK
+    Network
 )
