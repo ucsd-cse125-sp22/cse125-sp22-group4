@@ -5,12 +5,14 @@
 // Note that you do not have access to the vertex shader's default output, gl_Position.
 in vec3 worldNormal;
 in vec3 worldPos;
+in vec2 TexCoords;
 
 // You can output many things.
 // The first vec4 type output determines the color of the fragment
 out vec4 fragColor;
 
 uniform vec3 eyePos;
+uniform sampler2D texture_diffuse1;
 
 uniform int lightCount;
 uniform vec4 lightPosn[10];  // positions of lights
@@ -67,5 +69,6 @@ void main() {
         }
     }
 
-    fragColor = col + ambient + emission;
+   // fragColor = col + ambient + emission;
+    fragColor = texture(texture_diffuse1, TexCoords);
 }

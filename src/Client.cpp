@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "Model.h"
 
 // shader, camera and light
 static GLuint shader;
@@ -16,6 +17,7 @@ static ObjectLoader* bunny;
 static ObjectLoader* tyra;
 static ObjectLoader* suzanne;
 static ObjectLoader* player;
+static Model* ourModel;
 
 // state variables
 static bool pause = false;
@@ -87,7 +89,7 @@ bool Client::initializeClient() {
 
     // initialize camera
     camera = new Camera();
-    
+
     // initialize light sources
     lightCount = 2;
     lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1} };
@@ -103,10 +105,11 @@ bool Client::initializeClient() {
     bunny->move(glm::vec3(5, -0.8, -5));
     tyra = new ObjectLoader("objects/tyra.obj");
     suzanne = new ObjectLoader("objects/suzanne.obj");
+    ourModel = new Model("objects/backpack.obj");
 
     player = tyra;
     thirdPersonCamera = new ThirdPersonCamera(player);
-    
+
     return true;
 }
 
@@ -121,20 +124,24 @@ void Client::displayCallback() {
     else {
         tempCam = camera;
     }
+    //glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // activate the shader program and send some values
     glUseProgram(shader);
     glUniform3fv(glGetUniformLocation(shader, "eyePos"), 1, glm::value_ptr(tempCam->pos));
     glUniform1i(glGetUniformLocation(shader, "lightCount"), lightCount);
     glUniform4fv(glGetUniformLocation(shader, "lightPosn"), lightCount, (float*)lightPosn.data());
     glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
-    glUseProgram(0);
+   // glUseProgram(0);
 
-    player->draw(tempCam->viewProjMat, shader);
-    bunny->draw(tempCam->viewProjMat, shader);
-    ground->draw(tempCam->viewProjMat, shader);
-    teapot->draw(tempCam->viewProjMat, shader);
+    glm::mat4 model = glm::mat4(1.0f);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(camera->viewProjMat));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
+    //cube->draw(camera->viewProjMat, shader);
+    //teapot->draw(camera->viewProjMat, shader);
     //tyra->draw(camera->viewProjMat, shader);
     //bunny->draw(camera->viewProjMat, shader);
+    ourModel->Draw(shader);
 }
 
 /**
@@ -149,8 +156,8 @@ void Client::idleCallback() {
     }
     if (!pause) {
         //cube->update();
-        teapot->update();
-        bunny->update();
+        //teapot->update();
+       // tyra->update();
         //bunny->update();
     }
 }
@@ -168,6 +175,7 @@ void Client::cleanup() {
     delete tyra;
     delete suzanne;
     delete ground;
+    delete ourModel;
 }
 
 /**
