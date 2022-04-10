@@ -72,12 +72,3 @@ void ObjectLoader::update() {
     spin(0.5f);
 }
 
-void ObjectLoader::spin(float deg) {
-    // update the model matrix by multiplying a rotation matrix
-    model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
-}
-
-void ObjectLoader::move(glm::vec3 v) {
-	model = glm::translate(model, v);
-}
-

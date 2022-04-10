@@ -3,6 +3,7 @@
 #define CLIENT_H
 
 #include "Cube.h"
+#include "Model.h"
 #include "Camera.h"
 #include "ThirdPersonCamera.h"
 #include "Shader.h"

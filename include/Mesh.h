@@ -90,5 +90,17 @@ public:
     const glm::mat4& getModel() const {
         return model;
     }
+    
+    void spin(float deg) {
+        model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
+    }
+
+    void moveLocal(glm::vec3 v) {
+        model = model * glm::translate(glm::mat4(1), v);
+    }
+
+    void moveGlobal(glm::vec3 v) {
+        model = glm::translate(glm::mat4(1), v) * model;
+    }
 };
 #endif // !MESH_H

@@ -27,9 +27,9 @@ public:
 
     virtual void reset();
     virtual void update();
-    void move(glm::vec3 v);
-    void zoom(float ratio);
-    void yaw(float angle);
-    void pitch(float angle);
+    virtual void move(glm::vec3 v);
+    virtual void zoom(float ratio);
+    virtual void yaw(float deg);
+    virtual void pitch(float deg);
 };
 #endif // !CAMERA_HPP

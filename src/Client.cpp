@@ -1,5 +1,4 @@
 #include "Client.h"
-#include "Model.h"
 
 // shader, camera and light
 static GLuint shader;
@@ -10,7 +9,6 @@ static std::vector<glm::vec4> lightPosn;
 static std::vector<glm::vec4> lightColorn;
 
 // objects
-static Cube* cube;
 static Cube* ground;
 static ObjectLoader* teapot;
 static ObjectLoader* bunny;
@@ -20,12 +18,14 @@ static ObjectLoader* player;
 static Model* ourModel;
 
 // state variables
-static bool pause = false;
-static bool isThirdPersonCam = true;
-static bool showMouse = false;
-static bool middlePressed = false;
 static double prevXPos;
 static double prevYPos;
+static int select = 0;
+static bool pause = false;
+static bool showMouse = false;
+static bool middlePressed = false;
+static bool isThirdPersonCam = false;
+static const char* scenes[2] = { "3rd Person Tyra", "Cool Backpack" };
 
 // callbacks
 static void resizeCallback(GLFWwindow* window, int width, int height);
@@ -96,13 +96,12 @@ bool Client::initializeClient() {
     lightColorn = { {0.9, 0.6, 0, 1}, {0, 0.6, 0.9, 1} };
 
     // initialize objects
-    cube = new Cube();
     ground = new Cube(glm::vec3 (-10, -1, -10), glm::vec3(10, 1, 10));
-    ground->move(glm::vec3(0, -3, 0));
+    ground->moveLocal(glm::vec3(0, -3, 0));
     teapot = new ObjectLoader("objects/teapot.obj");
-    teapot->move(glm::vec3(-5, -0.8, -5));
+    teapot->moveLocal(glm::vec3(-5, -0.8, -5));
     bunny = new ObjectLoader("objects/bunny.obj");
-    bunny->move(glm::vec3(5, -0.8, -5));
+    bunny->moveLocal(glm::vec3(5, -0.8, -5));
     tyra = new ObjectLoader("objects/tyra.obj");
     suzanne = new ObjectLoader("objects/suzanne.obj");
     ourModel = new Model("objects/backpack/backpack.obj");
@@ -128,20 +127,28 @@ void Client::displayCallback() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // activate the shader program and send some values
     glUseProgram(shader);
-    glUniform3fv(glGetUniformLocation(shader, "eyePos"), 1, glm::value_ptr(tempCam->pos));
-    glUniform1i(glGetUniformLocation(shader, "lightCount"), lightCount);
-    glUniform4fv(glGetUniformLocation(shader, "lightPosn"), lightCount, (float*)lightPosn.data());
-    glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
-   // glUseProgram(0);
 
-    glm::mat4 model = glm::mat4(1.0f);
-    glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(camera->viewProjMat));
-    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
-    //cube->draw(camera->viewProjMat, shader);
-    //teapot->draw(camera->viewProjMat, shader);
-    //tyra->draw(camera->viewProjMat, shader);
-    //bunny->draw(camera->viewProjMat, shader);
-    ourModel->Draw(shader);
+    switch (select) {
+    case 0:
+        glUniform3fv(glGetUniformLocation(shader, "eyePos"), 1, glm::value_ptr(tempCam->pos));
+        glUniform1i(glGetUniformLocation(shader, "lightCount"), lightCount);
+        glUniform4fv(glGetUniformLocation(shader, "lightPosn"), lightCount, (float*)lightPosn.data());
+        glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
+        glUseProgram(0);
+
+        player->draw(tempCam->viewProjMat, shader);
+        bunny->draw(tempCam->viewProjMat, shader);
+        ground->draw(tempCam->viewProjMat, shader);
+        teapot->draw(tempCam->viewProjMat, shader);
+        break;
+
+    case 1:
+        glm::mat4 model = glm::mat4(1.0f);
+        glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(camera->viewProjMat));
+        glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
+        ourModel->Draw(shader);
+        break;
+    }
 }
 
 /**
@@ -155,10 +162,8 @@ void Client::idleCallback() {
         camera->update();
     }
     if (!pause) {
-        //cube->update();
-        //teapot->update();
-       // tyra->update();
-        //bunny->update();
+        teapot->update();
+        bunny->update();
     }
 }
 
@@ -167,7 +172,6 @@ void Client::idleCallback() {
 **/
 void Client::cleanup() {
     glDeleteProgram(shader);
-    delete cube;
     delete camera;
     delete thirdPersonCamera;
     delete teapot;
@@ -187,6 +191,7 @@ void Client::GUI() {
     ImGui::Checkbox("Third Person Camera", &isThirdPersonCam);
     ImGui::Separator();
     ImGui::Text("Press F to toggle show/hide mouse");
+    ImGui::ListBox("Scene Selection", &select, scenes, IM_ARRAYSIZE(scenes), IM_ARRAYSIZE(scenes));
     ImGui::End();
 }
 
@@ -228,11 +233,11 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
 **/
 static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
     ImGui_ImplGlfw_CursorPosCallback(window, xPos, yPos);
-    if (isThirdPersonCam) {
+    if (isThirdPersonCam && !pause) {
         if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
             double yawAngle = -0.5 * (xPos - prevXPos);
             double pitchAngle = -0.5 * (yPos - prevYPos);
-            player->spin(yawAngle);
+            player->spin((float) (thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle));
             thirdPersonCamera->yaw((float)yawAngle);
             thirdPersonCamera->pitch((float)pitchAngle);
 
@@ -262,14 +267,8 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
  * @param   yMove   Y movement
 **/
 static void scrollCallback(GLFWwindow* window, double xMove, double yMove) {
-    Camera* tempCam;
-    if (isThirdPersonCam) {
-        tempCam = thirdPersonCamera;
-    }
-    else {
-        tempCam = camera;
-    }
     ImGui_ImplGlfw_ScrollCallback(window, xMove, yMove);
+    Camera* tempCam = isThirdPersonCam ? thirdPersonCamera : camera;
     if (yMove > 0) {
         tempCam->zoom(0.9f);
     }
@@ -329,8 +328,8 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_W:
             if (isThirdPersonCam) {
-                player->move(glm::vec3(0, 0, -0.2));
-                thirdPersonCamera->translateForward(-0.2);
+                player->moveLocal(glm::vec3(0, 0, -0.2));
+                thirdPersonCamera->translateForward(-0.2f);
             }
             else {
                 camera->move(glm::vec3(0, 0, -0.5));
@@ -339,8 +338,8 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_S:
             if (isThirdPersonCam) {
-                player->move(glm::vec3(0, 0, 0.2));
-                thirdPersonCamera->translateBackward(-0.2);
+                player->moveLocal(glm::vec3(0, 0, 0.2));
+                thirdPersonCamera->translateBackward(-0.2f);
             }
             else {
                 camera->move(glm::vec3(0, 0, 0.5));
@@ -349,8 +348,8 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_A:
             if (isThirdPersonCam) {
-                player->move(glm::vec3(-0.2, 0, 0));
-                thirdPersonCamera->translateLeft(-0.2);
+                player->moveLocal(glm::vec3(-0.2, 0, 0));
+                thirdPersonCamera->translateLeft(-0.2f);
             }
             else {
                 camera->move(glm::vec3(-0.5, 0, 0));
@@ -359,8 +358,8 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
         case GLFW_KEY_D:
             if (isThirdPersonCam) {
-                player->move(glm::vec3(0.2, 0, 0));
-                thirdPersonCamera->translateRight(-0.2);
+                player->moveLocal(glm::vec3(0.2, 0, 0));
+                thirdPersonCamera->translateRight(-0.2f);
             }
             else {
                 camera->move(glm::vec3(0.5, 0, 0));
@@ -368,7 +367,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_F:
-            showMouse = showMouse ? false : true;
+            showMouse = !showMouse;
             if (showMouse) {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             }
@@ -394,19 +393,19 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_RIGHT:
-            tyra->move(glm::vec3(1.0f, 0.0f, 0.0f));
+            tyra->moveLocal(glm::vec3(1.0f, 0.0f, 0.0f));
             break;
 
         case GLFW_KEY_LEFT:
-            tyra->move(glm::vec3(-1.0f, 0.0f, 0.0f));
+            tyra->moveLocal(glm::vec3(-1.0f, 0.0f, 0.0f));
             break;
 
         case GLFW_KEY_UP:
-            tyra->move(glm::vec3(0.0f, 1.0f, 0.0f));
+            tyra->moveLocal(glm::vec3(0.0f, 1.0f, 0.0f));
             break;
 
         case GLFW_KEY_DOWN:
-            tyra->move(glm::vec3(0.0f, -1.0f, 0.0f));
+            tyra->moveLocal(glm::vec3(0.0f, -1.0f, 0.0f));
             break;
         }
     }

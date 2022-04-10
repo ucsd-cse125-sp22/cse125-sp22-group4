@@ -16,7 +16,6 @@ public:
     virtual ~GraphicObject() = default;
     virtual void draw(const glm::mat4& viewProjMat, GLuint shader) const = 0;
     virtual void update() = 0;
-    virtual void move(glm::vec3 v) = 0;
 };
 
 #endif // !GRAPHIC_OBJECT_H
