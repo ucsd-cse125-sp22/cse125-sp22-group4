@@ -20,13 +20,15 @@ target_sources(Client PRIVATE
     ${GRAPHICS_INCLUDE}/main.h
     ${GRAPHICS_INCLUDE}/Cube.h
     ${GRAPHICS_INCLUDE}/Mesh.h
+    ${GRAPHICS_INCLUDE}/Mesh1.h
+    ${GRAPHICS_INCLUDE}/Model.h
     ${GRAPHICS_INCLUDE}/Client.h
     ${GRAPHICS_INCLUDE}/Shader.h
     ${GRAPHICS_INCLUDE}/Camera.h
-    ${GRAPHICS_INCLUDE}/ThirdPersonCamera.h
     ${GRAPHICS_INCLUDE}/ShaderUtil.h
     ${GRAPHICS_INCLUDE}/ObjectLoader.h
     ${GRAPHICS_INCLUDE}/GraphicObject.h
+    ${GRAPHICS_INCLUDE}/ThirdPersonCamera.h
 )
 
 target_link_libraries(Client

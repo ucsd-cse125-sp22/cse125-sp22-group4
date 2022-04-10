@@ -105,7 +105,7 @@ bool Client::initializeClient() {
     bunny->move(glm::vec3(5, -0.8, -5));
     tyra = new ObjectLoader("objects/tyra.obj");
     suzanne = new ObjectLoader("objects/suzanne.obj");
-    ourModel = new Model("objects/backpack.obj");
+    ourModel = new Model("objects/backpack/backpack.obj");
 
     player = tyra;
     thirdPersonCamera = new ThirdPersonCamera(player);
