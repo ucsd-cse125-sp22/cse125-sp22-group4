@@ -20,6 +20,7 @@ static ObjectLoader* player;
 // state variables
 static bool pause = false;
 static bool isThirdPersonCam = true;
+static bool showMouse = false;
 static bool middlePressed = false;
 static double prevXPos;
 static double prevYPos;
@@ -176,6 +177,8 @@ void Client::GUI() {
     ImGui::Begin("Client GUI");
     ImGui::Checkbox("Pause", &pause);
     ImGui::Checkbox("Third Person Camera", &isThirdPersonCam);
+    ImGui::Separator();
+    ImGui::Text("Press F to toggle show/hide mouse");
     ImGui::End();
 }
 
@@ -221,7 +224,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
         if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
             double yawAngle = -0.5 * (xPos - prevXPos);
             double pitchAngle = -0.5 * (yPos - prevYPos);
-            tyra->spin(yawAngle);
+            player->spin(yawAngle);
             thirdPersonCamera->yaw((float)yawAngle);
             thirdPersonCamera->pitch((float)pitchAngle);
 
@@ -353,6 +356,16 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             }
             else {
                 camera->move(glm::vec3(0.5, 0, 0));
+            }
+            break;
+
+        case GLFW_KEY_F:
+            showMouse = showMouse ? false : true;
+            if (showMouse) {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            }
+            else {
+                glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
             break;
 
