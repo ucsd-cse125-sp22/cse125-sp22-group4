@@ -5,13 +5,14 @@
 #include "Cube.h"
 #include "Model.h"
 #include "Camera.h"
-#include "ThirdPersonCamera.h"
 #include "Shader.h"
-#include "spdlog/spdlog.h"
+#include "ObjectLoader.h"
+#include "ThirdPersonCamera.h"
+
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "imgui_impl_glfw.h"
-#include "ObjectLoader.h"
+#include "spdlog/spdlog.h"
 
 #include <string>
 

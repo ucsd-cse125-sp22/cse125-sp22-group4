@@ -2,9 +2,9 @@
 #ifndef CUBE_H
 #define CUBE_H
 
-#include "Mesh.h"
+#include "PrimitiveMesh.h"
 
-class Cube : public Mesh {
+class Cube : public PrimitiveMesh {
 private:
 
 public:

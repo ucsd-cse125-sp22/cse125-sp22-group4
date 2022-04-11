@@ -2,10 +2,10 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
-#include "Mesh.h"
+#include "PrimitiveMesh.h"
 #include <string>
 
-class ObjectLoader : public Mesh {
+class ObjectLoader : public PrimitiveMesh {
 public:
     ObjectLoader(std::string filename);
     ~ObjectLoader() = default;
