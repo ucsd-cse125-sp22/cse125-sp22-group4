@@ -14,8 +14,8 @@ glew:shared=False
 
 [imports]
 
-./res/bindings, imgui_impl_glfw.h -> ../src/bindings
-./res/bindings, imgui_impl_glfw.cpp -> ../src/bindings
-./res/bindings, imgui_impl_opengl3.h -> ../src/bindings
-./res/bindings, imgui_impl_opengl3.cpp -> ../src/bindings
-./res/bindings, imgui_impl_opengl3_loader.h -> ../src/bindings
+./res/bindings, imgui_impl_glfw.h -> ../Graphics/bindings
+./res/bindings, imgui_impl_glfw.cpp -> ../Graphics/bindings
+./res/bindings, imgui_impl_opengl3.h -> ../Graphics/bindings
+./res/bindings, imgui_impl_opengl3.cpp -> ../Graphics/bindings
+./res/bindings, imgui_impl_opengl3_loader.h -> ../Graphics/bindings
