@@ -25,6 +25,9 @@ static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[2] = { "3rd Person Tyra", "Cool Backpack" };
+static enum directions { FORWARD, BACK, LEFT, RIGHT };
+static bool keyHeld = false;
+static int direction = -1;
 
 // callbacks
 static void resizeCallback(GLFWwindow* window, int width, int height);
@@ -164,6 +167,46 @@ void Client::idleCallback() {
         teapot->update();
         bunny->update();
         ourModel->update();
+        if (keyHeld == true) {
+            switch (direction) {
+            case LEFT:
+                if (isThirdPersonCam) {
+                    player->moveLocal(glm::vec3(-0.2, 0, 0));
+                    thirdPersonCamera->translateLeft(-0.2f);
+                }
+                else {
+                    camera->move(glm::vec3(-0.5, 0, 0));
+                }
+                break;
+            case RIGHT:
+                if (isThirdPersonCam) {
+                    player->moveLocal(glm::vec3(0.2, 0, 0));
+                    thirdPersonCamera->translateRight(-0.2f);
+                }
+                else {
+                    camera->move(glm::vec3(0.5, 0, 0));
+                }
+                break;
+            case BACK:
+                if (isThirdPersonCam) {
+                    player->moveLocal(glm::vec3(0, 0, 0.2));
+                    thirdPersonCamera->translateBackward(-0.2f);
+                }
+                else {
+                    camera->move(glm::vec3(0, 0, 0.5));
+                }
+                break;
+            case FORWARD:
+                if (isThirdPersonCam) {
+                    player->moveLocal(glm::vec3(0, 0, -0.2));
+                    thirdPersonCamera->translateForward(-0.2f);
+                }
+                else {
+                    camera->move(glm::vec3(0, 0, -0.5));
+                }
+            }
+      
+        }
     }
 }
 
@@ -326,43 +369,23 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_W:
-            if (isThirdPersonCam) {
-                player->moveLocal(glm::vec3(0, 0, -0.2));
-                thirdPersonCamera->translateForward(-0.2f);
-            }
-            else {
-                camera->move(glm::vec3(0, 0, -0.5));
-            }
+            keyHeld = true;
+            direction = FORWARD;
             break;
 
         case GLFW_KEY_S:
-            if (isThirdPersonCam) {
-                player->moveLocal(glm::vec3(0, 0, 0.2));
-                thirdPersonCamera->translateBackward(-0.2f);
-            }
-            else {
-                camera->move(glm::vec3(0, 0, 0.5));
-            }
+            keyHeld = true;
+            direction = BACK;
             break;
 
         case GLFW_KEY_A:
-            if (isThirdPersonCam) {
-                player->moveLocal(glm::vec3(-0.2, 0, 0));
-                thirdPersonCamera->translateLeft(-0.2f);
-            }
-            else {
-                camera->move(glm::vec3(-0.5, 0, 0));
-            }
+            keyHeld = true;
+            direction = LEFT;
             break;
 
         case GLFW_KEY_D:
-            if (isThirdPersonCam) {
-                player->moveLocal(glm::vec3(0.2, 0, 0));
-                thirdPersonCamera->translateRight(-0.2f);
-            }
-            else {
-                camera->move(glm::vec3(0.5, 0, 0));
-            }
+            keyHeld = true;
+            direction = RIGHT;
             break;
 
         case GLFW_KEY_F:
@@ -408,5 +431,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
         }
     }
+    else if (action == GLFW_RELEASE)
+        keyHeld = false;
 }
 
