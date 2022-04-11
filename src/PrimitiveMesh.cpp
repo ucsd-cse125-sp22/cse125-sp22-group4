@@ -14,6 +14,8 @@ PrimitiveMesh::PrimitiveMesh(const std::vector<glm::vec3>& _vertices,
     normals = _normals;
     indices = _indices;
     phongMat = _phongMat;
+    model = glm::mat4(1);
+
     generateBuffers();
     bindBuffers();
 }
