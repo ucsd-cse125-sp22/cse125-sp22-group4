@@ -9,7 +9,5 @@ class ObjectLoader : public PrimitiveMesh {
 public:
     ObjectLoader(std::string filename);
     ~ObjectLoader() = default;
-
-    void update() override;
 };
 #endif // !CUBE_H

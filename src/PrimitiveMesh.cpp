@@ -61,15 +61,15 @@ void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
 }
 
 void PrimitiveMesh::update() {
-    return;
-}
-
-const glm::mat4& PrimitiveMesh::getModel() const {
-    return model;
+    spin(0.5f);
 }
 
 void PrimitiveMesh::spin(float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+void PrimitiveMesh::scale(glm::vec3 rate) {
+    model = model * glm::scale(rate);
 }
 
 void PrimitiveMesh::moveLocal(glm::vec3 v) {
@@ -78,6 +78,10 @@ void PrimitiveMesh::moveLocal(glm::vec3 v) {
 
 void PrimitiveMesh::moveGlobal(glm::vec3 v) {
     model = glm::translate(glm::mat4(1), v) * model;
+}
+
+const glm::mat4& PrimitiveMesh::getModel() const {
+    return model;
 }
 
 void PrimitiveMesh::generateBuffers() {

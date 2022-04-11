@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-class Model : GraphicObject {
+class Model : public GraphicObject {
 private:
 	// stores all the textures loaded so far
     // make sure textures aren't loaded more than once.
@@ -34,8 +34,14 @@ public:
     Model() = default;
     Model(const std::string& path, bool gamma = false);
     ~Model();
+
     void draw(const glm::mat4& viewProjMat, GLuint shader) const override;
     void update() override;
+    void spin(float deg) override;
+    void scale(glm::vec3 rate) override;
+    void moveLocal(glm::vec3 v) override;
+    void moveGlobal(glm::vec3 v) override;
+    const glm::mat4& getModel() const override;
 };
 
 #endif

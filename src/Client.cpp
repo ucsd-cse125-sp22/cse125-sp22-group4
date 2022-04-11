@@ -10,11 +10,10 @@ static std::vector<glm::vec4> lightColorn;
 
 // objects
 static Cube* ground;
-static ObjectLoader* teapot;
-static ObjectLoader* bunny;
-static ObjectLoader* tyra;
-static ObjectLoader* suzanne;
-static ObjectLoader* player;
+static Model* teapot;
+static Model* bunny;
+static Model* tyra;
+static Model* player;
 static Model* ourModel;
 
 // state variables
@@ -96,14 +95,17 @@ bool Client::initializeClient() {
     lightColorn = { {0.9, 0.6, 0, 1}, {0, 0.6, 0.9, 1} };
 
     // initialize objects
-    ground = new Cube(glm::vec3 (-10, -1, -10), glm::vec3(10, 1, 10));
+    ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
     ground->moveLocal(glm::vec3(0, -3, 0));
-    teapot = new ObjectLoader("objects/teapot.obj");
-    teapot->moveLocal(glm::vec3(-5, -0.8, -5));
-    bunny = new ObjectLoader("objects/bunny.obj");
-    bunny->moveLocal(glm::vec3(5, -0.8, -5));
-    tyra = new ObjectLoader("objects/tyra.obj");
-    suzanne = new ObjectLoader("objects/suzanne.obj");
+    teapot = new Model("objects/teapot.obj");
+    teapot->scale(glm::vec3(2));
+    teapot->moveGlobal(glm::vec3(-5, -2, -5));
+    bunny = new Model("objects/bunny.obj");
+    bunny->scale(glm::vec3(2));
+    bunny->moveGlobal(glm::vec3(5, -2, -5));
+    tyra = new Model("objects/tyra.obj");
+    tyra->scale(glm::vec3(1.5));
+    tyra->moveGlobal(glm::vec3(0, -0.1, 0));
     ourModel = new Model("objects/backpack/backpack.obj");
 
     player = tyra;
@@ -161,6 +163,7 @@ void Client::idleCallback() {
     if (!pause) {
         teapot->update();
         bunny->update();
+        ourModel->update();
     }
 }
 
@@ -174,7 +177,6 @@ void Client::cleanup() {
     delete teapot;
     delete bunny;
     delete tyra;
-    delete suzanne;
     delete ground;
     delete ourModel;
 }

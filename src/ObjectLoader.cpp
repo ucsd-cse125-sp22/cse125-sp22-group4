@@ -62,7 +62,3 @@ ObjectLoader::ObjectLoader(std::string filename) {
     bindBuffers();
 }
 
-void ObjectLoader::update() {
-    spin(0.5f);
-}
-

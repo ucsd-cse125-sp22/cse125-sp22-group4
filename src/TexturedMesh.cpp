@@ -79,7 +79,27 @@ void TexturedMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
 }
 
 void TexturedMesh::update() {
-    return;
+    spin(0.5f);
+}
+
+void TexturedMesh::spin(float deg) {
+    model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+void TexturedMesh::scale(glm::vec3 rate) {
+    model = model * glm::scale(rate);
+}
+
+void TexturedMesh::moveLocal(glm::vec3 v) {
+    model = model * glm::translate(glm::mat4(1), v);
+}
+
+void TexturedMesh::moveGlobal(glm::vec3 v) {
+    model = glm::translate(glm::mat4(1), v) * model;
+}
+
+const glm::mat4& TexturedMesh::getModel() const {
+    return model;
 }
 
 void TexturedMesh::generateBuffers() {

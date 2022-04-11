@@ -1,6 +1,6 @@
 #include "ThirdPersonCamera.h"
 
-ThirdPersonCamera::ThirdPersonCamera(ObjectLoader* _player) {
+ThirdPersonCamera::ThirdPersonCamera(GraphicObject* _player) {
 	player = _player;
 	auto& playerModel = player->getModel();
 	glm::vec4 playerPos = playerModel[3];

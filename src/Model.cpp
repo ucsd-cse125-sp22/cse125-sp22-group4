@@ -15,13 +15,43 @@ Model::~Model() {
 }
 
 void Model::draw(const glm::mat4& viewProjMat, GLuint shader) const {
-    for (unsigned int i = 0; i < meshes.size(); ++i) {
-        meshes[i]->draw(viewProjMat, shader);
+    for (auto& mesh : meshes) {
+        mesh->draw(viewProjMat, shader);
     }
 }
 
 void Model::update() {
-    return;
+    for (auto& mesh : meshes) {
+        mesh->update();
+    }
+}
+
+void Model::spin(float deg) {
+    for (auto& mesh : meshes) {
+        mesh->spin(deg);
+    }
+}
+
+void Model::scale(glm::vec3 rate) {
+    for (auto& mesh : meshes) {
+        mesh->scale(rate);
+    }
+}
+
+void Model::moveLocal(glm::vec3 v) {
+    for (auto& mesh : meshes) {
+        mesh->moveLocal(v);
+    }
+}
+
+void Model::moveGlobal(glm::vec3 v) {
+    for (auto& mesh : meshes) {
+        mesh->moveGlobal(v);
+    }
+}
+
+const glm::mat4& Model::getModel() const {
+    return meshes[0]->getModel();
 }
 
 void Model::loadModel(std::string const& path) {

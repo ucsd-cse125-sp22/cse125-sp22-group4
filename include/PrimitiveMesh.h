@@ -27,12 +27,13 @@ public:
         const std::vector<unsigned int> _indices,
         const PhongMaterial& _phongMat=color::GREEN);
     ~PrimitiveMesh(); 
+
     virtual void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const override;
     virtual void update() override;
-
-    void spin(float deg);
-    void moveLocal(glm::vec3 v);
-    void moveGlobal(glm::vec3 v);
-    const glm::mat4& getModel() const;
+    virtual void spin(float deg) override;
+    virtual void scale(glm::vec3 rate) override;
+    virtual void moveLocal(glm::vec3 v) override;
+    virtual void moveGlobal(glm::vec3 v) override;
+    virtual const glm::mat4& getModel() const override;
 };
 #endif // !MESH_H
