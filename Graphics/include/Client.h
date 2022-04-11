@@ -2,12 +2,12 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include "Cube.h"
-#include "Model.h"
-#include "Camera.h"
-#include "Shader.h"
-#include "ObjectLoader.h"
-#include "ThirdPersonCamera.h"
+#include "Graphics/include/Cube.h"
+#include "Graphics/include/Model.h"
+#include "Graphics/include/Camera.h"
+#include "Graphics/include/Shader.h"
+#include "Graphics/include/ObjectLoader.h"
+#include "Graphics/include/ThirdPersonCamera.h"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
