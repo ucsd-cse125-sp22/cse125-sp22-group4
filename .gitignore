@@ -4,3 +4,5 @@ Debug/
 x86/
 x64/
 build/
+Graphics/bindings/
+imgui.ini
