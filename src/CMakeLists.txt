@@ -1,6 +1,7 @@
 add_executable(Client
     main.cpp
     Cube.cpp
+    Model.cpp
     Client.cpp
     Shader.cpp
     Camera.cpp

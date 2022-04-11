@@ -25,7 +25,7 @@ public:
     PrimitiveMesh(const std::vector<glm::vec3>& _points,
         const std::vector<glm::vec3>& _normals,
         const std::vector<unsigned int> _indices,
-        const PhongMaterial& _phongMat);
+        const PhongMaterial& _phongMat=color::GREEN);
     ~PrimitiveMesh(); 
     virtual void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const override;
     virtual void update() override;

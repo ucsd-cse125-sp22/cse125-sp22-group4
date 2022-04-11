@@ -1,13 +1,7 @@
 #include "ObjectLoader.h"
 
 ObjectLoader::ObjectLoader(std::string filename) {
-	phongMat = {
-		{0.1, 0.1, 0.1, 1},
-		{0.1, 0.8, 0.5, 1},
-		{0.1, 0.8, 0.4, 1},
-		{0, 0, 0, 1},
-		100
-	};
+	phongMat = color::GREEN;
 
 	FILE* fp;
 	float x, y, z;
