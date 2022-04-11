@@ -14,7 +14,8 @@ static Model* teapot;
 static Model* bunny;
 static Model* tyra;
 static Model* player;
-static Model* ourModel;
+static Model* backpack;
+static Model* babyMaze;
 
 // state variables
 static double prevXPos;
@@ -24,7 +25,7 @@ static bool pause = false;
 static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
-static const char* scenes[2] = { "3rd Person Tyra", "Cool Backpack" };
+static const char* scenes[2] = { "3rd Person Tyra", "Baby Maze" };
 static enum directions { FORWARD, BACK, LEFT, RIGHT };
 static bool keyHeld = false;
 static int direction = -1;
@@ -109,7 +110,10 @@ bool Client::initializeClient() {
     tyra = new Model("objects/tyra.obj");
     tyra->scale(glm::vec3(1.5));
     tyra->moveGlobal(glm::vec3(0, -0.1, 0));
-    ourModel = new Model("objects/backpack/backpack.obj");
+    backpack = new Model("objects/backpack/backpack.obj");
+    babyMaze = new Model("objects/baby_maze/box666.obj");
+    babyMaze->moveLocal(glm::vec3(0, 0, 5));
+   
 
     player = tyra;
     thirdPersonCamera = new ThirdPersonCamera(player);
@@ -148,7 +152,8 @@ void Client::displayCallback() {
         break;
 
     case 1:
-        ourModel->draw(tempCam->viewProjMat, shader);
+        //ourModel->draw(tempCam->viewProjMat, shader);
+        babyMaze->draw(tempCam->viewProjMat, shader);
         break;
     }
 }
@@ -166,7 +171,7 @@ void Client::idleCallback() {
     if (!pause) {
         teapot->update();
         bunny->update();
-        ourModel->update();
+        backpack->update();
         if (keyHeld == true) {
             switch (direction) {
             case LEFT:
@@ -221,7 +226,9 @@ void Client::cleanup() {
     delete bunny;
     delete tyra;
     delete ground;
-    delete ourModel;
+    delete backpack;
+    delete babyMaze;
+    
 }
 
 /**
@@ -403,15 +410,15 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_RIGHT_SHIFT:
-            camera->move(glm::vec3(0, 0.5, 0));
+            camera->move(glm::vec3(0, -0.5, 0));
             break;
 
         case GLFW_KEY_LEFT_CONTROL:
-            camera->move(glm::vec3(0, -0.5, 0));
+            camera->move(glm::vec3(-0.5, 0, 0));
             break;
 
         case GLFW_KEY_RIGHT_CONTROL:
-            camera->move(glm::vec3(0, -0.5, 0));
+            camera->move(glm::vec3(0.5, 0, 0));
             break;
 
         case GLFW_KEY_RIGHT:
