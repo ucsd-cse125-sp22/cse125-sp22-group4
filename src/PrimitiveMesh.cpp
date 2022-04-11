@@ -49,6 +49,10 @@ void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
     glUseProgram(0);
 }
 
+void PrimitiveMesh::update() {
+    return;
+}
+
 const glm::mat4& PrimitiveMesh::getModel() const {
     return model;
 }

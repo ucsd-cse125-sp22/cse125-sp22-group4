@@ -26,7 +26,8 @@ public:
         const std::vector<unsigned int> _indices,
         const PhongMaterial& _phongMat);
     ~PrimitiveMesh(); 
-    void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const override;
+    virtual void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const override;
+    virtual void update() override;
 
     void spin(float deg);
     void moveLocal(glm::vec3 v);
