@@ -9,8 +9,8 @@ Cube::Cube(glm::vec3 cubeMin, glm::vec3 cubeMax) {
         10
     };
 
-    // specify vertices
-    vertices = {
+    // specify points
+    points = {
         // front
         glm::vec3(cubeMin.x,cubeMin.y,cubeMax.z),
         glm::vec3(cubeMax.x,cubeMin.y,cubeMax.z),

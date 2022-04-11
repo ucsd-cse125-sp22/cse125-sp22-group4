@@ -5,6 +5,7 @@ add_executable(Client
     Shader.cpp
     Camera.cpp
     ObjectLoader.cpp
+    TexturedMesh.cpp
     PrimitiveMesh.cpp
     ThirdPersonCamera.cpp
     bindings/imgui_impl_glfw.cpp
@@ -20,13 +21,13 @@ target_include_directories(Client PRIVATE
 target_sources(Client PRIVATE
     ${GRAPHICS_INCLUDE}/main.h
     ${GRAPHICS_INCLUDE}/Cube.h
-    ${GRAPHICS_INCLUDE}/Mesh1.h
     ${GRAPHICS_INCLUDE}/Model.h
     ${GRAPHICS_INCLUDE}/Client.h
     ${GRAPHICS_INCLUDE}/Shader.h
     ${GRAPHICS_INCLUDE}/Camera.h
     ${GRAPHICS_INCLUDE}/ShaderUtil.h
     ${GRAPHICS_INCLUDE}/ObjectLoader.h
+    ${GRAPHICS_INCLUDE}/TexturedMesh.h
     ${GRAPHICS_INCLUDE}/PrimitiveMesh.h
     ${GRAPHICS_INCLUDE}/GraphicObject.h
     ${GRAPHICS_INCLUDE}/ThirdPersonCamera.h

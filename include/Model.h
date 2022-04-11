@@ -1,8 +1,6 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-//#include <glad/glad.h> 
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
@@ -10,7 +8,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <Mesh1.h>
+#include <TexturedMesh.h>
+#include <PrimitiveMesh.h>
 #include <Shader.h>
 
 #include <string>
@@ -28,7 +27,7 @@ class Model
 public:
     // model data 
     vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-    vector<Mesh1>    meshes;
+    vector<TexturedMesh> meshes;
     string directory;
     bool gammaCorrection;
 
@@ -39,10 +38,10 @@ public:
     }
 
     // draws the model, and thus all its meshes
-    void Draw(GLuint shader)
+    void draw(const glm::mat4& viewProjMat, GLuint shader)
     {
         for (unsigned int i = 0; i < meshes.size(); i++)
-            meshes[i].Draw(shader);
+            meshes[i].draw(viewProjMat, shader);
     }
 
 private:
@@ -84,7 +83,7 @@ private:
 
     }
 
-    Mesh1 processMesh(aiMesh* mesh, const aiScene* scene)
+    TexturedMesh processMesh(aiMesh* mesh, const aiScene* scene)
     {
         // data to fill
         vector<Vertex> vertices;
@@ -165,7 +164,7 @@ private:
         textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
         // return a mesh object created from the extracted mesh data
-        return Mesh1(vertices, indices, textures);
+        return TexturedMesh(vertices, indices, textures);
     }
 
     // checks all material textures of a given type and loads the textures if they're not loaded yet.

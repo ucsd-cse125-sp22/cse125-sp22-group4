@@ -12,18 +12,18 @@ in vec2 TexCoords;
 out vec4 fragColor;
 
 uniform vec3 eyePos;
-uniform sampler2D texture_diffuse1;
-
 uniform int lightCount;
 uniform vec4 lightPosn[10];  // positions of lights
 uniform vec4 lightColorn[10]; // colors of lights
 
 //material parameters.
+uniform int mode;
 uniform vec4 ambient;
 uniform vec4 diffuse;
 uniform vec4 specular;
 uniform vec4 emission;
 uniform float shininess;
+uniform sampler2D texture_diffuse1;
 
 vec4 ComputeLight (const in vec3 direction, const in vec4 lightcolor, const in vec3 normal,
                     const in vec3 halfvec, const in vec4 mydiffuse,
@@ -69,6 +69,12 @@ void main() {
         }
     }
 
-   // fragColor = col + ambient + emission;
-    fragColor = texture(texture_diffuse1, TexCoords);
+    switch (mode) {
+    case 0:
+        fragColor = col + ambient + emission;
+        break;
+    case 1:
+        fragColor = texture(texture_diffuse1, TexCoords);
+        break;
+    }
 }

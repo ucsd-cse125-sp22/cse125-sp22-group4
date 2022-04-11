@@ -6,11 +6,21 @@ PrimitiveMesh::PrimitiveMesh() {
     phongMat = { glm::vec4(0), glm::vec4(0), glm::vec4(0), glm::vec4(0), 0 };
 }
 
-PrimitiveMesh::PrimitiveMesh(const std::vector<glm::vec3>& _vertices,
+PrimitiveMesh::PrimitiveMesh(const PrimitiveMesh& old) {
+    points = old.points;
+    normals = old.normals;
+    indices = old.indices;
+    phongMat = old.phongMat;
+
+    generateBuffers();
+    bindBuffers();
+}
+
+PrimitiveMesh::PrimitiveMesh(const std::vector<glm::vec3>& _points,
                              const std::vector<glm::vec3>& _normals,
                              const std::vector<unsigned int> _indices,
                              const PhongMaterial& _phongMat) {
-    vertices = _vertices;
+    points = _points;
     normals = _normals;
     indices = _indices;
     phongMat = _phongMat;
@@ -34,16 +44,15 @@ void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
     // get the locations and send the uniforms to the shader
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
+    glUniform1i(glGetUniformLocation(shader, "mode"), 0);
     glUniform4fv(glGetUniformLocation(shader, "ambient"), 1, glm::value_ptr(phongMat.ambient));
     glUniform4fv(glGetUniformLocation(shader, "diffuse"), 1, glm::value_ptr(phongMat.diffuse));
     glUniform4fv(glGetUniformLocation(shader, "specular"), 1, glm::value_ptr(phongMat.specular));
     glUniform4fv(glGetUniformLocation(shader, "emission"), 1, glm::value_ptr(phongMat.emission));
     glUniform1f(glGetUniformLocation(shader, "shininess"), phongMat.shininess);
 
-    // bind the VAO
+    // draw mesh
     glBindVertexArray(VAO);
-
-    // draw the points using triangles, indexed with the EBO
     glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
 
     // unbind the VAO and shader program
@@ -85,7 +94,7 @@ void PrimitiveMesh::bindBuffers() {
 
     // bind to the first VBO, store vertices
     glBindBuffer(GL_ARRAY_BUFFER, VBO_vertices);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * points.size(), points.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
 

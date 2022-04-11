@@ -12,7 +12,7 @@ protected:
     glm::mat4 model;
     PhongMaterial phongMat;
 
-    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec3> points;
     std::vector<glm::vec3> normals;
     std::vector<unsigned int> indices;
 
@@ -21,7 +21,8 @@ protected:
 
 public:
     PrimitiveMesh();
-    PrimitiveMesh(const std::vector<glm::vec3>& _vertices,
+    PrimitiveMesh(const PrimitiveMesh& old);
+    PrimitiveMesh(const std::vector<glm::vec3>& _points,
         const std::vector<glm::vec3>& _normals,
         const std::vector<unsigned int> _indices,
         const PhongMaterial& _phongMat);

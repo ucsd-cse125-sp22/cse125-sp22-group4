@@ -127,10 +127,10 @@ void Client::displayCallback() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // activate the shader program and send some values
     glUseProgram(shader);
+    glUniform3fv(glGetUniformLocation(shader, "eyePos"), 1, glm::value_ptr(tempCam->pos));
 
     switch (select) {
     case 0:
-        glUniform3fv(glGetUniformLocation(shader, "eyePos"), 1, glm::value_ptr(tempCam->pos));
         glUniform1i(glGetUniformLocation(shader, "lightCount"), lightCount);
         glUniform4fv(glGetUniformLocation(shader, "lightPosn"), lightCount, (float*)lightPosn.data());
         glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
@@ -143,10 +143,7 @@ void Client::displayCallback() {
         break;
 
     case 1:
-        glm::mat4 model = glm::mat4(1.0f);
-        glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(camera->viewProjMat));
-        glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
-        ourModel->Draw(shader);
+        ourModel->draw(tempCam->viewProjMat, shader);
         break;
     }
 }
