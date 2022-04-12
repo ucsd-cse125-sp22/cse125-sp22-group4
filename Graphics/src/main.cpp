@@ -1,5 +1,8 @@
 #include "main.h"
 
+
+ClientGame* client;
+
 int main(int argc, char** argv) {
     // Setup glfw
     glfwSetErrorCallback(Client::errorCallback);
@@ -77,6 +80,7 @@ int main(int argc, char** argv) {
 
     // Our state
     bool show_demo_window = false;
+    client = new ClientGame();
 
     if (!Client::initializeClient()) {
         spdlog::error("Client initialization failed!");
@@ -106,6 +110,7 @@ int main(int argc, char** argv) {
             ImGui::ShowDemoWindow(&show_demo_window);
         }
 
+        client->update();
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
