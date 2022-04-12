@@ -7,6 +7,7 @@ add_library(Network STATIC
 
 target_include_directories(Network PRIVATE
     include
+    ${LIB_INCLUDE}
 )
 
 # make header files visible in visual studio

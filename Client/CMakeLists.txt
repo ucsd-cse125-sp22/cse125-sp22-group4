@@ -8,8 +8,8 @@ add_executable(Client
 )
 
 target_include_directories(Client PRIVATE
-    bindings
     include
+    bindings
     ${LIB_INCLUDE}
 )
 
@@ -25,4 +25,5 @@ target_link_libraries(Client
     ${CONAN_LIBS}
     Graphics
     Network
+    Constants
 )
