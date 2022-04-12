@@ -11,6 +11,5 @@ conan_basic_setup()
 # add sub directories
 add_subdirectory(Server)
 add_subdirectory(Client)
-add_subdirectory(Graphics)
 add_subdirectory(lib/Network)
 add_subdirectory(lib/Graphics)

@@ -1,7 +1,10 @@
 # cse125-sp22-group4
+
 ## Build
+
 - Build System: [CMake](https://cmake.org/)
->>>>>>> origin/graphics
+  
+  > > > > > > > origin/graphics
 
 ```bash
 mkdir build
@@ -15,10 +18,14 @@ cmake ..
 - Inside visual studio, right click on the solution to set startup projects.
 
 - Select `Server` and `Client` as startup projects, and place `Server` before `Client`.
-=======
-conan install .. -s build_type=Release --build missing
-cmake ..
-```
+  =======
+  
+  conan install .. -s build_type=Release --build missing
+  cmake ..
+  
+  ```
+  
+  ```
 
 ## If Using Visual Studio
 
@@ -28,5 +35,4 @@ cmake ..
 
 - On the top menu, change compile option to `Release` and `x64`.
 
-
->>>>>>> origin/graphics
+> > > > > > > origin/graphics
