@@ -68,16 +68,20 @@ void PrimitiveMesh::spin(float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void PrimitiveMesh::scale(glm::vec3 rate) {
+void PrimitiveMesh::scale(const glm::vec3& rate) {
     model = model * glm::scale(rate);
 }
 
-void PrimitiveMesh::moveLocal(glm::vec3 v) {
+void PrimitiveMesh::moveLocal(const glm::vec3& v) {
     model = model * glm::translate(glm::mat4(1), v);
 }
 
-void PrimitiveMesh::moveGlobal(glm::vec3 v) {
+void PrimitiveMesh::moveGlobal(const glm::vec3& v) {
     model = glm::translate(glm::mat4(1), v) * model;
+}
+
+void PrimitiveMesh::setModel(const glm::mat4& m) {
+    model = m;
 }
 
 const glm::mat4& PrimitiveMesh::getModel() const {

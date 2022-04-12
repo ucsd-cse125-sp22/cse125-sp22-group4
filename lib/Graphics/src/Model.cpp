@@ -54,6 +54,12 @@ const glm::mat4& Model::getModel() const {
     return meshes[0]->getModel();
 }
 
+void Model::setModel(const glm::mat4& m) {
+    for (auto& mesh : meshes) {
+        mesh->setModel(m);
+    }
+}
+
 void Model::loadModel(std::string const& path) {
     spdlog::info("Read file {} via Assimp...", path);
     Assimp::Importer importer;

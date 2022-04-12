@@ -16,11 +16,11 @@ int main()
 
     // initialize the server
     server = new ServerGame();
-    serverLoop((void*)12);
+    serverLoop();
 
 }
 
-void serverLoop(void* arg)
+void serverLoop()
 {
     while (true)
     {

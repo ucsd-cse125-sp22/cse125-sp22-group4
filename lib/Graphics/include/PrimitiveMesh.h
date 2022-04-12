@@ -31,9 +31,10 @@ public:
     virtual void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const override;
     virtual void update() override;
     virtual void spin(float deg) override;
-    virtual void scale(glm::vec3 rate) override;
-    virtual void moveLocal(glm::vec3 v) override;
-    virtual void moveGlobal(glm::vec3 v) override;
+    virtual void scale(const glm::vec3& rate) override;
+    virtual void moveLocal(const glm::vec3& v) override;
+    virtual void moveGlobal(const glm::vec3& v) override;
+    virtual void setModel(const glm::mat4& m) override;
     virtual const glm::mat4& getModel() const override;
 };
 #endif // !MESH_H

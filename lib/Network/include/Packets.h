@@ -11,6 +11,7 @@ enum PacketClasses {
 	SIMPLE,
 	STATE,
 	MOVE,
+	GAME_STATE,
 };
 
 enum PacketTypes {
@@ -40,8 +41,6 @@ struct MovePacket {
 	MovementState state;
 };
 
-
-
 // Note: We add player_id field here because we expect this packet to be replicated
 // to other clients. Prior packet structs did not have player_id because server already
 // knows packet origin.
@@ -50,6 +49,11 @@ struct StatePacket {
 	ushort packet_type;
 	ushort player_id;
 	char payload[32];
+};
+
+struct GameStatePacket {
+	ushort packet_class = GAME_STATE;
+	PlayerState player_states[PLAYER_NUM];
 };
 
 

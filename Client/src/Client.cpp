@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "Constants/include/constants.h"
 
 // shader, camera and light
 static GLuint shader;
@@ -26,7 +27,7 @@ static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[2] = { "3rd Person Tyra", "Baby Maze" };
-static enum directions { FORWARD, BACK, LEFT, RIGHT };
+//static enum directions { FORWARD, BACK, LEFT, RIGHT };
 static bool keyHeld = false;
 static int direction = -1;
 
@@ -405,6 +406,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             }
             break;
 
+        // Debug camera movement
         case GLFW_KEY_LEFT_SHIFT:
             camera->move(glm::vec3(0, 0.5, 0));
             break;
