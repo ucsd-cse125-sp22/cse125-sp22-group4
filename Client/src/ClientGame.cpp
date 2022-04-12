@@ -4,7 +4,6 @@
 
 ClientGame::ClientGame(void)
 {
-
     network = new ClientNetwork();
 
     // send init packet
@@ -16,7 +15,7 @@ ClientGame::ClientGame(void)
     NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
 }
 
-void ClientGame::sendActionPackets()
+void ClientGame::sendActionPackets(MovementState s)
 {
     // send action packet
     /*
@@ -28,19 +27,19 @@ void ClientGame::sendActionPackets()
 
     NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
     */
-    const unsigned int packet_size = sizeof(StatePacket);
+    const unsigned int packet_size = sizeof(MovePacket);
     char packet_data[packet_size];
     char message[14] = "Hello, world!";
-    StatePacket packet;
-    packet.packet_type = MESSAGE;
-    memcpy(packet.payload, message, sizeof(message));
+    MovePacket packet;
+    packet.packet_type = KEYSTROKE;
+    packet.state = s;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
     NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
     free(packet_bytes);
 }
 
-void ClientGame::update()
+void ClientGame::update(MovementState s)
 {
     SimplePacket packet;
     int data_length = network->receivePackets(network_data);
@@ -61,7 +60,7 @@ void ClientGame::update()
 				SimplePacket* x = (SimplePacket*)malloc(sizeof(SimplePacket));
 				memcpy(x, &network_data[i], sizeof(SimplePacket));
                 //handleSimplePackets(x);
-                sendActionPackets();
+                sendActionPackets(s);
                 i += sizeof(SimplePacket);
 
                 free(x);
@@ -72,7 +71,7 @@ void ClientGame::update()
 				StatePacket* y = (StatePacket*)malloc(sizeof(StatePacket));
 				memcpy(y, &network_data[i], sizeof(StatePacket));
                 //handleActionPackets(y);
-                sendActionPackets();
+                sendActionPackets(s);
                 if (y->packet_type == MESSAGE) {
                     std::cout << "[Server]: " << y->payload << std::endl;
                 }

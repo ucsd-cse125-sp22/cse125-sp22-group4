@@ -71,6 +71,14 @@ void ServerGame::receiveFromClients()
             free(y);
             break;
         }
+        case MOVE:
+        {
+            MovePacket* pack = (MovePacket*)malloc(sizeof(MovePacket));
+            if (pack->state.held) {
+                std::cout << pack->state.dir << std::endl;
+            }
+            break;
+        }
         default:
             printf("error in packet types\n");
             break;

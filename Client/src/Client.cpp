@@ -442,3 +442,10 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
         keyHeld = false;
 }
 
+MovementState Client::getMovementState() {
+    return MovementState{
+        direction,
+        keyHeld
+    };
+}
+

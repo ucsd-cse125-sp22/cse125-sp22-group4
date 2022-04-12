@@ -110,7 +110,7 @@ int main(int argc, char** argv) {
             ImGui::ShowDemoWindow(&show_demo_window);
         }
 
-        client->update();
+        client->update(Client::getMovementState());
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.

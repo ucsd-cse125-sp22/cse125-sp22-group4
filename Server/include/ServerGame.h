@@ -1,5 +1,6 @@
 #include "ServerNetwork.h"
 #include "Network/include/Packets.h"
+#include "Constants/include/constants.h"
 
 class ServerGame
 {

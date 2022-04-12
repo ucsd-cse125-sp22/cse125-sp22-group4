@@ -1,6 +1,7 @@
 #include <winsock2.h>
 #include <Windows.h>
 #include "ClientNetwork.h"
+#include "Client.h"
 //#include "Network/include/NetworkData.h"
 #include "Network/include/Packets.h"
 
@@ -14,9 +15,9 @@ public:
 
     ClientNetwork* network;
 
-    void sendActionPackets();
+    void sendActionPackets(MovementState s);
 
     char network_data[MAX_PACKET_SIZE];
 
-    void update();
+    void update(MovementState s);
 };

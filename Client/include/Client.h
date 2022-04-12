@@ -9,6 +9,8 @@
 #include "Graphics/include/ObjectLoader.h"
 #include "Graphics/include/ThirdPersonCamera.h"
 
+#include "Constants/include/constants.h"
+
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include "imgui_impl_glfw.h"
@@ -17,6 +19,7 @@
 #include <string>
 
 namespace Client {
+
     GLFWwindow* createWindow(int width, int height, std::string windowTitle);
     void errorCallback(int error, const char* description);
     void setupGLSettings();
@@ -27,6 +30,7 @@ namespace Client {
     void idleCallback();
     void cleanup();
     void GUI();
+    MovementState getMovementState();
 };
 
 #endif // !CLIENT_H

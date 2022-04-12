@@ -1,6 +1,7 @@
 #ifndef PACKETS 
 #define PACKETS
 
+#include "Constants/include/constants.h"
 #pragma once
 #define MAX_PACKET_SIZE 1000000
 
@@ -9,6 +10,7 @@ typedef unsigned short ushort;
 enum PacketClasses {
 	SIMPLE,
 	STATE,
+	MOVE,
 };
 
 enum PacketTypes {
@@ -17,10 +19,12 @@ enum PacketTypes {
 	PING,
 	KEYSTROKE,
 	/* Keystroke Packet Types */
+
 	/* State Packet Types*/
 	ACTION,
 	MESSAGE,
 };
+
 
 // For first connections, pinging, etc.
 // Anything that doesn't need a payload
@@ -29,6 +33,13 @@ struct SimplePacket {
 	ushort packet_type;
 	char data;
 };
+
+struct MovePacket {
+	ushort packet_class = MOVE;
+	ushort packet_type;
+	MovementState state;
+};
+
 
 
 // Note: We add player_id field here because we expect this packet to be replicated
