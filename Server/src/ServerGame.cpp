@@ -13,6 +13,16 @@ ServerGame::ServerGame(void)
     network = new ServerNetwork();
 }
 
+void ServerGame::replicateGameState() {
+    const unsigned int packet_size = sizeof(GameStatePacket);
+    GameStatePacket packet;
+    memcpy(packet.player_states, player_states, sizeof(player_states));
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+
+    network->sendToAll(packet_bytes, packet_size);
+    free(packet_bytes);
+}
+
 void ServerGame::update()
 {
     // get new clients
@@ -87,15 +97,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     player_states[client_id] = state;
 }
 
-void ServerGame::replicateGameState() {
-    const unsigned int packet_size = sizeof(GameStatePacket);
-    GameStatePacket packet;
-    memcpy(packet.player_states, player_states, sizeof(player_states));
-    char* packet_bytes = packet_to_bytes(&packet, packet_size);
 
-    network->sendToAll(packet_bytes, packet_size);
-    free(packet_bytes);
-}
 
 void ServerGame::receiveFromClients()
 {
