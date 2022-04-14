@@ -86,15 +86,15 @@ void TexturedMesh::spin(float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-void TexturedMesh::scale(glm::vec3 rate) {
+void TexturedMesh::scale(const glm::vec3& rate) {
     model = model * glm::scale(rate);
 }
 
-void TexturedMesh::moveLocal(glm::vec3 v) {
+void TexturedMesh::moveLocal(const glm::vec3& v) {
     model = model * glm::translate(glm::mat4(1), v);
 }
 
-void TexturedMesh::moveGlobal(glm::vec3 v) {
+void TexturedMesh::moveGlobal(const glm::vec3& v) {
     model = glm::translate(glm::mat4(1), v) * model;
 }
 

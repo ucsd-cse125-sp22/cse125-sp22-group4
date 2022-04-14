@@ -7,7 +7,7 @@
 //#include <Network/include/Packets.h>
 #include <iostream>
 
-void serverLoop(void*);
+void serverLoop();
 ServerGame* server;
 
 
