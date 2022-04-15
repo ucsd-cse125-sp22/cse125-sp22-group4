@@ -76,6 +76,8 @@ void ServerGame::receiveFromClients()
             MovePacket* pack = (MovePacket*)malloc(sizeof(MovePacket));
             memcpy(pack, &network_data[i], sizeof(MovePacket));
             printf("MovePacket received, dir = %d\n", pack->state.dir);
+            i += sizeof(MovePacket);
+            free(pack);
             break;
         }
         default:
