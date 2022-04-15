@@ -74,9 +74,8 @@ void ServerGame::receiveFromClients()
         case MOVE:
         {
             MovePacket* pack = (MovePacket*)malloc(sizeof(MovePacket));
-            if (pack->state.held) {
-                std::cout << pack->state.dir << std::endl;
-            }
+            memcpy(pack, &network_data[i], sizeof(MovePacket));
+            printf("MovePacket received, dir = %d\n", pack->state.dir);
             break;
         }
         default:

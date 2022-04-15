@@ -17,6 +17,11 @@ ClientGame::ClientGame(void)
 
 void ClientGame::sendActionPackets(MovementState s)
 {
+    if (!s.held) {
+        return;
+    }
+
+    printf("sending MovementState from the client, dir = %d\n", s.dir);
     // send action packet
     /*
     const unsigned int packet_size = sizeof(SimplePacket);
@@ -41,6 +46,7 @@ void ClientGame::sendActionPackets(MovementState s)
 
 void ClientGame::update(MovementState s)
 {
+    sendActionPackets(s);
     SimplePacket packet;
     int data_length = network->receivePackets(network_data);
 
@@ -80,6 +86,15 @@ void ClientGame::update(MovementState s)
                 free(y);
                 break;
 			}
+        case GAME_STATE:
+            {
+                GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
+                memcpy(packet, &network_data[i], sizeof(GameStatePacket));
+
+                i += sizeof(GameStatePacket);
+                free(packet);
+                break;
+            }
             default:
                 printf("error in packet types\n");
                 break;
