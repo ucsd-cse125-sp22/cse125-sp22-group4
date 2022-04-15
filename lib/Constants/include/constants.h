@@ -10,6 +10,6 @@ struct MovementState {
 };
 
 struct PlayerState {
-	glm::mat4 model;
-	bool alive;
+	glm::mat4 model = glm::mat4(1);
+	bool alive = 1;
 };

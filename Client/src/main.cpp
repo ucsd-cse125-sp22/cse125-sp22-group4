@@ -90,6 +90,8 @@ int main(int argc, char** argv) {
     Client::setupGLSettings();
     Client::setupCallbacks(window);
 
+    client->setPlayer(Client::getPlayer());
+
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
@@ -100,6 +102,7 @@ int main(int argc, char** argv) {
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
 
+        /////////////////////////////////IMGUI STUFF IGNORE//////////////////////////////////////////////////////////
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -110,7 +113,6 @@ int main(int argc, char** argv) {
             ImGui::ShowDemoWindow(&show_demo_window);
         }
 
-        client->update(Client::getMovementState());
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         {
             ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
@@ -122,6 +124,8 @@ int main(int argc, char** argv) {
             ImGui::End();
         }
         Client::GUI();
+        /////////////////////////////////IMGUI STUFF IGNORE//////////////////////////////////////////////////////////
+        client->update(Client::getMovementState());
 
         // Rendering
         ImGui::Render();

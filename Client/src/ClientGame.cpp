@@ -17,19 +17,11 @@ ClientGame::ClientGame(void)
 
 void ClientGame::sendActionPackets(MovementState s)
 {
-    // send action packet
-    /*
-    const unsigned int packet_size = sizeof(SimplePacket);
-    char packet_data[packet_size];
-
-    SimplePacket packet;
-    packet.packet_type = PING;
-
-    NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
-    */
     if (!s.held) {
         return;
     }
+
+    //printf("sending MovementState from the client, dir = %d\n", s.dir);
 
     const unsigned int packet_size = sizeof(MovePacket);
     char packet_data[packet_size];
@@ -86,15 +78,37 @@ void ClientGame::update(MovementState s)
                 break;
 			}
         case GAME_STATE:
-        {
-            GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
-            memcpy(packet, &network_data[i], sizeof(StatePacket));
-            // TODO: Create client->getGameState() and send to Client.cpp via main.cpp
-            break;
-        }
-        default:
-            printf("error in packet types\n");
-            break;
+            {
+                GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
+                memcpy(packet, &network_data[i], sizeof(GameStatePacket));
+
+                glm::mat4 mat = packet->player_states->model;
+
+                //TODO!! Implement client numbers, so that client knows which player state is their own.
+                //       Currently assuming client 0.
+                printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
+
+                player->setModel(mat);
+
+                i += sizeof(GameStatePacket);
+                free(packet);
+                break;
+            }
+            default:
+                printf("error in packet types\n");
+                break;
         }
     }
+}
+
+//for debugging move elsewhere later
+void ClientGame::printMat4(glm::mat4 mat) {
+    printf("%f, %f, %f, %f\n", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
+    printf("%f, %f, %f, %f\n", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+    printf("%f, %f, %f, %f\n", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+    printf("%f, %f, %f, %f\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+}
+
+void ClientGame::setPlayer(Model* p) {
+    player = p;
 }

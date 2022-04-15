@@ -41,6 +41,8 @@ struct MovePacket {
 	MovementState state;
 };
 
+
+
 // Note: We add player_id field here because we expect this packet to be replicated
 // to other clients. Prior packet structs did not have player_id because server already
 // knows packet origin.
@@ -55,7 +57,6 @@ struct GameStatePacket {
 	ushort packet_class = GAME_STATE;
 	PlayerState player_states[PLAYER_NUM];
 };
-
 
 ushort get_packet_class(char* data);
 char* packet_to_bytes(void* packet, size_t original_size);

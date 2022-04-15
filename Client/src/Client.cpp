@@ -1,5 +1,4 @@
 #include "Client.h"
-#include "Constants/include/constants.h"
 
 // shader, camera and light
 static GLuint shader;
@@ -27,7 +26,6 @@ static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[2] = { "3rd Person Tyra", "Baby Maze" };
-//static enum directions { FORWARD, BACK, LEFT, RIGHT };
 static bool keyHeld = false;
 static int direction = -1;
 
@@ -37,6 +35,9 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos);
 static void scrollCallback(GLFWwindow* window, double xMove, double yMove);
 static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
+//todo
+enum CamDirections { CAM_FORWARD, CAM_BACK, CAM_LEFT, CAM_RIGHT, CAM_UP };
 
 /**
  * Create a GLFW window of given size
@@ -115,7 +116,6 @@ bool Client::initializeClient() {
     babyMaze = new Model("objects/baby_maze/box666.obj");
     babyMaze->moveLocal(glm::vec3(0, 0, 5));
    
-
     player = tyra;
     thirdPersonCamera = new ThirdPersonCamera(player);
 
@@ -175,40 +175,41 @@ void Client::idleCallback() {
         backpack->update();
         if (keyHeld == true) {
             switch (direction) {
+            //TODO third person movement not networked
             case LEFT:
                 if (isThirdPersonCam) {
                     player->moveLocal(glm::vec3(-0.2, 0, 0));
-                    thirdPersonCamera->translateLeft(-0.2f);
+                    thirdPersonCamera->translateLeft(-0.3f);
                 }
                 else {
-                    camera->move(glm::vec3(-0.5, 0, 0));
+                    //camera->move(glm::vec3(-0.5, 0, 0));
                 }
                 break;
             case RIGHT:
                 if (isThirdPersonCam) {
                     player->moveLocal(glm::vec3(0.2, 0, 0));
-                    thirdPersonCamera->translateRight(-0.2f);
+                    thirdPersonCamera->translateRight(-0.3f);
                 }
                 else {
-                    camera->move(glm::vec3(0.5, 0, 0));
+                    //camera->move(glm::vec3(0.5, 0, 0));
                 }
                 break;
             case BACK:
                 if (isThirdPersonCam) {
                     player->moveLocal(glm::vec3(0, 0, 0.2));
-                    thirdPersonCamera->translateBackward(-0.2f);
+                    thirdPersonCamera->translateBackward(-0.3f);
                 }
                 else {
-                    camera->move(glm::vec3(0, 0, 0.5));
+                    //camera->move(glm::vec3(0, 0, 0.5));
                 }
                 break;
             case FORWARD:
                 if (isThirdPersonCam) {
                     player->moveLocal(glm::vec3(0, 0, -0.2));
-                    thirdPersonCamera->translateForward(-0.2f);
+                    thirdPersonCamera->translateForward(-0.3f);
                 }
                 else {
-                    camera->move(glm::vec3(0, 0, -0.5));
+                    //camera->move(glm::vec3(0, 0, -0.5));
                 }
             }
       
@@ -406,7 +407,6 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             }
             break;
 
-        // Debug camera movement
         case GLFW_KEY_LEFT_SHIFT:
             camera->move(glm::vec3(0, 0.5, 0));
             break;
@@ -451,3 +451,6 @@ MovementState Client::getMovementState() {
     };
 }
 
+Model* Client::getPlayer() {
+    return player;
+}
