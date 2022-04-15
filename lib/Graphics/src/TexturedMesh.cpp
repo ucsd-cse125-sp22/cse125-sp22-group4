@@ -106,10 +106,6 @@ const glm::mat4& TexturedMesh::getModel() const {
     return model;
 }
 
-void TexturedMesh::setModel(const glm::mat4& m) {
-    model = m;
-}
-
 void TexturedMesh::generateBuffers() {
     // create buffers/arrays
     glGenVertexArrays(1, &VAO);

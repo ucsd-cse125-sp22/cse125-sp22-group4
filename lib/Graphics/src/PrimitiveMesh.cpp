@@ -88,10 +88,6 @@ const glm::mat4& PrimitiveMesh::getModel() const {
     return model;
 }
 
-void PrimitiveMesh::setModel(const glm::mat4& m) {
-    model = m;
-}
-
 void PrimitiveMesh::generateBuffers() {
     // generate VAO, VBO and EBO
     glGenVertexArrays(1, &VAO);
