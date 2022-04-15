@@ -31,6 +31,7 @@ namespace Client {
     void cleanup();
     void GUI();
     MovementState getMovementState();
+    Model* getPlayer();
 };
 
 #endif // !CLIENT_H

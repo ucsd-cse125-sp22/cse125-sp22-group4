@@ -88,6 +88,8 @@ void ClientGame::update(MovementState s)
                 //       Currently assuming client 0.
                 printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
 
+                player->setModel(mat);
+
                 i += sizeof(GameStatePacket);
                 free(packet);
                 break;
@@ -105,4 +107,8 @@ void ClientGame::printMat4(glm::mat4 mat) {
     printf("%f, %f, %f, %f\n", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
     printf("%f, %f, %f, %f\n", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
     printf("%f, %f, %f, %f\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+}
+
+void ClientGame::setPlayer(Model* p) {
+    player = p;
 }

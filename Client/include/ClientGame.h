@@ -1,3 +1,5 @@
+#pragma once
+
 #include <winsock2.h>
 #include <Windows.h>
 #include "ClientNetwork.h"
@@ -23,4 +25,10 @@ public:
 
     //for debugging move elsewhere later
     void printMat4(glm::mat4 mat);
+
+    void setPlayer(Model* p);
+
+private:
+
+    Model* player;
 };

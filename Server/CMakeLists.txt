@@ -19,4 +19,5 @@ target_link_libraries(Server
     ${CONAN_LIBS}
     Network
     Constants
+    Graphics
 )

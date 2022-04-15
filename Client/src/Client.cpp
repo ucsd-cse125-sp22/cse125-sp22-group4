@@ -36,6 +36,9 @@ static void scrollCallback(GLFWwindow* window, double xMove, double yMove);
 static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
+//todo
+enum CamDirections { CAM_FORWARD, CAM_BACK, CAM_LEFT, CAM_RIGHT, CAM_UP };
+
 /**
  * Create a GLFW window of given size
  *
@@ -172,13 +175,14 @@ void Client::idleCallback() {
         backpack->update();
         if (keyHeld == true) {
             switch (direction) {
+            //TODO third person movement not networked
             case LEFT:
                 if (isThirdPersonCam) {
                     player->moveLocal(glm::vec3(-0.2, 0, 0));
                     thirdPersonCamera->translateLeft(-0.3f);
                 }
                 else {
-                    camera->move(glm::vec3(-0.5, 0, 0));
+                    //camera->move(glm::vec3(-0.5, 0, 0));
                 }
                 break;
             case RIGHT:
@@ -187,7 +191,7 @@ void Client::idleCallback() {
                     thirdPersonCamera->translateRight(-0.3f);
                 }
                 else {
-                    camera->move(glm::vec3(0.5, 0, 0));
+                    //camera->move(glm::vec3(0.5, 0, 0));
                 }
                 break;
             case BACK:
@@ -196,7 +200,7 @@ void Client::idleCallback() {
                     thirdPersonCamera->translateBackward(-0.3f);
                 }
                 else {
-                    camera->move(glm::vec3(0, 0, 0.5));
+                    //camera->move(glm::vec3(0, 0, 0.5));
                 }
                 break;
             case FORWARD:
@@ -205,7 +209,7 @@ void Client::idleCallback() {
                     thirdPersonCamera->translateForward(-0.3f);
                 }
                 else {
-                    camera->move(glm::vec3(0, 0, -0.5));
+                    //camera->move(glm::vec3(0, 0, -0.5));
                 }
             }
       
@@ -447,3 +451,6 @@ MovementState Client::getMovementState() {
     };
 }
 
+Model* Client::getPlayer() {
+    return player;
+}

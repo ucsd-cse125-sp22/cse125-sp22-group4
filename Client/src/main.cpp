@@ -90,6 +90,8 @@ int main(int argc, char** argv) {
     Client::setupGLSettings();
     Client::setupCallbacks(window);
 
+    client->setPlayer(Client::getPlayer());
+
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
