@@ -22,7 +22,6 @@ void ServerGame::update()
 
         client_id++;
     }
-
     receiveFromClients();
 }
 
@@ -75,7 +74,14 @@ void ServerGame::receiveFromClients()
         {
             MovePacket* pack = (MovePacket*)malloc(sizeof(MovePacket));
             memcpy(pack, &network_data[i], sizeof(MovePacket));
-            printf("MovePacket received, dir = %d\n", pack->state.dir);
+            printf("Server received MovePacket, dir = %d\n", pack->state.dir);
+
+            //TODO!! Implement the ability to know which client sent this move packet, currently assuming client 0.
+            handleMovePacket(0, pack);
+
+            //only update gamestate when its changed (player moved, died, etc)
+            replicateGameState();
+
             i += sizeof(MovePacket);
             free(pack);
             break;
@@ -108,4 +114,53 @@ void ServerGame::sendActionPackets()
 
     network->sendToAll(packet_bytes, packet_size);
     free(packet_bytes);
+}
+
+//method to translate the model matrix
+void moveLocal(glm::mat4& model, const glm::vec3& v) {
+    model = model * glm::translate(glm::mat4(1), v);
+}
+
+//broadcast game state to all clients
+void ServerGame::replicateGameState() {
+    const unsigned int packet_size = sizeof(GameStatePacket);
+    GameStatePacket packet;
+    memcpy(packet.player_states, player_states, sizeof(player_states));
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+
+    network->sendToAll(packet_bytes, packet_size);
+    free(packet_bytes);
+}
+
+//Update player_state from move packet.
+void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
+    PlayerState state = player_states[client_id];
+    if (!state.alive) {
+        return;
+    }
+
+    switch (packet->state.dir) {
+    case LEFT:
+    {
+        moveLocal(state.model, glm::vec3(-0.2, 0, 0));
+        break;
+    }
+    case RIGHT:
+    {
+        moveLocal(state.model, glm::vec3(0.2, 0, 0));
+        break;
+    }
+    case BACK:
+    {
+        moveLocal(state.model, glm::vec3(0, 0, 0.2));
+        break;
+    }
+    case FORWARD:
+    {
+        moveLocal(state.model, glm::vec3(0, 0, -0.2));
+        break;
+    }
+    }
+    // Actually do the update...
+    player_states[client_id] = state;
 }

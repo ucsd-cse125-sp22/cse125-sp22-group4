@@ -113,7 +113,6 @@ bool Client::initializeClient() {
     babyMaze = new Model("objects/baby_maze/box666.obj");
     babyMaze->moveLocal(glm::vec3(0, 0, 5));
    
-
     player = tyra;
     thirdPersonCamera = new ThirdPersonCamera(player);
 

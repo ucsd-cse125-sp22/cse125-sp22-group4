@@ -20,4 +20,7 @@ public:
     char network_data[MAX_PACKET_SIZE];
 
     void update(MovementState s);
+
+    //for debugging move elsewhere later
+    void printMat4(glm::mat4 mat);
 };

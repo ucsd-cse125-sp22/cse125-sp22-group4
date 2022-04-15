@@ -21,17 +21,8 @@ void ClientGame::sendActionPackets(MovementState s)
         return;
     }
 
-    printf("sending MovementState from the client, dir = %d\n", s.dir);
-    // send action packet
-    /*
-    const unsigned int packet_size = sizeof(SimplePacket);
-    char packet_data[packet_size];
+    //printf("sending MovementState from the client, dir = %d\n", s.dir);
 
-    SimplePacket packet;
-    packet.packet_type = PING;
-
-    NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
-    */
     const unsigned int packet_size = sizeof(MovePacket);
     char packet_data[packet_size];
     char message[14] = "Hello, world!";
@@ -91,6 +82,12 @@ void ClientGame::update(MovementState s)
                 GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
                 memcpy(packet, &network_data[i], sizeof(GameStatePacket));
 
+                glm::mat4 mat = packet->player_states->model;
+
+                //TODO!! Implement client numbers, so that client knows which player state is their own.
+                //       Currently assuming client 0.
+                printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
+
                 i += sizeof(GameStatePacket);
                 free(packet);
                 break;
@@ -100,4 +97,12 @@ void ClientGame::update(MovementState s)
                 break;
         }
     }
+}
+
+//for debugging move elsewhere later
+void ClientGame::printMat4(glm::mat4 mat) {
+    printf("%f, %f, %f, %f\n", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
+    printf("%f, %f, %f, %f\n", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+    printf("%f, %f, %f, %f\n", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+    printf("%f, %f, %f, %f\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
 }
