@@ -32,19 +32,19 @@ void Model::spin(float deg) {
     }
 }
 
-void Model::scale(glm::vec3 rate) {
+void Model::scale(const glm::vec3& rate) {
     for (auto& mesh : meshes) {
         mesh->scale(rate);
     }
 }
 
-void Model::moveLocal(glm::vec3 v) {
+void Model::moveLocal(const glm::vec3& v) {
     for (auto& mesh : meshes) {
         mesh->moveLocal(v);
     }
 }
 
-void Model::moveGlobal(glm::vec3 v) {
+void Model::moveGlobal(const glm::vec3& v) {
     for (auto& mesh : meshes) {
         mesh->moveGlobal(v);
     }
@@ -52,6 +52,12 @@ void Model::moveGlobal(glm::vec3 v) {
 
 const glm::mat4& Model::getModel() const {
     return meshes[0]->getModel();
+}
+
+void Model::setModel(const glm::mat4& m) {
+    for (auto& mesh : meshes) {
+        mesh->setModel(m);
+    }
 }
 
 void Model::loadModel(std::string const& path) {

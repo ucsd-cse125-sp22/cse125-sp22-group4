@@ -9,4 +9,5 @@ target_sources(Constants PRIVATE
 
 target_include_directories(Constants PRIVATE
     ${LIB_INCLUDE}
+    ${CONAN_LIBS}
 )

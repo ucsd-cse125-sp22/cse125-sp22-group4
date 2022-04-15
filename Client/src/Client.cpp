@@ -26,7 +26,6 @@ static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[2] = { "3rd Person Tyra", "Baby Maze" };
-static enum directions { FORWARD, BACK, LEFT, RIGHT };
 static bool keyHeld = false;
 static int direction = -1;
 

@@ -11,6 +11,7 @@ enum PacketClasses {
 	SIMPLE,
 	STATE,
 	MOVE,
+	GAME_STATE,
 };
 
 enum PacketTypes {
@@ -52,6 +53,10 @@ struct StatePacket {
 	char payload[32];
 };
 
+struct GameStatePacket {
+	ushort packet_class = GAME_STATE;
+	PlayerState player_states[PLAYER_NUM];
+};
 
 ushort get_packet_class(char* data);
 char* packet_to_bytes(void* packet, size_t original_size);

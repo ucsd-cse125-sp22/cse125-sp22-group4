@@ -38,9 +38,10 @@ public:
     void draw(const glm::mat4& viewProjMat, GLuint shader) const override;
     void update() override;
     void spin(float deg) override;
-    void scale(glm::vec3 rate) override;
-    void moveLocal(glm::vec3 v) override;
-    void moveGlobal(glm::vec3 v) override;
+    void scale(const glm::vec3& rate) override;
+    void moveLocal(const glm::vec3& v) override;
+    void moveGlobal(const glm::vec3& v) override;
+    void setModel(const glm::mat4& m) override;
     const glm::mat4& getModel() const override;
 };
 
