@@ -98,6 +98,10 @@ void TexturedMesh::moveGlobal(const glm::vec3& v) {
     model = glm::translate(glm::mat4(1), v) * model;
 }
 
+void TexturedMesh::setModel(const glm::mat4& m) {
+    model = m;
+}
+
 const glm::mat4& TexturedMesh::getModel() const {
     return model;
 }

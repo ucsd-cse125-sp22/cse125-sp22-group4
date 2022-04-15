@@ -80,6 +80,10 @@ void PrimitiveMesh::moveGlobal(const glm::vec3& v) {
     model = glm::translate(glm::mat4(1), v) * model;
 }
 
+void PrimitiveMesh::setModel(const glm::mat4& m) {
+    model = m;
+}
+
 const glm::mat4& PrimitiveMesh::getModel() const {
     return model;
 }
