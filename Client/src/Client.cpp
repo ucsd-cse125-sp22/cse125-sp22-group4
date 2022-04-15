@@ -177,7 +177,7 @@ void Client::idleCallback() {
             case LEFT:
                 if (isThirdPersonCam) {
                     player->moveLocal(glm::vec3(-0.2, 0, 0));
-                    thirdPersonCamera->translateLeft(-0.2f);
+                    thirdPersonCamera->translateLeft(-0.3f);
                 }
                 else {
                     camera->move(glm::vec3(-0.5, 0, 0));
@@ -186,7 +186,7 @@ void Client::idleCallback() {
             case RIGHT:
                 if (isThirdPersonCam) {
                     player->moveLocal(glm::vec3(0.2, 0, 0));
-                    thirdPersonCamera->translateRight(-0.2f);
+                    thirdPersonCamera->translateRight(-0.3f);
                 }
                 else {
                     camera->move(glm::vec3(0.5, 0, 0));
@@ -195,7 +195,7 @@ void Client::idleCallback() {
             case BACK:
                 if (isThirdPersonCam) {
                     player->moveLocal(glm::vec3(0, 0, 0.2));
-                    thirdPersonCamera->translateBackward(-0.2f);
+                    thirdPersonCamera->translateBackward(-0.3f);
                 }
                 else {
                     camera->move(glm::vec3(0, 0, 0.5));
@@ -204,7 +204,7 @@ void Client::idleCallback() {
             case FORWARD:
                 if (isThirdPersonCam) {
                     player->moveLocal(glm::vec3(0, 0, -0.2));
-                    thirdPersonCamera->translateForward(-0.2f);
+                    thirdPersonCamera->translateForward(-0.3f);
                 }
                 else {
                     camera->move(glm::vec3(0, 0, -0.5));
