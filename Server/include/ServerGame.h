@@ -13,8 +13,8 @@ public:
 
     void update();
     void receiveFromClients();
-    void sendActionPackets();
     void handleMovePacket(int client_id, MovePacket* s);
+    void handleSimplePacket(int client_id, SimplePacket* s);
     void replicateGameState();
 
 private:

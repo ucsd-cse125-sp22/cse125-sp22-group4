@@ -35,6 +35,7 @@ public:
     // receive incoming data
     int receiveData(unsigned int client_id, char* recvbuf);
 
+    int sendToSocket(SOCKET, char* packets, int totalSize);
     // send data to all clients
     void sendToAll(char* packets, int totalSize);
 };

@@ -21,11 +21,7 @@ void ClientGame::sendActionPackets(MovementState s)
         return;
     }
 
-    //printf("sending MovementState from the client, dir = %d\n", s.dir);
-
     const unsigned int packet_size = sizeof(MovePacket);
-    char packet_data[packet_size];
-    char message[14] = "Hello, world!";
     MovePacket packet;
     packet.packet_type = KEYSTROKE;
     packet.state = s;
@@ -35,9 +31,24 @@ void ClientGame::sendActionPackets(MovementState s)
     free(packet_bytes);
 }
 
+void ClientGame::handleSimplePacket(SimplePacket s) {
+    switch (s.packet_type) {
+    case INIT_CONNECTION:
+    {
+        player_id = (unsigned int) s.data;
+        loaded = true; // TODO: Figure out if this is the right place to set loaded=True.
+        std::cout << "My player id is " << player_id << std::endl;
+        break;
+    }
+    }
+}
+
 void ClientGame::update(MovementState s)
 {
-    sendActionPackets(s);
+    // Don't send action events to server if client is not fully loaded
+    if (loaded)
+        sendActionPackets(s);
+
     SimplePacket packet;
     int data_length = network->receivePackets(network_data);
 
@@ -56,25 +67,11 @@ void ClientGame::update(MovementState s)
 			{
 				SimplePacket* x = (SimplePacket*)malloc(sizeof(SimplePacket));
 				memcpy(x, &network_data[i], sizeof(SimplePacket));
-                //handleSimplePackets(x);
+                handleSimplePacket(*x);
                 sendActionPackets(s);
+
                 i += sizeof(SimplePacket);
-
                 free(x);
-                break;
-			}
-        case STATE:
-			{
-				StatePacket* y = (StatePacket*)malloc(sizeof(StatePacket));
-				memcpy(y, &network_data[i], sizeof(StatePacket));
-                //handleActionPackets(y);
-                sendActionPackets(s);
-                if (y->packet_type == MESSAGE) {
-                    std::cout << "[Server]: " << y->payload << std::endl;
-                }
-
-                i += sizeof(StatePacket);
-                free(y);
                 break;
 			}
         case GAME_STATE:
@@ -82,13 +79,9 @@ void ClientGame::update(MovementState s)
                 GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
                 memcpy(packet, &network_data[i], sizeof(GameStatePacket));
 
-                glm::mat4 mat = packet->player_states->model;
-
-                //TODO!! Implement client numbers, so that client knows which player state is their own.
-                //       Currently assuming client 0.
-                printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
-
+                glm::mat4 mat = packet->player_states[player_id].model;
                 player->setModel(mat);
+                printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
 
                 i += sizeof(GameStatePacket);
                 free(packet);

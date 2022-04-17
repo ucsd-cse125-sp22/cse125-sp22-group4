@@ -18,6 +18,7 @@ public:
     ClientNetwork* network;
 
     void sendActionPackets(MovementState s);
+    void handleSimplePacket(SimplePacket s);
 
     char network_data[MAX_PACKET_SIZE];
 
@@ -31,4 +32,6 @@ public:
 private:
 
     Model* player;
+    unsigned int player_id;
+    bool loaded;
 };
