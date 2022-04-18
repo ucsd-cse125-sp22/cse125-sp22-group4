@@ -11,6 +11,7 @@ ServerGame::ServerGame(void)
 
     // set up the server network to listen 
     network = new ServerNetwork();
+    start_time = timer.now();
 }
 
 void ServerGame::update()
@@ -21,7 +22,16 @@ void ServerGame::update()
         printf("client %d has been connected to the server\n", client_id);
         client_id++;
     }
+    // Receive from clients as fast as possible.
     receiveFromClients();
+
+    // Calculate tick
+    auto stop_time = timer.now();
+    auto dt = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
+    if (dt.count() >= FPS_MAX) {
+        replicateGameState();
+        start_time = timer.now();
+    }
 }
 
 //broadcast game state to all clients
@@ -71,7 +81,7 @@ void ServerGame::receiveFromClients()
 
             // TODO: Fix replication... Currently not in lock-step.
             // Note: Moving replication outside of CASE results in dead client.
-            replicateGameState();
+            //replicateGameState();
             break;
         }
         default:
