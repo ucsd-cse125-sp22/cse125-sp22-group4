@@ -86,7 +86,7 @@ bool Client::initializeClient() {
     // initialize shader
     //shader = Shader::loadShaders("shaders/basicShader.vert", "shaders/basicShader.frag");
     //shader = Shader::loadShaders("shaders/normalShader.vert", "shaders/normalShader.frag");
-    shader = Shader::loadShaders("shaders/shader.vert", "shaders/shader.frag");
+    shader = Shader::loadShaders("../../shaders/shader.vert", "../../shaders/shader.frag");
     if (!shader) {
         spdlog::error("Failed to initialize shader programs.");
         return false;
@@ -103,17 +103,17 @@ bool Client::initializeClient() {
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
     ground->moveLocal(glm::vec3(0, -3, 0));
-    teapot = new Model("objects/teapot.obj");
+    teapot = new Model("../../objects/teapot.obj");
     teapot->scale(glm::vec3(2));
     teapot->moveGlobal(glm::vec3(-5, -2, -5));
-    bunny = new Model("objects/bunny.obj");
+    bunny = new Model("../../objects/bunny.obj");
     bunny->scale(glm::vec3(2));
     bunny->moveGlobal(glm::vec3(5, -2, -5));
-    tyra = new Model("objects/tyra.obj");
+    tyra = new Model("../../objects/tyra.obj");
     tyra->scale(glm::vec3(1.5));
     tyra->moveGlobal(glm::vec3(0, -0.1, 0));
-    backpack = new Model("objects/backpack/backpack.obj");
-    babyMaze = new Model("objects/baby_maze/box666.obj");
+    backpack = new Model("../../objects/backpack/backpack.obj");
+    babyMaze = new Model("../../objects/baby_maze/box666.obj");
     babyMaze->moveLocal(glm::vec3(0, 0, 5));
    
     player = tyra;
