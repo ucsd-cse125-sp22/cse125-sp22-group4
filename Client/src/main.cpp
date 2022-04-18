@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
     Client::setupGLSettings();
     Client::setupCallbacks(window);
 
-    client->setPlayer(Client::getPlayer());
+    client->setPlayers(Client::getPlayers());
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -125,7 +125,11 @@ int main(int argc, char** argv) {
         }
         Client::GUI();
         /////////////////////////////////IMGUI STUFF IGNORE//////////////////////////////////////////////////////////
+
         client->update(Client::getMovementState());
+
+        //inefficient
+        Client::setmy_id(client->getPlayer_id());
 
         // Rendering
         ImGui::Render();

@@ -13,11 +13,14 @@ static Cube* ground;
 static Model* teapot;
 static Model* bunny;
 static Model* tyra;
+static Model* tyra2;
 static Model* player;
 static Model* backpack;
 static Model* babyMaze;
+static Model* players[PLAYER_NUM];
 
 // state variables
+unsigned int my_id;
 static double prevXPos;
 static double prevYPos;
 static int select = 0;
@@ -112,11 +115,20 @@ bool Client::initializeClient() {
     tyra = new Model("../../objects/tyra.obj");
     tyra->scale(glm::vec3(1.5));
     tyra->moveGlobal(glm::vec3(0, -0.1, 0));
+    tyra2 = new Model("../../objects/tyra.obj");
+    tyra2->moveGlobal(glm::vec3(2, -0.1, 0));
     backpack = new Model("../../objects/backpack/backpack.obj");
     babyMaze = new Model("../../objects/baby_maze/box666.obj");
     babyMaze->moveLocal(glm::vec3(0, 0, 5));
    
-    player = tyra;
+    //hard coded for now
+    players[0] = tyra;
+    players[1] = teapot;
+    players[2] = bunny;
+    players[3] = tyra2;
+
+    player = players[my_id];
+
     thirdPersonCamera = new ThirdPersonCamera(player);
 
     return true;
@@ -146,10 +158,12 @@ void Client::displayCallback() {
         glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
         glUseProgram(0);
 
-        player->draw(tempCam->viewProjMat, shader);
-        bunny->draw(tempCam->viewProjMat, shader);
+        for (auto character : players) {
+            character->draw(tempCam->viewProjMat, shader);
+        }
+
         ground->draw(tempCam->viewProjMat, shader);
-        teapot->draw(tempCam->viewProjMat, shader);
+
         break;
 
     case 1:
@@ -451,6 +465,10 @@ MovementState Client::getMovementState() {
     };
 }
 
-Model* Client::getPlayer() {
-    return player;
+Model** Client::getPlayers() {
+    return players;
+}
+
+void Client:: setmy_id(unsigned int id) {
+    my_id = id;
 }

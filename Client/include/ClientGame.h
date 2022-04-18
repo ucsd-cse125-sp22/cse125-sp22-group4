@@ -27,11 +27,15 @@ public:
     //for debugging move elsewhere later
     void printMat4(glm::mat4 mat);
 
-    void setPlayer(Model* p);
+    void setPlayers(Model** p);
+
+    void updateModels(PlayerState states[PLAYER_NUM]);
+
+    unsigned int getPlayer_id();
 
 private:
 
-    Model* player;
+    Model** players;
     unsigned int player_id;
     bool loaded;
 };

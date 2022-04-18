@@ -79,9 +79,9 @@ void ClientGame::update(MovementState s)
                 GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
                 memcpy(packet, &network_data[i], sizeof(GameStatePacket));
 
-                glm::mat4 mat = packet->player_states[player_id].model;
-                player->setModel(mat);
-                printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
+                updateModels(packet->player_states);
+
+                //printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
 
                 i += sizeof(GameStatePacket);
                 free(packet);
@@ -94,6 +94,12 @@ void ClientGame::update(MovementState s)
     }
 }
 
+void ClientGame::updateModels(PlayerState states[PLAYER_NUM]) {
+    for (int i = 0; i < PLAYER_NUM; i++) {
+        players[i]->setModel(states[i].model);
+    }
+}
+
 //for debugging move elsewhere later
 void ClientGame::printMat4(glm::mat4 mat) {
     printf("%f, %f, %f, %f\n", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
@@ -102,6 +108,10 @@ void ClientGame::printMat4(glm::mat4 mat) {
     printf("%f, %f, %f, %f\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
 }
 
-void ClientGame::setPlayer(Model* p) {
-    player = p;
+void ClientGame::setPlayers(Model** p) {
+    players = p;
+}
+
+unsigned int ClientGame::getPlayer_id() {
+    return player_id;
 }

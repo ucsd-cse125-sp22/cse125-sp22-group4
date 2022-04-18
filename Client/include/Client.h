@@ -30,8 +30,11 @@ namespace Client {
     void idleCallback();
     void cleanup();
     void GUI();
+
     MovementState getMovementState();
-    Model* getPlayer();
+    Model** getPlayers();
+
+    void setmy_id(unsigned int id);
 };
 
 #endif // !CLIENT_H
