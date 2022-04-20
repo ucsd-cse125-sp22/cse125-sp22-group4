@@ -5,7 +5,8 @@
 // Note that you do not have access to the vertex shader's default output, gl_Position.
 in vec3 worldNormal;
 in vec3 worldPos;
-in vec2 TexCoords;
+in vec2 texCoords;
+in mat3 TBN;
 
 // You can output many things.
 // The first vec4 type output determines the color of the fragment
@@ -16,6 +17,8 @@ uniform int lightCount;
 uniform vec4 lightPosn[10];  // positions of lights
 uniform vec4 lightColorn[10]; // colors of lights
 
+uniform mat4 model;
+
 //material parameters.
 uniform int mode;
 uniform vec4 ambient;
@@ -24,6 +27,9 @@ uniform vec4 specular;
 uniform vec4 emission;
 uniform float shininess;
 uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_specular1;
+uniform sampler2D texture_normal1;
+uniform sampler2D texture_height1;
 
 vec4 ComputeLight (const in vec3 direction, const in vec4 lightcolor, const in vec3 normal,
                     const in vec3 halfvec, const in vec4 mydiffuse,
@@ -50,13 +56,33 @@ void main() {
     vec3 pointDir;
     vec3 pointHal;
 
+    vec3 realNormal;
+    vec4 realDiffuse;
+    vec4 realSpecular;
+
+    switch (mode) {
+    case 0:
+        realNormal = worldNormal;
+        realDiffuse = diffuse;
+        realSpecular = specular;
+        break;
+    case 1:
+        vec3 normal = vec3(texture(texture_normal1, texCoords));
+        normal = normal * 2.0 - 1.0;
+        realNormal = normalize(TBN * normal);
+        //realNormal = worldNormal;
+        realDiffuse = texture(texture_diffuse1, texCoords);
+        realSpecular = texture(texture_specular1, texCoords);
+        break;
+    }
+
     for(int i = 0; i < lightCount; ++i) {
         //directional
         if(lightPosn[i].w == 0) {
             direction = normalize(lightPosn[i].xyz);
             halfi = normalize(direction + eyeDir);
-            col = col + ComputeLight(direction, lightColorn[i], worldNormal, halfi,
-                                    diffuse, specular, shininess);
+            col = col + ComputeLight(direction, lightColorn[i], realNormal, halfi,
+                                    realDiffuse, realSpecular, shininess);
 
         }
         // point light
@@ -64,17 +90,10 @@ void main() {
             pointPos = lightPosn[i].xyz / lightPosn[i].w;
             pointDir = normalize(pointPos - worldPos);
             pointHal = normalize(pointDir + eyeDir);
-            col = col + ComputeLight(pointDir, lightColorn[i], worldNormal, pointHal,
-                                    diffuse, specular, shininess);
+            col = col + ComputeLight(pointDir, lightColorn[i], realNormal, pointHal,
+                                    realDiffuse, realSpecular, shininess);
         }
     }
 
-    switch (mode) {
-    case 0:
-        fragColor = col + ambient + emission;
-        break;
-    case 1:
-        fragColor = texture(texture_diffuse1, TexCoords);
-        break;
-    }
+    fragColor = col + ambient + emission;
 }

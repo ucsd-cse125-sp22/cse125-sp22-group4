@@ -37,7 +37,6 @@ TexturedMesh::~TexturedMesh() {
 void TexturedMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
     glUseProgram(shader);
 
-
     // get the locations and send the uniforms to the shader
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));

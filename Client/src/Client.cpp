@@ -32,7 +32,7 @@ static bool pause = false;
 static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
-static const char* scenes[2] = { "3rd Person Tyra", "Baby Maze" };
+static const char* scenes[3] = { "3rd Person Tyra", "Baby Maze", "Backpack"};
 static bool keyHeld = false;
 static int direction = -1;
 static glm::mat4 currRotationUpdate = glm::mat4(1);
@@ -134,7 +134,7 @@ bool Client::initializeClient() {
     maze = new Model("../../objects/maze/mazeColorful.obj");
     maze->moveGlobal(glm::vec3(0, 0, 0));
     //tyra->moveLocal(glm::vec3(75, 2, -5));
-   
+
     //hard coded for now
     players[0] = tyra;
     players[1] = teapot;
@@ -150,47 +150,55 @@ bool Client::initializeClient() {
  * Display objects
 **/
 void Client::displayCallback() {
-    Camera* tempCam;
+    Camera* currCam;
     if (isThirdPersonCam) {
-        tempCam = thirdPersonCamera;
+        currCam = thirdPersonCamera;
     }
     else {
-        tempCam = camera;
+        currCam = camera;
     }
     //glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // activate the shader program and send some values
     glUseProgram(shader);
-    glUniform3fv(glGetUniformLocation(shader, "eyePos"), 1, glm::value_ptr(tempCam->pos));
+    glUniform3fv(glGetUniformLocation(shader, "eyePos"), 1, glm::value_ptr(currCam->pos));
+    glUniform1i(glGetUniformLocation(shader, "lightCount"), lightCount);
+    glUniform4fv(glGetUniformLocation(shader, "lightPosn"), lightCount, (float*)lightPosn.data());
+    glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
+    glUseProgram(0);
 
     switch (select) {
     case 0:
+        glUseProgram(shader);
         glUniform1i(glGetUniformLocation(shader, "lightCount"), lightCount);
         glUniform4fv(glGetUniformLocation(shader, "lightPosn"), lightCount, (float*)lightPosn.data());
         glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
         glUseProgram(0);
 
         for (auto character : players) {
-            character->draw(tempCam->viewProjMat, shader);
+            character->draw(currCam->viewProjMat, shader);
         }
 
-        ground->draw(tempCam->viewProjMat, shader);
+        ground->draw(currCam->viewProjMat, shader);
 
         break;
 
     case 1:
         //ourModel->draw(tempCam->viewProjMat, shader);
-        maze->draw(tempCam->viewProjMat, shader);
-        tyra->draw(tempCam->viewProjMat, shader);
+        maze->draw(currCam->viewProjMat, shader);
+        tyra->draw(currCam->viewProjMat, shader);
         break;
+
+    case 2:
+        backpack->draw(currCam->viewProjMat, shader);
     }
 
     //draw skybox last for efficiency
     glUseProgram(skyboxShader);
     glUniform1i(glGetUniformLocation(skyboxShader, "skybox"), 0);
     //drop right column
-    glm::mat4 viewNoTranslate = glm::mat4(glm::mat3(tempCam->view));
-    skybox->draw(tempCam->projection* viewNoTranslate, skyboxShader);
+    glm::mat4 viewNoTranslate = glm::mat4(glm::mat3(currCam->view));
+    skybox->draw(currCam->projection* viewNoTranslate, skyboxShader);
 }
 
 /**
@@ -247,7 +255,7 @@ void Client::idleCallback() {
                     //camera->move(glm::vec3(0, 0, -0.5));
                 }
             }
-      
+
         }
     }
 }
@@ -267,7 +275,7 @@ void Client::cleanup() {
     delete backpack;
     delete maze;
     delete skybox;
-    
+
 }
 
 /**
@@ -331,7 +339,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
             float playerSpinDegree = (float)(thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
             currRotationUpdate = glm::rotate(glm::radians(playerSpinDegree), glm::vec3(0.0f, 1.0f, 0.0f));
             //thirdPersonCamera->pitch((float)pitchAngle);
-          
+
             prevXPos = xPos;
             prevYPos = yPos;
         }
