@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/include/PrimitiveMesh.h"
 #include <string>
+#include <algorithm>  //for std::generate_n
 
 
 namespace GraphicsUtil {
@@ -9,5 +10,5 @@ namespace GraphicsUtil {
 
 // Generic Util functions
 namespace GeneralUtil {
-	//std::string generateRandomString(int len);
+	std::string generateRandomString(int len);
 }
