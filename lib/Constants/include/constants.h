@@ -9,6 +9,10 @@ struct MovementState {
 	bool held;
 };
 
+struct RotationState {
+	glm::mat4 rotationalMatrix;
+};
+
 struct PlayerState {
 	glm::mat4 model = glm::mat4(1);
 	bool alive = 1;

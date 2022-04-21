@@ -12,6 +12,7 @@ enum PacketClasses {
 	STATE,
 	MOVE,
 	GAME_STATE,
+	ROTATE,
 };
 
 enum PacketTypes {
@@ -39,6 +40,12 @@ struct MovePacket {
 	ushort packet_class = MOVE;
 	ushort packet_type;
 	MovementState state;
+};
+
+struct RotatePacket {
+	ushort packet_class = ROTATE;
+	ushort packet_type;
+	RotationState state;
 };
 
 

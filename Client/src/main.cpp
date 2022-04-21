@@ -126,10 +126,7 @@ int main(int argc, char** argv) {
         Client::GUI();
         /////////////////////////////////IMGUI STUFF IGNORE//////////////////////////////////////////////////////////
 
-        client->update(Client::getMovementState());
-
-        //inefficient
-        Client::setmy_id(client->getPlayer_id());
+        client->update(Client::getMovementState(), Client::getRotationState());
 
         // Rendering
         ImGui::Render();
@@ -140,6 +137,7 @@ int main(int argc, char** argv) {
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
+
     }
 
     // Cleanup

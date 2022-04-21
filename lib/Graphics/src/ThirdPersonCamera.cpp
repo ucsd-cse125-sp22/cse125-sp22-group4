@@ -21,6 +21,18 @@ void ThirdPersonCamera::reset() {
 	aspectRatio = 16.0f / 9.0f;
 }
 
+//TODO figure out something better
+void ThirdPersonCamera::updatePos() {
+	auto& playerModel = player->getModel();
+	glm::vec4 playerPos = playerModel[3];
+	glm::vec3 origPos = pos;
+	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 3, 8)) * glm::inverse(playerModel) * playerPos);
+	//moveable Y position
+	pos[1] = origPos[1];
+	lookAt = glm::vec3(playerPos);
+	upVec = glm::vec3(0, 1, 0);
+}
+
 void ThirdPersonCamera::translateLeft(float amount) {
 	glm::vec3 cameraZ = normalize(pos - lookAt);
 	glm::vec3 cameraX = normalize(cross(upVec, cameraZ));

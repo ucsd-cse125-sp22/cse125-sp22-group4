@@ -18,5 +18,6 @@ public:
     void translateRight(float amount);
     void translateForward(float amount);
     void translateBackward(float amount);
+    void updatePos();
 };
 #endif // !THIRD_PERSON_CAMERA_H

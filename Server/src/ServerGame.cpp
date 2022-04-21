@@ -84,6 +84,17 @@ void ServerGame::receiveFromClients()
             //replicateGameState();
             break;
         }
+        case ROTATE:
+        {
+            RotatePacket* pack = (RotatePacket*)malloc(sizeof(RotatePacket));
+            memcpy(pack, &network_data[i], sizeof(RotatePacket));
+            handleRotatePacket(client_id, pack);
+
+            i += sizeof(RotatePacket);
+            free(pack);
+
+            break;
+        }
         default:
             printf("error in packet types\n");
             break;
@@ -116,6 +127,16 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
 		}
     }
     }
+}
+
+//multiply the rotational matrix from client to the actual model
+void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
+    PlayerState state = player_states[client_id];
+    if (!state.alive) {
+        return;
+    }
+    state.model = state.model * packet->state.rotationalMatrix;
+    player_states[client_id] = state;
 }
 
 //Update player_state from move packet.

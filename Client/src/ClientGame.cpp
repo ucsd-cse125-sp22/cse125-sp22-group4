@@ -31,6 +31,19 @@ void ClientGame::sendActionPackets(MovementState s)
     free(packet_bytes);
 }
 
+void ClientGame::sendRotationPackets(RotationState s) {
+    const unsigned int packet_size = sizeof(RotatePacket);
+    RotatePacket packet;
+    packet.packet_type = ACTION;
+    packet.state = s;
+
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+    NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
+    free(packet_bytes);
+
+    Client::resetRotUpdate();
+}
+
 void ClientGame::handleSimplePacket(SimplePacket s) {
     switch (s.packet_type) {
     case INIT_CONNECTION:
@@ -38,16 +51,19 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
         player_id = (unsigned int) s.data;
         loaded = true; // TODO: Figure out if this is the right place to set loaded=True.
         std::cout << "My player id is " << player_id << std::endl;
+        Client::setPlayerfromID(player_id);
         break;
     }
     }
 }
 
-void ClientGame::update(MovementState s)
+void ClientGame::update(MovementState s, RotationState r)
 {
     // Don't send action events to server if client is not fully loaded
-    if (loaded)
+    if (loaded) {
         sendActionPackets(s);
+        sendRotationPackets(r);
+    }
 
     SimplePacket packet;
     int data_length = network->receivePackets(network_data);
@@ -69,6 +85,7 @@ void ClientGame::update(MovementState s)
 				memcpy(x, &network_data[i], sizeof(SimplePacket));
                 handleSimplePacket(*x);
                 sendActionPackets(s);
+                sendRotationPackets(r);
 
                 i += sizeof(SimplePacket);
                 free(x);
@@ -80,6 +97,7 @@ void ClientGame::update(MovementState s)
                 memcpy(packet, &network_data[i], sizeof(GameStatePacket));
 
                 updateModels(packet->player_states);
+                Client::updateCam();
 
                 //printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
 
@@ -113,5 +131,6 @@ void ClientGame::setPlayers(Model** p) {
 }
 
 unsigned int ClientGame::getPlayer_id() {
+    printf("got player id: %d\n", player_id);
     return player_id;
 }

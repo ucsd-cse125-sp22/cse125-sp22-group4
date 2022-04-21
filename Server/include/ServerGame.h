@@ -19,6 +19,7 @@ public:
     void receiveFromClients();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
+    void handleRotatePacket(int client_id, RotatePacket* s);
     void replicateGameState();
 
 private:

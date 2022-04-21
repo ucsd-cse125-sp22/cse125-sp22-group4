@@ -18,11 +18,12 @@ public:
     ClientNetwork* network;
 
     void sendActionPackets(MovementState s);
+    void sendRotationPackets(RotationState s);
     void handleSimplePacket(SimplePacket s);
 
     char network_data[MAX_PACKET_SIZE];
 
-    void update(MovementState s);
+    void update(MovementState s, RotationState r);
 
     //for debugging move elsewhere later
     void printMat4(glm::mat4 mat);

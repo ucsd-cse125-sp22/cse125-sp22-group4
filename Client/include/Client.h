@@ -32,9 +32,13 @@ namespace Client {
     void GUI();
 
     MovementState getMovementState();
+    RotationState getRotationState();
     Model** getPlayers();
 
-    void setmy_id(unsigned int id);
+    void resetRotUpdate();
+    void setPlayerfromID(unsigned int id);
+
+    void updateCam();
 };
 
 #endif // !CLIENT_H
