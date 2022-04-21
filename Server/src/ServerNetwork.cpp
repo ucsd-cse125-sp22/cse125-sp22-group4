@@ -1,6 +1,7 @@
 //#include "stdafx.h" 
 #include "ServerNetwork.h"
 #include "Network/include/NetworkData.h"
+#include <iostream>
 
 ServerNetwork::ServerNetwork(void)
 {
@@ -100,36 +101,38 @@ bool ServerNetwork::acceptNewClient(unsigned int& id)
         setsockopt(ClientSocket, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value));
 
         // insert new client into session id table
-        sessions.insert(pair<unsigned int, SOCKET>(id, ClientSocket));
+        //sessions.insert(pair<unsigned int, SOCKET>(id, ClientSocket));
 
+        struct PlayerSession session = {
+            id,
+            ClientSocket,
+            SESSION_CONNECTED,
+        };
+
+        sessions.push_back(session);
         return true;
     }
 
     return false;
 }
 
+
 // receive incoming data
-int ServerNetwork::receiveData(unsigned int client_id, char* recvbuf)
+int ServerNetwork::receiveData(PlayerSession& session, char* recvbuf)
 {
-    if (sessions.find(client_id) != sessions.end())
-    {
-        SOCKET currentSocket = sessions[client_id];
-        iResult = NetworkServices::receiveMessage(currentSocket, recvbuf, MAX_PACKET_SIZE);
-        if (iResult == 0)
-        {
-            printf("Connection closed\n");
-            closesocket(currentSocket);
-        }
-        return iResult;
+    iResult = NetworkServices::receiveMessage(session.socket, recvbuf, MAX_PACKET_SIZE);
+    if (iResult == 0) {
+        session.status = SESSION_DISCONNECTED;
+    } else {
+        session.status = SESSION_CONNECTED;
     }
-    return 0;
+    return iResult;
 }
 
 int ServerNetwork::sendToSocket(SOCKET socket, char* packets, int totalSize) {
     int iSendResult;
     iSendResult = NetworkServices::sendMessage(socket, packets, totalSize);
     if (iSendResult == SOCKET_ERROR) {
-        printf("send failed with error: %d\n", WSAGetLastError());
         closesocket(socket);
     }
     return iSendResult;
@@ -138,13 +141,13 @@ int ServerNetwork::sendToSocket(SOCKET socket, char* packets, int totalSize) {
 // send data to all clients
 void ServerNetwork::sendToAll(char* packets, int totalSize)
 {
-    SOCKET currentSocket;
-    std::map<unsigned int, SOCKET>::iterator iter;
     int iSendResult;
 
-    for (iter = sessions.begin(); iter != sessions.end(); iter++)
+    for (PlayerSession& session: sessions)
     {
-        currentSocket = iter->second;
-        sendToSocket(currentSocket, packets, totalSize);
+        int result = sendToSocket(session.socket, packets, totalSize);
+        if (result == SOCKET_ERROR) {
+            session.status = SESSION_DISCONNECTED;
+        }
     }
 }

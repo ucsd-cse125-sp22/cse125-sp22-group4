@@ -51,10 +51,10 @@ void ServerGame::receiveFromClients()
     // go through all clients
     std::map<unsigned int, SOCKET>::iterator iter;
 
-    for (iter = network->sessions.begin(); iter != network->sessions.end(); iter++)
-    {
-        unsigned int client_id = iter->first;
-        int data_length = network->receiveData(client_id, network_data);
+
+    for (PlayerSession& session:network->sessions){
+        unsigned int client_id = session.id;
+        int data_length = network->receiveData(session, network_data);
 
         if (data_length <= 0)
             continue;
@@ -65,7 +65,7 @@ void ServerGame::receiveFromClients()
         case SIMPLE: {
             SimplePacket* pack = (SimplePacket*)malloc(sizeof(SimplePacket));
             memcpy(pack, &network_data[i], sizeof(SimplePacket));
-            handleSimplePacket(client_id, pack);
+            handleSimplePacket(session, pack);
             i += sizeof(SimplePacket);
             free(pack);
             break;
@@ -74,7 +74,7 @@ void ServerGame::receiveFromClients()
         {
             MovePacket* pack = (MovePacket*)malloc(sizeof(MovePacket));
             memcpy(pack, &network_data[i], sizeof(MovePacket));
-            handleMovePacket(client_id, pack);
+            handleMovePacket(session, pack);
 
             i += sizeof(MovePacket);
             free(pack);
@@ -88,7 +88,7 @@ void ServerGame::receiveFromClients()
         {
             RotatePacket* pack = (RotatePacket*)malloc(sizeof(RotatePacket));
             memcpy(pack, &network_data[i], sizeof(RotatePacket));
-            handleRotatePacket(client_id, pack);
+            handleRotatePacket(session, pack);
 
             i += sizeof(RotatePacket);
             free(pack);
@@ -103,34 +103,25 @@ void ServerGame::receiveFromClients()
     // Replicate game state when everything is processed in this frame.
 }
 
-//method to translate the model matrix
-// TODO: Make use of graphics library instead. Have an object wrap the player's positions
-// and use methods to manipulate.
-void moveLocal(glm::mat4& model, const glm::vec3& v) {
-    model = model * glm::translate(glm::mat4(1), v);
-}
 
-void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
+void ServerGame::handleSimplePacket(PlayerSession& session, SimplePacket* packet) {
     switch (packet->packet_type) {
     case INIT_CONNECTION:
     {
-		std::map<unsigned int, SOCKET>::iterator iter = network->sessions.find(client_id);
-		if (iter != network->sessions.end()) {
-			SOCKET player_socket = iter->second;
-            SimplePacket id_packet;
-            id_packet.packet_type = INIT_CONNECTION;
+        SimplePacket id_packet;
+        id_packet.packet_type = INIT_CONNECTION;
 
-            // Note: Cast from uint to char (should be safe, assuming < 16 players...)
-            id_packet.data = (char)iter->first;
-            char* packet_bytes = packet_to_bytes(&id_packet, sizeof(id_packet));
-            network->sendToSocket(player_socket, packet_bytes, sizeof(id_packet));
-		}
+        // Note: Cast from uint to char (should be safe, assuming < 16 players...)
+        id_packet.data = (char)session.id;
+        char* packet_bytes = packet_to_bytes(&id_packet, sizeof(id_packet));
+        network->sendToSocket(session.socket, packet_bytes, sizeof(id_packet));
     }
     }
 }
 
 //multiply the rotational matrix from client to the actual model
-void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
+void ServerGame::handleRotatePacket(PlayerSession& session, RotatePacket* packet) {
+    unsigned int client_id = session.id;
     PlayerState state = player_states[client_id];
     if (!state.alive) {
         return;
@@ -140,7 +131,8 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
 }
 
 //Update player_state from move packet.
-void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
+void ServerGame::handleMovePacket(PlayerSession& session, MovePacket* packet) {
+    unsigned int client_id = session.id;
     PlayerState state = player_states[client_id];
     if (!state.alive) {
         return;
@@ -149,22 +141,22 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     switch (packet->state.dir) {
     case LEFT:
     {
-        moveLocal(state.model, glm::vec3(-0.2, 0, 0));
+        GraphicsUtil::moveLocal(state.model, glm::vec3(-0.2, 0, 0));
         break;
     }
     case RIGHT:
     {
-        moveLocal(state.model, glm::vec3(0.2, 0, 0));
+        GraphicsUtil::moveLocal(state.model, glm::vec3(0.2, 0, 0));
         break;
     }
     case BACK:
     {
-        moveLocal(state.model, glm::vec3(0, 0, 0.2));
+        GraphicsUtil::moveLocal(state.model, glm::vec3(0, 0, 0.2));
         break;
     }
     case FORWARD:
     {
-        moveLocal(state.model, glm::vec3(0, 0, -0.2));
+        GraphicsUtil::moveLocal(state.model, glm::vec3(0, 0, -0.2));
         break;
     }
     }

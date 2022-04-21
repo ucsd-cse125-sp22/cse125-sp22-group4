@@ -2,7 +2,8 @@
 #include "ServerNetwork.h"
 #include "Network/include/Packets.h"
 #include "Constants/include/constants.h"
-#include "Graphics/include/PrimitiveMesh.h"
+#include "Util.h"
+
 
 // Microseconds / Frames per second
 #define FPS_MAX 1e6/60.0
@@ -17,9 +18,9 @@ public:
 
     void update();
     void receiveFromClients();
-    void handleMovePacket(int client_id, MovePacket* s);
-    void handleSimplePacket(int client_id, SimplePacket* s);
-    void handleRotatePacket(int client_id, RotatePacket* s);
+    void handleMovePacket(PlayerSession& session, MovePacket* s);
+    void handleSimplePacket(PlayerSession& session, SimplePacket* s);
+    void handleRotatePacket(PlayerSession& session, RotatePacket* s);
     void replicateGameState();
 
 private:
