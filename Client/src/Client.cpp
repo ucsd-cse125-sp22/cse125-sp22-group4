@@ -166,6 +166,7 @@ void Client::displayCallback() {
     case 1:
         //ourModel->draw(tempCam->viewProjMat, shader);
         babyMaze->draw(tempCam->viewProjMat, shader);
+        tyra->draw(tempCam->viewProjMat, shader);
         break;
     }
 }
@@ -303,7 +304,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
             float playerSpinDegree = (float)(thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
             currRotationUpdate = glm::rotate(glm::radians(playerSpinDegree), glm::vec3(0.0f, 1.0f, 0.0f));
             thirdPersonCamera->pitch((float)pitchAngle);
-
+          
             prevXPos = xPos;
             prevYPos = yPos;
         }
