@@ -11,10 +11,6 @@ private:
 	bool obstacle;
 	double currPlayerXLoc;
 	double currPlayerZLoc;
-    bool headingN = (turn >= -90 && turn <= 90) || turn <= -270 || turn >= 270;
-    bool headingE = (turn >= 0 && turn <= 180) || (turn <= -180);
-    bool headingS = (turn >= 90 && turn <= 270) || (turn <= -90 && turn >= -270);
-    bool headingW = (turn >= 180 && turn <= 360) || (turn <= 0 && turn >= -180);
     double modelHalfWidth = .1; // just approximating
     double pi = 2 * acos(0.0);
  
