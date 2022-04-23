@@ -7,6 +7,7 @@ add_library(Graphics STATIC
     src/TexturedMesh.cpp
     src/PrimitiveMesh.cpp
     src/ThirdPersonCamera.cpp
+    src/Maze.cpp
 )
 
 target_include_directories(Graphics PRIVATE
@@ -25,6 +26,7 @@ target_sources(Graphics PRIVATE
     include/PrimitiveMesh.h
     include/GraphicObject.h
     include/ThirdPersonCamera.h
+    include/Maze.h
 )
 
 target_link_libraries(Graphics

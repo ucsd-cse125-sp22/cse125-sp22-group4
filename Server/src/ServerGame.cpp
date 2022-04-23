@@ -12,6 +12,8 @@ ServerGame::ServerGame(void)
     // set up the server network to listen 
     network = new ServerNetwork();
     start_time = timer.now();
+
+    maze = new Maze();
 }
 
 void ServerGame::update()

@@ -3,6 +3,7 @@
 #include "Network/include/Packets.h"
 #include "Constants/include/constants.h"
 #include "Graphics/include/PrimitiveMesh.h"
+#include "Graphics/include/Maze.h"
 
 // Microseconds / Frames per second
 #define FPS_MAX 1e6/60.0
@@ -26,6 +27,7 @@ private:
     // IDs for the clients connecting for table in ServerNetwork 
     static unsigned int client_id;
 
+    Maze* maze;
 
     // The ServerNetwork object 
     ServerNetwork* network;
