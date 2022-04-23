@@ -14,7 +14,8 @@ ThirdPersonCamera::ThirdPersonCamera(GraphicObject* _player) {
 void ThirdPersonCamera::reset() {
     auto& playerModel = player->getModel();
 	glm::vec4 playerPos = playerModel[3];
-	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 3, 8)) * glm::inverse(playerModel) * playerPos);
+	//pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 3, 8)) * glm::inverse(playerModel) * playerPos);
+	pos = glm::vec3(playerPos) + glm::vec3(0, 8, 2);
 	lookAt = glm::vec3(playerPos);
 	upVec = glm::vec3(0, 1, 0);
 	FOV = 60.0f;

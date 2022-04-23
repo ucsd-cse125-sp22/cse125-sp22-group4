@@ -176,6 +176,7 @@ void Client::displayCallback() {
 **/
 void Client::idleCallback() {
     if (isThirdPersonCam) {
+        thirdPersonCamera->reset();
         thirdPersonCamera->update();
     }
     else {
@@ -303,7 +304,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
             //player->spin((float) (thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle));
             float playerSpinDegree = (float)(thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
             currRotationUpdate = glm::rotate(glm::radians(playerSpinDegree), glm::vec3(0.0f, 1.0f, 0.0f));
-            thirdPersonCamera->pitch((float)pitchAngle);
+            //thirdPersonCamera->pitch((float)pitchAngle);
           
             prevXPos = xPos;
             prevYPos = yPos;
