@@ -20,7 +20,7 @@ static Model* tyra;
 static Model* tyra2;
 static Model* player;
 static Model* backpack;
-static Model* babyMaze;
+static Model* maze;
 static Model* players[PLAYER_NUM];
 
 // state variables
@@ -110,9 +110,9 @@ bool Client::initializeClient() {
     camera = new Camera();
 
     // initialize light sources
-    lightCount = 2;
-    lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1} };
-    lightColorn = { {0.9, 0.6, 0, 1}, {0, 0.6, 0.9, 1} };
+    lightCount = 3;
+    lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {155, 2, -5, 1} };
+    lightColorn = { {0.9, 0.6, 0, 1}, {0, 0.6, 0.9, 1}, {0,0.6,0,1} };
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -126,11 +126,14 @@ bool Client::initializeClient() {
     tyra = new Model("../../objects/tyra.obj");
     tyra->scale(glm::vec3(1.5));
     tyra->moveGlobal(glm::vec3(0, -0.1, 0));
+    //tyra->moveGlobal(glm::vec3(75, 2, -5));
     tyra2 = new Model("../../objects/tyra.obj");
     tyra2->moveGlobal(glm::vec3(2, -0.1, 0));
+    //tyra2->moveGlobal(glm::vec3(75, 2, -5));
     backpack = new Model("../../objects/backpack/backpack.obj");
-    babyMaze = new Model("../../objects/baby_maze/box666.obj");
-    babyMaze->moveLocal(glm::vec3(0, 0, 5));
+    maze = new Model("../../objects/maze/maze3.obj");
+    maze->moveGlobal(glm::vec3(0, 0, 0));
+    //tyra->moveLocal(glm::vec3(75, 2, -5));
    
     //hard coded for now
     players[0] = tyra;
@@ -177,7 +180,7 @@ void Client::displayCallback() {
 
     case 1:
         //ourModel->draw(tempCam->viewProjMat, shader);
-        babyMaze->draw(tempCam->viewProjMat, shader);
+        maze->draw(tempCam->viewProjMat, shader);
         tyra->draw(tempCam->viewProjMat, shader);
         break;
     }
@@ -259,7 +262,7 @@ void Client::cleanup() {
     delete tyra;
     delete ground;
     delete backpack;
-    delete babyMaze;
+    delete maze;
     delete skybox;
     
 }
