@@ -8,6 +8,7 @@ add_library(Graphics STATIC
     src/PrimitiveMesh.cpp
     src/ThirdPersonCamera.cpp
     src/Maze.cpp
+    src/Skybox.cpp
 )
 
 target_include_directories(Graphics PRIVATE
@@ -27,6 +28,7 @@ target_sources(Graphics PRIVATE
     include/GraphicObject.h
     include/ThirdPersonCamera.h
     include/Maze.h
+    include/Skybox.h
 )
 
 target_link_libraries(Graphics
