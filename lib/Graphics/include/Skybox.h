@@ -10,8 +10,6 @@
 class Skybox{
 private:
     unsigned int skyboxVAO, skyboxVBO;
-    glm::mat4 model;
-
     unsigned int id;
 
 public:

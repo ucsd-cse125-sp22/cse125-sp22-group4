@@ -2,10 +2,8 @@
 
 Skybox::Skybox() {
 
-	model = glm::mat4(50);
-
     float skyboxVertices[] = {
-        // positions          
+        // positions, set big to avoid camera clipping
         -500.0f,  500.0f, -500.0f,
         -500.0f, -500.0f, -500.0f,
          500.0f, -500.0f, -500.0f,
@@ -49,8 +47,6 @@ Skybox::Skybox() {
          500.0f, -500.0f,  500.0f
     };
 
-    // skybox VAO
-    
     glGenVertexArrays(1, &skyboxVAO);
     glGenBuffers(1, &skyboxVBO);
     glBindVertexArray(skyboxVAO);
@@ -59,6 +55,7 @@ Skybox::Skybox() {
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
+    //TODO maybe add function to read different skyboxes
     std::vector<std::string> faces =
     {
         "../../skybox/right.jpg",
@@ -84,9 +81,6 @@ void Skybox::draw(const glm::mat4& viewProj, GLuint shader)
     glDepthFunc(GL_LEQUAL);
 
 	glUseProgram(shader);
-
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_FRONT);
 	glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProj));
 
 	// Bind the VAO

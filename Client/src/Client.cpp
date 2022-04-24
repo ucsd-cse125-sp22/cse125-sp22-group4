@@ -182,10 +182,9 @@ void Client::displayCallback() {
         break;
     }
 
-    //draw skybox last
+    //draw skybox last for efficiency
     glUseProgram(skyboxShader);
     skybox->draw(tempCam->viewProjMat, skyboxShader);
-    //glUseProgram(0);
 }
 
 /**
