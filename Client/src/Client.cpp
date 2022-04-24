@@ -112,7 +112,7 @@ bool Client::initializeClient() {
     // initialize light sources
     lightCount = 3;
     lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {155, 2, -5, 1} };
-    lightColorn = { {0.9, 0.6, 0, 1}, {0, 0.6, 0.9, 1}, {0,0.6,0,1} };
+    lightColorn = { {0.9, 0.6, 0, 1}, {0, 0.6, 0.9, 1}, {0.6,0.6,0.6,1} };
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));

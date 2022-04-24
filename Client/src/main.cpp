@@ -82,13 +82,13 @@ int main(int argc, char** argv) {
     bool show_demo_window = false;
     client = new ClientGame();
 
+    Client::setupGLSettings();
+    Client::setupCallbacks(window);
+
     if (!Client::initializeClient()) {
         spdlog::error("Client initialization failed!");
         exit(EXIT_FAILURE);
     }
-
-    Client::setupGLSettings();
-    Client::setupCallbacks(window);
 
     client->setPlayers(Client::getPlayers());
 

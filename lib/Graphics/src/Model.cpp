@@ -62,6 +62,7 @@ void Model::setModel(const glm::mat4& m) {
 
 void Model::loadModel(std::string const& path) {
     spdlog::info("Read file {} via Assimp...", path);
+    stbi_set_flip_vertically_on_load(true);
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | 
                                                    aiProcess_GenSmoothNormals |
@@ -80,6 +81,7 @@ void Model::loadModel(std::string const& path) {
 
     // process Assimp's root node recursively
     processNode(scene->mRootNode, scene);
+    stbi_set_flip_vertically_on_load(false);
 }
 
 /**
