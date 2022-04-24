@@ -8,6 +8,7 @@
 #include "Graphics/include/Shader.h"
 #include "Graphics/include/ObjectLoader.h"
 #include "Graphics/include/ThirdPersonCamera.h"
+#include "Graphics/include/Skybox.h"
 
 #include "Constants/include/constants.h"
 

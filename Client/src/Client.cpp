@@ -2,11 +2,15 @@
 
 // shader, camera and light
 static GLuint shader;
+static GLuint skyboxShader;
 static Camera* camera;
 static ThirdPersonCamera* thirdPersonCamera;
 static int lightCount;
 static std::vector<glm::vec4> lightPosn;
 static std::vector<glm::vec4> lightColorn;
+
+//skybox
+static Skybox* skybox;
 
 // objects
 static Cube* ground;
@@ -92,8 +96,13 @@ bool Client::initializeClient() {
     //shader = Shader::loadShaders("shaders/basicShader.vert", "shaders/basicShader.frag");
     //shader = Shader::loadShaders("shaders/normalShader.vert", "shaders/normalShader.frag");
     shader = Shader::loadShaders("../../shaders/shader.vert", "../../shaders/shader.frag");
+    skyboxShader = Shader::loadShaders("../../shaders/skyboxShader.vert", "../../shaders/skyboxShader.frag");
     if (!shader) {
         spdlog::error("Failed to initialize shader programs.");
+        return false;
+    }
+    if (!skyboxShader) {
+        spdlog::error("Failed to initialize skyboxShader programs.");
         return false;
     }
 
@@ -128,6 +137,8 @@ bool Client::initializeClient() {
     players[1] = teapot;
     players[2] = bunny;
     players[3] = tyra2;
+
+    skybox = new Skybox();
 
     return true;
 }
@@ -170,6 +181,11 @@ void Client::displayCallback() {
         tyra->draw(tempCam->viewProjMat, shader);
         break;
     }
+
+    //draw skybox last
+    glUseProgram(skyboxShader);
+    skybox->draw(tempCam->viewProjMat, skyboxShader);
+    //glUseProgram(0);
 }
 
 /**
@@ -236,6 +252,7 @@ void Client::idleCallback() {
 **/
 void Client::cleanup() {
     glDeleteProgram(shader);
+    glDeleteProgram(skyboxShader);
     delete camera;
     delete thirdPersonCamera;
     delete teapot;
@@ -244,6 +261,7 @@ void Client::cleanup() {
     delete ground;
     delete backpack;
     delete babyMaze;
+    delete skybox;
     
 }
 
@@ -441,19 +459,19 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_RIGHT:
-            tyra->moveLocal(glm::vec3(1.0f, 0.0f, 0.0f));
+            camera->move(glm::vec3(0.5, 0, 0));
             break;
 
         case GLFW_KEY_LEFT:
-            tyra->moveLocal(glm::vec3(-1.0f, 0.0f, 0.0f));
+            camera->move(glm::vec3(-0.5, 0, 0));
             break;
 
         case GLFW_KEY_UP:
-            tyra->moveLocal(glm::vec3(0.0f, 1.0f, 0.0f));
+            camera->move(glm::vec3(0, 0, -0.5));
             break;
 
         case GLFW_KEY_DOWN:
-            tyra->moveLocal(glm::vec3(0.0f, -1.0f, 0.0f));
+            camera->move(glm::vec3(0, 0, 0.5));
             break;
         }
     }
