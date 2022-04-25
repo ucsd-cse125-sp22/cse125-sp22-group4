@@ -187,7 +187,10 @@ void Client::displayCallback() {
 
     //draw skybox last for efficiency
     glUseProgram(skyboxShader);
-    skybox->draw(tempCam->viewProjMat, skyboxShader);
+    glUniform1i(glGetUniformLocation(skyboxShader, "skybox"), 0);
+    //drop right column
+    glm::mat4 viewNoTranslate = glm::mat4(glm::mat3(tempCam->view));
+    skybox->draw(tempCam->projection* viewNoTranslate, skyboxShader);
 }
 
 /**

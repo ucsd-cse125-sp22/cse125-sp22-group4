@@ -23,9 +23,9 @@ Camera::Camera(glm::vec3 _pos, glm::vec3 _lookAt, glm::vec3 _upVec, float _FOV, 
     defaultPos(_pos), defaultLookAt(_lookAt), defaultUpVec(_upVec),
     defaultFOV(_FOV), defaultAspectRatio(_aspectRatio) {
     // compute view projection matrix
-    glm::mat4 view = glm::lookAt(pos, lookAt, glm::normalize(upVec));
-    glm::mat4 project = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 1000.0f);
-    viewProjMat = project * view;
+    view = glm::lookAt(pos, lookAt, glm::normalize(upVec));
+    projection = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 1000.0f);
+    viewProjMat = projection * view;
 }
 
 /**
@@ -43,8 +43,9 @@ void Camera::reset() {
  * Update view projection matrix based on current parameter values
 **/
 void Camera::update() {
-    viewProjMat = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f) *
-        glm::lookAt(pos, lookAt, glm::normalize(upVec));
+    projection = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
+    view = glm::lookAt(pos, lookAt, glm::normalize(upVec));
+    viewProjMat = projection * view;
 }
 
 /**

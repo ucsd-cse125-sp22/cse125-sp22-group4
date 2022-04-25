@@ -21,6 +21,8 @@ public:
     float aspectRatio;
 
     glm::mat4 viewProjMat;
+    glm::mat4 view;
+    glm::mat4 projection;
 
     Camera();
     Camera(glm::vec3 _pos, glm::vec3 _lookAt, glm::vec3 _upVec, float _FOV, float _aspectRatio);
