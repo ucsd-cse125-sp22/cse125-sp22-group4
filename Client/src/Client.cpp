@@ -131,7 +131,7 @@ bool Client::initializeClient() {
     tyra2->moveGlobal(glm::vec3(2, -0.1, 0));
     //tyra2->moveGlobal(glm::vec3(75, 2, -5));
     backpack = new Model("../../objects/backpack/backpack.obj");
-    maze = new Model("../../objects/maze/maze3.obj");
+    maze = new Model("../../objects/maze/mazeColorful.obj");
     maze->moveGlobal(glm::vec3(0, 0, 0));
     //tyra->moveLocal(glm::vec3(75, 2, -5));
    
