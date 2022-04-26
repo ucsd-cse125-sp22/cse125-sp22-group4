@@ -4,6 +4,12 @@
 
 unsigned int ServerGame::client_id;
 
+
+void moveGlobal(glm::mat4& model, const glm::vec3& v) {
+    model = glm::translate(glm::mat4(1), v) * model;
+}
+
+
 ServerGame::ServerGame(void)
 {
     // id's to assign clients for our table
@@ -14,6 +20,9 @@ ServerGame::ServerGame(void)
     start_time = timer.now();
 
     maze = new Maze();
+    PlayerState state = player_states[client_id];
+    moveGlobal(state.model, glm::vec3(75, 2, -5));
+    player_states[client_id] = state;
 }
 
 void ServerGame::update()
@@ -23,6 +32,31 @@ void ServerGame::update()
     {
         printf("client %d has been connected to the server\n", client_id);
         client_id++;
+        PlayerState state = player_states[client_id];
+        switch (client_id) {
+        case 0:
+            //player 1 starting location
+            moveGlobal(state.model, glm::vec3(75, 2, -5));
+            break;
+
+        case 1:
+            // player 2 starting location
+            moveGlobal(state.model, glm::vec3(145, 2, -75));
+            //tyra->spin(90);
+            break;
+        case 2:
+            // player 3 starting location
+            moveGlobal(state.model, glm::vec3(75, 2, -145));
+            //tyra->spin(180);
+            break;
+        case 3:
+            // player 4 starting location
+            moveGlobal(state.model, glm::vec3(5, 2, -75));
+            //tyra->spin(270);
+            break;
+        }
+
+        player_states[client_id] = state;
     }
     // Receive from clients as fast as possible.
     receiveFromClients();
