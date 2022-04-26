@@ -112,6 +112,7 @@ void moveLocal(glm::mat4& model, const glm::vec3& v) {
     model = model * glm::translate(glm::mat4(1), v);
 }
 
+
 void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
     switch (packet->packet_type) {
     case INIT_CONNECTION:
@@ -139,6 +140,7 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     }
     state.model = state.model * packet->state.rotationalMatrix;
     player_states[client_id] = state;
+    maze->turn = packet->state.turn;
 }
 
 //Update player_state from move packet.
@@ -166,7 +168,9 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     }
     case FORWARD:
     {
-        moveLocal(state.model, glm::vec3(0, 0, -0.2));
+       // bool obstacle = maze->isObstacle(client_id, state.model[3][0], state.model[3][2]);
+        //if (!obstacle)
+            moveLocal(state.model, glm::vec3(0, 0, -0.2));
         break;
     }
     }
