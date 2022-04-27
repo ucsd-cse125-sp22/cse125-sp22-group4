@@ -56,9 +56,9 @@ void main() {
     vec3 pointDir;
     vec3 pointHal;
 
-    vec3 realNormal;
-    vec4 realDiffuse;
-    vec4 realSpecular;
+    vec3 realNormal = vec3(0);
+    vec4 realDiffuse = vec4(0);
+    vec4 realSpecular = vec4(0);
 
     switch (mode) {
     case 0:
