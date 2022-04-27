@@ -1,3 +1,6 @@
+file(GLOB_RECURSE SRC_SHADER
+    "./../../shaders/*"
+)
 add_library(Graphics STATIC
     src/Cube.cpp
     src/Model.cpp
@@ -9,7 +12,11 @@ add_library(Graphics STATIC
     src/ThirdPersonCamera.cpp
     src/Maze.cpp
     src/Skybox.cpp
+    ${SRC_SHADER}
 )
+
+#add filter named shaders in VS
+source_group("Shaders"            FILES ${SRC_SHADER})
 
 target_include_directories(Graphics PRIVATE
     include
