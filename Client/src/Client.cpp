@@ -126,14 +126,11 @@ bool Client::initializeClient() {
     tyra = new Model("../../objects/tyra.obj");
     tyra->scale(glm::vec3(1.5));
     tyra->moveGlobal(glm::vec3(0, -0.1, 0));
-    //tyra->moveGlobal(glm::vec3(75, 2, -5));
     tyra2 = new Model("../../objects/tyra.obj");
     tyra2->moveGlobal(glm::vec3(2, -0.1, 0));
-    //tyra2->moveGlobal(glm::vec3(75, 2, -5));
     backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/mazeTextured.obj");
     maze->moveGlobal(glm::vec3(0, 0, 0));
-    //tyra->moveLocal(glm::vec3(75, 2, -5));
 
     //hard coded for now
     players[0] = tyra;

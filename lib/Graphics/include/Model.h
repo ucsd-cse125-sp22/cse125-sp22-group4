@@ -9,7 +9,6 @@
 #include "assimp/scene.h"
 #include "assimp/Importer.hpp"
 #include "assimp/postprocess.h"
-#include "spdlog/spdlog.h"
 
 #include <string>
 #include <vector>

@@ -81,7 +81,6 @@ void Model::loadModel(std::string const& path) {
 
     // process Assimp's root node recursively
     processNode(scene->mRootNode, scene);
-    stbi_set_flip_vertically_on_load(false);
 }
 
 /**
@@ -190,10 +189,18 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
-    // 4. height maps
-    std::vector<Texture> heightMaps =
-        loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-    textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+    // get traditional Phong material data
+    aiColor3D ambient(0);
+    aiColor3D diffuse(0);
+    aiColor3D specular(0);
+    aiColor3D emission(0);
+    float shininess = 0;
+
+    material->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+    material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+    material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+    material->Get(AI_MATKEY_COLOR_EMISSIVE, emission);
+    material->Get(AI_MATKEY_SHININESS, shininess);
 
     // return a mesh object depending on have textures or not
     if (textures.size() != 0) {
@@ -207,7 +214,15 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
             normals.push_back(vertex.Normal);
         }
 
-        return new PrimitiveMesh(points, normals,indices);
+        PhongMaterial mat{
+            {ambient.r, ambient.g, ambient.b, 1},
+            {diffuse.r, diffuse.g, diffuse.b, 1},
+            {specular.r, specular.g, specular.b, 1},
+            {emission.r, emission.g, emission.b, 1},
+            shininess
+        };
+
+        return new PrimitiveMesh(points, normals, indices, mat);
     }
 }
 

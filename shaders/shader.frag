@@ -57,22 +57,30 @@ void main() {
     vec3 pointHal;
 
     vec3 realNormal = vec3(0);
+    vec4 realAmbient = vec4(0);
     vec4 realDiffuse = vec4(0);
     vec4 realSpecular = vec4(0);
+    vec4 realEmission = vec4(0);
+    float realShininess = 0;
 
     switch (mode) {
+    // phong
     case 0:
         realNormal = worldNormal;
+        realAmbient = ambient;
         realDiffuse = diffuse;
         realSpecular = specular;
+        realEmission = emission;
+        realShininess = shininess;
         break;
+    // textured
     case 1:
         vec3 normal = vec3(texture(texture_normal1, texCoords));
         normal = normal * 2.0 - 1.0;
         realNormal = normalize(TBN * normal);
-        //realNormal = worldNormal;
         realDiffuse = texture(texture_diffuse1, texCoords);
         realSpecular = texture(texture_specular1, texCoords);
+        realShininess = 1000;
         break;
     }
 
@@ -82,7 +90,7 @@ void main() {
             direction = normalize(lightPosn[i].xyz);
             halfi = normalize(direction + eyeDir);
             col = col + ComputeLight(direction, lightColorn[i], realNormal, halfi,
-                                    realDiffuse, realSpecular, shininess);
+                                    realDiffuse, realSpecular, realShininess);
 
         }
         // point light
@@ -91,9 +99,9 @@ void main() {
             pointDir = normalize(pointPos - worldPos);
             pointHal = normalize(pointDir + eyeDir);
             col = col + ComputeLight(pointDir, lightColorn[i], realNormal, pointHal,
-                                    realDiffuse, realSpecular, shininess);
+                                    realDiffuse, realSpecular, realShininess);
         }
     }
 
-    fragColor = col + ambient + emission;
+    fragColor = col + realAmbient + realEmission;
 }

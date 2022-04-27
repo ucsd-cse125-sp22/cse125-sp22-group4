@@ -10,6 +10,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/transform.hpp"
+#include "spdlog/spdlog.h"
 
 class GraphicObject {
 public:
