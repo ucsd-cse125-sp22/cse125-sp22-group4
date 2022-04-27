@@ -15,6 +15,7 @@ add_subdirectory(Client)
 add_subdirectory(lib/Network)
 add_subdirectory(lib/Graphics)
 add_subdirectory(lib/Constants)
+add_subdirectory(lib/Logic)
 
 # set startup project
 #set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Server)

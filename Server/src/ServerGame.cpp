@@ -20,9 +20,11 @@ ServerGame::ServerGame(void)
     start_time = timer.now();
 
     maze = new Maze();
+    /*
     PlayerState state = player_states[client_id];
     moveGlobal(state.model, glm::vec3(75, 2, -5));
     player_states[client_id] = state;
+    */
 }
 
 void ServerGame::update()
@@ -56,6 +58,7 @@ void ServerGame::update()
             break;
         }
 
+        // No buffer overflow will happen: acceptNewClient does a check
         player_states[client_id] = state;
     }
     // Receive from clients as fast as possible.

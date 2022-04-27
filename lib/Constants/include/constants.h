@@ -1,6 +1,7 @@
 #pragma once
 #include "Graphics/include/GraphicObject.h"
 #define PLAYER_NUM 4
+#define MAX_PACKET_SIZE 1000000
 
 enum Directions { FORWARD, BACK, LEFT, RIGHT };
 

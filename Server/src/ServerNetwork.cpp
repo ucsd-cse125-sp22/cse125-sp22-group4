@@ -1,6 +1,5 @@
 //#include "stdafx.h" 
 #include "ServerNetwork.h"
-#include "Network/include/NetworkData.h"
 
 ServerNetwork::ServerNetwork(void)
 {
@@ -90,6 +89,9 @@ ServerNetwork::ServerNetwork(void)
 // accept new connections
 bool ServerNetwork::acceptNewClient(unsigned int& id)
 {
+    if (id >= PLAYER_NUM) {
+        return false;
+    }
     // if client waiting, accept the connection and save the socket
     ClientSocket = accept(ListenSocket, NULL, NULL);
 

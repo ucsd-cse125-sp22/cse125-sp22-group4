@@ -1,6 +1,5 @@
 //#include "stdafx.h"
 #include "ClientNetwork.h"
-#include "Network/include/NetworkData.h"
 
 ClientNetwork::ClientNetwork(void) {
 
