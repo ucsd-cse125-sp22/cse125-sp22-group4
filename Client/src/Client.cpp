@@ -112,7 +112,7 @@ bool Client::initializeClient() {
     // initialize light sources
     lightCount = 3;
     lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {155, 2, -5, 1} };
-    lightColorn = { {0.9, 0.6, 0, 1}, {0, 0.6, 0.9, 1}, {0.6,0.6,0.6,1} };
+    lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {0.6,0.6,0.6,1} };
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -131,7 +131,7 @@ bool Client::initializeClient() {
     tyra2->moveGlobal(glm::vec3(2, -0.1, 0));
     //tyra2->moveGlobal(glm::vec3(75, 2, -5));
     backpack = new Model("../../objects/backpack/backpack.obj");
-    maze = new Model("../../objects/maze/mazeColorful.obj");
+    maze = new Model("../../objects/maze_textured/mazeTextured.obj");
     maze->moveGlobal(glm::vec3(0, 0, 0));
     //tyra->moveLocal(glm::vec3(75, 2, -5));
 
