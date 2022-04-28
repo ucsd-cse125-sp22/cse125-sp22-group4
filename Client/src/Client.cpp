@@ -204,7 +204,7 @@ void Client::idleCallback() {
         backpack->update();
     }
 
-    if (keyHeld) {
+    if (!isThirdPersonCam && keyHeld) {
         switch (direction) {
         case FORWARD:
             camera->move({ 0, 0, -0.5 });
@@ -300,7 +300,6 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
             double pitchAngle = -0.5 * (yPos - prevYPos);
             turn += 0.5 * (thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
             turn = turn % 360;
-            //player->spin((float) (thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle));
             float playerSpinDegree = 0.5 * (float)(thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
             currRotationUpdate = glm::rotate(glm::radians(playerSpinDegree), glm::vec3(0.0f, 1.0f, 0.0f));
             thirdPersonCamera->pitch((float)pitchAngle);
