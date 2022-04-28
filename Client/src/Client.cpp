@@ -93,8 +93,6 @@ void Client::setupGLSettings() {
 **/
 bool Client::initializeClient() {
     // initialize shader
-    //shader = Shader::loadShaders("shaders/basicShader.vert", "shaders/basicShader.frag");
-    //shader = Shader::loadShaders("shaders/normalShader.vert", "shaders/normalShader.frag");
     shader = Shader::loadShaders("../../shaders/shader.vert", "../../shaders/shader.frag");
     skyboxShader = Shader::loadShaders("../../shaders/skyboxShader.vert", "../../shaders/skyboxShader.frag");
     if (!shader) {
@@ -110,9 +108,9 @@ bool Client::initializeClient() {
     camera = new Camera();
 
     // initialize light sources
-    lightCount = 3;
-    lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {155, 2, -5, 1} };
-    lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {0.6,0.6,0.6,1} };
+    lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {1, 1, 1, 0} };
+    lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {0.5, 0.5, 0.5, 1} };
+    lightCount = lightPosn.size();
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -130,7 +128,7 @@ bool Client::initializeClient() {
     tyra2->moveGlobal(glm::vec3(2, -0.1, 0));
     backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/mazeTextured.obj");
-    maze->moveGlobal(glm::vec3(0, 0, 0));
+    maze->moveGlobal(glm::vec3(0, -3, 0));
 
     //hard coded for now
     players[0] = tyra;
@@ -147,13 +145,7 @@ bool Client::initializeClient() {
  * Display objects
 **/
 void Client::displayCallback() {
-    Camera* currCam;
-    if (isThirdPersonCam) {
-        currCam = thirdPersonCamera;
-    }
-    else {
-        currCam = camera;
-    }
+    Camera* currCam = isThirdPersonCam ? thirdPersonCamera : camera;
     //glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // activate the shader program and send some values
@@ -193,6 +185,7 @@ void Client::displayCallback() {
     //draw skybox last for efficiency
     glUseProgram(skyboxShader);
     glUniform1i(glGetUniformLocation(skyboxShader, "skybox"), 0);
+    glUseProgram(0);
     //drop right column
     glm::mat4 viewNoTranslate = glm::mat4(glm::mat3(currCam->view));
     skybox->draw(currCam->projection* viewNoTranslate, skyboxShader);
@@ -202,57 +195,32 @@ void Client::displayCallback() {
  * Update objects when idle
 **/
 void Client::idleCallback() {
-    if (isThirdPersonCam) {
-        thirdPersonCamera->reset();
-        thirdPersonCamera->update();
-    }
-    else {
-        camera->update();
-    }
+    Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
+    currCamera->update();
+
     if (!pause) {
         teapot->update();
         bunny->update();
         backpack->update();
-        if (keyHeld == true) {
-            switch (direction) {
-            //TODO third person movement not networked
-            case LEFT:
-                if (isThirdPersonCam) {
-                    //player->moveLocal(glm::vec3(-0.2, 0, 0));
-                    thirdPersonCamera->translateLeft(-0.2f);
-                }
-                else {
-                    //camera->move(glm::vec3(-0.5, 0, 0));
-                }
-                break;
-            case RIGHT:
-                if (isThirdPersonCam) {
-                    //player->moveLocal(glm::vec3(0.2, 0, 0));
-                    thirdPersonCamera->translateRight(-0.2f);
-                }
-                else {
-                    //camera->move(glm::vec3(0.5, 0, 0));
-                }
-                break;
-            case BACK:
-                if (isThirdPersonCam) {
-                    //player->moveLocal(glm::vec3(0, 0, 0.2));
-                    thirdPersonCamera->translateBackward(-0.2f);
-                }
-                else {
-                    //camera->move(glm::vec3(0, 0, 0.5));
-                }
-                break;
-            case FORWARD:
-                if (isThirdPersonCam) {
-                    //player->moveLocal(glm::vec3(0, 0, -0.2));
-                    thirdPersonCamera->translateForward(-0.2f);
-                }
-                else {
-                    //camera->move(glm::vec3(0, 0, -0.5));
-                }
-            }
+    }
 
+    if (keyHeld) {
+        switch (direction) {
+        case FORWARD:
+            camera->move({ 0, 0, -0.5 });
+            break;
+
+        case BACK:
+            camera->move({ 0, 0, 0.5 });
+            break;
+
+        case LEFT:
+            camera->move({ -0.5, 0, 0 });
+            break;
+
+        case RIGHT:
+            camera->move({ 0.5, 0, 0 });
+            break;
         }
     }
 }
@@ -272,7 +240,6 @@ void Client::cleanup() {
     delete backpack;
     delete maze;
     delete skybox;
-
 }
 
 /**
@@ -314,6 +281,7 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
     glfwGetFramebufferSize(window, &width, &height);
 #endif
     glViewport(0, 0, width, height);
+    camera->aspectRatio = float(width) / float(height);
     thirdPersonCamera->aspectRatio = float(width) / float(height);
 }
 
@@ -330,12 +298,12 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
         if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
             double yawAngle = -0.5 * (xPos - prevXPos);
             double pitchAngle = -0.5 * (yPos - prevYPos);
-            turn += (thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
+            turn += 0.5 * (thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
             turn = turn % 360;
             //player->spin((float) (thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle));
-            float playerSpinDegree = (float)(thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
+            float playerSpinDegree = 0.5 * (float)(thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
             currRotationUpdate = glm::rotate(glm::radians(playerSpinDegree), glm::vec3(0.0f, 1.0f, 0.0f));
-            //thirdPersonCamera->pitch((float)pitchAngle);
+            thirdPersonCamera->pitch((float)pitchAngle);
 
             prevXPos = xPos;
             prevYPos = yPos;
@@ -364,12 +332,12 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
 **/
 static void scrollCallback(GLFWwindow* window, double xMove, double yMove) {
     ImGui_ImplGlfw_ScrollCallback(window, xMove, yMove);
-    Camera* tempCam = isThirdPersonCam ? thirdPersonCamera : camera;
+    Camera* currCam = isThirdPersonCam ? thirdPersonCamera : camera;
     if (yMove > 0) {
-        tempCam->zoom(0.9f);
+        currCam->zoom(0.9f);
     }
     else if (yMove < 0) {
-        tempCam->zoom(1.1f);
+        currCam->zoom(1.1f);
     }
 }
 
@@ -403,6 +371,7 @@ static void mouseCallback(GLFWwindow* window, int button, int action, int mods) 
 **/
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
+    Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         switch (key) {
         case GLFW_KEY_ESCAPE:
@@ -414,12 +383,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_R:
-            if (isThirdPersonCam) {
-                thirdPersonCamera->reset();
-            }
-            else {
-                camera->reset();
-            }
+            currCamera->reset();
             break;
 
         case GLFW_KEY_W:
@@ -509,10 +473,6 @@ Model** Client::getPlayers() {
 
 void Client::resetRotUpdate() {
     currRotationUpdate = glm::mat4(1);
-}
-
-void Client::updateCam() {
-    thirdPersonCamera->updatePos();
 }
 
 void Client::setPlayerfromID(unsigned int id) {

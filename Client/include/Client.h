@@ -38,8 +38,6 @@ namespace Client {
 
     void resetRotUpdate();
     void setPlayerfromID(unsigned int id);
-
-    void updateCam();
 };
 
 #endif // !CLIENT_H

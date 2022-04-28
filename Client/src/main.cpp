@@ -101,6 +101,7 @@ int main(int argc, char** argv) {
         // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
         // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
         glfwPollEvents();
+        //glfwWaitEventsTimeout(0.007);
 
         /////////////////////////////////IMGUI STUFF IGNORE//////////////////////////////////////////////////////////
         // Start the Dear ImGui frame

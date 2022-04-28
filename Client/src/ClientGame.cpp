@@ -97,7 +97,6 @@ void ClientGame::update(MovementState s, RotationState r)
                 memcpy(packet, &network_data[i], sizeof(GameStatePacket));
 
                 updateModels(packet->player_states);
-                Client::updateCam();
 
                 //printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
 
