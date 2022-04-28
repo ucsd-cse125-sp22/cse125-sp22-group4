@@ -1,4 +1,4 @@
-# Blender MTL File: 'mazeTextured.blend'
+# Blender MTL File: 'MazeTextured.blend'
 # Material Count: 2
 
 newmtl Ground
@@ -10,9 +10,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Bump ground1_normal.jpg
 map_Kd ground1_diffuse.jpg
 map_Ks ground1_specular.jpg
-map_Bump ground1_normal.jpg
 
 newmtl Wall
 Ns 250.000000
@@ -23,6 +23,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
+map_Bump wall_normal.jpg
 map_Kd wall_diffuse.jpg
 map_Ks wall_specular.jpg
-map_Bump wall_normal.jpg

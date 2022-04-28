@@ -1,6 +1,6 @@
-# Blender v3.1.2 OBJ File: 'mazeTextured.blend'
+# Blender v3.1.2 OBJ File: 'MazeTextured.blend'
 # www.blender.org
-mtllib mazeTextured.mtl
+mtllib MazeTextured.mtl
 o Wall_Plane.106
 v 100.000000 9.999999 -150.000000
 v 110.000000 9.999999 -150.000000
