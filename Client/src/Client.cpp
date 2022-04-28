@@ -33,10 +33,14 @@ static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[3] = { "3rd Person Tyra", "Baby Maze", "Backpack"};
+
 static bool keyHeld = false;
 static int direction = -1;
+static bool keys[4];
+
 static glm::mat4 currRotationUpdate = glm::mat4(1);
 static int turn = 0;
+
 
 // callbacks
 static void resizeCallback(GLFWwindow* window, int width, int height);
@@ -371,6 +375,7 @@ static void mouseCallback(GLFWwindow* window, int button, int action, int mods) 
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     ImGui_ImplGlfw_KeyCallback(window, key, scancode, action, mods);
     Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
+
     if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         switch (key) {
         case GLFW_KEY_ESCAPE:
@@ -386,23 +391,23 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_W:
-            keyHeld = true;
+            keys[0] = 1;
             direction = FORWARD;
             break;
 
         case GLFW_KEY_S:
-            keyHeld = true;
+            keys[1] = 1;
             direction = BACK;
             break;
 
         case GLFW_KEY_A:
-            keyHeld = true;
             direction = LEFT;
+            keys[2] = 1;
             break;
 
         case GLFW_KEY_D:
-            keyHeld = true;
             direction = RIGHT;
+            keys[3] = 1;
             break;
 
         case GLFW_KEY_F:
@@ -448,8 +453,25 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
         }
     }
-    else if (action == GLFW_RELEASE)
-        keyHeld = false;
+    else if (action == GLFW_RELEASE) {
+        switch (key) {
+            case GLFW_KEY_W:
+                keys[0] = 0;
+                break;
+            case GLFW_KEY_S:
+                keys[1] = 0;
+                break;
+
+            case GLFW_KEY_A:
+                keys[2] = 0;
+                break;
+
+            case GLFW_KEY_D:
+                keys[3] = 0;
+                break;
+        }
+    }
+    keyHeld = keys[0] || keys[1] || keys[2] || keys[3];
 }
 
 MovementState Client::getMovementState() {

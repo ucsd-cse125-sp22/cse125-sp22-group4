@@ -6,7 +6,7 @@
 #include "Graphics/include/Maze.h"
 
 // Microseconds / Frames per second
-#define FPS_MAX 1e6/60.0
+#define FPS_MAX 1e6/75.0
 
 class ServerGame
 {
