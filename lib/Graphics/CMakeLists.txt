@@ -1,22 +1,16 @@
-file(GLOB_RECURSE SRC_SHADER
-    "./../../shaders/*"
-)
 add_library(Graphics STATIC
     src/Cube.cpp
+    src/Maze.cpp
     src/Model.cpp
     src/Shader.cpp
+    src/Skybox.cpp
     src/Camera.cpp
     src/ObjectLoader.cpp
     src/TexturedMesh.cpp
     src/PrimitiveMesh.cpp
     src/ThirdPersonCamera.cpp
-    src/Maze.cpp
-    src/Skybox.cpp
-    ${SRC_SHADER}
+    src/CollisionDetector.cpp
 )
-
-#add filter named shaders in VS
-source_group("Shaders"            FILES ${SRC_SHADER})
 
 target_include_directories(Graphics PRIVATE
     include
@@ -25,8 +19,10 @@ target_include_directories(Graphics PRIVATE
 # make header files visible in visual studio
 target_sources(Graphics PRIVATE
     include/Cube.h
+    include/Maze.h
     include/Model.h
     include/Shader.h
+    include/Skybox.h
     include/Camera.h
     include/ShaderUtil.h
     include/ObjectLoader.h
@@ -34,10 +30,19 @@ target_sources(Graphics PRIVATE
     include/PrimitiveMesh.h
     include/GraphicObject.h
     include/ThirdPersonCamera.h
-    include/Maze.h
-    include/Skybox.h
+    include/CollisionDetector.h
 )
 
 target_link_libraries(Graphics
     ${CONAN_LIBS}
 )
+
+#add filter named shaders in VS
+file(GLOB_RECURSE SRC_SHADER
+    "${CMAKE_SOURCE_DIR}/shaders/*"
+)
+target_sources(Graphics PRIVATE
+    ${SRC_SHADER}
+)
+
+source_group("Shaders" FILES ${SRC_SHADER})

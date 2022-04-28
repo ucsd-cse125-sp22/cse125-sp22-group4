@@ -6,6 +6,9 @@
 #include "GraphicObject.h"
 
 class ThirdPersonCamera : public Camera {
+private:
+    void updatePos();
+
 public:
     GraphicObject* player;
 
@@ -13,11 +16,10 @@ public:
     ~ThirdPersonCamera() = default;
 
     void reset() override;
-    void setPlayer(GraphicObject* _player);
+    void update() override;
     void translateLeft(float amount);
     void translateRight(float amount);
     void translateForward(float amount);
     void translateBackward(float amount);
-    void updatePos();
 };
 #endif // !THIRD_PERSON_CAMERA_H
