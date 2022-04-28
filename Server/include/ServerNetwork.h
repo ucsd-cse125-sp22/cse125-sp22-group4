@@ -5,7 +5,6 @@
 #include <ws2tcpip.h>
 #include <map>
 
-using namespace std;
 #pragma comment (lib, "Ws2_32.lib")
 
 #define DEFAULT_BUFLEN 512

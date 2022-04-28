@@ -102,7 +102,7 @@ bool ServerNetwork::acceptNewClient(unsigned int& id)
         setsockopt(ClientSocket, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value));
 
         // insert new client into session id table
-        sessions.insert(pair<unsigned int, SOCKET>(id, ClientSocket));
+        sessions.insert(std::pair<unsigned int, SOCKET>(id, ClientSocket));
 
         return true;
     }
