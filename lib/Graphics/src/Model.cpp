@@ -202,9 +202,18 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     material->Get(AI_MATKEY_COLOR_EMISSIVE, emission);
     material->Get(AI_MATKEY_SHININESS, shininess);
 
+    //define the phong material property
+    PhongMaterial mat{
+    {ambient.r, ambient.g, ambient.b, 1},
+    {diffuse.r, diffuse.g, diffuse.b, 1},
+    {specular.r, specular.g, specular.b, 1},
+    {emission.r, emission.g, emission.b, 1},
+    shininess
+    };
+
     // return a mesh object depending on have textures or not
     if (textures.size() != 0) {
-        return new TexturedMesh(vertices, indices, textures);
+        return new TexturedMesh(vertices, indices, textures, mat);
     }
     else {
         std::vector<glm::vec3> points;
@@ -213,14 +222,6 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
             points.push_back(vertex.Position);
             normals.push_back(vertex.Normal);
         }
-
-        PhongMaterial mat{
-            {ambient.r, ambient.g, ambient.b, 1},
-            {diffuse.r, diffuse.g, diffuse.b, 1},
-            {specular.r, specular.g, specular.b, 1},
-            {emission.r, emission.g, emission.b, 1},
-            shininess
-        };
 
         return new PrimitiveMesh(points, normals, indices, mat);
     }

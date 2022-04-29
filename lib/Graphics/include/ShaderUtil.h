@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef SHADER_UTIL_H
 
 #include "glm/glm.hpp"

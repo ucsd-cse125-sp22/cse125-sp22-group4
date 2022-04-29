@@ -62,12 +62,13 @@ void main() {
     vec4 realSpecular = vec4(0);
     vec4 realEmission = vec4(0);
     float realShininess = 0;
+    vec4 ambientLight = vec4(0.1);
 
     switch (mode) {
     // phong
     case 0:
         realNormal = worldNormal;
-        realAmbient = ambient;
+        realAmbient = ambient * ambientLight;
         realDiffuse = diffuse;
         realSpecular = specular;
         realEmission = emission;
@@ -78,9 +79,10 @@ void main() {
         vec3 normal = vec3(texture(texture_normal1, texCoords));
         normal = normal * 2.0 - 1.0;
         realNormal = normalize(TBN * normal);
-        realDiffuse = texture(texture_diffuse1, texCoords);
-        realSpecular = texture(texture_specular1, texCoords);
-        realShininess = 1000;
+        realAmbient = ambient * ambientLight;
+        realDiffuse = texture(texture_diffuse1, texCoords) * diffuse;
+        realSpecular = texture(texture_specular1, texCoords) * specular;
+        realShininess = shininess;
         break;
     }
 

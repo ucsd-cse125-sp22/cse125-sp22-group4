@@ -3,6 +3,7 @@
 TexturedMesh::TexturedMesh() {
     VAO = VBO = EBO = 0;
     model = glm::mat4(1);
+    phongMat = { glm::vec4(0), glm::vec4(0), glm::vec4(0), glm::vec4(0), 0 };
 }
 
 TexturedMesh::TexturedMesh(const TexturedMesh& old) {
@@ -10,6 +11,7 @@ TexturedMesh::TexturedMesh(const TexturedMesh& old) {
     indices = old.indices;
     textures = old.textures;
     model = old.model;
+    phongMat = old.phongMat;
 
     generateBuffers();
     bindBuffers();
@@ -17,11 +19,13 @@ TexturedMesh::TexturedMesh(const TexturedMesh& old) {
 
 TexturedMesh::TexturedMesh(const std::vector<Vertex>& _vertices,
                            const std::vector<unsigned int>& _indices,
-                           const std::vector<Texture>& _textures) {
+                           const std::vector<Texture>& _textures,
+                           const PhongMaterial& _phongMat) {
     vertices = _vertices;
     indices = _indices;
     textures = _textures;
     model = glm::mat4(1);
+    phongMat = _phongMat;
 
     generateBuffers();
     bindBuffers();
@@ -41,6 +45,11 @@ void TexturedMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
     glUniform1i(glGetUniformLocation(shader, "mode"), 1);
+    glUniform4fv(glGetUniformLocation(shader, "ambient"), 1, glm::value_ptr(phongMat.ambient));
+    glUniform4fv(glGetUniformLocation(shader, "diffuse"), 1, glm::value_ptr(phongMat.diffuse));
+    glUniform4fv(glGetUniformLocation(shader, "specular"), 1, glm::value_ptr(phongMat.specular));
+    glUniform4fv(glGetUniformLocation(shader, "emission"), 1, glm::value_ptr(phongMat.emission));
+    glUniform1f(glGetUniformLocation(shader, "shininess"), phongMat.shininess);
 
     // bind appropriate textures
     unsigned int diffuseNr = 1;

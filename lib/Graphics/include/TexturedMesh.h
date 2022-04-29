@@ -1,6 +1,7 @@
 #ifndef TEXTURED_MESH_H
 #define TEXTURED_MESH_H
 
+#include "ShaderUtil.h"
 #include "GraphicObject.h"
 
 #include <string>
@@ -25,6 +26,7 @@ class TexturedMesh : public GraphicObject {
 private:
     GLuint VAO, VBO, EBO;
     glm::mat4 model;
+    PhongMaterial phongMat;
 
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -38,7 +40,8 @@ public:
     TexturedMesh(const TexturedMesh& old);
     TexturedMesh(const std::vector<Vertex>& vertices,
         const std::vector<unsigned int>& indices,
-        const std::vector<Texture>& textures);
+        const std::vector<Texture>& textures,
+        const PhongMaterial& _phongMat);
     ~TexturedMesh();
 
     virtual void draw(const glm::mat4& viewProjMat, GLuint shader) const override;
