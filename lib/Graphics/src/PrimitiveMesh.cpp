@@ -4,6 +4,7 @@ PrimitiveMesh::PrimitiveMesh() {
     VAO = VBO_vertices = VBO_normals = EBO = 0;
     model = glm::mat4(1);
     phongMat = { glm::vec4(0), glm::vec4(0), glm::vec4(0), glm::vec4(0), 0 };
+    maxX = maxZ = minX = minZ = 0;
 }
 
 PrimitiveMesh::PrimitiveMesh(const PrimitiveMesh& old) {
@@ -11,6 +12,10 @@ PrimitiveMesh::PrimitiveMesh(const PrimitiveMesh& old) {
     normals = old.normals;
     indices = old.indices;
     phongMat = old.phongMat;
+    maxX = old.maxX;
+    maxZ = old.maxZ;
+    minX = old.minX;
+    minZ = old.minZ;
 
     generateBuffers();
     bindBuffers();
@@ -25,6 +30,17 @@ PrimitiveMesh::PrimitiveMesh(const std::vector<glm::vec3>& _points,
     indices = _indices;
     phongMat = _phongMat;
     model = glm::mat4(1);
+
+    maxX = points[0].x;
+    maxZ = points[0].z;
+    minX = maxX;
+    minZ = maxZ;
+    for (auto& point : points) {
+        maxX = maxX > point.x ? maxX : point.x;
+        maxZ = maxZ > point.z ? maxZ : point.z;
+        minX = minX < point.x ? minX : point.x;
+        minZ = minZ < point.z ? minZ : point.z;
+    }
 
     generateBuffers();
     bindBuffers();
@@ -51,7 +67,7 @@ void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
     glUniform4fv(glGetUniformLocation(shader, "emission"), 1, glm::value_ptr(phongMat.emission));
     glUniform1f(glGetUniformLocation(shader, "shininess"), phongMat.shininess);
 
-    // draw mesh
+    // drawOBB mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
 
@@ -86,6 +102,10 @@ void PrimitiveMesh::setModel(const glm::mat4& m) {
 
 const glm::mat4& PrimitiveMesh::getModel() const {
     return model;
+}
+
+OBB PrimitiveMesh::getOBB() const {
+    return CollisionDetector::computeOBB(maxX, maxZ, minX, minZ, model);
 }
 
 void PrimitiveMesh::generateBuffers() {

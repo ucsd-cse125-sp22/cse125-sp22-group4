@@ -25,6 +25,9 @@ public:
     void insert(const OBB& obb, const int key); 
     void update(const OBB& obb, const int key);
     bool checkCollision(const int key);
+    static OBB computeOBB(float maxX, float maxZ,
+                          float minX, float minZ,
+                          const glm::mat4& model);
 };
 
 #endif

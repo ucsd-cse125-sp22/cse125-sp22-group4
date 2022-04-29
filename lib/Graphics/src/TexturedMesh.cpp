@@ -4,6 +4,7 @@ TexturedMesh::TexturedMesh() {
     VAO = VBO = EBO = 0;
     model = glm::mat4(1);
     phongMat = { glm::vec4(0), glm::vec4(0), glm::vec4(0), glm::vec4(0), 0 };
+    maxX = maxZ = minX = minZ = 0;
 }
 
 TexturedMesh::TexturedMesh(const TexturedMesh& old) {
@@ -12,6 +13,10 @@ TexturedMesh::TexturedMesh(const TexturedMesh& old) {
     textures = old.textures;
     model = old.model;
     phongMat = old.phongMat;
+    maxX = old.maxX;
+    maxZ = old.maxZ;
+    minX = old.minX;
+    minZ = old.minZ;
 
     generateBuffers();
     bindBuffers();
@@ -26,6 +31,17 @@ TexturedMesh::TexturedMesh(const std::vector<Vertex>& _vertices,
     textures = _textures;
     model = glm::mat4(1);
     phongMat = _phongMat;
+
+    maxX = vertices[0].Position.x;
+    maxZ = vertices[0].Position.z;
+    minX = maxX;
+    minZ = maxZ;
+    for (auto& vertex : vertices) {
+        maxX = maxX > vertex.Position.x ? maxX : vertex.Position.x;
+        maxZ = maxZ > vertex.Position.z ? maxZ : vertex.Position.z;
+        minX = minX < vertex.Position.x ? minX : vertex.Position.x;
+        minZ = minZ < vertex.Position.z ? minZ : vertex.Position.z;
+    }
 
     generateBuffers();
     bindBuffers();
@@ -79,7 +95,7 @@ void TexturedMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
 
-    // draw mesh
+    // drawOBB mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
 
@@ -115,6 +131,10 @@ void TexturedMesh::setModel(const glm::mat4& m) {
 
 const glm::mat4& TexturedMesh::getModel() const {
     return model;
+}
+
+OBB TexturedMesh::getOBB() const {
+    return CollisionDetector::computeOBB(maxX, maxZ, minX, minZ, model);
 }
 
 void TexturedMesh::generateBuffers() {

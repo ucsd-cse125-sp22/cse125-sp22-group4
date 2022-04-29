@@ -21,6 +21,8 @@ private:
     std::vector<GraphicObject*> meshes;
     std::string directory;
     bool gammaCorrection;
+    glm::mat4 model;
+    float maxX, maxZ, minX, minZ;
 
     void loadModel(std::string const& path);
     void processNode(aiNode* node, const aiScene* scene);
@@ -42,6 +44,7 @@ public:
     void moveGlobal(const glm::vec3& v) override;
     void setModel(const glm::mat4& m) override;
     const glm::mat4& getModel() const override;
+    OBB getOBB() const override;
 };
 
 #endif

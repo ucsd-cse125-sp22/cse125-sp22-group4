@@ -34,13 +34,12 @@ static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[3] = { "3rd Person Tyra", "Baby Maze", "Backpack"};
 
+static bool keys[4];
 static bool keyHeld = false;
 static int direction = -1;
-static bool keys[4];
 
 static glm::mat4 currRotationUpdate = glm::mat4(1);
 static int turn = 0;
-
 
 // callbacks
 static void resizeCallback(GLFWwindow* window, int width, int height);
@@ -49,8 +48,8 @@ static void scrollCallback(GLFWwindow* window, double xMove, double yMove);
 static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-//todo
-enum CamDirections { CAM_FORWARD, CAM_BACK, CAM_LEFT, CAM_RIGHT, CAM_UP };
+// debug private functions
+static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader);
 
 /**
  * Create a GLFW window of given size
@@ -150,7 +149,6 @@ bool Client::initializeClient() {
 **/
 void Client::displayCallback() {
     Camera* currCam = isThirdPersonCam ? thirdPersonCamera : camera;
-    //glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // activate the shader program and send some values
     glUseProgram(shader);
@@ -162,31 +160,27 @@ void Client::displayCallback() {
 
     switch (select) {
     case 0:
-        glUseProgram(shader);
-        glUniform1i(glGetUniformLocation(shader, "lightCount"), lightCount);
-        glUniform4fv(glGetUniformLocation(shader, "lightPosn"), lightCount, (float*)lightPosn.data());
-        glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
-        glUseProgram(0);
-
         for (auto character : players) {
             character->draw(currCam->viewProjMat, shader);
+            drawOBB(character->getOBB(), currCam->viewProjMat, shader);
         }
 
         ground->draw(currCam->viewProjMat, shader);
-
         break;
 
     case 1:
-        //ourModel->draw(tempCam->viewProjMat, shader);
         maze->draw(currCam->viewProjMat, shader);
         tyra->draw(currCam->viewProjMat, shader);
+        drawOBB(tyra->getOBB(), currCam->viewProjMat, shader);
         break;
 
     case 2:
         backpack->draw(currCam->viewProjMat, shader);
+        drawOBB(backpack->getOBB(), currCam->viewProjMat, shader);
+        break;
     }
 
-    //draw skybox last for efficiency
+    //drawOBB skybox last for efficiency
     glUseProgram(skyboxShader);
     glUniform1i(glGetUniformLocation(skyboxShader, "skybox"), 0);
     glUseProgram(0);
@@ -203,8 +197,6 @@ void Client::idleCallback() {
     currCamera->update();
 
     if (!pause) {
-        teapot->update();
-        bunny->update();
         backpack->update();
     }
 
@@ -257,6 +249,34 @@ void Client::GUI() {
     ImGui::Text("Press F to toggle show/hide mouse");
     ImGui::ListBox("Scene Selection", &select, scenes, IM_ARRAYSIZE(scenes), IM_ARRAYSIZE(scenes));
     ImGui::End();
+}
+
+MovementState Client::getMovementState() {
+    return MovementState{
+        direction,
+        keyHeld
+    };
+}
+
+RotationState Client::getRotationState() {
+    return RotationState{
+        currRotationUpdate,
+        turn
+    };
+}
+
+Model** Client::getPlayers() {
+    return players;
+}
+
+void Client::resetRotUpdate() {
+    currRotationUpdate = glm::mat4(1);
+}
+
+void Client::setPlayerfromID(unsigned int id) {
+    my_id = id;
+    player = players[my_id];
+    thirdPersonCamera = new ThirdPersonCamera(player);
 }
 
 /**
@@ -474,30 +494,16 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
     keyHeld = keys[0] || keys[1] || keys[2] || keys[3];
 }
 
-MovementState Client::getMovementState() {
-    return MovementState{
-        direction,
-        keyHeld
-    };
-}
-
-RotationState Client::getRotationState() {
-    return RotationState{
-        currRotationUpdate,
-        turn
-    };
-}
-
-Model** Client::getPlayers() {
-    return players;
-}
-
-void Client::resetRotUpdate() {
-    currRotationUpdate = glm::mat4(1);
-}
-
-void Client::setPlayerfromID(unsigned int id) {
-    my_id = id;
-    player = players[my_id];
-    thirdPersonCamera = new ThirdPersonCamera(player);
+static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader) {
+    glm::mat4 model(1);
+    glUseProgram(shader);
+    glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
+    glBegin(GL_QUADS);
+    glVertex3f(obb.p1.x, 0, obb.p1.y);
+    glVertex3f(obb.p2.x, 0, obb.p2.y);
+    glVertex3f(obb.p3.x, 0, obb.p3.y);
+    glVertex3f(obb.p4.x, 0, obb.p4.y);
+    glEnd();
+    glUseProgram(0);
 }

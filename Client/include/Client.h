@@ -20,7 +20,6 @@
 #include <string>
 
 namespace Client {
-
     GLFWwindow* createWindow(int width, int height, std::string windowTitle);
     void errorCallback(int error, const char* description);
     void setupGLSettings();

@@ -11,6 +11,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/transform.hpp"
 #include "spdlog/spdlog.h"
+#include "CollisionDetector.h"
 
 class GraphicObject {
 public:
@@ -23,6 +24,7 @@ public:
     virtual void moveGlobal(const glm::vec3& v) = 0;
     virtual void setModel(const glm::mat4& m) = 0;
     virtual const glm::mat4& getModel() const = 0;
+    virtual OBB getOBB() const = 0;
 };
 
 #endif // !GRAPHIC_OBJECT_H

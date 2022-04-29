@@ -27,6 +27,7 @@ private:
     GLuint VAO, VBO, EBO;
     glm::mat4 model;
     PhongMaterial phongMat;
+    float maxX, maxZ, minX, minZ;
 
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
@@ -52,5 +53,6 @@ public:
     virtual void moveGlobal(const glm::vec3& v) override;
     virtual void setModel(const glm::mat4& m) override;
     virtual const glm::mat4& getModel() const override;
+    virtual OBB getOBB() const override;
 };
 #endif

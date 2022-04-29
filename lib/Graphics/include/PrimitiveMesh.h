@@ -11,6 +11,7 @@ protected:
     GLuint VBO_vertices, VBO_normals, EBO;
     glm::mat4 model;
     PhongMaterial phongMat;
+    float maxX, maxZ, minX, minZ;
 
     std::vector<glm::vec3> points;
     std::vector<glm::vec3> normals;
@@ -36,5 +37,6 @@ public:
     virtual void moveGlobal(const glm::vec3& v) override;
     virtual void setModel(const glm::mat4& m) override;
     virtual const glm::mat4& getModel() const override;
+    virtual OBB getOBB() const override;
 };
 #endif // !MESH_H

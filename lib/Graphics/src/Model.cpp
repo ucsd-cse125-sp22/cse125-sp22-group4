@@ -5,6 +5,9 @@ static unsigned int TextureFromFile(const char* path,
     bool gamma = false);
 
 Model::Model(std::string const& path, bool gamma) : gammaCorrection(gamma) {
+    model = glm::mat4(1);
+    maxX = maxZ = -FLT_MAX;
+    minX = minZ = FLT_MAX;
     loadModel(path);
 }
 
@@ -16,48 +19,40 @@ Model::~Model() {
 
 void Model::draw(const glm::mat4& viewProjMat, GLuint shader) const {
     for (auto& mesh : meshes) {
-        mesh->draw(viewProjMat, shader);
+        mesh->draw(viewProjMat * model, shader);
     }
 }
 
 void Model::update() {
-    for (auto& mesh : meshes) {
-        mesh->update();
-    }
+    spin(0.5f);
 }
 
 void Model::spin(float deg) {
-    for (auto& mesh : meshes) {
-        mesh->spin(deg);
-    }
+    model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 void Model::scale(const glm::vec3& rate) {
-    for (auto& mesh : meshes) {
-        mesh->scale(rate);
-    }
+    model = model * glm::scale(rate);
 }
 
 void Model::moveLocal(const glm::vec3& v) {
-    for (auto& mesh : meshes) {
-        mesh->moveLocal(v);
-    }
+    model = model * glm::translate(glm::mat4(1), v);
 }
 
 void Model::moveGlobal(const glm::vec3& v) {
-    for (auto& mesh : meshes) {
-        mesh->moveGlobal(v);
-    }
-}
-
-const glm::mat4& Model::getModel() const {
-    return meshes[0]->getModel();
+    model = glm::translate(glm::mat4(1), v) * model;
 }
 
 void Model::setModel(const glm::mat4& m) {
-    for (auto& mesh : meshes) {
-        mesh->setModel(m);
-    }
+    model = m;
+}
+
+const glm::mat4& Model::getModel() const {
+    return model;
+}
+
+OBB Model::getOBB() const {
+    return CollisionDetector::computeOBB(maxX, maxZ, minX, minZ, model);
 }
 
 void Model::loadModel(std::string const& path) {
@@ -218,7 +213,13 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 
     // return a mesh object depending on have textures or not
     if (textures.size() != 0) {
-        return new TexturedMesh(vertices, indices, textures, mat);
+        TexturedMesh* mesh = new TexturedMesh(vertices, indices, textures, mat);
+        OBB obb = mesh->getOBB();
+        maxX = maxX > obb.p1.x ? maxX : obb.p1.x;
+        maxZ = maxZ > obb.p1.y ? maxZ : obb.p1.y;
+        minX = minX < obb.p3.x ? minX : obb.p3.x;
+        minZ = minZ < obb.p3.y ? minZ : obb.p3.y;
+        return mesh;
     }
     else {
         std::vector<glm::vec3> points;
@@ -228,7 +229,13 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
             normals.push_back(vertex.Normal);
         }
 
-        return new PrimitiveMesh(points, normals, indices, mat);
+        PrimitiveMesh* mesh = new PrimitiveMesh(points, normals, indices, mat);
+        OBB obb = mesh->getOBB();
+        maxX = maxX > obb.p1.x ? maxX : obb.p1.x;
+        maxZ = maxZ > obb.p1.y ? maxZ : obb.p1.y;
+        minX = minX < obb.p3.x ? minX : obb.p3.x;
+        minZ = minZ < obb.p3.y ? minZ : obb.p3.y;
+        return mesh;
     }
 }
 
