@@ -30,6 +30,7 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_normal1;
 uniform sampler2D texture_height1;
+uniform sampler2D texture_ambient1;
 
 vec4 ComputeLight (const in vec3 direction, const in vec4 lightcolor, const in vec3 normal,
                     const in vec3 halfvec, const in vec4 mydiffuse,
@@ -79,7 +80,7 @@ void main() {
         vec3 normal = vec3(texture(texture_normal1, texCoords));
         normal = normal * 2.0 - 1.0;
         realNormal = normalize(TBN * normal);
-        realAmbient = ambient * ambientLight;
+        realAmbient = texture(texture_ambient1, texCoords) * ambientLight;
         realDiffuse = texture(texture_diffuse1, texCoords) * diffuse;
         realSpecular = texture(texture_specular1, texCoords) * specular;
         realShininess = shininess;

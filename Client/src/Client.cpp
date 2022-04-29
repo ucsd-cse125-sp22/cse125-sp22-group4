@@ -113,7 +113,7 @@ bool Client::initializeClient() {
 
     // initialize light sources
     lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {1, 1, 1, 0} };
-    lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {0.5, 0.5, 0.5, 1} };
+    lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {1, 1, 1, 1} };
     lightCount = lightPosn.size();
 
     // initialize objects

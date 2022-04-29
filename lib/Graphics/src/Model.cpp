@@ -189,6 +189,11 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
         loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
     textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
+    // 4. AO maps
+    std::vector<Texture> ambientOcclusionMaps =
+        loadMaterialTextures(material, aiTextureType_LIGHTMAP, "texture_ambient");
+    textures.insert(textures.end(), ambientOcclusionMaps.begin(), ambientOcclusionMaps.end());
+
     // get traditional Phong material data
     aiColor3D ambient(0);
     aiColor3D diffuse(0);
