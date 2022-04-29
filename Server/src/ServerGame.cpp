@@ -9,6 +9,10 @@ void moveGlobal(glm::mat4& model, const glm::vec3& v) {
     model = glm::translate(glm::mat4(1), v) * model;
 }
 
+void spin(glm::mat4& model, float deg) {
+    model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
 
 ServerGame::ServerGame(void)
 {
@@ -20,20 +24,22 @@ ServerGame::ServerGame(void)
     start_time = timer.now();
 
     maze = new Maze();
+    
     /*
     PlayerState state = player_states[client_id];
     moveGlobal(state.model, glm::vec3(75, 2, -5));
     player_states[client_id] = state;
     */
+    
 }
 
 void ServerGame::update()
 {
+  
     // get new clients
     if (network->acceptNewClient(client_id))
     {
-        printf("client %d has been connected to the server\n", client_id);
-        client_id++;
+      
         PlayerState state = player_states[client_id];
         switch (client_id) {
         case 0:
@@ -44,22 +50,25 @@ void ServerGame::update()
         case 1:
             // player 2 starting location
             moveGlobal(state.model, glm::vec3(145, 2, -75));
-            //tyra->spin(90);
+            spin(state.model, 90);
             break;
         case 2:
             // player 3 starting location
             moveGlobal(state.model, glm::vec3(75, 2, -145));
-            //tyra->spin(180);
+            spin(state.model, 180);
             break;
         case 3:
             // player 4 starting location
             moveGlobal(state.model, glm::vec3(5, 2, -75));
-            //tyra->spin(270);
+            spin(state.model, 270);
             break;
-        }
+        }     
 
         // No buffer overflow will happen: acceptNewClient does a check
         player_states[client_id] = state;
+
+        printf("client %d has been connected to the server\n", client_id);
+        client_id++;
     }
     // Receive from clients as fast as possible.
     receiveFromClients();
@@ -177,7 +186,6 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     }
     state.model = state.model * packet->state.rotationalMatrix;
     player_states[client_id] = state;
-    maze->turn = packet->state.turn;
 }
 
 //Update player_state from move packet.
@@ -205,9 +213,12 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     }
     case FORWARD:
     {
-       // bool obstacle = maze->isObstacle(client_id, state.model[3][0], state.model[3][2]);
-        //if (!obstacle)
+        bool obstacle = maze->isObstacle(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+
+        if (!obstacle) {
             moveLocal(state.model, glm::vec3(0, 0, -0.2));
+        }
+
         break;
     }
     }

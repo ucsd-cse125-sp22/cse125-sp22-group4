@@ -1,17 +1,23 @@
 #include "Maze.h"
+#include <iostream>
 
-Maze::Maze() { turn = 0; }
+Maze::Maze() {}
 
-bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc) {
-	bool obstacle = false;
-    bool headingN = (turn >= -90 && turn <= 90) || turn <= -270 || turn >= 270;
-    bool headingE = (turn >= 0 && turn <= 180) || (turn <= -180);
-    bool headingS = (turn >= 90 && turn <= 270) || (turn <= -90 && turn >= -270);
-    bool headingW = (turn >= 180 && turn <= 360) || (turn <= 0 && turn >= -180);
+bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
 
+    bool obstacle = false;
+
+    // cardinal directions
+    bool headingN = mod2 >= 0;
+    bool headingS = mod2 < 0;
+    bool headingW = mod1 >= 0;
+    bool headingE = mod1 < 0;
+
+    // location in maze
     currPlayerXLoc = abs((currPlayerXLoc - 150) / 10);
     currPlayerZLoc = abs(currPlayerZLoc / 10);
-    double turnR = (turn * pi) / 180;
+
+    // used for checking NS/EW walls 
     int currZIndexN;
     int currXIndexN;
     int currXIndexW;
@@ -20,18 +26,26 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
     int currXIndexS;
     int currZIndexE;
     int currXIndexE;
+
+    // is there a wall
     bool up = true;
     bool down = true;
     bool right = true;
     bool left = true;
+
+    // what direction is model heading
     double distUp = 0.0;
     double distDown = 0.0;
     double distLeft = 0.0;
     double distRight = 0.0;
 
+    // model length and width
+    double length = 0.23; // estimate dino length
+    double modelHalfWidth = .08; // just approximating
 
+    // cases are needed since players start with different orientation
     switch (playerID) {
-    case 1:
+    case 0:
         currXIndexN = floor(currPlayerXLoc);
         currZIndexN = ceil(currPlayerZLoc);
         currXIndexE = floor(currPlayerXLoc);
@@ -49,7 +63,7 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
         down = mazeVerticals[currXIndexS][currZIndexS];
         left = mazeHorizontals[currXIndexW][currZIndexW];
         break;
-    case 2:
+    case 1:
         currZIndexN = floor(currPlayerZLoc);
         currXIndexN = ceil(currPlayerXLoc);
         currXIndexE = floor(currPlayerXLoc);
@@ -67,7 +81,7 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
         down = mazeHorizontals[currXIndexS][currZIndexS];
         right = mazeVerticals[currXIndexE][currZIndexE];
         break;
-    case 3:
+    case 2:
         currZIndexN = floor(currPlayerZLoc);
         currXIndexN = floor(currPlayerXLoc);
         currZIndexE = floor(currPlayerZLoc);
@@ -85,7 +99,7 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
         down = mazeVerticals[currXIndexS][currZIndexS];
         left = mazeHorizontals[currXIndexW][currZIndexW];
         break;
-    case 4:
+    case 3:
         currZIndexN = floor(currPlayerZLoc);
         currXIndexN = floor(currPlayerXLoc);
         currZIndexE = floor(currPlayerZLoc);
@@ -105,47 +119,43 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
         break;
     }
 
+    // only check for obstacles if there is a wall in the direction model is heading
     if (up && headingN) {
+        double angle = atan(mod1 / mod2);
+        double distToWall = abs(distUp / cos(angle)) - modelHalfWidth * abs(sin(angle));
 
-        //spdlog::info("distX {}", distX);
-        distUp = distUp + modelHalfWidth * sin(turnR); // where .1 is 1/2 width of dino
-        //spdlog::info("distX {}", distX);
-        double distToWall = abs(distUp / cos(turnR));
-        //spdlog::info("distToWall {}", distToWall);
-
-        if (distToWall <= .4)
+        if (distToWall <= length)
             obstacle = true;
-
     }
 
 
     if (left && headingW) {
-        distLeft = distLeft + modelHalfWidth * sin(turnR + (pi / 2));
-        double distToWall = abs(distLeft / cos(turnR + (pi / 2)));
+        double angle = atan(mod2 / mod1);
+        double distToWall = abs(distLeft / cos(angle)) - modelHalfWidth * abs(sin(angle));
 
-        if (distToWall <= .4)
+        if (distToWall <= length)
             obstacle = true;
     }
 
 
     if (down && headingS) {
-        distDown = distDown + modelHalfWidth * sin(turnR + pi);
-        double distToWall = abs(distDown / cos(turnR + pi));
+        double angle = atan(mod1 / mod2);
 
-        if (distToWall <= .4)
+        double distToWall = abs(distDown / cos(angle)) - modelHalfWidth * abs(sin(angle));
+
+        if (distToWall <= length)
             obstacle = true;
     }
 
 
     if (right && headingE) {
+        double angle = atan(mod2 / mod1);
 
-        distRight = distRight + modelHalfWidth * sin(turnR + ((3 * pi) / 2));
-        double distToWall = abs(distRight / cos(turnR + ((3 * pi) / 2)));
+        double distToWall = abs(distRight / cos(angle)) - modelHalfWidth * abs(sin(angle));
 
-
-        if (distToWall <= .4)
+        if (distToWall <= length)
             obstacle = true;
     }
 
-	return obstacle;
+    return obstacle;
 }

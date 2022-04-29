@@ -6,8 +6,6 @@
 
 class Maze {
 private:
-	int playerID;
-    double modelHalfWidth = .1; // just approximating
     double pi = 2 * acos(0.0);
  
 
@@ -47,10 +45,9 @@ private:
 
 public:
 
-    double turn;
 	Maze();
 	~Maze() = default;
-	bool isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc);
+	bool isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
 
 };
 

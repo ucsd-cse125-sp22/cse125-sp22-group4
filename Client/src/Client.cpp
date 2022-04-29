@@ -39,7 +39,6 @@ static bool keyHeld = false;
 static int direction = -1;
 
 static glm::mat4 currRotationUpdate = glm::mat4(1);
-static int turn = 0;
 
 // callbacks
 static void resizeCallback(GLFWwindow* window, int width, int height);
@@ -261,7 +260,6 @@ MovementState Client::getMovementState() {
 RotationState Client::getRotationState() {
     return RotationState{
         currRotationUpdate,
-        turn
     };
 }
 
@@ -322,8 +320,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
         if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
             double yawAngle = -0.5 * (xPos - prevXPos);
             double pitchAngle = -0.5 * (yPos - prevYPos);
-            turn += 0.5 * (thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
-            turn = turn % 360;
+           
             float playerSpinDegree = 0.5 * (float)(thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
             currRotationUpdate = glm::rotate(glm::radians(playerSpinDegree), glm::vec3(0.0f, 1.0f, 0.0f));
             thirdPersonCamera->pitch((float)pitchAngle);
