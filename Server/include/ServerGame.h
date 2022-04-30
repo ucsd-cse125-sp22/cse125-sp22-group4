@@ -18,6 +18,8 @@ public:
 
     void update();
     void receiveFromClients();
+    void assignSpawn(int client_id);
+    void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
     void handleRotatePacket(int client_id, RotatePacket* s);
@@ -26,6 +28,7 @@ public:
 private:
     // IDs for the clients connecting for table in ServerNetwork 
     static unsigned int client_id;
+    static bool game_started;
 
     Maze* maze;
 

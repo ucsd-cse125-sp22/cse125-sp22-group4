@@ -20,6 +20,7 @@ enum PacketTypes {
 	INIT_CONNECTION,
 	PING,
 	KEYSTROKE,
+	GAME_START,
 	/* Keystroke Packet Types */
 
 	/* State Packet Types*/

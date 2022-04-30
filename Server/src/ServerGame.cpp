@@ -22,15 +22,48 @@ ServerGame::ServerGame(void)
     // set up the server network to listen 
     network = new ServerNetwork();
     start_time = timer.now();
-
     maze = new Maze();
-    
-    /*
-    PlayerState state = player_states[client_id];
-    moveGlobal(state.model, glm::vec3(75, 2, -5));
+}
+
+void ServerGame::assignSpawn(int client_id) {
+    PlayerState& state = player_states[client_id];
+    switch (client_id) {
+    case 0:
+        //player 1 starting location
+        moveGlobal(state.model, glm::vec3(75, 2, -5));
+        break;
+    case 1:
+        // player 2 starting location
+        moveGlobal(state.model, glm::vec3(145, 2, -75));
+        spin(state.model, 90);
+        break;
+    case 2:
+        // player 3 starting location
+        moveGlobal(state.model, glm::vec3(75, 2, -145));
+        spin(state.model, 180);
+        break;
+    case 3:
+        // player 4 starting location
+        moveGlobal(state.model, glm::vec3(5, 2, -75));
+        spin(state.model, 270);
+        break;
+    }
     player_states[client_id] = state;
-    */
-    
+}
+
+void ServerGame::start() {
+    const unsigned int packet_size = sizeof(SimplePacket);
+    SimplePacket packet;
+    packet.packet_type = GAME_START;
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+
+    network->sendToAll(packet_bytes, packet_size);
+    free(packet_bytes);
+
+    // Move players to spawns
+    for (int i = 1; i <= client_id; ++i) {
+        assignSpawn(i);
+    }
 }
 
 void ServerGame::update()
@@ -39,36 +72,13 @@ void ServerGame::update()
     // get new clients
     if (network->acceptNewClient(client_id))
     {
-      
-        PlayerState state = player_states[client_id];
-        switch (client_id) {
-        case 0:
-            //player 1 starting location
-            moveGlobal(state.model, glm::vec3(75, 2, -5));
-            break;
-
-        case 1:
-            // player 2 starting location
-            moveGlobal(state.model, glm::vec3(145, 2, -75));
-            spin(state.model, 90);
-            break;
-        case 2:
-            // player 3 starting location
-            moveGlobal(state.model, glm::vec3(75, 2, -145));
-            spin(state.model, 180);
-            break;
-        case 3:
-            // player 4 starting location
-            moveGlobal(state.model, glm::vec3(5, 2, -75));
-            spin(state.model, 270);
-            break;
-        }     
-
-        // No buffer overflow will happen: acceptNewClient does a check
-        player_states[client_id] = state;
-
-        printf("client %d has been connected to the server\n", client_id);
         client_id++;
+        printf("client %d has been connected to the server\n", client_id);
+        if (client_id >= PLAYER_NUM / 2) {
+            // Send game start packets?
+            printf("Game start\n");
+            start();
+        }
     }
     // Receive from clients as fast as possible.
     receiveFromClients();
