@@ -17,6 +17,7 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
     currPlayerXLoc = abs((currPlayerXLoc - 150) / 10);
     currPlayerZLoc = abs(currPlayerZLoc / 10);
 
+    printf("x %lf y %lf\n", currPlayerXLoc, currPlayerZLoc);
     // used for checking NS/EW walls 
     int currZIndexN;
     int currXIndexN;

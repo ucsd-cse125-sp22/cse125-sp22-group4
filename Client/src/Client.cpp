@@ -22,6 +22,7 @@ static Model* player;
 static Model* backpack;
 static Model* maze;
 static Model* players[PLAYER_NUM];
+static Model* bear;
 
 // COLLISION DEBUG
 static Cube* wall1;
@@ -137,6 +138,8 @@ bool Client::initializeClient() {
     backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/mazeTextured.obj");
     maze->moveGlobal(glm::vec3(0, -3, 0));
+    bear = new Model("../../objects/bear.obj");
+    bear->moveGlobal(glm::vec3(75, -3, -75));
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -180,7 +183,7 @@ void Client::displayCallback() {
         for (auto character : players) {
             character->draw(currCam->viewProjMat, identityMat, shader);
         }
-
+       
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
         // COLLITION DEBUG
@@ -205,6 +208,7 @@ void Client::displayCallback() {
     case 1: {
         maze->draw(currCam->viewProjMat, identityMat, shader);
         tyra->draw(currCam->viewProjMat, identityMat, shader);
+        bear->draw(currCam->viewProjMat, identityMat, shader);
         break;
     }
 
@@ -277,6 +281,7 @@ void Client::cleanup() {
     delete backpack;
     delete maze;
     delete skybox;
+    delete bear;
 
     // COLLISION DEBUG
     delete wall1;
@@ -500,11 +505,15 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_RIGHT:
-            camera->move(glm::vec3(0.5, 0, 0));
+            currRotationUpdate = glm::rotate(glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            thirdPersonCamera->reset();
+            //camera->move(glm::vec3(0.5, 0, 0));
             break;
 
         case GLFW_KEY_LEFT:
-            camera->move(glm::vec3(-0.5, 0, 0));
+            currRotationUpdate = glm::rotate(glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            thirdPersonCamera->reset();
+            //camera->move(glm::vec3(-0.5, 0, 0));
             break;
 
         case GLFW_KEY_UP:
