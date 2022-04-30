@@ -208,12 +208,15 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     }
     case BACK:
     {
-        moveLocal(state.model, glm::vec3(0, 0, 0.2));
+        bool obstacle = maze->backwardsBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+
+        if (!obstacle)
+            moveLocal(state.model, glm::vec3(0, 0, 0.2));
         break;
     }
     case FORWARD:
     {
-        bool obstacle = maze->isObstacle(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+        bool obstacle = maze->forwardBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle) {
             moveLocal(state.model, glm::vec3(0, 0, -0.2));

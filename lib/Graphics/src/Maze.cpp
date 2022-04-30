@@ -3,15 +3,38 @@
 
 Maze::Maze() {}
 
-bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
-
-    bool obstacle = false;
+bool Maze::forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
+    // model length and width
+    double length = 0.23; // estimate dino length
+    double modelHalfWidth = .08; // just approximating
 
     // cardinal directions
     bool headingN = mod2 >= 0;
     bool headingS = mod2 < 0;
     bool headingW = mod1 >= 0;
     bool headingE = mod1 < 0;
+    
+    return isObstacle(playerID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
+}
+
+bool Maze::backwardsBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
+    // model length and width
+    double length = 0.25; // estimate dino tail length
+    double modelHalfWidth = .08; // just approximating
+
+    // cardinal directions (just reverse of forward motion)
+    bool headingN = mod2 < 0;
+    bool headingS = mod2 >= 0;
+    bool headingW = mod1 < 0;
+    bool headingE = mod1 >= 0;
+
+    return isObstacle(playerID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
+}
+
+bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2, double length, double modelHalfWidth,
+    bool headingN, bool headingS, bool headingE, bool headingW) {
+
+    bool obstacle = false;
 
     // location in maze
     currPlayerXLoc = abs((currPlayerXLoc - 150) / 10);
@@ -40,9 +63,6 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
     double distLeft = 0.0;
     double distRight = 0.0;
 
-    // model length and width
-    double length = 0.23; // estimate dino length
-    double modelHalfWidth = .08; // just approximating
 
     // cases are needed since players start with different orientation
     switch (playerID) {
