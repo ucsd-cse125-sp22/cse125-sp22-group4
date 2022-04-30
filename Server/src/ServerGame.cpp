@@ -60,6 +60,14 @@ void ServerGame::start() {
     network->sendToAll(packet_bytes, packet_size);
     free(packet_bytes);
 
+    glm::mat4 flagInitLoc = glm::mat4(1);
+
+    moveLocal(flagInitLoc, glm::vec3(0.2));
+
+    printMat4(flagInitLoc);
+
+    flag = new Flag(flagInitLoc, glm::mat4(1));
+
     // Move players to spawns
     for (int i = 1; i <= client_id; ++i) {
         assignSpawn(i);
@@ -74,7 +82,7 @@ void ServerGame::update()
     {
         client_id++;
         printf("client %d has been connected to the server\n", client_id);
-        if (client_id >= PLAYER_NUM / 2) {
+        if (1) {
             // Send game start packets?
             printf("Game start\n");
             start();
@@ -97,6 +105,9 @@ void ServerGame::replicateGameState() {
     const unsigned int packet_size = sizeof(GameStatePacket);
     GameStatePacket packet;
     memcpy(packet.player_states, player_states, sizeof(player_states));
+
+    packet.item_state = flag->item_state;
+
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
 
     network->sendToAll(packet_bytes, packet_size);
@@ -164,7 +175,7 @@ void ServerGame::receiveFromClients()
 //method to translate the model matrix
 // TODO: Make use of graphics library instead. Have an object wrap the player's positions
 // and use methods to manipulate.
-void moveLocal(glm::mat4& model, const glm::vec3& v) {
+void ServerGame::moveLocal(glm::mat4& model, const glm::vec3& v) {
     model = model * glm::translate(glm::mat4(1), v);
 }
 
@@ -237,4 +248,11 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     }
     // Actually do the update...
     player_states[client_id] = state;
+}
+
+void ServerGame::printMat4(glm::mat4 mat) {
+    printf("%f, %f, %f, %f\n", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
+    printf("%f, %f, %f, %f\n", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+    printf("%f, %f, %f, %f\n", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+    printf("%f, %f, %f, %f\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
 }

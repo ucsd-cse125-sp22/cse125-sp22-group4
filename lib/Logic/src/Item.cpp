@@ -17,6 +17,16 @@ bool Item::checkGoal()
 	return false;
 }
 
+Flag::Flag(glm::mat4 initialPos, glm::mat4 endPos) 
+{
+	initPos = initialPos;
+	goalPos = endPos;
+	item_state = {
+		initialPos,
+		5
+	};
+}
+
 bool Flag::checkGoal()
 {
 	// TODO: set goalPos to be a range/area that item needs to be in

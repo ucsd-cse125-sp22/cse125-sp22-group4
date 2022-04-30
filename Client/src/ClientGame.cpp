@@ -99,6 +99,13 @@ void ClientGame::update(MovementState s, RotationState r)
                 GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
                 memcpy(packet, &network_data[i], sizeof(GameStatePacket));
                 updateModels(packet->player_states);
+
+                if (packet->item_state.hold == 5) {
+                    setItem(packet->item_state.model);
+                }
+                
+                //printMat4(packet->item_state.model);
+
                 i += sizeof(GameStatePacket);
 
                 free(packet);
@@ -109,6 +116,10 @@ void ClientGame::update(MovementState s, RotationState r)
                 break;
         }
     }
+}
+
+void ClientGame::setItem(glm::mat4 location) {
+    Client::updateItemLocation(location);
 }
 
 void ClientGame::updateModels(PlayerState states[PLAYER_NUM]) {
