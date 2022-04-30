@@ -9,6 +9,7 @@
 #include "Graphics/include/ObjectLoader.h"
 #include "Graphics/include/ThirdPersonCamera.h"
 #include "Graphics/include/Skybox.h"
+#include "Graphics/include/SceneLoader.h"
 
 #include "Constants/include/constants.h"
 

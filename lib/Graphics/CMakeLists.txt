@@ -10,6 +10,8 @@ add_library(Graphics STATIC
     src/PrimitiveMesh.cpp
     src/ThirdPersonCamera.cpp
     src/CollisionDetector.cpp
+    src/Tokenizer.cpp
+    src/SceneLoader.cpp
 )
 
 target_include_directories(Graphics PRIVATE
@@ -31,6 +33,8 @@ target_sources(Graphics PRIVATE
     include/GraphicObject.h
     include/ThirdPersonCamera.h
     include/CollisionDetector.h
+    include/Tokenizer.h
+    include/SceneLoader.h
 )
 
 target_link_libraries(Graphics

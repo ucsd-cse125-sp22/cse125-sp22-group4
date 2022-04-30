@@ -23,6 +23,9 @@ static Model* backpack;
 static Model* maze;
 static Model* players[PLAYER_NUM];
 
+//Scene
+static SceneLoader* scene;
+
 // COLLISION DEBUG
 static Cube* wall1;
 static Cube* wall2;
@@ -147,6 +150,9 @@ bool Client::initializeClient() {
     cDetector.insert(wall2->getOBB());
     cDetector.insert(tyra->getOBB());
     // COLLITION DEBUG
+
+    //Load the scene
+    scene->load("../../scripts/scene.txt");
 
 
     //hard coded for now
