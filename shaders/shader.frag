@@ -31,6 +31,7 @@ uniform sampler2D texture_specular1;
 uniform sampler2D texture_normal1;
 uniform sampler2D texture_height1;
 uniform sampler2D texture_ambient1;
+uniform sampler2D texture_shininess1;
 
 vec4 ComputeLight (const in vec3 direction, const in vec4 lightcolor, const in vec3 normal,
                     const in vec3 halfvec, const in vec4 mydiffuse,
@@ -65,6 +66,9 @@ void main() {
     float realShininess = 0;
     vec4 ambientLight = vec4(0.1);
 
+    vec4 roughnessTexture = texture(texture_shininess1, texCoords);
+    float roughnessGrey = (0.299 * roughnessTexture[0] + 0.587 * roughnessTexture[1] + 0.114 * 0.587 * roughnessTexture[2]);
+
     switch (mode) {
     // phong
     case 0:
@@ -83,7 +87,8 @@ void main() {
         realAmbient = texture(texture_ambient1, texCoords) * ambientLight;
         realDiffuse = texture(texture_diffuse1, texCoords) * diffuse;
         realSpecular = texture(texture_specular1, texCoords) * specular;
-        realShininess = shininess;
+        realShininess = roughnessGrey * shininess ;
+        //realShininess = shininess;
         break;
     }
 

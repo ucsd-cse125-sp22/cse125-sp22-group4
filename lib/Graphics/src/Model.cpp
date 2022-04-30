@@ -24,6 +24,11 @@ void Model::draw(const glm::mat4& viewProjMat, GLuint shader) const {
 }
 
 void Model::update() {
+    /*
+    for (auto& mesh : meshes) {
+        mesh->update();
+    }
+    */
     spin(0.5f);
 }
 
@@ -188,6 +193,11 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     std::vector<Texture> ambientOcclusionMaps =
         loadMaterialTextures(material, aiTextureType_LIGHTMAP, "texture_ambient");
     textures.insert(textures.end(), ambientOcclusionMaps.begin(), ambientOcclusionMaps.end());
+
+    // 5. Roughness maps
+    std::vector<Texture> roughnessMaps =
+        loadMaterialTextures(material, aiTextureType_SHININESS, "texture_shininess");
+    textures.insert(textures.end(), roughnessMaps.begin(), roughnessMaps.end());
 
     // get traditional Phong material data
     aiColor3D ambient(0);

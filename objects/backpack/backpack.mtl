@@ -14,4 +14,5 @@ map_Ka ao.jpg
 map_Kd diffuse.jpg
 map_Bump normal.png
 map_Ks specular.jpg
+map_Ns roughness.jpg
 
