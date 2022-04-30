@@ -97,6 +97,11 @@ Cube::Cube(glm::vec3 cubeMin, glm::vec3 cubeMax) {
         20,21,22,   20,22,23,   // Right
     };
 
+    maxX = cubeMax.x > cubeMin.x ? cubeMax.x : cubeMin.x;
+    maxZ = cubeMax.z > cubeMin.z ? cubeMax.z : cubeMin.z;
+    minX = cubeMin.x < cubeMax.x ? cubeMin.x : cubeMax.x;
+    minZ = cubeMin.z < cubeMax.z ? cubeMin.z : cubeMax.z;
+
     generateBuffers();
     bindBuffers();
 }

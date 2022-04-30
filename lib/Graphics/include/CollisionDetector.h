@@ -6,6 +6,7 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/transform.hpp"
 #include <map>
+#include <vector>
 
 struct OBB {
     glm::vec2 p1;
@@ -16,15 +17,16 @@ struct OBB {
 
 class CollisionDetector {
 private:
+    static unsigned int currID;
     std::map<int, OBB> obbSet;
-    bool check(const OBB& obb1, const OBB& obb2);
 
 public:
     CollisionDetector() = default;
     ~CollisionDetector() = default;
-    void insert(const OBB& obb, const int key); 
-    void update(const OBB& obb, const int key);
-    bool checkCollision(const int key);
+    int insert(const OBB& obb); 
+    void update(const OBB& obb, const int ID);
+    int check(const int ID);
+    static bool check(const OBB& obb1, const OBB& obb2);
     static OBB computeOBB(float maxX, float maxZ,
                           float minX, float minZ,
                           const glm::mat4& model);

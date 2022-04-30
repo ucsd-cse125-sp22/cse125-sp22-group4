@@ -23,6 +23,12 @@ static Model* backpack;
 static Model* maze;
 static Model* players[PLAYER_NUM];
 
+// COLLISION DEBUG
+static Cube* wall1;
+static Cube* wall2;
+static CollisionDetector cDetector;
+// COLLITION DEBUG
+
 // state variables
 unsigned int my_id;
 static double prevXPos;
@@ -48,7 +54,7 @@ static void mouseCallback(GLFWwindow* window, int button, int action, int mods);
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 // debug private functions
-static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader);
+static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader, bool fill);
 
 /**
  * Create a GLFW window of given size
@@ -116,7 +122,7 @@ bool Client::initializeClient() {
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
-    ground->moveLocal(glm::vec3(0, -3, 0));
+    ground->moveGlobal(glm::vec3(0, -3, 0));
     teapot = new Model("../../objects/teapot.obj");
     teapot->scale(glm::vec3(2));
     teapot->moveGlobal(glm::vec3(-5, -2, -5));
@@ -131,6 +137,17 @@ bool Client::initializeClient() {
     backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/mazeTextured.obj");
     maze->moveGlobal(glm::vec3(0, -3, 0));
+
+    // COLLISION DEBUG
+    wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
+    wall1->moveGlobal(glm::vec3(8, 0, -8));
+    wall2 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
+    wall2->moveGlobal(glm::vec3(8, 0, 8));
+    cDetector.insert(wall1->getOBB());
+    cDetector.insert(wall2->getOBB());
+    cDetector.insert(tyra->getOBB());
+    // COLLITION DEBUG
+
 
     //hard coded for now
     players[0] = tyra;
@@ -159,25 +176,43 @@ void Client::displayCallback() {
 
     glm::mat4 identityMat = glm::mat4(1);
     switch (select) {
-    case 0:
+    case 0: {
         for (auto character : players) {
             character->draw(currCam->viewProjMat, identityMat, shader);
-            drawOBB(character->getOBB(), currCam->viewProjMat, shader);
         }
 
         ground->draw(currCam->viewProjMat, identityMat, shader);
-        break;
 
-    case 1:
+        // COLLITION DEBUG
+        wall1->draw(currCam->viewProjMat, identityMat, shader);
+        wall2->draw(currCam->viewProjMat, identityMat, shader);
+        drawOBB(wall1->getOBB(), currCam->viewProjMat, shader, false);
+        drawOBB(wall2->getOBB(), currCam->viewProjMat, shader, false);
+
+        int collideID = cDetector.check(2);
+        if (collideID != -1) {
+            spdlog::info("Collide with wall {}", collideID + 1);
+            drawOBB(tyra->getOBB(), currCam->viewProjMat, shader, true);
+        }
+        else {
+            drawOBB(tyra->getOBB(), currCam->viewProjMat, shader, false);
+        }
+        // COLLITION DEBUG
+
+        break;
+    }
+
+    case 1: {
         maze->draw(currCam->viewProjMat, identityMat, shader);
         tyra->draw(currCam->viewProjMat, identityMat, shader);
-        drawOBB(tyra->getOBB(), currCam->viewProjMat, shader);
         break;
+    }
 
-    case 2:
+    case 2: {
         backpack->draw(currCam->viewProjMat, identityMat, shader);
-        drawOBB(backpack->getOBB(), currCam->viewProjMat, shader);
+        drawOBB(backpack->getOBB(), currCam->viewProjMat, shader, false);
         break;
+    }
     }
 
     //drawOBB skybox last for efficiency
@@ -198,6 +233,12 @@ void Client::idleCallback() {
 
     if (!pause) {
         backpack->update();
+
+        // COLLITION DEBUG
+        wall2->update();
+        cDetector.update(wall2->getOBB(), 1);
+        cDetector.update(tyra->getOBB(), 2);
+        // COLLITION DEBUG
     }
 
     if (!isThirdPersonCam && keyHeld) {
@@ -236,6 +277,10 @@ void Client::cleanup() {
     delete backpack;
     delete maze;
     delete skybox;
+
+    // COLLISION DEBUG
+    delete wall1;
+    delete wall2;
 }
 
 /**
@@ -492,16 +537,23 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
     keyHeld = keys[0] || keys[1] || keys[2] || keys[3];
 }
 
-static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader) {
+static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader, bool fill) {
     glm::mat4 model(1);
     glUseProgram(shader);
+    if (fill) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+    else {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
     glBegin(GL_QUADS);
-    glVertex3f(obb.p1.x, 0, obb.p1.y);
-    glVertex3f(obb.p2.x, 0, obb.p2.y);
-    glVertex3f(obb.p3.x, 0, obb.p3.y);
-    glVertex3f(obb.p4.x, 0, obb.p4.y);
+    glVertex3f(obb.p1.x + 0.1, 0, obb.p1.y + 0.1);
+    glVertex3f(obb.p2.x - 0.1, 0, obb.p2.y + 0.1);
+    glVertex3f(obb.p3.x - 0.1, 0, obb.p3.y - 0.1);
+    glVertex3f(obb.p4.x + 0.1, 0, obb.p4.y - 0.1);
     glEnd();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glUseProgram(0);
 }
