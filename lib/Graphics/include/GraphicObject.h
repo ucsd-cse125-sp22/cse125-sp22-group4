@@ -16,7 +16,9 @@
 class GraphicObject {
 public:
     virtual ~GraphicObject() = default;
-    virtual void draw(const glm::mat4& viewProjMat, GLuint shader) const = 0;
+    virtual void draw(const glm::mat4& viewProjMat,
+                      const glm::mat4& transform,
+                      GLuint shader) const = 0;
     virtual void update() = 0;
     virtual void spin(float deg) = 0;
     virtual void scale(const glm::vec3& rate) = 0;

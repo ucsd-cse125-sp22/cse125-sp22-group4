@@ -40,12 +40,14 @@ public:
     TexturedMesh();
     TexturedMesh(const TexturedMesh& old);
     TexturedMesh(const std::vector<Vertex>& vertices,
-        const std::vector<unsigned int>& indices,
-        const std::vector<Texture>& textures,
-        const PhongMaterial& _phongMat);
+                 const std::vector<unsigned int>& indices,
+                 const std::vector<Texture>& textures,
+                 const PhongMaterial& _phongMat);
     ~TexturedMesh();
 
-    virtual void draw(const glm::mat4& viewProjMat, GLuint shader) const override;
+    virtual void draw(const glm::mat4& viewProjMat,
+                      const glm::mat4& transform,
+                      GLuint shader) const override;
     virtual void update() override;
     virtual void spin(float deg) override;
     virtual void scale(const glm::vec3& rate) override;

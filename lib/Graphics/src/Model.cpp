@@ -17,18 +17,15 @@ Model::~Model() {
     }
 }
 
-void Model::draw(const glm::mat4& viewProjMat, GLuint shader) const {
+void Model::draw(const glm::mat4& viewProjMat, 
+                 const glm::mat4& transform,
+                 GLuint shader) const {
     for (auto& mesh : meshes) {
-        mesh->draw(viewProjMat * model, shader);
+        mesh->draw(viewProjMat, transform * model, shader);
     }
 }
 
 void Model::update() {
-    /*
-    for (auto& mesh : meshes) {
-        mesh->update();
-    }
-    */
     spin(0.5f);
 }
 

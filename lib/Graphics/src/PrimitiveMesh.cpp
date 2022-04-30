@@ -54,12 +54,15 @@ PrimitiveMesh::~PrimitiveMesh() {
     glDeleteVertexArrays(1, &VAO);
 }
 
-void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
+void PrimitiveMesh::draw(const glm::mat4& viewProjMat, 
+                         const glm::mat4& transform,
+                         GLuint shader) const {
+    glm::mat4 actualModel = transform * model;
     // activate the shader program
     glUseProgram(shader);
     // get the locations and send the uniforms to the shader
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
-    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(actualModel));
     glUniform1i(glGetUniformLocation(shader, "mode"), 0);
     glUniform4fv(glGetUniformLocation(shader, "ambient"), 1, glm::value_ptr(phongMat.ambient));
     glUniform4fv(glGetUniformLocation(shader, "diffuse"), 1, glm::value_ptr(phongMat.diffuse));
@@ -67,7 +70,7 @@ void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
     glUniform4fv(glGetUniformLocation(shader, "emission"), 1, glm::value_ptr(phongMat.emission));
     glUniform1f(glGetUniformLocation(shader, "shininess"), phongMat.shininess);
 
-    // drawOBB mesh
+    // draw mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
 

@@ -36,7 +36,9 @@ public:
     Model(const std::string& path, bool gamma = false);
     ~Model();
 
-    void draw(const glm::mat4& viewProjMat, GLuint shader) const override;
+    void draw(const glm::mat4& viewProjMat,
+              const glm::mat4& transform,
+              GLuint shader) const override;
     void update() override;
     void spin(float deg) override;
     void scale(const glm::vec3& rate) override;

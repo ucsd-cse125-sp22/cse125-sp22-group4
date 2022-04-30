@@ -24,12 +24,14 @@ public:
     PrimitiveMesh();
     PrimitiveMesh(const PrimitiveMesh& old);
     PrimitiveMesh(const std::vector<glm::vec3>& _points,
-        const std::vector<glm::vec3>& _normals,
-        const std::vector<unsigned int> _indices,
-        const PhongMaterial& _phongMat=color::GREEN);
+                  const std::vector<glm::vec3>& _normals,
+                  const std::vector<unsigned int> _indices,
+                  const PhongMaterial& _phongMat=color::GREEN);
     ~PrimitiveMesh(); 
 
-    virtual void PrimitiveMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const override;
+    virtual void draw(const glm::mat4& viewProjMat,
+                      const glm::mat4& transform,
+                      GLuint shader) const override;
     virtual void update() override;
     virtual void spin(float deg) override;
     virtual void scale(const glm::vec3& rate) override;

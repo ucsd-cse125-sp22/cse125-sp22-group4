@@ -157,24 +157,25 @@ void Client::displayCallback() {
     glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
     glUseProgram(0);
 
+    glm::mat4 identityMat = glm::mat4(1);
     switch (select) {
     case 0:
         for (auto character : players) {
-            character->draw(currCam->viewProjMat, shader);
+            character->draw(currCam->viewProjMat, identityMat, shader);
             drawOBB(character->getOBB(), currCam->viewProjMat, shader);
         }
 
-        ground->draw(currCam->viewProjMat, shader);
+        ground->draw(currCam->viewProjMat, identityMat, shader);
         break;
 
     case 1:
-        maze->draw(currCam->viewProjMat, shader);
-        tyra->draw(currCam->viewProjMat, shader);
+        maze->draw(currCam->viewProjMat, identityMat, shader);
+        tyra->draw(currCam->viewProjMat, identityMat, shader);
         drawOBB(tyra->getOBB(), currCam->viewProjMat, shader);
         break;
 
     case 2:
-        backpack->draw(currCam->viewProjMat, shader);
+        backpack->draw(currCam->viewProjMat, identityMat, shader);
         drawOBB(backpack->getOBB(), currCam->viewProjMat, shader);
         break;
     }

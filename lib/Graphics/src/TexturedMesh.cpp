@@ -54,12 +54,15 @@ TexturedMesh::~TexturedMesh() {
 }
 
 // render the mesh
-void TexturedMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
+void TexturedMesh::draw(const glm::mat4& viewProjMat,
+                        const glm::mat4& transform,
+                        GLuint shader) const {
+    glm::mat4 actualModel = transform * model;
+    // activate the shader program
     glUseProgram(shader);
-
     // get the locations and send the uniforms to the shader
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
-    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(actualModel));
     glUniform1i(glGetUniformLocation(shader, "mode"), 1);
     glUniform4fv(glGetUniformLocation(shader, "ambient"), 1, glm::value_ptr(phongMat.ambient));
     glUniform4fv(glGetUniformLocation(shader, "diffuse"), 1, glm::value_ptr(phongMat.diffuse));
@@ -98,7 +101,7 @@ void TexturedMesh::draw(const glm::mat4& viewProjMat, GLuint shader) const {
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
 
-    // drawOBB mesh
+    // draw mesh
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, (GLsizei)indices.size(), GL_UNSIGNED_INT, 0);
 
