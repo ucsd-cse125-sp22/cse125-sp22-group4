@@ -198,12 +198,18 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     switch (packet->state.dir) {
     case LEFT:
     {
-        moveLocal(state.model, glm::vec3(-0.2, 0, 0));
+        bool obstacle = maze->leftBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+
+        if (!obstacle)
+            moveLocal(state.model, glm::vec3(-0.2, 0, 0));
         break;
     }
     case RIGHT:
     {
-        moveLocal(state.model, glm::vec3(0.2, 0, 0));
+        bool obstacle = maze->rightBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+
+        if (!obstacle)
+            moveLocal(state.model, glm::vec3(0.2, 0, 0));
         break;
     }
     case BACK:

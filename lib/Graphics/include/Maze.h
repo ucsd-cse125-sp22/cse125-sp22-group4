@@ -53,6 +53,8 @@ public:
 	
     bool forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
     bool backwardsBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
+    bool leftBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
+    bool rightBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
 
 };
 

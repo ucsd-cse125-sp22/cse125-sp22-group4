@@ -22,13 +22,50 @@ bool Maze::backwardsBlock(int playerID, double currPlayerXLoc, double currPlayer
     double length = 0.25; // estimate dino tail length
     double modelHalfWidth = .08; // just approximating
 
-    // cardinal directions (just reverse of forward motion)
+      // cardinal directions
     bool headingN = mod2 < 0;
     bool headingS = mod2 >= 0;
     bool headingW = mod1 < 0;
     bool headingE = mod1 >= 0;
 
+    // rotate perceived orientation of maze for backwards motion
+    int ID = (playerID + 2) % 4;
+
     return isObstacle(playerID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
+}
+
+bool Maze::leftBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
+    // model length and width
+    double length = 0.08; // estimate dino length
+    double modelHalfWidth = .23; // just approximating
+    
+    // cardinal directions
+    bool headingN = mod2 >= 0;
+    bool headingS = mod2 < 0;
+    bool headingW = mod1 >= 0;
+    bool headingE = mod1 < 0;
+  
+    // rotate perceived orientation of maze for strafing
+    int ID = (playerID + 1) % 4;
+
+    return isObstacle(ID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
+}
+
+bool Maze::rightBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
+    // model length and width
+    double length = 0.08; // estimate dino length
+    double modelHalfWidth = .23; // just approximating
+
+    // cardinal directions
+    bool headingN = mod2 >= 0;
+    bool headingS = mod2 < 0;
+    bool headingW = mod1 >= 0;
+    bool headingE = mod1 < 0;
+
+    // rotate perceived orientation of maze for strafing
+    int ID = (playerID +3) % 4;
+
+    return isObstacle(ID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
 }
 
 bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2, double length, double modelHalfWidth,
@@ -40,7 +77,7 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
     currPlayerXLoc = abs((currPlayerXLoc - 150) / 10);
     currPlayerZLoc = abs(currPlayerZLoc / 10);
 
-    printf("x %lf y %lf\n", currPlayerXLoc, currPlayerZLoc);
+    //printf("x %lf z %lf\n", currPlayerXLoc, currPlayerZLoc);
     // used for checking NS/EW walls 
     int currZIndexN;
     int currXIndexN;
@@ -144,7 +181,7 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
     if (up && headingN) {
         double angle = atan(mod1 / mod2);
         double distToWall = abs(distUp / cos(angle)) - modelHalfWidth * abs(sin(angle));
-
+        //printf("angle %lf distToWall %lf\n", angle * 180 / pi, distToWall);
         if (distToWall <= length)
             obstacle = true;
     }
