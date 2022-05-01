@@ -6,7 +6,7 @@ Maze::Maze() {}
 bool Maze::forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
     // model length and width
     double length = 0.23; // estimate dino length
-    double modelHalfWidth = .08; // just approximating
+    double modelHalfWidth = .1; // just approximating
 
     // cardinal directions
     bool headingN = mod2 >= 0;
@@ -66,6 +66,21 @@ bool Maze::rightBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc
     int ID = (playerID +3) % 4;
 
     return isObstacle(ID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
+}
+
+bool Maze::rotateBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
+   
+    // model length and width
+    double length = 0.16; // estimate dino length
+    double modelHalfWidth = .1; // just approximating
+
+    // cardinal directions
+    bool headingN = mod2 >= 0;
+    bool headingS = mod2 < 0;
+    bool headingW = mod1 >= 0;
+    bool headingE = mod1 < 0;
+
+    return isObstacle(playerID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
 }
 
 bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2, double length, double modelHalfWidth,
@@ -181,18 +196,36 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
     if (up && headingN) {
         double angle = atan(mod1 / mod2);
         double distToWall = abs(distUp / cos(angle)) - modelHalfWidth * abs(sin(angle));
-        //printf("angle %lf distToWall %lf\n", angle * 180 / pi, distToWall);
+        //printf("North angle %lf distToWall %lf\n", angle * 180 / pi, distToWall);
         if (distToWall <= length)
-            obstacle = true;
+            return true;
+        else if (abs(angle) > 1.22) {
+            if (distToWall - .3 <= length)
+                return true;
+            else if (abs(angle) > 1.39 && distToWall - .6 <= length)
+                return true;
+            else if (abs(angle) > 1.48 && distToWall - 1 <= length)
+                return true;
+
+        }
     }
 
 
     if (left && headingW) {
         double angle = atan(mod2 / mod1);
-        double distToWall = abs(distLeft / cos(angle)) - modelHalfWidth * abs(sin(angle));
-
+        double distToWall = abs(distLeft / cos(angle)) - modelHalfWidth * abs(sin(angle)); 
+        //printf("West angle %lf distToWall %lf\n", angle * 180 / pi, distToWall);
         if (distToWall <= length)
-            obstacle = true;
+            return true;
+        else if (abs(angle) > 1.22) {
+            if (distToWall - .3 <= length)
+                return true;
+            else if (abs(angle) > 1.39 && distToWall - .6 <= length)
+                return true;
+            else if (abs(angle) > 1.48 && distToWall - 1 <= length)
+                return true;
+
+        }
     }
 
 
@@ -200,9 +233,18 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
         double angle = atan(mod1 / mod2);
 
         double distToWall = abs(distDown / cos(angle)) - modelHalfWidth * abs(sin(angle));
-
+       // printf("South angle %lf distToWall %lf\n", angle * 180 / pi, distToWall);
         if (distToWall <= length)
-            obstacle = true;
+            return true;
+        else if (abs(angle) > 1.22) {
+            if (distToWall - .3 <= length)
+                return true;
+            else if (abs(angle) > 1.39 && distToWall - .6 <= length)
+                return true;
+            else if (abs(angle) > 1.48 && distToWall - 1 <= length)
+                return true;
+
+        }
     }
 
 
@@ -210,9 +252,18 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
         double angle = atan(mod2 / mod1);
 
         double distToWall = abs(distRight / cos(angle)) - modelHalfWidth * abs(sin(angle));
-
+        //printf("East angle %lf distToWall %lf\n", angle * 180 / pi, distToWall);
         if (distToWall <= length)
-            obstacle = true;
+            return true;
+        else if (abs(angle) > 1.22) {
+            if (distToWall - .3 <= length)
+                return true;
+            else if (abs(angle) > 1.39 && distToWall - .6 <= length)
+                return true;
+            else if (abs(angle) > 1.48 && distToWall - 1 <= length)
+                return true;
+
+        }
     }
 
     return obstacle;

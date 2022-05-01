@@ -505,15 +505,11 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_RIGHT:
-            currRotationUpdate = glm::rotate(glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-            thirdPersonCamera->reset();
-            //camera->move(glm::vec3(0.5, 0, 0));
+            camera->move(glm::vec3(0.5, 0, 0));
             break;
 
         case GLFW_KEY_LEFT:
-            currRotationUpdate = glm::rotate(glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-            thirdPersonCamera->reset();
-            //camera->move(glm::vec3(-0.5, 0, 0));
+            camera->move(glm::vec3(-0.5, 0, 0));
             break;
 
         case GLFW_KEY_UP:

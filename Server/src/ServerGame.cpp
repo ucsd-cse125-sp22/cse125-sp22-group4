@@ -184,8 +184,13 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     if (!state.alive) {
         return;
     }
-    state.model = state.model * packet->state.rotationalMatrix;
-    player_states[client_id] = state;
+
+    bool obstacle = maze->rotateBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+    if (!obstacle) {
+        state.model = state.model * packet->state.rotationalMatrix;
+        player_states[client_id] = state;
+    }
+    
 }
 
 //Update player_state from move packet.
