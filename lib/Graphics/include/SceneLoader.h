@@ -5,12 +5,14 @@
 
 class SceneLoader{
 private:
-
+    std::string scenefilename;
 public:
     SceneLoader(std::string filename);
     ~SceneLoader();
 
-    void load(std::string filename);
-
-    std::vector<Model*> models;
+    std::vector<Model*> load();
+    void draw(const glm::mat4& viewProjMat,
+        const glm::mat4& transform,
+        GLuint shader,
+        std::vector<Model*> sceneObjects);
 };

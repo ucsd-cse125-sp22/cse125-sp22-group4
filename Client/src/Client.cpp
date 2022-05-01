@@ -23,6 +23,8 @@ static Model* backpack;
 static Model* maze;
 static Model* players[PLAYER_NUM];
 
+std::vector<Model*> sceneObjects;
+
 //Scene
 static SceneLoader* scene;
 
@@ -41,7 +43,7 @@ static bool pause = false;
 static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
-static const char* scenes[3] = { "3rd Person Tyra", "Baby Maze", "Backpack"};
+static const char* scenes[4] = { "3rd Person Tyra", "Baby Maze", "Backpack", "Scene import"};
 
 static bool keys[4];
 static bool keyHeld = false;
@@ -126,16 +128,16 @@ bool Client::initializeClient() {
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
     ground->moveGlobal(glm::vec3(0, -3, 0));
-    teapot = new Model("../../objects/teapot.obj");
+    teapot = new Model("../../objects/teapot/teapot.obj");
     teapot->scale(glm::vec3(2));
     teapot->moveGlobal(glm::vec3(-5, -2, -5));
-    bunny = new Model("../../objects/bunny.obj");
+    bunny = new Model("../../objects/bunny/bunny.obj");
     bunny->scale(glm::vec3(2));
     bunny->moveGlobal(glm::vec3(5, -2, -5));
-    tyra = new Model("../../objects/tyra.obj");
+    tyra = new Model("../../objects/tyra/tyra.obj");
     tyra->scale(glm::vec3(1.5));
     tyra->moveGlobal(glm::vec3(0, -0.1, 0));
-    tyra2 = new Model("../../objects/tyra.obj");
+    tyra2 = new Model("../../objects/tyra/tyra.obj");
     tyra2->moveGlobal(glm::vec3(2, -0.1, 0));
     backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/mazeTextured.obj");
@@ -152,7 +154,8 @@ bool Client::initializeClient() {
     // COLLITION DEBUG
 
     //Load the scene
-    scene->load("../../scripts/scene.txt");
+    scene = new SceneLoader("../../scripts/scene.txt");
+    sceneObjects = scene->load();
 
 
     //hard coded for now
@@ -217,6 +220,10 @@ void Client::displayCallback() {
     case 2: {
         backpack->draw(currCam->viewProjMat, identityMat, shader);
         drawOBB(backpack->getOBB(), currCam->viewProjMat, shader, false);
+        break;
+    }
+    case 3: {
+        scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
         break;
     }
     }
@@ -287,6 +294,8 @@ void Client::cleanup() {
     // COLLISION DEBUG
     delete wall1;
     delete wall2;
+
+    delete scene;
 }
 
 /**
