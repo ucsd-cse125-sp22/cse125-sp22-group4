@@ -1,19 +1,15 @@
 //#include "stdafx.h" 
 #include "ServerNetwork.h"
 #include "Network/include/NetworkData.h"
-#include <iostream>
 
 ServerNetwork::ServerNetwork(void)
 {
-
     // create WSADATA object
     WSADATA wsaData;
 
     // our sockets for the server
     ListenSocket = INVALID_SOCKET;
     ClientSocket = INVALID_SOCKET;
-
-
 
     // address info for the server to listen to
     struct addrinfo* result = NULL;
@@ -100,11 +96,9 @@ bool ServerNetwork::acceptNewClient(unsigned int& id)
         char value = 1;
         setsockopt(ClientSocket, IPPROTO_TCP, TCP_NODELAY, &value, sizeof(value));
 
-        // insert new client into session id table
-        //sessions.insert(pair<unsigned int, SOCKET>(id, ClientSocket));
-
         struct PlayerSession session = {
             id,
+            GeneralUtil::generateRandomString(ID_LEN),
             ClientSocket,
             SESSION_CONNECTED,
         };
@@ -116,15 +110,20 @@ bool ServerNetwork::acceptNewClient(unsigned int& id)
     return false;
 }
 
+void checkDC(PlayerSession& session) {
+    if (session.status == SESSION_CONNECTED) {
+        printf("Player %d has disconnected\n", session.id);
+    }
+}
 
 // receive incoming data
 int ServerNetwork::receiveData(PlayerSession& session, char* recvbuf)
 {
     iResult = NetworkServices::receiveMessage(session.socket, recvbuf, MAX_PACKET_SIZE);
+
     if (iResult == 0) {
+        checkDC(session);
         session.status = SESSION_DISCONNECTED;
-    } else {
-        session.status = SESSION_CONNECTED;
     }
     return iResult;
 }
@@ -147,6 +146,7 @@ void ServerNetwork::sendToAll(char* packets, int totalSize)
     {
         int result = sendToSocket(session.socket, packets, totalSize);
         if (result == SOCKET_ERROR) {
+            checkDC(session);
             session.status = SESSION_DISCONNECTED;
         }
     }

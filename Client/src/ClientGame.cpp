@@ -1,11 +1,55 @@
 #include "ClientGame.h"
-#include <string>
-#include <iostream>
+
+bool ClientGame::readCookies() {
+    std::string old_uid;
+    std::string old_player_id;
+    std::fstream cookieFile;
+    cookieFile.open("cookies.txt", std::ios::in);
+    if (!cookieFile.good()) {
+        cookieFile.close();
+        return false;
+    }
+
+    std::getline(cookieFile, old_uid);
+    if (cookieFile.eof()) {
+        cookieFile.close();
+        return false;
+    }
+    std::getline(cookieFile, old_player_id);
+    cookieFile.close();
+
+    uid = old_uid;
+    player_id = old_player_id.c_str()[0];
+    return true;
+}
+
+void ClientGame::writeCookies() {
+    std::fstream cookieFile;
+    cookieFile.open("cookies.txt", std::ios::out | std::ios::trunc);
+    if (cookieFile.good()) {
+        cookieFile << uid << std::endl;
+        cookieFile << player_id << std::endl;
+    }
+    cookieFile.close();
+}
 
 ClientGame::ClientGame(void)
 {
+    loaded = false;
     network = new ClientNetwork();
 
+    if (CHECK_COOKIES && readCookies()) {
+        // Possible that client has DC'd and wishes to reconnect
+        unsigned int packet_size = sizeof(IDPacket);
+        IDPacket packet;
+        packet.id = player_id;
+        strncpy(packet.uid, uid.c_str(), ID_LEN);
+
+        // Tell server that we think we belong to this player
+        NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
+        return;
+
+    }
     // send init packet
     const unsigned int packet_size = sizeof(SimplePacket);
 
@@ -57,6 +101,15 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
     }
 }
 
+void ClientGame::handleIDPacket(IDPacket packet) {
+
+    player_id = (unsigned int)packet.id;
+    uid = std::string(packet.uid);
+    Client::setPlayerfromID(player_id);
+    std::cout << player_id << "|" << uid << std::endl;
+    writeCookies();
+}
+
 void ClientGame::update(MovementState s, RotationState r)
 {
     // Don't send action events to server if client is not fully loaded
@@ -91,6 +144,16 @@ void ClientGame::update(MovementState s, RotationState r)
                 free(x);
                 break;
 			}
+        case ID:
+        {
+            IDPacket* packet = (IDPacket*)malloc(sizeof(IDPacket));
+            memcpy(packet, &network_data[i], sizeof(IDPacket));
+            handleIDPacket(*packet);
+
+            i += sizeof(IDPacket);
+            free(packet);
+            break;
+        }
         case GAME_STATE:
             {
                 GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
@@ -106,7 +169,7 @@ void ClientGame::update(MovementState s, RotationState r)
                 break;
             }
             default:
-                printf("error in packet types\n");
+                printf("error in packet types %d\n", packet_class);
                 break;
         }
     }

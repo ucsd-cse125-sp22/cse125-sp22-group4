@@ -47,11 +47,6 @@ void ServerGame::replicateGameState() {
 
 void ServerGame::receiveFromClients()
 {
-
-    // go through all clients
-    std::map<unsigned int, SOCKET>::iterator iter;
-
-
     for (PlayerSession& session:network->sessions){
         unsigned int client_id = session.id;
         int data_length = network->receiveData(session, network_data);
@@ -84,6 +79,16 @@ void ServerGame::receiveFromClients()
             //replicateGameState();
             break;
         }
+        case ID:
+        {
+            IDPacket* pack = (IDPacket*)malloc(sizeof(IDPacket));
+            memcpy(pack, &network_data[i], sizeof(IDPacket));
+            handleIDPacket(session, pack);
+
+            i += sizeof(IDPacket);
+            free(pack);
+            break;
+        }
         case ROTATE:
         {
             RotatePacket* pack = (RotatePacket*)malloc(sizeof(RotatePacket));
@@ -92,7 +97,6 @@ void ServerGame::receiveFromClients()
 
             i += sizeof(RotatePacket);
             free(pack);
-
             break;
         }
         default:
@@ -103,16 +107,35 @@ void ServerGame::receiveFromClients()
     // Replicate game state when everything is processed in this frame.
 }
 
+void ServerGame::handleIDPacket(PlayerSession& session, IDPacket* packet) {
+    //for (PlayerSession& s : network->sessions) {
+    printf("We are handlign ID packet?");
+    for (int i = 0; i < network->sessions.size(); ++i) {
+        PlayerSession& s = network->sessions[i];
+        // Skip if player sessions are same
+        if (s.id == session.id)
+            continue;
+
+        // If the proposed id and uid are same on packet then
+        // replace the old socket with the current session's packet.
+        if (s.id == packet->id && s.uid == packet->uid) {
+            closesocket(s.socket);
+            s.socket = session.socket;
+        }
+    }
+}
+
 
 void ServerGame::handleSimplePacket(PlayerSession& session, SimplePacket* packet) {
     switch (packet->packet_type) {
     case INIT_CONNECTION:
     {
-        SimplePacket id_packet;
-        id_packet.packet_type = INIT_CONNECTION;
+        IDPacket id_packet;
 
         // Note: Cast from uint to char (should be safe, assuming < 16 players...)
-        id_packet.data = (char)session.id;
+        id_packet.id = (char)session.id;
+        std::strncpy(id_packet.uid, session.uid.c_str(), ID_LEN);
+        //id_packet.uid = session.uid.c_str();
         char* packet_bytes = packet_to_bytes(&id_packet, sizeof(id_packet));
         network->sendToSocket(session.socket, packet_bytes, sizeof(id_packet));
     }

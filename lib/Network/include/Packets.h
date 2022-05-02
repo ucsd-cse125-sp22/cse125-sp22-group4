@@ -9,6 +9,7 @@ typedef unsigned short ushort;
 
 enum PacketClasses {
 	SIMPLE,
+	ID,
 	STATE,
 	MOVE,
 	GAME_STATE,
@@ -34,6 +35,12 @@ struct SimplePacket {
 	ushort packet_class = SIMPLE;
 	ushort packet_type;
 	char data;
+};
+
+struct IDPacket {
+	ushort packet_class = ID;
+	char id;
+	char uid[ID_LEN];
 };
 
 struct MovePacket {

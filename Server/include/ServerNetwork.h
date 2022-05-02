@@ -1,9 +1,12 @@
 #include <winsock2.h>
 #include <Windows.h>
-#include "Network/include/NetworkServices.h"
 #include <ws2tcpip.h>
-#include <map>
+#include <string>
 #include <vector>
+
+#include "Network/include/NetworkServices.h"
+#include "Constants/include/constants.h"
+#include "Util.h"
 
 using namespace std;
 #pragma comment (lib, "Ws2_32.lib")
@@ -19,6 +22,9 @@ enum SessionStatus {
 
 struct PlayerSession {
     unsigned int id;
+    
+    // Unique id, for enabling reconnecting clients
+    std::string uid;
     SOCKET socket;
     SessionStatus status = SESSION_NA;
 };
@@ -27,7 +33,6 @@ class ServerNetwork
 {
 
 public:
-
     ServerNetwork(void);
     ~ServerNetwork(void);
 

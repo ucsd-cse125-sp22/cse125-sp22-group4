@@ -6,7 +6,7 @@
 
 
 // Microseconds / Frames per second
-#define FPS_MAX 1e6/60.0
+#define FPS_MAX 1e6/10.0
 
 class ServerGame
 {
@@ -21,6 +21,7 @@ public:
     void handleMovePacket(PlayerSession& session, MovePacket* s);
     void handleSimplePacket(PlayerSession& session, SimplePacket* s);
     void handleRotatePacket(PlayerSession& session, RotatePacket* s);
+    void handleIDPacket(PlayerSession& session, IDPacket* s);
     void replicateGameState();
 
 private:

@@ -2,6 +2,7 @@ add_executable(Server
     src/Server.cpp
     src/ServerGame.cpp
     src/ServerNetwork.cpp
+    src/Util.cpp
 )
 
 target_include_directories(Server PRIVATE
@@ -13,6 +14,7 @@ target_include_directories(Server PRIVATE
 target_sources(Server PRIVATE
     include/ServerGame.h
     include/ServerNetwork.h
+    include/Util.h
 )
 
 target_link_libraries(Server
