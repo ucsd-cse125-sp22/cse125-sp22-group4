@@ -20,6 +20,7 @@ public:
     void update();
     void receiveFromClients();
     void assignSpawn(int client_id);
+    void assignSpawnItem();
     void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);

@@ -214,6 +214,7 @@ void Client::displayCallback() {
         maze->draw(currCam->viewProjMat, identityMat, shader);
         tyra->draw(currCam->viewProjMat, identityMat, shader);
         bear->draw(currCam->viewProjMat, identityMat, shader);
+        item->draw(currCam->viewProjMat, identityMat, shader);
         break;
     }
 

@@ -51,6 +51,34 @@ void ServerGame::assignSpawn(int client_id) {
     player_states[client_id] = state;
 }
 
+void ServerGame::assignSpawnItem() {
+
+    glm::mat4 flagInitLoc = glm::mat4(1);
+
+    int randomSpawn = rand() % 5;
+
+    switch (randomSpawn) {
+    case 0:
+        moveGlobal(flagInitLoc, glm::vec3(145, 1, -25));
+        break;
+    case 1:
+        moveGlobal(flagInitLoc, glm::vec3(125, 1, -145));
+        break;
+    case 2:
+        moveGlobal(flagInitLoc, glm::vec3(5, 1, -5));
+        break;
+    case 3:
+        moveGlobal(flagInitLoc, glm::vec3(5, 1, -145));
+        break;
+    case 4:
+        moveGlobal(flagInitLoc, glm::vec3(96, 1, -53));
+        break;
+    }
+
+    flag = new Flag(flagInitLoc, glm::mat4(1));
+ 
+}
+
 void ServerGame::start() {
     const unsigned int packet_size = sizeof(SimplePacket);
     SimplePacket packet;
@@ -60,13 +88,8 @@ void ServerGame::start() {
     network->sendToAll(packet_bytes, packet_size);
     free(packet_bytes);
 
-    glm::mat4 flagInitLoc = glm::mat4(1);
-
-    moveLocal(flagInitLoc, glm::vec3(0.2));
-
-    printMat4(flagInitLoc);
-
-    flag = new Flag(flagInitLoc, glm::mat4(1));
+    // Move item to spawn
+    assignSpawnItem();
 
     // Move players to spawns
     for (int i = 0; i <= client_id; ++i) {
