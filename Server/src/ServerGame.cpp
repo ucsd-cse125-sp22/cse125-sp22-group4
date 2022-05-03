@@ -69,7 +69,7 @@ void ServerGame::start() {
     flag = new Flag(flagInitLoc, glm::mat4(1));
 
     // Move players to spawns
-    for (int i = 1; i <= client_id; ++i) {
+    for (int i = 0; i <= client_id; ++i) {
         assignSpawn(i);
     }
 }

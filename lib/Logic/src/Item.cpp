@@ -9,6 +9,7 @@ void Item::pickUp()
 void Item::respawn(glm::mat4 respawnPos)
 {
 	this->beingHeld = false;
+	this->model = respawnPos;
 	// put back at spawn point, as given by parameter
 }
 
