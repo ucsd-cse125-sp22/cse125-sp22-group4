@@ -103,7 +103,7 @@ void ServerGame::start() {
     // Move players to spawns
     for (int i = 0; i < PLAYER_NUM; ++i) {
         assignSpawn(i);
-        OBB obb = { {1,1},{-1,1}, {-1,-1}, {1,-1} };
+        OBB obb{ {1,1},{-1,1}, {-1,-1}, {1,-1} };
         collision_detector->insert(obb);
         printf("insert %d into cd\n", i);
     }
@@ -114,7 +114,7 @@ void ServerGame::start() {
 void ServerGame::collisionStep() {
 
     //collision_detector.
-    const OBB bounds = { {1,1},{-1,1}, {-1,-1}, {1,-1} };
+    const OBB bounds{ {1,1},{-1,1}, {-1,-1}, {1,-1} };
     for (int i = 1; i <= PLAYER_NUM; ++i) {
         printf("Searching for %d\n", i);
         collision_detector->update(CollisionDetector::computeOBB(bounds, player_states[i].model), i-1);
