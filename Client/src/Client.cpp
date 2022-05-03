@@ -23,6 +23,7 @@ static Model* backpack;
 static Model* maze;
 static Model* players[PLAYER_NUM];
 static Model* bear;
+static Model* item;
 
 // COLLISION DEBUG
 static Cube* wall1;
@@ -140,6 +141,7 @@ bool Client::initializeClient() {
     maze->moveGlobal(glm::vec3(0, -3, 0));
     bear = new Model("../../objects/bear.obj");
     bear->moveGlobal(glm::vec3(75, -3, -75));
+    item = new Model("../../objects/teapot.obj");
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -150,6 +152,7 @@ bool Client::initializeClient() {
     cDetector.insert(wall2->getOBB());
     cDetector.insert(tyra->getOBB());
     // COLLITION DEBUG
+
 
 
     //hard coded for now
@@ -201,6 +204,8 @@ void Client::displayCallback() {
             drawOBB(tyra->getOBB(), currCam->viewProjMat, shader, false);
         }
         // COLLITION DEBUG
+
+        item->draw(currCam->viewProjMat, identityMat, shader);
 
         break;
     }
@@ -286,6 +291,7 @@ void Client::cleanup() {
     delete maze;
     delete skybox;
     delete bear;
+    delete item;
 
     // COLLISION DEBUG
     delete wall1;
@@ -330,6 +336,10 @@ void Client::setPlayerfromID(unsigned int id) {
     my_id = id;
     player = players[my_id];
     thirdPersonCamera = new ThirdPersonCamera(player);
+}
+
+void Client::updateItemLocation(glm::mat4 location) {
+    item->setModel(location);
 }
 
 /**

@@ -32,6 +32,8 @@ public:
 
     void updateModels(PlayerState states[PLAYER_NUM]);
 
+    void setItem(glm::mat4 location);
+
     unsigned int getPlayer_id();
 
 private:

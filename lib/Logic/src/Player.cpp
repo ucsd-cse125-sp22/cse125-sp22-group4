@@ -18,6 +18,7 @@ void Mouse::die() {
 
 void Mouse::respawn(glm::mat4 respawnPos) {
 	this->alive = true;
+	this->model = respawnPos;
 	// Move to spawn point, as given by parameter
 }
 

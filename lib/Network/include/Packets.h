@@ -20,6 +20,7 @@ enum PacketTypes {
 	INIT_CONNECTION,
 	PING,
 	KEYSTROKE,
+	GAME_START,
 	/* Keystroke Packet Types */
 
 	/* State Packet Types*/
@@ -63,6 +64,7 @@ struct StatePacket {
 struct GameStatePacket {
 	ushort packet_class = GAME_STATE;
 	PlayerState player_states[PLAYER_NUM];
+	ItemState item_state;
 };
 
 ushort get_packet_class(char* data);

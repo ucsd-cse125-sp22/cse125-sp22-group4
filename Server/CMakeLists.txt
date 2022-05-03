@@ -20,4 +20,5 @@ target_link_libraries(Server
     Network
     Constants
     Graphics
+    Logic
 )

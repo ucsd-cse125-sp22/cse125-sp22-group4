@@ -54,6 +54,11 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
         Client::setPlayerfromID(player_id);
         break;
     }
+    case GAME_START:
+    {
+        // Notify player starts.
+        // Init player timer.
+    }
     }
 }
 
@@ -84,8 +89,6 @@ void ClientGame::update(MovementState s, RotationState r)
 				SimplePacket* x = (SimplePacket*)malloc(sizeof(SimplePacket));
 				memcpy(x, &network_data[i], sizeof(SimplePacket));
                 handleSimplePacket(*x);
-                sendActionPackets(s);
-                sendRotationPackets(r);
 
                 i += sizeof(SimplePacket);
                 free(x);
@@ -95,12 +98,16 @@ void ClientGame::update(MovementState s, RotationState r)
             {
                 GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
                 memcpy(packet, &network_data[i], sizeof(GameStatePacket));
-
                 updateModels(packet->player_states);
 
-                //printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
+                if (packet->item_state.hold == 5) {
+                    setItem(packet->item_state.model);
+                }
+                
+                //printMat4(packet->item_state.model);
 
                 i += sizeof(GameStatePacket);
+
                 free(packet);
                 break;
             }
@@ -109,6 +116,10 @@ void ClientGame::update(MovementState s, RotationState r)
                 break;
         }
     }
+}
+
+void ClientGame::setItem(glm::mat4 location) {
+    Client::updateItemLocation(location);
 }
 
 void ClientGame::updateModels(PlayerState states[PLAYER_NUM]) {

@@ -18,3 +18,8 @@ struct PlayerState {
 	glm::mat4 model = glm::mat4(1);
 	bool alive = 1;
 };
+
+struct ItemState {
+	glm::mat4 model = glm::mat4(1);
+	char hold = 5;
+};

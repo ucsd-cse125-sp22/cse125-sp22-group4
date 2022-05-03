@@ -4,9 +4,10 @@
 #include "Constants/include/constants.h"
 #include "Graphics/include/PrimitiveMesh.h"
 #include "Graphics/include/Maze.h"
+#include "Logic/include/Item.h"
 
 // Microseconds / Frames per second
-#define FPS_MAX 1e6/75.0
+#define FPS_MAX 1e6/60.0
 
 class ServerGame
 {
@@ -18,16 +19,23 @@ public:
 
     void update();
     void receiveFromClients();
+    void assignSpawn(int client_id);
+    void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
     void handleRotatePacket(int client_id, RotatePacket* s);
     void replicateGameState();
 
+    void moveLocal(glm::mat4& model, const glm::vec3& v);
+    void printMat4(glm::mat4 mat);
+
 private:
     // IDs for the clients connecting for table in ServerNetwork 
     static unsigned int client_id;
+    static bool game_started;
 
     Maze* maze;
+    Flag* flag;
 
     // The ServerNetwork object 
     ServerNetwork* network;
