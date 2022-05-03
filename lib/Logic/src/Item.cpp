@@ -28,8 +28,15 @@ Flag::Flag(glm::mat4 initialPos, glm::mat4 endPos)
 	};
 }
 
+
+
 bool Flag::checkGoal()
 {
 	// TODO: set goalPos to be a range/area that item needs to be in
 	return (this->model == this->goalPos);
+}
+
+
+OBB Flag::getOBB() {
+	return CollisionDetector::computeOBB({ {1,1},{-1,1}, {-1,-1}, {1,-1} }, model);
 }

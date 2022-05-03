@@ -4,6 +4,8 @@
 #include "Constants/include/constants.h"
 #include "Graphics/include/PrimitiveMesh.h"
 #include "Graphics/include/Maze.h"
+#include "Graphics/include/CollisionDetector.h"
+#include "Graphics/include/Model.h"
 #include "Logic/include/Item.h"
 
 // Microseconds / Frames per second
@@ -14,10 +16,13 @@ class ServerGame
 
 public:
 
+    static bool game_started;
     ServerGame(void);
     ~ServerGame(void);
 
     void update();
+    void collisionStep();
+
     void receiveFromClients();
     void assignSpawn(int client_id);
     void start();
@@ -32,13 +37,13 @@ public:
 private:
     // IDs for the clients connecting for table in ServerNetwork 
     static unsigned int client_id;
-    static bool game_started;
 
     Maze* maze;
     Flag* flag;
 
     // The ServerNetwork object 
     ServerNetwork* network;
+    CollisionDetector* collision_detector;
 
     // data buffer
     char network_data[MAX_PACKET_SIZE];

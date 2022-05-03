@@ -3,7 +3,7 @@ project(cse125-sp22-group4 CXX)
 
 # useful variables
 set(LIB_INCLUDE "${CMAKE_SOURCE_DIR}/lib")
-set(CMAKE_CONFIGURATION_TYPES "Release")
+#set(CMAKE_CONFIGURATION_TYPES "Release")
 
 message("Find conan packages......")
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)

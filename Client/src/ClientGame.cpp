@@ -100,8 +100,11 @@ void ClientGame::update(MovementState s, RotationState r)
                 memcpy(packet, &network_data[i], sizeof(GameStatePacket));
                 updateModels(packet->player_states);
 
-                if (packet->item_state.hold == 5) {
+                if (packet->item_state.hold == PLAYER_NUM + 1) {
                     setItem(packet->item_state.model);
+                }
+                else {
+                    setItem(players[i]->getModel());
                 }
                 
                 //printMat4(packet->item_state.model);

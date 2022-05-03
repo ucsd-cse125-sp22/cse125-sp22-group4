@@ -3,7 +3,7 @@
 #include <iostream>
 
 unsigned int ServerGame::client_id;
-
+bool ServerGame::game_started;
 
 void moveGlobal(glm::mat4& model, const glm::vec3& v) {
     model = glm::translate(glm::mat4(1), v) * model;
@@ -13,6 +13,8 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+Model playerModels[PLAYER_NUM];
+int flagId;
 
 ServerGame::ServerGame(void)
 {
@@ -23,6 +25,37 @@ ServerGame::ServerGame(void)
     network = new ServerNetwork();
     start_time = timer.now();
     maze = new Maze();
+
+    // TODO: Should not be hard coded like this.
+    player_states[0].modelType = PlayerModelTypes::Dino;
+    player_states[1].modelType = PlayerModelTypes::Teapot;
+    player_states[2].modelType = PlayerModelTypes::Bunny;
+    player_states[3].modelType = PlayerModelTypes::Dino;
+
+
+    // TOOD: Replace Model overhead... Currently loads in textures
+    // but server only needs OBB related code.
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        /*
+        switch (player_states[i].modelType) {
+        case PlayerModelTypes::Teapot:
+        {
+            playerModels[i] = Model("../../objects/teapot.obj");
+            break;
+        }
+        case PlayerModelTypes::Dino:
+        {
+            playerModels[i] = Model("../../objects/teapot.obj");
+            break;
+        }
+        case PlayerModelTypes::Bunny:
+        {
+            playerModels[i] = Model("../../objects/teapot.obj");
+            break;
+        }
+        }
+        */
+    }
 }
 
 void ServerGame::assignSpawn(int client_id) {
@@ -52,6 +85,7 @@ void ServerGame::assignSpawn(int client_id) {
 }
 
 void ServerGame::start() {
+
     const unsigned int packet_size = sizeof(SimplePacket);
     SimplePacket packet;
     packet.packet_type = GAME_START;
@@ -61,16 +95,37 @@ void ServerGame::start() {
     free(packet_bytes);
 
     glm::mat4 flagInitLoc = glm::mat4(1);
-
     moveLocal(flagInitLoc, glm::vec3(0.2));
-
     printMat4(flagInitLoc);
 
     flag = new Flag(flagInitLoc, glm::mat4(1));
 
     // Move players to spawns
-    for (int i = 0; i <= client_id; ++i) {
+    for (int i = 0; i < PLAYER_NUM; ++i) {
         assignSpawn(i);
+        OBB obb = { {1,1},{-1,1}, {-1,-1}, {1,-1} };
+        collision_detector->insert(obb);
+        printf("insert %d into cd\n", i);
+    }
+    flagId = collision_detector->insert(flag->getOBB());
+    ServerGame::game_started = true;
+}
+
+void ServerGame::collisionStep() {
+
+    //collision_detector.
+    const OBB bounds = { {1,1},{-1,1}, {-1,-1}, {1,-1} };
+    for (int i = 1; i <= PLAYER_NUM; ++i) {
+        printf("Searching for %d\n", i);
+        collision_detector->update(CollisionDetector::computeOBB(bounds, player_states[i].model), i-1);
+    }
+
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        int hitId = collision_detector->check(i);
+        printf("hit %d\n", hitId);
+        if (hitId == flagId) {
+            printf("AAAAAAAAAAAAAAAA\n");
+        }
     }
 }
 
@@ -95,6 +150,8 @@ void ServerGame::update()
     auto stop_time = timer.now();
     auto dt = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
     if (dt.count() >= FPS_MAX) {
+        if (!ServerGame::game_started) return;
+        collisionStep();
         replicateGameState();
         start_time = timer.now();
     }
@@ -189,6 +246,9 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
 			SOCKET player_socket = iter->second;
             SimplePacket id_packet;
             id_packet.packet_type = INIT_CONNECTION;
+
+
+
 
             // Note: Cast from uint to char (should be safe, assuming < 16 players...)
             id_packet.data = (char)iter->first;

@@ -28,6 +28,12 @@ enum PacketTypes {
 	MESSAGE,
 };
 
+enum PlayerModelTypes {
+	Dino,
+	Teapot,
+	Bunny,
+};
+
 
 // For first connections, pinging, etc.
 // Anything that doesn't need a payload
@@ -35,6 +41,7 @@ struct SimplePacket {
 	ushort packet_class = SIMPLE;
 	ushort packet_type;
 	char data;
+	char data2;
 };
 
 struct MovePacket {
