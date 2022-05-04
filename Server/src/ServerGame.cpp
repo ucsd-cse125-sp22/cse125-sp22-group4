@@ -184,8 +184,14 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     if (!state.alive) {
         return;
     }
-    state.model = state.model * packet->state.rotationalMatrix;
-    player_states[client_id] = state;
+
+    bool obstacle = maze->rotateBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (packet->state.rotationalMatrix[2][0] / packet->state.rotationalMatrix[2][2]));
+  
+    if (!obstacle) {
+        state.model = state.model * packet->state.rotationalMatrix;
+        player_states[client_id] = state;
+    }
+    
 }
 
 //Update player_state from move packet.
@@ -198,22 +204,31 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     switch (packet->state.dir) {
     case LEFT:
     {
-        moveLocal(state.model, glm::vec3(-0.2, 0, 0));
+        bool obstacle = maze->leftBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+
+        if (!obstacle)
+            moveLocal(state.model, glm::vec3(-0.2, 0, 0));
         break;
     }
     case RIGHT:
     {
-        moveLocal(state.model, glm::vec3(0.2, 0, 0));
+        bool obstacle = maze->rightBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+
+        if (!obstacle)
+            moveLocal(state.model, glm::vec3(0.2, 0, 0));
         break;
     }
     case BACK:
     {
-        moveLocal(state.model, glm::vec3(0, 0, 0.2));
+        bool obstacle = maze->backwardsBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+
+        if (!obstacle)
+            moveLocal(state.model, glm::vec3(0, 0, 0.2));
         break;
     }
     case FORWARD:
     {
-        bool obstacle = maze->isObstacle(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+        bool obstacle = maze->forwardBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle) {
             moveLocal(state.model, glm::vec3(0, 0, -0.2));
