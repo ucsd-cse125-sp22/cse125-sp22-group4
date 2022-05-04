@@ -55,9 +55,11 @@ void ServerGame::assignSpawnItem() {
 
     glm::mat4 flagInitLoc = glm::mat4(1);
 
-    int randomSpawn = rand() % 5;
+    int random = rand() % 5;
+    printf("%d\n spawn", random);
 
-    switch (randomSpawn) {
+    // choose random spawn location
+    switch (random) {
     case 0:
         moveGlobal(flagInitLoc, glm::vec3(145, 1, -25));
         break;
@@ -76,7 +78,40 @@ void ServerGame::assignSpawnItem() {
     }
 
     flag = new Flag(flagInitLoc, glm::mat4(1));
- 
+    flag->randomSpawn = random; // remember new location
+}
+
+void ServerGame::respawnItem(Flag* flag) {
+    int random = flag->randomSpawn;
+
+    // get new respawn location
+    while (random == flag->randomSpawn) {
+        random = rand() % 5;
+    }
+    //printf("%d random\n", random);
+    glm::mat4 model = flag->item_state.model;
+
+    // choose random respawn location
+    switch (random) {
+    case 0:
+        moveGlobal(model, glm::vec3(145, 1, -25));
+        break;
+    case 1:
+        moveGlobal(model, glm::vec3(125, 1, -145));
+        break;
+    case 2:
+        moveGlobal(model, glm::vec3(5, 1, -5));
+        break;
+    case 3:
+        moveGlobal(model, glm::vec3(5, 1, -145));
+        break;
+    case 4:
+        moveGlobal(model, glm::vec3(96, 1, -53));
+        break;
+    }
+
+    flag->item_state.model = model;
+
 }
 
 void ServerGame::start() {

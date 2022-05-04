@@ -21,6 +21,7 @@ public:
     void receiveFromClients();
     void assignSpawn(int client_id);
     void assignSpawnItem();
+    void respawnItem(Flag* flag);
     void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);

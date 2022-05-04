@@ -22,6 +22,7 @@ Flag::Flag(glm::mat4 initialPos, glm::mat4 endPos)
 {
 	initPos = initialPos;
 	goalPos = endPos;
+	randomSpawn = 0;
 	item_state = {
 		initialPos,
 		5
