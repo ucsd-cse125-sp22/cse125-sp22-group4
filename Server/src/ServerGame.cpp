@@ -117,17 +117,22 @@ void ServerGame::collisionStep() {
     //collision_detector.
     const OBB bounds{ {1,1},{-1,1}, {-1,-1}, {1,-1} };
     for (int i = 1; i <= PLAYER_NUM; ++i) {
-        printf("Searching for %d\n", i);
         collision_detector->update(CollisionDetector::computeOBB(bounds, player_states[i].model), i-1);
     }
 
     for (int i = 0; i < PLAYER_NUM; ++i) {
         int hitId = collision_detector->check(i);
-        printf("hit %d\n", hitId);
+        
+        // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
         if (hitId == flagId) {
-            printf("AAAAAAAAAAAAAAAA\n");
+            printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
+        } else if (hitId >= 0) {
+            printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i, hitId);
+        } else {
+            printf("[ServerGame::collisionStep] Player %d has no collisions\n", i);
         }
     }
+    printf("\n");
 }
 
 void ServerGame::update()
