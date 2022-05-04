@@ -117,7 +117,7 @@ void ServerGame::collisionStep() {
     //collision_detector.
     const OBB bounds{ {1,1},{-1,1}, {-1,-1}, {1,-1} };
     for (int i = 1; i <= PLAYER_NUM; ++i) {
-        collision_detector->update(CollisionDetector::computeOBB(bounds, player_states[i].model), i-1);
+        collision_detector->update(CollisionDetector::computeOBB(bounds, player_states[i-1].model), i-1);
     }
 
     for (int i = 0; i < PLAYER_NUM; ++i) {
