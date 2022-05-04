@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef MODEL_H
 #define MODEL_H
 
@@ -41,6 +43,7 @@ public:
               GLuint shader) const override;
     void update() override;
     void spin(float deg) override;
+    void rotate(const glm::vec3& v);
     void scale(const glm::vec3& rate) override;
     void moveLocal(const glm::vec3& v) override;
     void moveGlobal(const glm::vec3& v) override;
