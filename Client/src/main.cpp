@@ -125,6 +125,7 @@ int main(int argc, char** argv) {
             ImGui::End();
         }
         Client::GUI();
+        Client::timeGUI();
         /////////////////////////////////IMGUI STUFF IGNORE//////////////////////////////////////////////////////////
 
         client->update(Client::getMovementState(), Client::getRotationState());

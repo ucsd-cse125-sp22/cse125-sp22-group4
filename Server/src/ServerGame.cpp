@@ -23,6 +23,8 @@ ServerGame::ServerGame(void)
     network = new ServerNetwork();
     start_time = timer.now();
     maze = new Maze();
+    start_t = timer_t.now(); 
+    playTime = 0;
 }
 
 void ServerGame::assignSpawn(int client_id) {
@@ -56,7 +58,7 @@ void ServerGame::assignSpawnItem() {
     glm::mat4 flagInitLoc = glm::mat4(1);
 
     int random = rand() % 5;
-    printf("%d\n spawn", random);
+    printf("%d spawn\n", random);
 
     // choose random spawn location
     switch (random) {
@@ -156,6 +158,17 @@ void ServerGame::update()
         replicateGameState();
         start_time = timer.now();
     }
+   
+    auto stop_t = timer_t.now();
+    auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
+    
+    playTime = test.count();
+   
+    //printf("%d time\n", t);
+    //if (test.count() == 15)
+      //  printf("%d time yay!!!\n", test);
+   // if (test == 20)
+        
 }
 
 //broadcast game state to all clients
@@ -165,6 +178,7 @@ void ServerGame::replicateGameState() {
     memcpy(packet.player_states, player_states, sizeof(player_states));
 
     packet.item_state = flag->item_state;
+    packet.game.gameTime = playTime;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
 

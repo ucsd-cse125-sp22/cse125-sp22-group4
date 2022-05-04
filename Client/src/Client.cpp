@@ -33,6 +33,7 @@ static CollisionDetector cDetector;
 
 // state variables
 unsigned int my_id;
+static int oldTime = 0;
 static double prevXPos;
 static double prevYPos;
 static int select = 0;
@@ -308,6 +309,13 @@ void Client::GUI() {
     ImGui::End();
 }
 
+void Client::timeGUI() {
+    ImGui::Begin("Time GUI");
+    ImGui::Text("Game time counter: %d", oldTime);
+    ImGui::End();
+    //ImGui::SetNextWindowPos
+}
+
 MovementState Client::getMovementState() {
     return MovementState{
         direction,
@@ -337,6 +345,11 @@ void Client::setPlayerfromID(unsigned int id) {
 
 void Client::updateItemLocation(glm::mat4 location) {
     item->setModel(location);
+}
+
+void Client::updateTime(int t) {
+    if (oldTime != t)
+        oldTime = t;
 }
 
 /**

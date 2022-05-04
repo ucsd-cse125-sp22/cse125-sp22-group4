@@ -65,6 +65,7 @@ struct GameStatePacket {
 	ushort packet_class = GAME_STATE;
 	PlayerState player_states[PLAYER_NUM];
 	ItemState item_state;
+	GameState game;
 };
 
 ushort get_packet_class(char* data);

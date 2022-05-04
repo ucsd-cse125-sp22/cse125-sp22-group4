@@ -104,6 +104,9 @@ void ClientGame::update(MovementState s, RotationState r)
                     setItem(packet->item_state.model);
                 }
                 
+                setTime(packet->game.gameTime);
+                //printf("%d fuck\n", packet->game.gameTime);
+                
                 //printMat4(packet->item_state.model);
 
                 i += sizeof(GameStatePacket);
@@ -120,6 +123,10 @@ void ClientGame::update(MovementState s, RotationState r)
 
 void ClientGame::setItem(glm::mat4 location) {
     Client::updateItemLocation(location);
+}
+
+void ClientGame::setTime(int t) {
+    Client::updateTime(t);
 }
 
 void ClientGame::updateModels(PlayerState states[PLAYER_NUM]) {

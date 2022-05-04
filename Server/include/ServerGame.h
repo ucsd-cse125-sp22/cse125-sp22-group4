@@ -48,4 +48,8 @@ private:
 
     std::chrono::high_resolution_clock timer;
     std::chrono::steady_clock::time_point start_time;
+    std::chrono::steady_clock timer_t;
+    std::chrono::steady_clock::time_point start_t;
+
+    int playTime;
 };
