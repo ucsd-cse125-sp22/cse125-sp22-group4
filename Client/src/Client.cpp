@@ -143,7 +143,7 @@ bool Client::initializeClient() {
     backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/mazeTextured.obj");
     maze->moveGlobal(glm::vec3(0, -3, 0));
-    bear = new Model("../../objects/bear.obj");
+    bear = new Model("../../objects/bear/bear.obj");
     bear->moveGlobal(glm::vec3(75, -3, -75));
 
     // COLLISION DEBUG
