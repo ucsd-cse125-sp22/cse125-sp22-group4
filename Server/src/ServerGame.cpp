@@ -25,6 +25,7 @@ ServerGame::ServerGame(void)
     network = new ServerNetwork();
     start_time = timer.now();
     maze = new Maze();
+    collision_detector = new CollisionDetector();
 
     // TODO: Should not be hard coded like this.
     player_states[0].modelType = PlayerModelTypes::Dino;
