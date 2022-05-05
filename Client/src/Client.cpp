@@ -1,4 +1,6 @@
 #include "Client.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 // shader, camera and light
 static GLuint shader;
@@ -25,6 +27,13 @@ static Model* players[PLAYER_NUM];
 static Model* bear;
 static Model* item;
 
+int my_image_width = 0;
+int my_image_height = 0;
+GLuint my_image_texture = 0;
+int window_width;
+int window_height;
+bool ret; 
+
 // COLLISION DEBUG
 static Cube* wall1;
 static Cube* wall2;
@@ -33,7 +42,7 @@ static CollisionDetector cDetector;
 
 // state variables
 unsigned int my_id;
-static int oldTime = 0;
+static int currTime = 0;
 static double prevXPos;
 static double prevYPos;
 static int select = 0;
@@ -72,6 +81,8 @@ GLFWwindow* Client::createWindow(int width, int height, std::string windowTitle)
     GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
     prevXPos = (double) width / 2;
     prevYPos = (double) height / 2;
+    window_height = height;
+    window_width = width;
     return window;
 }
 
@@ -95,6 +106,41 @@ void Client::setupGLSettings() {
     glDepthFunc(GL_LEQUAL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+}
+
+// Simple helper function to load an image into a OpenGL texture with common settings
+bool Client::LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
+{
+    // Load from file
+    int image_width = 0;
+    int image_height = 0;
+    unsigned char* image_data = stbi_load(filename, &image_width, &image_height, NULL, 4);
+    if (image_data == NULL)
+        return false;
+
+    // Create a OpenGL texture identifier
+    GLuint image_texture;
+    glGenTextures(1, &image_texture);
+    glBindTexture(GL_TEXTURE_2D, image_texture);
+
+    // Setup filtering parameters for display
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
+
+    // Upload pixels into texture
+#if defined(GL_UNPACK_ROW_LENGTH) && !defined(__EMSCRIPTEN__)
+    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image_data);
+    stbi_image_free(image_data);
+
+    *out_texture = image_texture;
+    *out_width = image_width;
+    *out_height = image_height;
+
+    return true;
 }
 
 /**
@@ -143,6 +189,8 @@ bool Client::initializeClient() {
     bear = new Model("../../objects/bear.obj");
     bear->moveGlobal(glm::vec3(75, -3, -75));
     item = new Model("../../objects/teapot.obj");
+
+    ret = LoadTextureFromFile("../../objects/cat.png", &my_image_texture, &my_image_width, &my_image_height);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -313,15 +361,27 @@ void Client::timeGUI() {
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
-    //ImGui::Begin("Time GUI", NULL, flags);
+    flags |= ImGuiWindowFlags_NoScrollbar;
+    flags |= ImGuiWindowFlags_NoResize;
+    double adjustment = 0.2;
+    ImGui::SetNextWindowSize(ImVec2(my_image_width* adjustment, my_image_height * adjustment + 50));
+    ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width/2)+170, 0), 0, ImVec2(0, 0));
+    //printf(" % d window width %d image width\n", window_width, my_image_width);
+    ImGui::Begin("Time GUI", NULL, flags);
     ImVec4* colors = ImGui::GetStyle().Colors;
-
-    ImGui::Begin("Time GUI");
+    int time = 180 - currTime;
+    int minute = (time % 3600) / 60;  // Minute component
+    int seconds = time % 60;          // Second component 
+ 
+    ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(my_image_width*adjustment, my_image_height*adjustment));
     
-    //ImGui::Image(0, )
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.0f, 0.5f, 0.95f));
+    ImGui::Text("      Countdown: %d:%02d", minute, seconds);
+    ImGui::PopStyleColor();
+ 
     //colors[ImGuiCol_Text] = ImVec4(0.5f, 0.0f, 0.5f, 0.95f);
-    //ImGui::StyleColorsDark();
-    ImGui::Text("Game time counter: %d", oldTime);
+   
+    
     ImGui::End();
     //ImGui::SetNextWindowPos
 }
@@ -358,7 +418,7 @@ void Client::updateItemLocation(glm::mat4 location) {
 }
 
 void Client::updateTime(int t) {
-      oldTime = t;
+      currTime = t;
 }
 
 /**
@@ -578,6 +638,8 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
     }
     keyHeld = keys[0] || keys[1] || keys[2] || keys[3];
 }
+
+
 
 static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader, bool fill) {
     glm::mat4 model(1);
