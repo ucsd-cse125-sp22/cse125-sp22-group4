@@ -310,7 +310,13 @@ void Client::GUI() {
 }
 
 void Client::timeGUI() {
-    ImGui::Begin("Time GUI");
+    ImGuiWindowFlags flags = 0;
+    flags |= ImGuiWindowFlags_NoBackground;
+    flags |= ImGuiWindowFlags_NoTitleBar;
+    ImGui::Begin("Time GUI", NULL, flags);
+    ImVec4* colors = ImGui::GetStyle().Colors;
+    colors[ImGuiCol_Text] = ImVec4(0.5f, 0.0f, 0.5f, 0.95f);
+    //ImGui::StyleColorsDark();
     ImGui::Text("Game time counter: %d", oldTime);
     ImGui::End();
     //ImGui::SetNextWindowPos
@@ -348,8 +354,7 @@ void Client::updateItemLocation(glm::mat4 location) {
 }
 
 void Client::updateTime(int t) {
-    if (oldTime != t)
-        oldTime = t;
+      oldTime = t;
 }
 
 /**

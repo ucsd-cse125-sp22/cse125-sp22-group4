@@ -23,7 +23,6 @@ ServerGame::ServerGame(void)
     network = new ServerNetwork();
     start_time = timer.now();
     maze = new Maze();
-    start_t = timer_t.now(); 
     playTime = 0;
 }
 
@@ -124,6 +123,9 @@ void ServerGame::start() {
 
     network->sendToAll(packet_bytes, packet_size);
     free(packet_bytes);
+
+    // start game time TODO wait for all four players
+    start_t = timer_t.now();
 
     // Move item to spawn
     assignSpawnItem();
