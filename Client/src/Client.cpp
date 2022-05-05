@@ -313,9 +313,13 @@ void Client::timeGUI() {
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
-    ImGui::Begin("Time GUI", NULL, flags);
+    //ImGui::Begin("Time GUI", NULL, flags);
     ImVec4* colors = ImGui::GetStyle().Colors;
-    colors[ImGuiCol_Text] = ImVec4(0.5f, 0.0f, 0.5f, 0.95f);
+
+    ImGui::Begin("Time GUI");
+    
+    //ImGui::Image(0, )
+    //colors[ImGuiCol_Text] = ImVec4(0.5f, 0.0f, 0.5f, 0.95f);
     //ImGui::StyleColorsDark();
     ImGui::Text("Game time counter: %d", oldTime);
     ImGui::End();
