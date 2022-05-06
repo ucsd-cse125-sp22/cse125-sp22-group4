@@ -5,6 +5,7 @@
 #include "Graphics/include/PrimitiveMesh.h"
 #include "Graphics/include/Maze.h"
 #include "Logic/include/Item.h"
+#include <queue>
 
 // Microseconds / Frames per second
 #define FPS_MAX 1e6/60.0
@@ -52,4 +53,6 @@ private:
     std::chrono::steady_clock::time_point start_t;
 
     int playTime;
+    std::queue<int> cooldown;
+    int cooldownTime;
 };

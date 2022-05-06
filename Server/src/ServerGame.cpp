@@ -24,6 +24,9 @@ ServerGame::ServerGame(void)
     start_time = timer.now();
     maze = new Maze();
     playTime = 0;
+
+    // I have no idea what the cooldown time is...I think 5 seconds was proposed
+    cooldownTime = 5;
 }
 
 void ServerGame::assignSpawn(int client_id) {
@@ -165,11 +168,14 @@ void ServerGame::update()
     auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
     
     playTime = test.count();
+
+    //if (!cooldown.empty()) {
+    //    for (int i = 0; i < cooldown.size(); i++) {
+
+    //    }
+    //}
    
-    //printf("%d time\n", t);
-    //if (test.count() == 15)
-      //  printf("%d time yay!!!\n", test);
-   // if (test == 20)
+
         
 }
 

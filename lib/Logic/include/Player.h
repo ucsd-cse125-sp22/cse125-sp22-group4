@@ -2,7 +2,7 @@
 #include "Constants/include/constants.h"
 #include <string>
 #include "Graphics/include/GraphicObject.h"
-//#include <chrono>
+#include <chrono>
 
 class Player
 {
@@ -16,6 +16,8 @@ public:
 class Mouse : Player {
 public:
 	// Mouse needs a timer for death/respawning
+	std::chrono::steady_clock timer_mouse;
+	std::chrono::steady_clock::time_point start_mouse;
 	bool holdingItem;
 	void pickupItem();
 	void die();
