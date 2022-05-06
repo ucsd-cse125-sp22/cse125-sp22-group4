@@ -32,6 +32,10 @@ void ClientGame::sendActionPackets(MovementState s)
 }
 
 void ClientGame::sendRotationPackets(RotationState s) {
+    if (!s.moving) {
+        return;
+    }
+
     const unsigned int packet_size = sizeof(RotatePacket);
     RotatePacket packet;
     packet.packet_type = ACTION;

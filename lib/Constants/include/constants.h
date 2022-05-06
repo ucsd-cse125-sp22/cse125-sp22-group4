@@ -12,6 +12,7 @@ struct MovementState {
 
 struct RotationState {
 	glm::mat4 rotationalMatrix;
+	bool moving;
 };
 
 struct PlayerState {

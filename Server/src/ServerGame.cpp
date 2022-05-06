@@ -127,9 +127,9 @@ void ServerGame::collisionStep() {
         if (hitId == flagId) {
             printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
         } else if (hitId >= 0) {
-            printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i, hitId);
+            printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i+1, hitId+1);
         } else {
-            printf("[ServerGame::collisionStep] Player %d has no collisions\n", i);
+            //printf("[ServerGame::collisionStep] Player %d has no collisions\n", i);
         }
     }
     printf("\n");
