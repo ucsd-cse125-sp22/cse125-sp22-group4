@@ -105,7 +105,6 @@ void ServerGame::start() {
     // Move players to spawns
     for (int i = 0; i < PLAYER_NUM; ++i) {
         assignSpawn(i);
-        OBB obb{ {1,1},{-1,1}, {-1,-1}, {1,-1} };
         collision_detector->insert(fakePlayerModels[i].getOBB());
         printf("insert %d into cd\n", i);
     }
@@ -116,9 +115,8 @@ void ServerGame::start() {
 void ServerGame::collisionStep() {
 
     //collision_detector.
-    const OBB bounds{ {1,1},{-1,1}, {-1,-1}, {1,-1} };
-    for (int i = 1; i <= PLAYER_NUM; ++i) {
-        collision_detector->update(CollisionDetector::computeOBB(fakePlayerModels[i - 1].getOBB(), player_states[i - 1].model), i - 1);
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        collision_detector->update(CollisionDetector::computeOBB(fakePlayerModels[i].getOBB(), player_states[i].model), i);
     }
 
     for (int i = 0; i < PLAYER_NUM; ++i) {
@@ -146,7 +144,7 @@ void ServerGame::update()
     {
         client_id++;
         printf("client %d has been connected to the server\n", client_id);
-        if (1) {
+        if (client_id == 1) {
             // Send game start packets?
             printf("Game start\n");
             start();
