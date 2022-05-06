@@ -1,0 +1,17 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl lambert2SG
+Ns 100.000000
+Ka 1.000000 1.000000 1.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.400000 0.400000 0.400000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Ka TexturesCom_Rock_CliffDesert3_1K_ao.jpg
+map_Kd TexturesCom_Rock_CliffDesert3_1K_albedo.jpg
+map_Bump TexturesCom_Rock_CliffDesert3_1K_normal.jpg
+map_Ks specular.jpg
+map_Ns TexturesCom_Rock_CliffDesert3_1K_roughness.jpg
