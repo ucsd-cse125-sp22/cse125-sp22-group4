@@ -49,10 +49,16 @@ private:
 
     std::chrono::high_resolution_clock timer;
     std::chrono::steady_clock::time_point start_time;
+
+    // for game countdown
     std::chrono::steady_clock timer_t;
     std::chrono::steady_clock::time_point start_t;
-
     int playTime;
-    std::queue<int> cooldown;
+
+    // for dead mouse cooldown
     int cooldownTime;
+    std::queue< std::pair<int, int> > cooldown; // player ID and microseconds remaining
+    std::chrono::steady_clock timer_mouse;
+    std::chrono::steady_clock::time_point start_mouse;
+    void mouseDead(int client_id);
 };

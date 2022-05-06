@@ -25,8 +25,8 @@ ServerGame::ServerGame(void)
     maze = new Maze();
     playTime = 0;
 
-    // I have no idea what the cooldown time is...I think 5 seconds was proposed
-    cooldownTime = 5;
+    // I have no idea what the cooldown time is...I put 5 seconds in microseconds
+    cooldownTime = 5000000;
 }
 
 void ServerGame::assignSpawn(int client_id) {
@@ -118,6 +118,7 @@ void ServerGame::respawnItem(Flag* flag) {
 
 }
 
+
 void ServerGame::start() {
     const unsigned int packet_size = sizeof(SimplePacket);
     SimplePacket packet;
@@ -137,6 +138,15 @@ void ServerGame::start() {
     for (int i = 0; i <= client_id; ++i) {
         assignSpawn(i);
     }
+}
+
+void ServerGame::mouseDead(int client_id) {
+    start_mouse = timer_mouse.now();
+    cooldown.push({ client_id, cooldownTime });
+    PlayerState& state = player_states[client_id];
+    state.alive = false;
+    player_states[client_id] = state;
+    // call mouse.die function???
 }
 
 void ServerGame::update()
@@ -164,16 +174,40 @@ void ServerGame::update()
         start_time = timer.now();
     }
    
+    // game countdown
     auto stop_t = timer_t.now();
     auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
-    
     playTime = test.count();
 
-    //if (!cooldown.empty()) {
-    //    for (int i = 0; i < cooldown.size(); i++) {
+    // cooldown for dead mice
 
-    //    }
-    //}
+    if (!cooldown.empty()) {
+        int numDeadMice = cooldown.size();
+        //printf("%d cooldown size\n", numDeadMice);
+        for (int i = 0; i < numDeadMice; i++) {
+            std::pair<int, int> deadMouse = cooldown.front();
+            auto stop_mouse = timer_mouse.now();
+            auto diff = std::chrono::duration_cast<std::chrono::microseconds>(stop_mouse - start_mouse);
+            
+            int newTime = deadMouse.second - diff.count();
+            //printf("%d dead mouse\n", newTime);
+
+            if (newTime <= 0) { // cooldown is over, mouse can be reborn
+                assignSpawn(client_id);
+                PlayerState& state = player_states[client_id];
+                state.alive = true;
+                player_states[client_id] = state;
+                cooldown.pop();
+            }
+            //else { // cooldown is still going, stick mouse to back of queue
+            //    int id = deadMouse.first;
+            //    cooldown.pop();
+            //    cooldown.push({ id, newTime });
+            //    
+            //}
+            //
+        }
+    }
    
 
         
@@ -313,6 +347,8 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
 
         if (!obstacle)
             moveLocal(state.model, glm::vec3(0, 0, 0.2));
+        
+        //mouseDead(client_id);
         break;
     }
     case FORWARD:

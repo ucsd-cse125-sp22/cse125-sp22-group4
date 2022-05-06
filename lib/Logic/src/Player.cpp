@@ -7,7 +7,6 @@ void Mouse::pickupItem() {
 
 void Mouse::die() {
 	this->alive = false;
-	this->start_mouse = this->timer_mouse.now();
 
 	// Unrender mouse/put dead mouse
 	if (this->holdingItem) {
