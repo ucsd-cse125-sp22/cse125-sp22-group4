@@ -3,7 +3,7 @@
 #include <iostream>
 
 unsigned int ServerGame::client_id;
-
+bool ServerGame::game_started;
 
 void moveGlobal(glm::mat4& model, const glm::vec3& v) {
     model = glm::translate(glm::mat4(1), v) * model;
@@ -13,6 +13,8 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+Model playerModels[PLAYER_NUM];
+int flagId;
 
 ServerGame::ServerGame(void)
 {
@@ -22,15 +24,116 @@ ServerGame::ServerGame(void)
     // set up the server network to listen 
     network = new ServerNetwork();
     start_time = timer.now();
-
     maze = new Maze();
-    
-    /*
-    PlayerState state = player_states[client_id];
-    moveGlobal(state.model, glm::vec3(75, 2, -5));
+    collision_detector = new CollisionDetector();
+
+    // TODO: Should not be hard coded like this.
+    player_states[0].modelType = PlayerModelTypes::Dino;
+    player_states[1].modelType = PlayerModelTypes::Teapot;
+    player_states[2].modelType = PlayerModelTypes::Bunny;
+    player_states[3].modelType = PlayerModelTypes::Dino;
+
+
+    // Load in fake models
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        switch (player_states[i].modelType) {
+        case PlayerModelTypes::Teapot:
+        {
+            fakePlayerModels[i] = FakeModel("../../objects/teapot.obj");
+            break;
+        }
+        case PlayerModelTypes::Dino:
+        {
+            fakePlayerModels[i] = FakeModel("../../objects/tyra.obj");
+            break;
+        }
+        case PlayerModelTypes::Bunny:
+        {
+            fakePlayerModels[i] = FakeModel("../../objects/bunny.obj");
+            break;
+        }
+        }
+    }
+}
+
+void ServerGame::assignSpawn(int client_id) {
+    PlayerState& state = player_states[client_id];
+    switch (client_id) {
+    case 0:
+        //player 1 starting location
+        moveGlobal(state.model, glm::vec3(75, 0, -5));
+        oldModels[0] = state.model;
+        break;
+    case 1:
+        // player 2 starting location
+        moveGlobal(state.model, glm::vec3(145, 0, -75));
+        spin(state.model, 90);
+        oldModels[1] = state.model;
+        break;
+    case 2:
+        // player 3 starting location
+        moveGlobal(state.model, glm::vec3(75, 0, -145));
+        spin(state.model, 180);
+        oldModels[2] = state.model;
+        break;
+    case 3:
+        // player 4 starting location
+        moveGlobal(state.model, glm::vec3(5, 0, -75));
+        spin(state.model, 270);
+        oldModels[3] = state.model;
+        break;
+    }
     player_states[client_id] = state;
-    */
-    
+}
+
+void ServerGame::start() {
+
+    const unsigned int packet_size = sizeof(SimplePacket);
+    SimplePacket packet;
+    packet.packet_type = GAME_START;
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+
+    network->sendToAll(packet_bytes, packet_size);
+    free(packet_bytes);
+
+    glm::mat4 flagInitLoc = glm::mat4(1);
+    moveLocal(flagInitLoc, glm::vec3(5, 0, -5));
+    printMat4(flagInitLoc);
+
+    flag = new Flag(flagInitLoc, glm::mat4(1));
+
+    // Move players to spawns
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        assignSpawn(i);
+        collision_detector->insert(fakePlayerModels[i].getOBB());
+        printf("insert %d into cd\n", i);
+    }
+    flagId = collision_detector->insert(flag->getOBB());
+    ServerGame::game_started = true;
+}
+
+void ServerGame::collisionStep() {
+
+    //collision_detector.
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        collision_detector->update(CollisionDetector::computeOBB(fakePlayerModels[i].getOBB(), player_states[i].model), i);
+    }
+
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        int hitId = collision_detector->check(i);
+        
+        // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
+        if (hitId == flagId) {
+            printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
+            flag->item_state.hold = i;
+        } else if (hitId >= 0) {
+            player_states[i].model = oldModels[i];
+            printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i+1, hitId+1);
+        } else {
+            //printf("[ServerGame::collisionStep] Player %d has no collisions\n", i);
+        }
+    }
+    //printf("\n");
 }
 
 void ServerGame::update()
@@ -39,39 +142,20 @@ void ServerGame::update()
     // get new clients
     if (network->acceptNewClient(client_id))
     {
-      
-        PlayerState state = player_states[client_id];
-        switch (client_id) {
-        case 0:
-            //player 1 starting location
-            moveGlobal(state.model, glm::vec3(75, 2, -5));
-            break;
-
-        case 1:
-            // player 2 starting location
-            moveGlobal(state.model, glm::vec3(145, 2, -75));
-            spin(state.model, 90);
-            break;
-        case 2:
-            // player 3 starting location
-            moveGlobal(state.model, glm::vec3(75, 2, -145));
-            spin(state.model, 180);
-            break;
-        case 3:
-            // player 4 starting location
-            moveGlobal(state.model, glm::vec3(5, 2, -75));
-            spin(state.model, 270);
-            break;
-        }     
-
-        // No buffer overflow will happen: acceptNewClient does a check
-        player_states[client_id] = state;
-
-        printf("client %d has been connected to the server\n", client_id);
         client_id++;
+        printf("client %d has been connected to the server\n", client_id);
+        if (client_id == 1) {
+            // Send game start packets?
+            printf("Game start\n");
+            start();
+        }
     }
+
     // Receive from clients as fast as possible.
     receiveFromClients();
+    //collision should be handled as fast as movement is handled
+    if (!ServerGame::game_started) return;
+    collisionStep();
 
     // Calculate tick
     auto stop_time = timer.now();
@@ -87,6 +171,9 @@ void ServerGame::replicateGameState() {
     const unsigned int packet_size = sizeof(GameStatePacket);
     GameStatePacket packet;
     memcpy(packet.player_states, player_states, sizeof(player_states));
+
+    packet.item_state = flag->item_state;
+
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
 
     network->sendToAll(packet_bytes, packet_size);
@@ -154,7 +241,7 @@ void ServerGame::receiveFromClients()
 //method to translate the model matrix
 // TODO: Make use of graphics library instead. Have an object wrap the player's positions
 // and use methods to manipulate.
-void moveLocal(glm::mat4& model, const glm::vec3& v) {
+void ServerGame::moveLocal(glm::mat4& model, const glm::vec3& v) {
     model = model * glm::translate(glm::mat4(1), v);
 }
 
@@ -169,6 +256,9 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
             SimplePacket id_packet;
             id_packet.packet_type = INIT_CONNECTION;
 
+
+
+
             // Note: Cast from uint to char (should be safe, assuming < 16 players...)
             id_packet.data = (char)iter->first;
             char* packet_bytes = packet_to_bytes(&id_packet, sizeof(id_packet));
@@ -181,6 +271,7 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
 //multiply the rotational matrix from client to the actual model
 void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     PlayerState state = player_states[client_id];
+    oldModels[client_id] = player_states[client_id].model;
     if (!state.alive) {
         return;
     }
@@ -197,6 +288,8 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
 //Update player_state from move packet.
 void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     PlayerState state = player_states[client_id];
+    oldModels[client_id] = player_states[client_id].model;
+
     if (!state.alive) {
         return;
     }
@@ -239,4 +332,11 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     }
     // Actually do the update...
     player_states[client_id] = state;
+}
+
+void ServerGame::printMat4(glm::mat4 mat) {
+    printf("%f, %f, %f, %f\n", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
+    printf("%f, %f, %f, %f\n", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+    printf("%f, %f, %f, %f\n", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+    printf("%f, %f, %f, %f\n", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
 }

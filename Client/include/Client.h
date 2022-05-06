@@ -38,6 +38,7 @@ namespace Client {
 
     void resetRotUpdate();
     void setPlayerfromID(unsigned int id);
+    void updateItemLocation(glm::mat4 location);
 };
 
 #endif // !CLIENT_H

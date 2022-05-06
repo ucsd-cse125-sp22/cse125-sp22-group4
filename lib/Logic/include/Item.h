@@ -1,5 +1,7 @@
 #pragma once
 #include "Graphics/include/GraphicObject.h"
+#include "Graphics/include/CollisionDetector.h"
+#include "Constants/include/constants.h"
 
 class Item
 {
@@ -22,7 +24,14 @@ class Flag : Item {
 public:
 	// Check if Flag is within goalPos
 	bool checkGoal() override;
+	OBB getOBB();
+
+	Flag(glm::mat4 initialPos, glm::mat4 endPos);
+	~Flag();
+	ItemState item_state;
+
 private:
+	glm::mat4 initPos;
 	glm::mat4 goalPos; // potentially its own class?
 };
 

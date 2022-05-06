@@ -5,6 +5,7 @@ add_library(Graphics STATIC
     src/Shader.cpp
     src/Skybox.cpp
     src/Camera.cpp
+    src/FakeModel.cpp
     src/ObjectLoader.cpp
     src/TexturedMesh.cpp
     src/PrimitiveMesh.cpp
@@ -27,6 +28,7 @@ target_sources(Graphics PRIVATE
     include/Skybox.h
     include/Camera.h
     include/ShaderUtil.h
+    include/FakeModel.h
     include/ObjectLoader.h
     include/TexturedMesh.h
     include/PrimitiveMesh.h

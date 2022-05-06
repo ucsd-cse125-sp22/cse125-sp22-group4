@@ -23,6 +23,7 @@ static Model* backpack;
 static Model* maze;
 static Model* players[PLAYER_NUM];
 static Model* bear;
+static Model* item;
 
 std::vector<Model*> sceneObjects;
 
@@ -48,6 +49,7 @@ static const char* scenes[4] = { "3rd Person Tyra", "Baby Maze", "Backpack", "Sc
 
 static bool keys[4];
 static bool keyHeld = false;
+static bool mouseMoving = false;
 static int direction = -1;
 
 static glm::mat4 currRotationUpdate = glm::mat4(1);
@@ -145,6 +147,7 @@ bool Client::initializeClient() {
     maze->moveGlobal(glm::vec3(0, -3, 0));
     bear = new Model("../../objects/bear/bear.obj");
     bear->moveGlobal(glm::vec3(75, -3, -75));
+    item = new Model("../../objects/backpack/backpack.obj");
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -159,6 +162,7 @@ bool Client::initializeClient() {
     //Load the scene
     scene = new SceneLoader("../../scripts/scene.txt");
     sceneObjects = scene->load();
+
 
 
     //hard coded for now
@@ -211,6 +215,8 @@ void Client::displayCallback() {
         }
         // COLLITION DEBUG
 
+        item->draw(currCam->viewProjMat, identityMat, shader);
+
         break;
     }
 
@@ -221,6 +227,7 @@ void Client::displayCallback() {
         teapot->draw(currCam->viewProjMat, identityMat, shader);
         bunny->draw(currCam->viewProjMat, identityMat, shader);
         tyra2->draw(currCam->viewProjMat, identityMat, shader);
+        item->draw(currCam->viewProjMat, identityMat, shader);
         
         break;
     }
@@ -299,6 +306,7 @@ void Client::cleanup() {
     delete maze;
     delete skybox;
     delete bear;
+    delete item;
 
     // COLLISION DEBUG
     delete wall1;
@@ -330,6 +338,7 @@ MovementState Client::getMovementState() {
 RotationState Client::getRotationState() {
     return RotationState{
         currRotationUpdate,
+        mouseMoving,
     };
 }
 
@@ -345,6 +354,10 @@ void Client::setPlayerfromID(unsigned int id) {
     my_id = id;
     player = players[my_id];
     thirdPersonCamera = new ThirdPersonCamera(player);
+}
+
+void Client::updateItemLocation(glm::mat4 location) {
+    item->setModel(location);
 }
 
 /**
@@ -386,8 +399,10 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
 **/
 static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
     ImGui_ImplGlfw_CursorPosCallback(window, xPos, yPos);
+    mouseMoving = false;
     if (isThirdPersonCam && !pause) {
         if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
+            mouseMoving = true;
             double yawAngle = -0.5 * (xPos - prevXPos);
             double pitchAngle = -0.5 * (yPos - prevYPos);
            
@@ -401,6 +416,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
     } else {
         if (middlePressed) {
             if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
+                mouseMoving = true;
                 double yawAngle = -0.5 * (xPos - prevXPos);
                 double pitchAngle = -0.5 * (yPos - prevYPos);
                 camera->yaw((float)yawAngle);

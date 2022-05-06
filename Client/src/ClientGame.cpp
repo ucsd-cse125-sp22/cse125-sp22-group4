@@ -32,6 +32,10 @@ void ClientGame::sendActionPackets(MovementState s)
 }
 
 void ClientGame::sendRotationPackets(RotationState s) {
+    if (!s.moving) {
+        return;
+    }
+
     const unsigned int packet_size = sizeof(RotatePacket);
     RotatePacket packet;
     packet.packet_type = ACTION;
@@ -53,6 +57,11 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
         std::cout << "My player id is " << player_id << std::endl;
         Client::setPlayerfromID(player_id);
         break;
+    }
+    case GAME_START:
+    {
+        // Notify player starts.
+        // Init player timer.
     }
     }
 }
@@ -84,8 +93,6 @@ void ClientGame::update(MovementState s, RotationState r)
 				SimplePacket* x = (SimplePacket*)malloc(sizeof(SimplePacket));
 				memcpy(x, &network_data[i], sizeof(SimplePacket));
                 handleSimplePacket(*x);
-                sendActionPackets(s);
-                sendRotationPackets(r);
 
                 i += sizeof(SimplePacket);
                 free(x);
@@ -95,12 +102,22 @@ void ClientGame::update(MovementState s, RotationState r)
             {
                 GameStatePacket* packet = (GameStatePacket*)malloc(sizeof(GameStatePacket));
                 memcpy(packet, &network_data[i], sizeof(GameStatePacket));
-
                 updateModels(packet->player_states);
 
-                //printf("Client received gamestate with coordinates: x = %f, y = %f, z = %f\n", mat[3][0], mat[3][1], mat[3][2]);
+                if (packet->item_state.hold == PLAYER_NUM + 1) {
+                    setItem(packet->item_state.model);
+                }
+                else{
+                    glm::mat4 playerModel = players[packet->item_state.hold]->getModel();
+                    glm::mat4 newItemModel = playerModel * glm::translate(glm::vec3(0, 1, 0));
+                    newItemModel = newItemModel * glm::scale(glm::vec3(0.5f));
+                    setItem(newItemModel);
+                }
+                
+                //printMat4(packet->item_state.model);
 
                 i += sizeof(GameStatePacket);
+
                 free(packet);
                 break;
             }
@@ -109,6 +126,10 @@ void ClientGame::update(MovementState s, RotationState r)
                 break;
         }
     }
+}
+
+void ClientGame::setItem(glm::mat4 location) {
+    Client::updateItemLocation(location);
 }
 
 void ClientGame::updateModels(PlayerState states[PLAYER_NUM]) {

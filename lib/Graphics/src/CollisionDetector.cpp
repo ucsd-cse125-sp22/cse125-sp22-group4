@@ -10,6 +10,7 @@ int CollisionDetector::insert(const OBB& obb) {
 }
 
 void CollisionDetector::update(const OBB& obb, const int ID) {
+    // TODO: Handle ID doesn't exist
     obbSet[ID] = obb;
 }
 
@@ -84,6 +85,27 @@ OBB CollisionDetector::computeOBB(float maxX, float maxZ,
     glm::vec4 p2(minX, 0, maxZ, 1);
     glm::vec4 p3(minX, 0, minZ, 1);
     glm::vec4 p4(maxX, 0, minZ, 1);
+
+    p1 = model * p1;
+    p2 = model * p2;
+    p3 = model * p3;
+    p4 = model * p4;
+
+    OBB obb{
+        {p1.x, p1.z},
+        {p2.x, p2.z},
+        {p3.x, p3.z},
+        {p4.x, p4.z}
+    };
+
+    return obb;
+}
+
+OBB CollisionDetector::computeOBB(const OBB& oldOBB, const glm::mat4& model) {
+    glm::vec4 p1(oldOBB.p1.x, 0, oldOBB.p1.y, 1);
+    glm::vec4 p2(oldOBB.p2.x, 0, oldOBB.p2.y, 1);
+    glm::vec4 p3(oldOBB.p3.x, 0, oldOBB.p3.y, 1);
+    glm::vec4 p4(oldOBB.p4.x, 0, oldOBB.p4.y, 1);
 
     p1 = model * p1;
     p2 = model * p2;

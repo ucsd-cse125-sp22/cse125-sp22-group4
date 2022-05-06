@@ -20,11 +20,18 @@ enum PacketTypes {
 	INIT_CONNECTION,
 	PING,
 	KEYSTROKE,
+	GAME_START,
 	/* Keystroke Packet Types */
 
 	/* State Packet Types*/
 	ACTION,
 	MESSAGE,
+};
+
+enum PlayerModelTypes {
+	Dino,
+	Teapot,
+	Bunny,
 };
 
 
@@ -34,6 +41,7 @@ struct SimplePacket {
 	ushort packet_class = SIMPLE;
 	ushort packet_type;
 	char data;
+	char data2;
 };
 
 struct MovePacket {
@@ -63,6 +71,7 @@ struct StatePacket {
 struct GameStatePacket {
 	ushort packet_class = GAME_STATE;
 	PlayerState player_states[PLAYER_NUM];
+	ItemState item_state;
 };
 
 ushort get_packet_class(char* data);
