@@ -34,28 +34,25 @@ ServerGame::ServerGame(void)
     player_states[3].modelType = PlayerModelTypes::Dino;
 
 
-    // TOOD: Replace Model overhead... Currently loads in textures
-    // but server only needs OBB related code.
+    // Load in fake models
     for (int i = 0; i < PLAYER_NUM; ++i) {
-        /*
         switch (player_states[i].modelType) {
         case PlayerModelTypes::Teapot:
         {
-            playerModels[i] = Model("../../objects/teapot.obj");
+            fakePlayerModels[i] = FakeModel("../../objects/teapot.obj");
             break;
         }
         case PlayerModelTypes::Dino:
         {
-            playerModels[i] = Model("../../objects/teapot.obj");
+            fakePlayerModels[i] = FakeModel("../../objects/tyra.obj");
             break;
         }
         case PlayerModelTypes::Bunny:
         {
-            playerModels[i] = Model("../../objects/teapot.obj");
+            fakePlayerModels[i] = FakeModel("../../objects/bunny.obj");
             break;
         }
         }
-        */
     }
 }
 
@@ -109,7 +106,7 @@ void ServerGame::start() {
     for (int i = 0; i < PLAYER_NUM; ++i) {
         assignSpawn(i);
         OBB obb{ {1,1},{-1,1}, {-1,-1}, {1,-1} };
-        collision_detector->insert(obb);
+        collision_detector->insert(fakePlayerModels[i].getOBB());
         printf("insert %d into cd\n", i);
     }
     flagId = collision_detector->insert(flag->getOBB());
@@ -121,7 +118,7 @@ void ServerGame::collisionStep() {
     //collision_detector.
     const OBB bounds{ {1,1},{-1,1}, {-1,-1}, {1,-1} };
     for (int i = 1; i <= PLAYER_NUM; ++i) {
-        collision_detector->update(CollisionDetector::computeOBB(bounds, player_states[i-1].model), i-1);
+        collision_detector->update(CollisionDetector::computeOBB(fakePlayerModels[i - 1].getOBB(), player_states[i - 1].model), i - 1);
     }
 
     for (int i = 0; i < PLAYER_NUM; ++i) {

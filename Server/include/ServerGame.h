@@ -7,9 +7,10 @@
 #include "Graphics/include/CollisionDetector.h"
 #include "Graphics/include/Model.h"
 #include "Logic/include/Item.h"
+#include "Graphics/include/FakeModel.h"
 
 // Microseconds / Frames per second
-#define FPS_MAX 1e6/144.0
+#define FPS_MAX 1e6/60.0
 
 class ServerGame
 {
@@ -48,6 +49,9 @@ private:
     // data buffer
     char network_data[MAX_PACKET_SIZE];
     PlayerState player_states[PLAYER_NUM];
+
+    //fake models to load in correct OBB
+    FakeModel fakePlayerModels[PLAYER_NUM];
 
     //model of players before handling key stroke
     glm::mat4 oldModels[PLAYER_NUM];
