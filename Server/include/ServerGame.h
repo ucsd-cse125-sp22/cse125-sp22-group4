@@ -57,8 +57,9 @@ private:
 
     // for dead mouse cooldown
     int cooldownTime;
-    std::queue< std::pair<int, int> > cooldown; // player ID and microseconds remaining
+    std::queue< std::pair<int, std::chrono::steady_clock::time_point> > cooldown; // player ID and start time
     std::chrono::steady_clock timer_mouse;
     std::chrono::steady_clock::time_point start_mouse;
-    void mouseDead(int client_id);
+    void mouseDead(int client_id, PlayerState& state);
+    void checkCooldownOver();
 };
