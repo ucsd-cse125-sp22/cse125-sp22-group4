@@ -58,6 +58,10 @@ static int direction = -1;
 
 static glm::mat4 currRotationUpdate = glm::mat4(1);
 
+// fonts
+static ImFont* plainFont;
+static ImFont* cuteFont;
+
 // callbacks
 static void resizeCallback(GLFWwindow* window, int width, int height);
 static void cursorCallback(GLFWwindow* window, double xPos, double yPos);
@@ -202,8 +206,6 @@ bool Client::initializeClient() {
     cDetector.insert(tyra->getOBB());
     // COLLITION DEBUG
 
-
-
     //hard coded for now
     players[0] = tyra;
     players[1] = teapot;
@@ -211,6 +213,10 @@ bool Client::initializeClient() {
     players[3] = tyra2;
 
     skybox = new Skybox();
+
+    ImGuiIO& io = ImGui::GetIO();
+    plainFont = io.Fonts->AddFontDefault();
+    cuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 32.0f);
 
     return true;
 }
@@ -364,7 +370,7 @@ void Client::timeGUI() {
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
     double adjustment = 0.2;
-    ImGui::SetNextWindowSize(ImVec2(my_image_width* adjustment, my_image_height * adjustment + 50));
+    ImGui::SetNextWindowSize(ImVec2(my_image_width* adjustment + 30, my_image_height * adjustment + 50));
     ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width/2)+170, 0), 0, ImVec2(0, 0));
     //printf(" % d window width %d image width\n", window_width, my_image_width);
     ImGui::Begin("Time GUI", NULL, flags);
@@ -376,11 +382,12 @@ void Client::timeGUI() {
     ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(my_image_width*adjustment, my_image_height*adjustment));
     
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.0f, 0.5f, 0.95f));
-    ImGui::Text("      Countdown: %d:%02d", minute, seconds);
+    ImGui::PushFont(cuteFont);
+    ImGui::Text("Countdown: %d:%02d", minute, seconds);
+    ImGui::PopFont();
     ImGui::PopStyleColor();
  
     //colors[ImGuiCol_Text] = ImVec4(0.5f, 0.0f, 0.5f, 0.95f);
-   
     
     ImGui::End();
     //ImGui::SetNextWindowPos
@@ -449,6 +456,8 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
     camera->aspectRatio = float(width) / float(height);
     thirdPersonCamera->aspectRatio = float(width) / float(height);
+    window_width = width;
+    window_height = height;
 }
 
 /**
