@@ -39,17 +39,17 @@ ServerGame::ServerGame(void)
         switch (player_states[i].modelType) {
         case PlayerModelTypes::Teapot:
         {
-            fakePlayerModels[i] = FakeModel("../../objects/teapot.obj");
+            fakePlayerModels[i] = FakeModel("../../objects/teapot/teapot.obj");
             break;
         }
         case PlayerModelTypes::Dino:
         {
-            fakePlayerModels[i] = FakeModel("../../objects/tyra.obj");
+            fakePlayerModels[i] = FakeModel("../../objects/tyra/tyra.obj");
             break;
         }
         case PlayerModelTypes::Bunny:
         {
-            fakePlayerModels[i] = FakeModel("../../objects/bunny.obj");
+            fakePlayerModels[i] = FakeModel("../../objects/bunny/bunny.obj");
             break;
         }
         }
