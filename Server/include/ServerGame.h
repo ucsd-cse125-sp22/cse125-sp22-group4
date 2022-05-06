@@ -9,7 +9,7 @@
 #include "Logic/include/Item.h"
 
 // Microseconds / Frames per second
-#define FPS_MAX 1e6/60.0
+#define FPS_MAX 1e6/144.0
 
 class ServerGame
 {
@@ -48,6 +48,9 @@ private:
     // data buffer
     char network_data[MAX_PACKET_SIZE];
     PlayerState player_states[PLAYER_NUM];
+
+    //model of players before handling key stroke
+    glm::mat4 oldModels[PLAYER_NUM];
 
     std::chrono::high_resolution_clock timer;
     std::chrono::steady_clock::time_point start_time;

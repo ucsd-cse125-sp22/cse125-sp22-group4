@@ -65,21 +65,25 @@ void ServerGame::assignSpawn(int client_id) {
     case 0:
         //player 1 starting location
         moveGlobal(state.model, glm::vec3(75, 0, -5));
+        oldModels[0] = state.model;
         break;
     case 1:
         // player 2 starting location
         moveGlobal(state.model, glm::vec3(145, 0, -75));
         spin(state.model, 90);
+        oldModels[1] = state.model;
         break;
     case 2:
         // player 3 starting location
         moveGlobal(state.model, glm::vec3(75, 0, -145));
         spin(state.model, 180);
+        oldModels[2] = state.model;
         break;
     case 3:
         // player 4 starting location
         moveGlobal(state.model, glm::vec3(5, 0, -75));
         spin(state.model, 270);
+        oldModels[3] = state.model;
         break;
     }
     player_states[client_id] = state;
@@ -128,12 +132,13 @@ void ServerGame::collisionStep() {
             printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
             flag->item_state.hold = i;
         } else if (hitId >= 0) {
+            player_states[i].model = oldModels[i];
             printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i+1, hitId+1);
         } else {
             //printf("[ServerGame::collisionStep] Player %d has no collisions\n", i);
         }
     }
-    printf("\n");
+    //printf("\n");
 }
 
 void ServerGame::update()
@@ -150,15 +155,17 @@ void ServerGame::update()
             start();
         }
     }
+
     // Receive from clients as fast as possible.
     receiveFromClients();
+    //collision should be handled as fast as movement is handled
+    if (!ServerGame::game_started) return;
+    collisionStep();
 
     // Calculate tick
     auto stop_time = timer.now();
     auto dt = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
     if (dt.count() >= FPS_MAX) {
-        if (!ServerGame::game_started) return;
-        collisionStep();
         replicateGameState();
         start_time = timer.now();
     }
@@ -269,6 +276,7 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
 //multiply the rotational matrix from client to the actual model
 void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     PlayerState state = player_states[client_id];
+    oldModels[client_id] = player_states[client_id].model;
     if (!state.alive) {
         return;
     }
@@ -285,6 +293,8 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
 //Update player_state from move packet.
 void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     PlayerState state = player_states[client_id];
+    oldModels[client_id] = player_states[client_id].model;
+
     if (!state.alive) {
         return;
     }
