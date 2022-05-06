@@ -142,7 +142,7 @@ bool Client::initializeClient() {
     maze->moveGlobal(glm::vec3(0, -3, 0));
     bear = new Model("../../objects/bear.obj");
     bear->moveGlobal(glm::vec3(75, -3, -75));
-    item = new Model("../../objects/teapot.obj");
+    item = new Model("../../objects/backpack/backpack.obj");
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -218,6 +218,7 @@ void Client::displayCallback() {
         teapot->draw(currCam->viewProjMat, identityMat, shader);
         bunny->draw(currCam->viewProjMat, identityMat, shader);
         tyra2->draw(currCam->viewProjMat, identityMat, shader);
+        item->draw(currCam->viewProjMat, identityMat, shader);
         
         break;
     }

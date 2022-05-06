@@ -4,7 +4,7 @@ ThirdPersonCamera::ThirdPersonCamera(GraphicObject* _player) {
 	player = _player;
 	auto& playerModel = player->getModel();
 	glm::vec4 playerPos = playerModel[3];
-	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 3, 3)) * glm::inverse(playerModel) * playerPos);
+	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 4, 4)) * glm::inverse(playerModel) * playerPos);
 	lookAt = glm::vec3(playerPos);
 	upVec = glm::vec3(0, 1, 0);
 	FOV = 60.0f;
@@ -14,7 +14,7 @@ ThirdPersonCamera::ThirdPersonCamera(GraphicObject* _player) {
 void ThirdPersonCamera::reset() {
     auto& playerModel = player->getModel();
 	glm::vec4 playerPos = playerModel[3];
-	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 3, 3)) * glm::inverse(playerModel) * playerPos);
+	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 4, 4)) * glm::inverse(playerModel) * playerPos);
 	//pos = glm::vec3(playerPos) + glm::vec3(0, 8, 2);
 	lookAt = glm::vec3(playerPos);
 	upVec = glm::vec3(0, 1, 0);
@@ -31,7 +31,7 @@ void ThirdPersonCamera::updatePos() {
 	auto& playerModel = player->getModel();
 	glm::vec4 playerPos = playerModel[3];
 	glm::vec3 origPos = pos;
-	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 3, 3)) * glm::inverse(playerModel) * playerPos);
+	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 4, 4)) * glm::inverse(playerModel) * playerPos);
 	//moveable Y position
 	pos[1] = origPos[1];
 	lookAt = glm::vec3(playerPos);

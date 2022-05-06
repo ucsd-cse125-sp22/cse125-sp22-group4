@@ -20,6 +20,7 @@ bool Item::checkGoal()
 
 Flag::Flag(glm::mat4 initialPos, glm::mat4 endPos) 
 {
+	model = initialPos;
 	initPos = initialPos;
 	goalPos = endPos;
 	item_state = {

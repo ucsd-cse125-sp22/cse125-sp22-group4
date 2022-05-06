@@ -107,8 +107,11 @@ void ClientGame::update(MovementState s, RotationState r)
                 if (packet->item_state.hold == PLAYER_NUM + 1) {
                     setItem(packet->item_state.model);
                 }
-                else {
-                    setItem(players[i]->getModel());
+                else{
+                    glm::mat4 playerModel = players[packet->item_state.hold]->getModel();
+                    glm::mat4 newItemModel = playerModel * glm::translate(glm::vec3(0, 1, 0));
+                    newItemModel = newItemModel * glm::scale(glm::vec3(0.5f));
+                    setItem(newItemModel);
                 }
                 
                 //printMat4(packet->item_state.model);

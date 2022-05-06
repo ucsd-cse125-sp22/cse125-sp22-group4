@@ -64,21 +64,21 @@ void ServerGame::assignSpawn(int client_id) {
     switch (client_id) {
     case 0:
         //player 1 starting location
-        moveGlobal(state.model, glm::vec3(75, 2, -5));
+        moveGlobal(state.model, glm::vec3(75, 0, -5));
         break;
     case 1:
         // player 2 starting location
-        moveGlobal(state.model, glm::vec3(145, 2, -75));
+        moveGlobal(state.model, glm::vec3(145, 0, -75));
         spin(state.model, 90);
         break;
     case 2:
         // player 3 starting location
-        moveGlobal(state.model, glm::vec3(75, 2, -145));
+        moveGlobal(state.model, glm::vec3(75, 0, -145));
         spin(state.model, 180);
         break;
     case 3:
         // player 4 starting location
-        moveGlobal(state.model, glm::vec3(5, 2, -75));
+        moveGlobal(state.model, glm::vec3(5, 0, -75));
         spin(state.model, 270);
         break;
     }
@@ -96,7 +96,7 @@ void ServerGame::start() {
     free(packet_bytes);
 
     glm::mat4 flagInitLoc = glm::mat4(1);
-    moveLocal(flagInitLoc, glm::vec3(0.2));
+    moveLocal(flagInitLoc, glm::vec3(5, 0, -5));
     printMat4(flagInitLoc);
 
     flag = new Flag(flagInitLoc, glm::mat4(1));
@@ -126,6 +126,7 @@ void ServerGame::collisionStep() {
         // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
         if (hitId == flagId) {
             printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
+            flag->item_state.hold = i;
         } else if (hitId >= 0) {
             printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i+1, hitId+1);
         } else {
