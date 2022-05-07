@@ -29,6 +29,7 @@ public:
 	Flag(glm::mat4 initialPos, glm::mat4 endPos);
 	~Flag();
 	ItemState item_state;
+	int randomSpawn;
 
 private:
 	glm::mat4 initPos;

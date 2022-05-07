@@ -8,6 +8,8 @@
 #include "Graphics/include/Model.h"
 #include "Logic/include/Item.h"
 #include "Graphics/include/FakeModel.h"
+#include <time.h>
+#include <stdlib.h>
 
 // Microseconds / Frames per second
 #define FPS_MAX 1e6/60.0
@@ -26,6 +28,8 @@ public:
 
     void receiveFromClients();
     void assignSpawn(int client_id);
+    void assignSpawnItem();
+    void respawnItem(Flag* flag);
     void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
@@ -58,4 +62,5 @@ private:
 
     std::chrono::high_resolution_clock timer;
     std::chrono::steady_clock::time_point start_time;
+
 };

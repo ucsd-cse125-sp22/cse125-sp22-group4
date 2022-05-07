@@ -86,6 +86,75 @@ void ServerGame::assignSpawn(int client_id) {
     player_states[client_id] = state;
 }
 
+void ServerGame::assignSpawnItem() {
+
+    glm::mat4 flagInitLoc = glm::mat4(1);
+    time_t t;
+
+    srand((unsigned)time(&t));
+    int random = rand() % 5;
+    printf("%d spawn\n", random);
+
+    // choose random spawn location
+    switch (random) {
+    case 0:
+        moveGlobal(flagInitLoc, glm::vec3(145, 1, -25));
+        break;
+    case 1:
+        moveGlobal(flagInitLoc, glm::vec3(125, 1, -145));
+        break;
+    case 2:
+        moveGlobal(flagInitLoc, glm::vec3(5, 1, -5));
+        break;
+    case 3:
+        moveGlobal(flagInitLoc, glm::vec3(5, 1, -145));
+        break;
+    case 4:
+        moveGlobal(flagInitLoc, glm::vec3(96, 1, -53));
+        break;
+    }
+
+    flag = new Flag(flagInitLoc, glm::mat4(1));
+    flag->randomSpawn = random; // remember new location
+}
+
+void ServerGame::respawnItem(Flag* flag) {
+    int oldNum = flag->randomSpawn;
+    int random = flag->randomSpawn;
+    time_t t;
+    srand((unsigned)time(&t));
+
+    // get new respawn location
+    while (oldNum == random) {
+        random = rand() % 5;
+    }
+    printf("%d random\n", random);
+    glm::mat4 model = flag->item_state.model;
+
+    // choose random respawn location
+    switch (random) {
+    case 0:
+        moveGlobal(model, glm::vec3(145, 1, -25));
+        break;
+    case 1:
+        moveGlobal(model, glm::vec3(125, 1, -145));
+        break;
+    case 2:
+        moveGlobal(model, glm::vec3(5, 1, -5));
+        break;
+    case 3:
+        moveGlobal(model, glm::vec3(5, 1, -145));
+        break;
+    case 4:
+        moveGlobal(model, glm::vec3(96, 1, -53));
+        break;
+    }
+
+    flag->item_state.model = model;
+    flag->randomSpawn = random; // remember new location
+}
+
+
 void ServerGame::start() {
 
     const unsigned int packet_size = sizeof(SimplePacket);
@@ -96,11 +165,8 @@ void ServerGame::start() {
     network->sendToAll(packet_bytes, packet_size);
     free(packet_bytes);
 
-    glm::mat4 flagInitLoc = glm::mat4(1);
-    moveLocal(flagInitLoc, glm::vec3(5, 0, -5));
-    printMat4(flagInitLoc);
-
-    flag = new Flag(flagInitLoc, glm::mat4(1));
+    // Move item to spawn
+    assignSpawnItem();
 
     // Move players to spawns
     for (int i = 0; i < PLAYER_NUM; ++i) {
@@ -122,6 +188,10 @@ void ServerGame::collisionStep() {
     for (int i = 0; i < PLAYER_NUM; ++i) {
         int hitId = collision_detector->check(i);
         
+      /*  if (i == 0 && hitId > 0) {
+            player_states[hitId].alive = false;
+            assignSpawn(hitId);
+        }*/
         // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
         if (hitId == flagId) {
             printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
@@ -135,6 +205,7 @@ void ServerGame::collisionStep() {
     }
     //printf("\n");
 }
+
 
 void ServerGame::update()
 {
