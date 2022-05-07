@@ -30,7 +30,11 @@ ServerGame::ServerGame(void)
     playTime = 0; // game play time init
 
     // I have no idea what the cooldown time is...I put 5 seconds in microseconds
-   // cooldownTime = 5000000;
+    cooldownTime = 5000000;
+
+    // inaccessible player location for dead mice
+    banished = glm::mat4(1);
+    moveGlobal(banished, glm::vec3(0, 0, 10));
 
     // TODO: Should not be hard coded like this.
     player_states[0].modelType = PlayerModelTypes::Dino;
@@ -68,26 +72,37 @@ void ServerGame::assignSpawn(int client_id) {
         //player 1 starting location
         moveGlobal(state.model, glm::vec3(75, 0, -5));
         oldModels[0] = state.model;
+        oldPlayerPositions[0] = state.model;
         break;
     case 1:
         // player 2 starting location
         moveGlobal(state.model, glm::vec3(145, 0, -75));
         spin(state.model, 90);
         oldModels[1] = state.model;
+        oldPlayerPositions[1] = state.model;
         break;
     case 2:
         // player 3 starting location
         moveGlobal(state.model, glm::vec3(75, 0, -145));
         spin(state.model, 180);
         oldModels[2] = state.model;
+        oldPlayerPositions[2] = state.model;
         break;
     case 3:
         // player 4 starting location
         moveGlobal(state.model, glm::vec3(5, 0, -75));
         spin(state.model, 270);
         oldModels[3] = state.model;
+        oldPlayerPositions[3] = state.model;
         break;
     }
+    player_states[client_id] = state;
+}
+
+void ServerGame::respawnPlayer(int client_id) {
+    PlayerState& state = player_states[client_id];
+    state.model = oldPlayerPositions[client_id];
+    state.alive = true;
     player_states[client_id] = state;
 }
 
@@ -102,21 +117,21 @@ void ServerGame::assignSpawnItem() {
 
     glm::mat4 originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(145, 1, -25));
-    oldItemModels[0] = originalLoc;
+    oldItemPositions[0] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(125, 1, -145));
-    oldItemModels[1] = originalLoc;
+    oldItemPositions[1] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(5, 1, -5));
-    oldItemModels[2] = originalLoc;
+    oldItemPositions[2] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(5, 1, -145));
-    oldItemModels[3] = originalLoc;
+    oldItemPositions[3] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(96, 1, -53));
-    oldItemModels[4] = originalLoc;
+    oldItemPositions[4] = originalLoc;
 
-    flagInitLoc = oldItemModels[random];
+    flagInitLoc = oldItemPositions[random];
 
     flag = new Flag(flagInitLoc, glm::mat4(1));
     //oldItemModels[random] = flag->item_state.model; // save item position
@@ -135,30 +150,23 @@ void ServerGame::respawnItem() {
         random = rand() % 5;
     }
     printf("%d random\n", random);
-    //printMat4(oldItemModels[random]);
-    //glm::mat4 model = flag->item_state.model;
 
     // choose random respawn location
     switch (random) {
     case 0:
-        //moveGlobal(model, glm::vec3(145, 1, -25));
-        flag->item_state.model = oldItemModels[0];
+        flag->item_state.model = oldItemPositions[0];
         break;
     case 1:
-        //moveGlobal(model, glm::vec3(125, 1, -145));
-        flag->item_state.model = oldItemModels[1];
+        flag->item_state.model = oldItemPositions[1];
         break;
     case 2:
-        flag->item_state.model = oldItemModels[2];
-        //moveGlobal(model, glm::vec3(5, 1, -5));
+        flag->item_state.model = oldItemPositions[2];
         break;
     case 3:
-        flag->item_state.model = oldItemModels[3];
-        //moveGlobal(model, glm::vec3(5, 1, -145));
+        flag->item_state.model = oldItemPositions[3];
         break;
     case 4:
-        flag->item_state.model = oldItemModels[4];
-        //moveGlobal(model, glm::vec3(96, 1, -53));
+        flag->item_state.model = oldItemPositions[4];
         break;
     }
 
@@ -194,6 +202,7 @@ void ServerGame::start() {
     ServerGame::game_started = true;
 }
 
+// i made this function just to get respawn from repeatedly being called
 void ServerGame::isTaken() {
     if (ans == 0) {
         ans = 1;
@@ -217,15 +226,38 @@ void ServerGame::collisionStep() {
             //printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
             flag->item_state.hold = i;
             //isTaken();
-        } else if (hitId >= 0) {
+        }
+        else if (hitId > 0 && i > 0) {
+            printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i + 1, hitId + 1);
             player_states[i].model = oldModels[i];
-            printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i+1, hitId+1);
+        } else if (i == 0 && hitId > 0) {
+            printf("[ServerGame::collisionStep] Player %d killed player %d!\n", i+1, hitId+1);  
+            mouseDead(hitId);
+                
         } else {
             //printf("[ServerGame::collisionStep] Player %d has no collisions\n", i);
         }
     }
     //printf("\n");
 }
+
+void ServerGame::mouseDead(int client_id) {
+    PlayerState& state = player_states[client_id];
+
+    if (!state.alive)
+        return;
+    
+    state.alive = false;
+    state.model = banished;
+    player_states[client_id] = state;
+
+    start_mouse = timer_mouse.now();
+    cooldown.push({ client_id, start_mouse });
+    
+    //printMat4(player_states[client_id].model);
+    // call mouse.die function???
+}
+
 
 
 void ServerGame::update()
@@ -261,7 +293,32 @@ void ServerGame::update()
     auto stop_t = timer_t.now();
     auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
     playTime = test.count();
-    //printf("%d countdown\n", playTime);
+    
+    checkCooldownOver();
+}
+
+void ServerGame::checkCooldownOver() {
+    // check cooldown queue for dead mice
+    if (!cooldown.empty()) {
+        int numDeadMice = cooldown.size();
+        for (int i = 0; i < numDeadMice; i++) {
+            std::pair<int, std::chrono::steady_clock::time_point> deadMouse = cooldown.front();
+            int id = deadMouse.first;
+            auto stop_mouse = timer_mouse.now();
+            auto diff = std::chrono::duration_cast<std::chrono::microseconds>(stop_mouse - deadMouse.second);
+            int newTime = cooldownTime - diff.count(); // time left
+            //printf("%d newTime\n", newTime);
+            if (newTime <= 0) { // cooldown is over, mouse can be reborn
+                respawnPlayer(id);
+                cooldown.pop();
+            }
+            else { // cooldown is still going, stick mouse to back of queue
+                cooldown.pop();
+                cooldown.push({ id, deadMouse.second });
+            }
+
+        }
+    }
 }
 
 //broadcast game state to all clients

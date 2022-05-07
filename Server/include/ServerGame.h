@@ -10,6 +10,7 @@
 #include "Graphics/include/FakeModel.h"
 #include <time.h>
 #include <stdlib.h>
+#include <queue>
 
 // Microseconds / Frames per second
 #define FPS_MAX 1e6/60.0
@@ -30,6 +31,7 @@ public:
     void assignSpawn(int client_id);
     void assignSpawnItem();
     void respawnItem();
+    void respawnPlayer(int client_id);
     void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
@@ -60,8 +62,12 @@ private:
     //model of players before handling key stroke
     glm::mat4 oldModels[PLAYER_NUM];
 
-    //model of item locations at spawn
-    glm::mat4 oldItemModels[ITEM_NUM_LOC];
+    //model of item and player locations at spawn
+    glm::mat4 oldItemPositions[ITEM_NUM_LOC];
+    glm::mat4 oldPlayerPositions[PLAYER_NUM];
+
+    //player location for dead mice
+    glm::mat4 banished;
 
     std::chrono::high_resolution_clock timer;
     std::chrono::steady_clock::time_point start_time;
@@ -70,6 +76,14 @@ private:
     std::chrono::steady_clock timer_t;
     std::chrono::steady_clock::time_point start_t;
     int playTime;
+
+    // for dead mouse cooldown
+    int cooldownTime;
+    std::queue< std::pair<int, std::chrono::steady_clock::time_point> > cooldown; // player ID and start time
+    std::chrono::steady_clock timer_mouse;
+    std::chrono::steady_clock::time_point start_mouse;
+    void mouseDead(int client_id);
+    void checkCooldownOver();
 
     // these are just for testing respawn
     void isTaken();
