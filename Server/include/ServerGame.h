@@ -65,6 +65,13 @@ private:
 
     std::chrono::high_resolution_clock timer;
     std::chrono::steady_clock::time_point start_time;
+
+    // for game countdown
+    std::chrono::steady_clock timer_t;
+    std::chrono::steady_clock::time_point start_t;
+    int playTime;
+
+    // these are just for testing respawn
     void isTaken();
     int ans = 0;
 };

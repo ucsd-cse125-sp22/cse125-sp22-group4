@@ -31,6 +31,7 @@ namespace Client {
     void idleCallback();
     void cleanup();
     void GUI();
+    void timeGUI();
 
     MovementState getMovementState();
     RotationState getRotationState();
@@ -39,6 +40,8 @@ namespace Client {
     void resetRotUpdate();
     void setPlayerfromID(unsigned int id);
     void updateItemLocation(glm::mat4 location);
+    void updateTime(int t);
+    bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 };
 
 #endif // !CLIENT_H

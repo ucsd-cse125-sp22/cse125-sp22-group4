@@ -26,3 +26,7 @@ struct ItemState {
 	glm::mat4 model = glm::mat4(1);
 	char hold = 5;
 };
+
+struct GameState {
+	int gameTime;
+};

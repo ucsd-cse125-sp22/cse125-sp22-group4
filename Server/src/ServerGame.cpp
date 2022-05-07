@@ -27,6 +27,11 @@ ServerGame::ServerGame(void)
     maze = new Maze();
     collision_detector = new CollisionDetector();
 
+    playTime = 0; // game play time init
+
+    // I have no idea what the cooldown time is...I put 5 seconds in microseconds
+   // cooldownTime = 5000000;
+
     // TODO: Should not be hard coded like this.
     player_states[0].modelType = PlayerModelTypes::Dino;
     player_states[1].modelType = PlayerModelTypes::Teapot;
@@ -113,29 +118,10 @@ void ServerGame::assignSpawnItem() {
 
     flagInitLoc = oldItemModels[random];
 
-    // choose random spawn location
-    //switch (random) {
-    //case 0:
-    //    moveGlobal(flagInitLoc, glm::vec3(145, 1, -25));
-    //    break;
-    //case 1:
-    //    moveGlobal(flagInitLoc, glm::vec3(125, 1, -145));
-    //    break;
-    //case 2:
-    //    moveGlobal(flagInitLoc, glm::vec3(5, 1, -5));
-    //    break;
-    //case 3:
-    //    moveGlobal(flagInitLoc, glm::vec3(5, 1, -145));
-    //    break;
-    //case 4:
-    //    moveGlobal(flagInitLoc, glm::vec3(96, 1, -53));
-    //    break;
-    //}
-
     flag = new Flag(flagInitLoc, glm::mat4(1));
     //oldItemModels[random] = flag->item_state.model; // save item position
     flag->randomSpawn = random; // remember new location
-    printMat4(oldItemModels[random]);
+    //printMat4(oldItemModels[random]);
 }
 
 void ServerGame::respawnItem() {
@@ -149,7 +135,7 @@ void ServerGame::respawnItem() {
         random = rand() % 5;
     }
     printf("%d random\n", random);
-    printMat4(oldItemModels[random]);
+    //printMat4(oldItemModels[random]);
     //glm::mat4 model = flag->item_state.model;
 
     // choose random respawn location
@@ -191,6 +177,9 @@ void ServerGame::start() {
 
     network->sendToAll(packet_bytes, packet_size);
     free(packet_bytes);
+
+    // start game time TODO wait for all four players
+    start_t = timer_t.now();
 
     // Move item to spawn
     assignSpawnItem();
@@ -267,6 +256,12 @@ void ServerGame::update()
         replicateGameState();
         start_time = timer.now();
     }
+
+    // game countdown
+    auto stop_t = timer_t.now();
+    auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
+    playTime = test.count();
+    //printf("%d countdown\n", playTime);
 }
 
 //broadcast game state to all clients
@@ -276,6 +271,7 @@ void ServerGame::replicateGameState() {
     memcpy(packet.player_states, player_states, sizeof(player_states));
 
     packet.item_state = flag->item_state;
+    packet.game.gameTime = playTime;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
 
