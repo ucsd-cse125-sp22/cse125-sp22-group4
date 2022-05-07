@@ -115,10 +115,11 @@ void ServerGame::assignSpawnItem() {
     }
 
     flag = new Flag(flagInitLoc, glm::mat4(1));
+    oldItemModels[random] = flag->item_state.model; // save item position
     flag->randomSpawn = random; // remember new location
 }
 
-void ServerGame::respawnItem(Flag* flag) {
+void ServerGame::respawnItem() {
     int oldNum = flag->randomSpawn;
     int random = flag->randomSpawn;
     time_t t;
@@ -129,28 +130,33 @@ void ServerGame::respawnItem(Flag* flag) {
         random = rand() % 5;
     }
     printf("%d random\n", random);
-    glm::mat4 model = flag->item_state.model;
+    //glm::mat4 model = flag->item_state.model;
 
     // choose random respawn location
     switch (random) {
     case 0:
-        moveGlobal(model, glm::vec3(145, 1, -25));
+        //moveGlobal(model, glm::vec3(145, 1, -25));
+        flag->item_state.model = oldItemModels[0];
         break;
     case 1:
-        moveGlobal(model, glm::vec3(125, 1, -145));
+        //moveGlobal(model, glm::vec3(125, 1, -145));
+        flag->item_state.model = oldItemModels[1];
         break;
     case 2:
-        moveGlobal(model, glm::vec3(5, 1, -5));
+        flag->item_state.model = oldItemModels[2];
+        //moveGlobal(model, glm::vec3(5, 1, -5));
         break;
     case 3:
-        moveGlobal(model, glm::vec3(5, 1, -145));
+        flag->item_state.model = oldItemModels[3];
+        //moveGlobal(model, glm::vec3(5, 1, -145));
         break;
     case 4:
-        moveGlobal(model, glm::vec3(96, 1, -53));
+        flag->item_state.model = oldItemModels[4];
+        //moveGlobal(model, glm::vec3(96, 1, -53));
         break;
     }
 
-    flag->item_state.model = model;
+   
     flag->randomSpawn = random; // remember new location
 }
 
@@ -178,6 +184,14 @@ void ServerGame::start() {
     ServerGame::game_started = true;
 }
 
+void ServerGame::isTaken() {
+    if (ans == 0) {
+        ans = 1;
+        respawnItem();
+
+    }
+}
+
 void ServerGame::collisionStep() {
 
     //collision_detector.
@@ -188,14 +202,11 @@ void ServerGame::collisionStep() {
     for (int i = 0; i < PLAYER_NUM; ++i) {
         int hitId = collision_detector->check(i);
         
-      /*  if (i == 0 && hitId > 0) {
-            player_states[hitId].alive = false;
-            assignSpawn(hitId);
-        }*/
         // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
         if (hitId == flagId) {
-            printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
-            flag->item_state.hold = i;
+            //printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
+            //flag->item_state.hold = i;
+            isTaken();
         } else if (hitId >= 0) {
             player_states[i].model = oldModels[i];
             printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i+1, hitId+1);

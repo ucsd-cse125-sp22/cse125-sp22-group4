@@ -29,7 +29,7 @@ public:
     void receiveFromClients();
     void assignSpawn(int client_id);
     void assignSpawnItem();
-    void respawnItem(Flag* flag);
+    void respawnItem();
     void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
@@ -60,7 +60,11 @@ private:
     //model of players before handling key stroke
     glm::mat4 oldModels[PLAYER_NUM];
 
+    //model of item locations at spawn
+    glm::mat4 oldItemModels[ITEM_NUM_LOC];
+
     std::chrono::high_resolution_clock timer;
     std::chrono::steady_clock::time_point start_time;
-
+    void isTaken();
+    int ans = 0;
 };
