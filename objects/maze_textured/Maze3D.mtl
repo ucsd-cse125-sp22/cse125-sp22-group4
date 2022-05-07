@@ -1,0 +1,32 @@
+# Blender MTL File: 'Maze3D.blend'
+# Material Count: 2
+
+newmtl Ground
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump ground1_normal.jpg
+map_Ka ground1_ambient.jpg
+map_Kd ground1_diffuse.jpg
+map_Ks specular.jpg
+map_Ns ground1_shininess.jpg
+
+newmtl Wall
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump wall_normal.jpg
+map_Ka wall_ambient.jpg
+map_Kd wall_diffuse.jpg
+map_Ks specular.jpg
+map_Ns wall_shininess.jpg

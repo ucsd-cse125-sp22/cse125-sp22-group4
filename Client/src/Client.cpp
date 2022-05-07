@@ -143,7 +143,7 @@ bool Client::initializeClient() {
     tyra2 = new Model("../../objects/tyra/tyra.obj");
     tyra2->moveGlobal(glm::vec3(2, -0.1, 0));
     backpack = new Model("../../objects/backpack/backpack.obj");
-    maze = new Model("../../objects/maze_textured/mazeTextured.obj");
+    maze = new Model("../../objects/maze_textured/maze3D.obj");
     maze->moveGlobal(glm::vec3(0, -3, 0));
     bear = new Model("../../objects/bear/bear.obj");
     bear->moveGlobal(glm::vec3(75, -3, -75));
