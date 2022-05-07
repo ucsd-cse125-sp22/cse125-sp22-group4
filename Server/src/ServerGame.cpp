@@ -95,28 +95,47 @@ void ServerGame::assignSpawnItem() {
     int random = rand() % 5;
     printf("%d spawn\n", random);
 
+    glm::mat4 originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(145, 1, -25));
+    oldItemModels[0] = originalLoc;
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(125, 1, -145));
+    oldItemModels[1] = originalLoc;
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(5, 1, -5));
+    oldItemModels[2] = originalLoc;
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(5, 1, -145));
+    oldItemModels[3] = originalLoc;
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(96, 1, -53));
+    oldItemModels[4] = originalLoc;
+
+    flagInitLoc = oldItemModels[random];
+
     // choose random spawn location
-    switch (random) {
-    case 0:
-        moveGlobal(flagInitLoc, glm::vec3(145, 1, -25));
-        break;
-    case 1:
-        moveGlobal(flagInitLoc, glm::vec3(125, 1, -145));
-        break;
-    case 2:
-        moveGlobal(flagInitLoc, glm::vec3(5, 1, -5));
-        break;
-    case 3:
-        moveGlobal(flagInitLoc, glm::vec3(5, 1, -145));
-        break;
-    case 4:
-        moveGlobal(flagInitLoc, glm::vec3(96, 1, -53));
-        break;
-    }
+    //switch (random) {
+    //case 0:
+    //    moveGlobal(flagInitLoc, glm::vec3(145, 1, -25));
+    //    break;
+    //case 1:
+    //    moveGlobal(flagInitLoc, glm::vec3(125, 1, -145));
+    //    break;
+    //case 2:
+    //    moveGlobal(flagInitLoc, glm::vec3(5, 1, -5));
+    //    break;
+    //case 3:
+    //    moveGlobal(flagInitLoc, glm::vec3(5, 1, -145));
+    //    break;
+    //case 4:
+    //    moveGlobal(flagInitLoc, glm::vec3(96, 1, -53));
+    //    break;
+    //}
 
     flag = new Flag(flagInitLoc, glm::mat4(1));
-    oldItemModels[random] = flag->item_state.model; // save item position
+    //oldItemModels[random] = flag->item_state.model; // save item position
     flag->randomSpawn = random; // remember new location
+    printMat4(oldItemModels[random]);
 }
 
 void ServerGame::respawnItem() {
@@ -130,6 +149,7 @@ void ServerGame::respawnItem() {
         random = rand() % 5;
     }
     printf("%d random\n", random);
+    printMat4(oldItemModels[random]);
     //glm::mat4 model = flag->item_state.model;
 
     // choose random respawn location
@@ -158,6 +178,7 @@ void ServerGame::respawnItem() {
 
    
     flag->randomSpawn = random; // remember new location
+    printMat4(flag->item_state.model);
 }
 
 
@@ -205,8 +226,8 @@ void ServerGame::collisionStep() {
         // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
         if (hitId == flagId) {
             //printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
-            //flag->item_state.hold = i;
-            isTaken();
+            flag->item_state.hold = i;
+            //isTaken();
         } else if (hitId >= 0) {
             player_states[i].model = oldModels[i];
             printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i+1, hitId+1);
