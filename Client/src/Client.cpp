@@ -395,10 +395,12 @@ void Client::timeGUI() {
     flags |= ImGuiWindowFlags_NoResize;
     double adjustment = 0.2;
     ImGui::SetNextWindowSize(ImVec2(my_image_width * adjustment + 30, my_image_height * adjustment + 50));
-    ImGui::SetNextWindowPos(ImVec2(window_width - (my_image_width / 2) + 170, 0), 0, ImVec2(0, 0));
+    //ImGui::SetNextWindowPos(ImVec2(window_width - (my_image_width / 2) + 170, 0), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width/2) +100, 0), 0, ImVec2(0, 0));
     //printf(" % d image height %d image width\n", my_image_height, my_image_width);
+    
     ImGui::Begin("Time GUI", NULL, flags);
- 
+
     // get game countdown time
     int time = 180 - currTime;
     int minute = (time % 3600) / 60;  // Minute component
@@ -479,6 +481,8 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
     camera->aspectRatio = float(width) / float(height);
     thirdPersonCamera->aspectRatio = float(width) / float(height);
+    window_height = height;
+    window_width = width;
 }
 
 /**
