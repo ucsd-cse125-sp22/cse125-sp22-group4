@@ -65,9 +65,12 @@ static int direction = -1;
 
 static glm::mat4 currRotationUpdate = glm::mat4(1);
 
+static char itemhold = PLAYER_NUM + 1;
+
 // fonts
 static ImFont* plainFont;
 static ImFont* cuteFont;
+static ImFont* HUGEcuteFont;
 
 // callbacks
 static void resizeCallback(GLFWwindow* window, int width, int height);
@@ -230,6 +233,7 @@ bool Client::initializeClient() {
     ImGuiIO& io = ImGui::GetIO();
     plainFont = io.Fonts->AddFontDefault();
     cuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 32.0f);
+    HUGEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 52.0f);
 
     return true;
 }
@@ -417,6 +421,33 @@ void Client::timeGUI() {
     ImGui::End();
 }
 
+void Client::ItemHoldGUI() {
+    ImGuiWindowFlags flags = 0;
+    flags |= ImGuiWindowFlags_NoBackground;
+    flags |= ImGuiWindowFlags_NoTitleBar;
+    flags |= ImGuiWindowFlags_NoScrollbar;
+    flags |= ImGuiWindowFlags_NoResize;
+    ImGui::SetNextWindowSize(ImVec2(533, 200));
+    ImGui::SetNextWindowPos(ImVec2((window_width - 533)/2, window_height/30), 0, ImVec2(0, 0));
+
+    if (itemhold != PLAYER_NUM + 1) {
+        ImGui::Begin("ItemHold GUI", NULL, flags);
+        if (currTime % 2 == 0) {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 0.95f));
+        }
+        else {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 0.95f));
+        }
+        ImGui::PushFont(HUGEcuteFont);
+        ImGui::Text("Player %d is holding the Flag!!", itemhold);
+        ImGui::PopFont();
+        ImGui::PopStyleColor();
+
+        ImGui::End();
+    }
+
+}
+
 MovementState Client::getMovementState() {
     return MovementState{
         direction,
@@ -451,6 +482,10 @@ void Client::updateItemLocation(glm::mat4 location) {
 
 void Client::updateTime(int t) {
     currTime = t;
+}
+
+void Client::setItemHold(char h) {
+    itemhold = h;
 }
 
 /**

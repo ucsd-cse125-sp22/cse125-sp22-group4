@@ -113,6 +113,8 @@ void ClientGame::update(MovementState s, RotationState r)
                     newItemModel = newItemModel * glm::scale(glm::vec3(0.5f));
                     setItem(newItemModel);
                 }
+
+                Client::setItemHold(packet->item_state.hold);
                 
                 //printMat4(packet->item_state.model);
                 setTime(packet->game.gameTime);
