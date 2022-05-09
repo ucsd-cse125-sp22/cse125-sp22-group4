@@ -25,7 +25,7 @@ public:
     ~CollisionDetector() = default;
     int insert(const OBB& obb); 
     void update(const OBB& obb, const int ID);
-    int check(const int ID);
+    std::vector<int> check(const int ID);
     static bool check(const OBB& obb1, const OBB& obb2);
     static OBB computeOBB(float maxX, float maxZ,
                           float minX, float minZ,

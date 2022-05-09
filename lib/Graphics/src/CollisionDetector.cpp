@@ -14,17 +14,18 @@ void CollisionDetector::update(const OBB& obb, const int ID) {
     obbSet[ID] = obb;
 }
 
-int CollisionDetector::check(const int ID) {
+std::vector<int> CollisionDetector::check(const int ID) {
+    std::vector<int> hits;
     OBB& obb = obbSet[ID];
     for (auto& element : obbSet) {
         if (element.first != ID) {
             if (check(obb, element.second)) {
-                return element.first;
+                hits.push_back(element.first);
             }
         }
     }
 
-    return -1;
+    return hits;
 }
 
 bool CollisionDetector::check(const OBB& obb1, const OBB& obb2) {

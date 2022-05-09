@@ -174,6 +174,7 @@ void ServerGame::respawnItem() {
 
 
 void ServerGame::start() {
+    gameAlive = true;
 
     const unsigned int packet_size = sizeof(SimplePacket);
     SimplePacket packet;
@@ -218,23 +219,24 @@ void ServerGame::collisionStep() {
     collision_detector->update(flag->getOBB(), flagId);
 
     for (int i = 0; i < PLAYER_NUM; ++i) {
-        int hitId = collision_detector->check(i);
+        for (int hitId : collision_detector->check(i)) {
+            if (hitId == flagId) {
+                //printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);         
+                flag->item_state.hold = i;
+                //mouseDead(i);
+            }
+            else if (hitId > 0 && i > 0) {
+                printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i + 1, hitId + 1);
+                player_states[i].model = oldModels[i];
+            }
+            else if (i == 0 && hitId > 0) {
+                printf("[ServerGame::collisionStep] Player %d killed player %d!\n", i + 1, hitId + 1);
+                mouseDead(hitId);
+            }
+        }
         
         // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
-        if (hitId == flagId) {
-            //printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);         
-            flag->item_state.hold = i;
-            //mouseDead(i);
-        }
-        else if (hitId > 0 && i > 0) {
-            printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i + 1, hitId + 1);
-            player_states[i].model = oldModels[i];
-        } else if (i == 0 && hitId > 0) {
-            printf("[ServerGame::collisionStep] Player %d killed player %d!\n", i+1, hitId+1);  
-            mouseDead(hitId); 
-        } else {
-            //printf("[ServerGame::collisionStep] Player %d has no collisions\n", i);
-        }
+
     }
     //printf("\n");
 }
@@ -299,7 +301,10 @@ void ServerGame::update()
 
     // TODO: Fix the game timer to a constant. Also 180 on client.
     if (180 - playTime <= 0) {
-        announceGameEnd(0);
+        if (gameAlive) {
+            announceGameEnd(0);
+            gameAlive = false;
+        }
     }
     else {
         printf("%d \n", 75 - playTime);

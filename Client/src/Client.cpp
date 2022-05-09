@@ -262,10 +262,12 @@ void Client::displayCallback() {
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
         // COLLITION DEBUG
+        /*
         wall1->draw(currCam->viewProjMat, identityMat, shader);
         wall2->draw(currCam->viewProjMat, identityMat, shader);
         drawOBB(wall1->getOBB(), currCam->viewProjMat, shader, false);
         drawOBB(wall2->getOBB(), currCam->viewProjMat, shader, false);
+
 
         int collideID = cDetector.check(2);
         if (collideID != -1) {
@@ -275,6 +277,7 @@ void Client::displayCallback() {
         else {
             drawOBB(tyra->getOBB(), currCam->viewProjMat, shader, false);
         }
+        */
         // COLLITION DEBUG
 
         item->draw(currCam->viewProjMat, identityMat, shader);
