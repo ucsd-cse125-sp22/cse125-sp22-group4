@@ -36,7 +36,9 @@ public:
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
     void handleRotatePacket(int client_id, RotatePacket* s);
+
     void replicateGameState();
+    void announceGameEnd(bool winner);
 
     void moveLocal(glm::mat4& model, const glm::vec3& v);
     void printMat4(glm::mat4 mat);

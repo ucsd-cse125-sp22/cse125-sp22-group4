@@ -21,11 +21,18 @@ enum PacketTypes {
 	PING,
 	KEYSTROKE,
 	GAME_START,
+	GAME_END,
 	/* Keystroke Packet Types */
 
 	/* State Packet Types*/
 	ACTION,
 	MESSAGE,
+};
+
+// Binary enum
+enum WIN_STATE {
+	MOUSE_WIN,
+	CAT_WIN,
 };
 
 enum PlayerModelTypes {

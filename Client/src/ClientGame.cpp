@@ -62,6 +62,16 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
     {
         // Notify player starts.
         // Init player timer.
+        break;
+    }
+    case GAME_END: {
+        printf("THE GAME HAS ENDED\n");
+        if (s.data == CAT_WIN) {
+            printf("cat win\n");
+        } else {
+            printf("mice win\n");
+        }
+        break;
     }
     }
 }

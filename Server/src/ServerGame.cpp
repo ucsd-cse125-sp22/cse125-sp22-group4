@@ -223,7 +223,7 @@ void ServerGame::collisionStep() {
         // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
         if (hitId == flagId) {
             //printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);         
-            flag->item_state.hold = i;  
+            flag->item_state.hold = i;
             //mouseDead(i);
         }
         else if (hitId > 0 && i > 0) {
@@ -231,8 +231,7 @@ void ServerGame::collisionStep() {
             player_states[i].model = oldModels[i];
         } else if (i == 0 && hitId > 0) {
             printf("[ServerGame::collisionStep] Player %d killed player %d!\n", i+1, hitId+1);  
-            mouseDead(hitId);
-                
+            mouseDead(hitId); 
         } else {
             //printf("[ServerGame::collisionStep] Player %d has no collisions\n", i);
         }
@@ -297,6 +296,14 @@ void ServerGame::update()
     auto stop_t = timer_t.now();
     auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
     playTime = test.count();
+
+    // TODO: Fix the game timer to a constant. Also 180 on client.
+    if (180 - playTime <= 0) {
+        announceGameEnd(0);
+    }
+    else {
+        printf("%d \n", 75 - playTime);
+    }
     
     checkCooldownOver();
 }
@@ -333,6 +340,19 @@ void ServerGame::replicateGameState() {
 
     packet.item_state = flag->item_state;
     packet.game.gameTime = playTime;
+
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+
+    network->sendToAll(packet_bytes, packet_size);
+    free(packet_bytes);
+}
+
+// broadcast game end
+void ServerGame::announceGameEnd(bool winner) {
+    const unsigned int packet_size = sizeof(SimplePacket);
+    SimplePacket packet;
+    packet.packet_type = GAME_END;
+    packet.data = (char)winner;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
 
