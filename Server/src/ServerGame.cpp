@@ -215,7 +215,7 @@ void ServerGame::collisionStep() {
         collision_detector->update(CollisionDetector::computeOBB(fakePlayerModels[i].getOBB(), player_states[i].model), i);
     }
 
-    //collision_detector->update(CollisionDetector::computeOBB(flag->getOBB(), flag->item_state.model), 4);
+    collision_detector->update(flag->getOBB(), flagId);
 
     for (int i = 0; i < PLAYER_NUM; ++i) {
         int hitId = collision_detector->check(i);

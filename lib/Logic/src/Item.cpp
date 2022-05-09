@@ -39,5 +39,5 @@ bool Flag::checkGoal()
 
 
 OBB Flag::getOBB() {
-	return CollisionDetector::computeOBB({ {1,1},{-1,1}, {-1,-1}, {1,-1} }, model);
+	return CollisionDetector::computeOBB({ {1,1},{-1,1}, {-1,-1}, {1,-1} }, item_state.model);
 }

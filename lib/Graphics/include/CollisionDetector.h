@@ -31,6 +31,9 @@ public:
                           float minX, float minZ,
                           const glm::mat4& model);
     static OBB computeOBB(const OBB& oldOBB, const glm::mat4& model);
+    std::map<int, OBB> getObbset() {
+        return obbSet;
+    }
 };
 
 #endif
