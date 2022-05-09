@@ -134,9 +134,7 @@ void ServerGame::assignSpawnItem() {
     flagInitLoc = oldItemPositions[random];
 
     flag = new Flag(flagInitLoc, glm::mat4(1));
-    //oldItemModels[random] = flag->item_state.model; // save item position
     flag->randomSpawn = random; // remember new location
-    //printMat4(oldItemModels[random]);
 }
 
 void ServerGame::respawnItem() {
@@ -172,7 +170,6 @@ void ServerGame::respawnItem() {
 
    
     flag->randomSpawn = random; // remember new location
-    printMat4(flag->item_state.model);
 }
 
 
@@ -218,14 +215,16 @@ void ServerGame::collisionStep() {
         collision_detector->update(CollisionDetector::computeOBB(fakePlayerModels[i].getOBB(), player_states[i].model), i);
     }
 
+    //collision_detector->update(CollisionDetector::computeOBB(flag->getOBB(), flag->item_state.model), 4);
+
     for (int i = 0; i < PLAYER_NUM; ++i) {
         int hitId = collision_detector->check(i);
         
         // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
         if (hitId == flagId) {
-            //printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);
-            flag->item_state.hold = i;
-            //isTaken();
+            //printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);         
+            flag->item_state.hold = i;  
+            //mouseDead(i);
         }
         else if (hitId > 0 && i > 0) {
             printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i + 1, hitId + 1);
@@ -243,10 +242,15 @@ void ServerGame::collisionStep() {
 
 void ServerGame::mouseDead(int client_id) {
     PlayerState& state = player_states[client_id];
-
+    
     if (!state.alive)
         return;
     
+    if (flag->item_state.hold == client_id) {
+        flag->item_state.hold = 5;
+        respawnItem();
+    }
+        
     state.alive = false;
     state.model = banished;
     player_states[client_id] = state;
@@ -307,7 +311,7 @@ void ServerGame::checkCooldownOver() {
             auto stop_mouse = timer_mouse.now();
             auto diff = std::chrono::duration_cast<std::chrono::microseconds>(stop_mouse - deadMouse.second);
             int newTime = cooldownTime - diff.count(); // time left
-            //printf("%d newTime\n", newTime);
+            
             if (newTime <= 0) { // cooldown is over, mouse can be reborn
                 respawnPlayer(id);
                 cooldown.pop();
