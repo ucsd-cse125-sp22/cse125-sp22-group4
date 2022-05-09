@@ -110,6 +110,7 @@ void ServerGame::receiveFromClients()
 void ServerGame::handleIDPacket(PlayerSession& session, IDPacket* packet) {
     //for (PlayerSession& s : network->sessions) {
     printf("We are handlign ID packet?");
+    printf("%s %d\n", packet->uid, packet->id);
     for (int i = 0; i < network->sessions.size(); ++i) {
         PlayerSession& s = network->sessions[i];
         // Skip if player sessions are same
@@ -134,7 +135,9 @@ void ServerGame::handleSimplePacket(PlayerSession& session, SimplePacket* packet
 
         // Note: Cast from uint to char (should be safe, assuming < 16 players...)
         id_packet.id = (char)session.id;
-        std::strncpy(id_packet.uid, session.uid.c_str(), ID_LEN);
+        session.uid.copy(id_packet.uid, ID_LEN, 0);
+        id_packet.uid[ID_LEN] = '\0';
+        //std::strncpy(id_packet.uid, session.uid.c_str(), ID_LEN);
         //id_packet.uid = session.uid.c_str();
         char* packet_bytes = packet_to_bytes(&id_packet, sizeof(id_packet));
         network->sendToSocket(session.socket, packet_bytes, sizeof(id_packet));

@@ -40,7 +40,7 @@ struct SimplePacket {
 struct IDPacket {
 	ushort packet_class = ID;
 	char id;
-	char uid[ID_LEN];
+	char uid[ID_LEN+1];
 };
 
 struct MovePacket {

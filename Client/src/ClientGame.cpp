@@ -24,6 +24,7 @@ bool ClientGame::readCookies() {
 }
 
 void ClientGame::writeCookies() {
+    spdlog::info("writing cookies\n");
     std::fstream cookieFile;
     cookieFile.open("cookies.txt", std::ios::out | std::ios::trunc);
     if (cookieFile.good()) {
@@ -35,15 +36,19 @@ void ClientGame::writeCookies() {
 
 ClientGame::ClientGame(void)
 {
+    spdlog::info("Init client game!\n");
     loaded = false;
     network = new ClientNetwork();
 
     if (CHECK_COOKIES && readCookies()) {
         // Possible that client has DC'd and wishes to reconnect
+        spdlog::info("Hey we got a previous cookie, {}, {}\n", player_id, uid);
         unsigned int packet_size = sizeof(IDPacket);
         IDPacket packet;
         packet.id = player_id;
-        strncpy(packet.uid, uid.c_str(), ID_LEN);
+        uid.copy(packet.uid, ID_LEN, 0);
+        packet.uid[ID_LEN] = '\0';
+        printf("aaaaaaaaa %s\n", packet.uid);
 
         // Tell server that we think we belong to this player
         NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
@@ -102,7 +107,6 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
 }
 
 void ClientGame::handleIDPacket(IDPacket packet) {
-
     player_id = (unsigned int)packet.id;
     uid = std::string(packet.uid);
     Client::setPlayerfromID(player_id);
