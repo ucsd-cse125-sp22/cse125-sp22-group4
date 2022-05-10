@@ -35,6 +35,12 @@ GLuint my_image_texture = 0;
 int window_width;
 int window_height;
 bool ret;
+int retGameOver;
+int image_width_game_over = 0;
+int image_height_game_over = 0;
+GLuint image_texture_game_over = 0;
+int gameOver = 0;
+int catWon = 0;
 
 std::vector<Model*> sceneObjects;
 
@@ -210,6 +216,7 @@ bool Client::initializeClient() {
     knight->moveGlobal(glm::vec3(0, -2, 0));
 
     ret = LoadTextureFromFile("../../objects/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
+    ret = LoadTextureFromFile("../../objects/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -458,6 +465,59 @@ void Client::ItemHoldGUI() {
 
 }
 
+void TextCentered(std::string text) {
+    auto windowWidth = ImGui::GetWindowSize().x;
+    auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
+
+    ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+    ImGui::Text(text.c_str());
+}
+
+void Client::gameOverGUI() {
+    double adjustment = 0.7;
+    ImGuiWindowFlags flags = 0;
+    flags |= ImGuiWindowFlags_NoBackground;
+    flags |= ImGuiWindowFlags_NoTitleBar;
+    flags |= ImGuiWindowFlags_NoScrollbar;
+    flags |= ImGuiWindowFlags_NoResize;
+    ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+    ImGui::SetNextWindowPos(ImVec2(window_width/6, 0), 0, ImVec2(0, 0));
+
+    if (gameOver == 1) {
+        ImGui::Begin("GameOver GUI", NULL, flags);
+        ImGui::Image((void*)(intptr_t)image_texture_game_over, ImVec2(image_width_game_over*adjustment, image_height_game_over*adjustment));
+    
+        if (catWon == 1) {
+            ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+            ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
+            ImGui::Begin("text", NULL, flags);
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 0.95f));
+            ImGui::PushFont(HUGEcuteFont);
+            TextCentered("Cat won!!");
+            ImGui::PopFont();
+            ImGui::PopStyleColor();
+            ImGui::End();
+        }
+        else {
+            ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+            ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
+            ImGui::Begin("text", NULL, flags);
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 0.95f));
+            ImGui::PushFont(HUGEcuteFont);
+            TextCentered("Game Over");
+            TextCentered("Mice won!!");
+            ImGui::PopFont();
+            ImGui::PopStyleColor();
+            ImGui::End();
+        }
+        
+
+        ImGui::End();
+    }
+}
+
+
+
 MovementState Client::getMovementState() {
     return MovementState{
         direction,
@@ -496,6 +556,12 @@ void Client::updateTime(int t) {
 
 void Client::setItemHold(char h) {
     itemhold = h;
+}
+
+void Client::setGameOver(int g, int w) {
+    gameOver = g;
+    catWon = w;
+    //printf("%d gameOver %d\n", g, w);
 }
 
 /**

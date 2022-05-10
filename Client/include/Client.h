@@ -33,6 +33,7 @@ namespace Client {
     void GUI();
     void timeGUI();
     void ItemHoldGUI();
+    void gameOverGUI();
 
     MovementState getMovementState();
     RotationState getRotationState();
@@ -43,6 +44,7 @@ namespace Client {
     void setItemHold(char h);
     void updateItemLocation(glm::mat4 location);
     void updateTime(int t);
+    void setGameOver(int g, int w);
     bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
 };
 

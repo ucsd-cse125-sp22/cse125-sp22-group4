@@ -68,8 +68,10 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
         printf("THE GAME HAS ENDED\n");
         if (s.data == CAT_WIN) {
             printf("cat win\n");
+            gameEnd(1, CAT_WIN);
         } else {
             printf("mice win\n");
+            gameEnd(1, MOUSE_WIN);
         }
         break;
     }
@@ -147,6 +149,10 @@ void ClientGame::setItem(glm::mat4 location) {
 
 void ClientGame::setTime(int t) {
     Client::updateTime(t);
+}
+
+void ClientGame::gameEnd(int gameOver, int catWon) {
+    Client::setGameOver(gameOver, catWon);
 }
 
 void ClientGame::updateModels(PlayerState states[PLAYER_NUM]) {
