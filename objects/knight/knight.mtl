@@ -1,0 +1,72 @@
+# Blender MTL File: 'None'
+# Material Count: 5
+
+newmtl Mat_Chainmail.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Mat_Chainmail_Normal_OpenGL.png
+map_Kd Mat_Chainmail_Base_Color.png
+map_Ks Mat_Chainmail_Specular.png
+map_Ns Mat_Chainmail_Roughness.png
+
+newmtl Mat_Helmet.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Mat_Helmet_Normal_OpenGL.png
+map_Kd Mat_Helmet_Base_Color.png
+map_Ks Mat_Helmet_Specular.png
+map_Ns Mat_Helmet_Roughness.png
+
+newmtl Mat_PlateArmor.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Mat_PlateArmor_Normal_OpenGL.png
+map_Kd Mat_PlateArmor_Base_Color.png
+map_Ks Mat_PlateArmor_Specular.png
+map_Ns Mat_PlateArmor_Roughness.png
+
+newmtl Mat_Skirt.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Mat_Skirt_Normal_OpenGL.png
+map_Kd Mat_Skirt_Base_Color.png
+map_Ks Mat_Skirt_Specular.png
+map_Ns Mat_Skirt_Roughness.png
+
+newmtl Mat_Sword.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Bump Sword_normal.jpg
+map_Kd Sword_albedo.jpg
+map_Ks Sword_specular.jpg
+map_Ns Sword_roughness.jpg

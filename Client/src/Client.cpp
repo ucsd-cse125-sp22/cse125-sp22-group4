@@ -26,6 +26,7 @@ static Model* maze;
 static Model* players[PLAYER_NUM];
 static Model* bear;
 static Model* item;
+static Model* knight;
 
 // for ImGui Image display
 int my_image_width = 0;
@@ -204,6 +205,10 @@ bool Client::initializeClient() {
     bear->moveGlobal(glm::vec3(75, -3, -75));
     item = new Model("../../objects/backpack/backpack.obj");
 
+    knight = new Model("../../objects/knight/knight.obj");
+    knight->scale(glm::vec3(0.1f));
+    knight->moveGlobal(glm::vec3(0, -2, 0));
+
     ret = LoadTextureFromFile("../../objects/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
 
     // COLLISION DEBUG
@@ -258,6 +263,8 @@ void Client::displayCallback() {
         for (auto character : players) {
             character->draw(currCam->viewProjMat, identityMat, shader);
         }
+
+        knight->draw(currCam->viewProjMat, identityMat, shader);
        
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
@@ -280,7 +287,7 @@ void Client::displayCallback() {
         */
         // COLLITION DEBUG
 
-        item->draw(currCam->viewProjMat, identityMat, shader);
+        //item->draw(currCam->viewProjMat, identityMat, shader);
 
         break;
     }

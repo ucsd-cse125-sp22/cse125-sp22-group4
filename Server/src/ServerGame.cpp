@@ -307,7 +307,7 @@ void ServerGame::update()
         }
     }
     else {
-        printf("%d \n", 75 - playTime);
+        //printf("%d \n", 75 - playTime);
     }
     
     checkCooldownOver();
