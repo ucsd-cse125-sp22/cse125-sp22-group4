@@ -35,10 +35,14 @@ GLuint my_image_texture = 0;
 int window_width;
 int window_height;
 bool ret;
-int retGameOver;
+bool retGameOver;
 int image_width_game_over = 0;
 int image_height_game_over = 0;
 GLuint image_texture_game_over = 0;
+bool retMouseWin;
+int image_width_mouse_win = 0;
+int image_height_mouse_win = 0;
+GLuint image_texture_mouse_win = 0;
 
 std::vector<Model*> sceneObjects;
 
@@ -217,7 +221,8 @@ bool Client::initializeClient() {
     knight->moveGlobal(glm::vec3(0, -2, 0));
 
     ret = LoadTextureFromFile("../../objects/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
-    ret = LoadTextureFromFile("../../objects/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
+    retGameOver = LoadTextureFromFile("../../objects/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
+    retMouseWin = LoadTextureFromFile("../../objects/celebration.png", &image_texture_mouse_win, &image_width_mouse_win, &image_height_mouse_win);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -414,6 +419,21 @@ void Client::GUI() {
     ImGui::End();
 }
 
+void TextCentered(std::string text) {
+    auto windowWidth = ImGui::GetWindowSize().x;
+    auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
+
+    ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+    ImGui::Text(text.c_str());
+}
+
+void TextYCentered(std::string text) {
+    auto windowWidth = ImGui::GetWindowSize().y;
+    auto textWidth = ImGui::CalcTextSize(text.c_str()).y;
+
+    ImGui::SetCursorPosY((windowWidth - textWidth) * 0.5f);
+    ImGui::Text(text.c_str());
+}
 
 void Client::timeGUI() {
     ImGuiWindowFlags flags = 0;
@@ -424,7 +444,7 @@ void Client::timeGUI() {
     double adjustment = 0.2;
     ImGui::SetNextWindowSize(ImVec2(my_image_width * adjustment + 30, my_image_height * adjustment + 50));
     //ImGui::SetNextWindowPos(ImVec2(window_width - (my_image_width / 2) + 170, 0), 0, ImVec2(0, 0));
-    ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width/2)+180, 10), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width*adjustment)-30, 10), 0, ImVec2(0, 0));
     //printf(" % d image height %d image width\n", my_image_height, my_image_width);
     
     ImGui::Begin("Time GUI", NULL, flags);
@@ -434,11 +454,19 @@ void Client::timeGUI() {
     int minute = (time % 3600) / 60;  // Minute component
     int seconds = time % 60;          // Second component 
 
+    if (time < 0) {
+        minute = 0;
+        seconds = 0;
+    }
+        
+
     ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(my_image_width * adjustment, my_image_height * adjustment));
 
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.5f, 1.0f, 1.0f));
     ImGui::PushFont(cuteFont);
-    ImGui::Text("Countdown: %d:%02d", minute, seconds);
+    ImGui::SetCursorPosY((my_image_width * adjustment)/2);
+    ImGui::SetCursorPosX((my_image_height * adjustment) / 2 + 25);
+    ImGui::Text("%d:%02d", minute, seconds);
     ImGui::PopFont();
     ImGui::PopStyleColor();
 
@@ -473,13 +501,7 @@ void Client::ItemHoldGUI() {
 
 
 
-void TextCentered(std::string text) {
-    auto windowWidth = ImGui::GetWindowSize().x;
-    auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
 
-    ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-    ImGui::Text(text.c_str());
-}
 
 void Client::GameOverGUI() {
     double adjustment = 0.7;
@@ -489,39 +511,38 @@ void Client::GameOverGUI() {
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
-    ImGui::SetNextWindowPos(ImVec2(window_width/6, 0), 0, ImVec2(0, 0));
-
-    if (gameEnded == 1) {
-        ImGui::Begin("GameOver GUI", NULL, flags);
-        ImGui::Image((void*)(intptr_t)image_texture_game_over, ImVec2(image_width_game_over*adjustment, image_height_game_over*adjustment));
     
-        if (catWon == 1) {
-            ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
-            ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
-            ImGui::Begin("text", NULL, flags);
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 0.95f));
-            ImGui::PushFont(HUGEcuteFont);
-            TextCentered("Cat won!!");
-            ImGui::PopFont();
-            ImGui::PopStyleColor();
-            ImGui::End();
-        }
-        else {
-            ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
-            ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
-            ImGui::Begin("text", NULL, flags);
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 0.95f));
-            ImGui::PushFont(HUGEcuteFont);
-            TextCentered("Game Over");
-            TextCentered("Mice won!!");
-            ImGui::PopFont();
-            ImGui::PopStyleColor();
-            ImGui::End();
-        }
-        
 
+    if (gameEnded == 1 && catWon == 0) {
+        adjustment = 0.3;
+        ImGui::SetNextWindowPos(ImVec2((window_width-image_width_mouse_win*adjustment)/2, 0), 0, ImVec2(0, 0));
+        ImGui::Begin("GameOver GUI", NULL, flags);      
+        ImGui::Image((void*)(intptr_t)image_texture_mouse_win, ImVec2(image_width_mouse_win * adjustment, image_height_mouse_win * adjustment));
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 0.95f));
+        ImGui::PushFont(HUGEcuteFont);
+        ImGui::SetCursorPosY(0);
+        TextCentered("Game Over");
+        TextCentered("Mice won!!");
+        ImGui::PopFont();
+        ImGui::PopStyleColor();
         ImGui::End();
     }
+    else if (gameEnded == 1) {
+        ImGui::SetNextWindowPos(ImVec2((window_width - image_width_game_over * adjustment) / 2, (window_height - image_height_game_over * adjustment) / 2), 0, ImVec2(0, 0));
+        ImGui::Begin("GameOver GUI", NULL, flags);
+        ImGui::Image((void*)(intptr_t)image_texture_game_over, ImVec2(image_width_game_over * adjustment, image_height_game_over * adjustment));
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 0.95f));
+        ImGui::PushFont(HUGEcuteFont);
+        ImGui::SetCursorPosY(0);
+        TextCentered("Game Over");
+        TextCentered("Cat won!!");
+        ImGui::PopFont();
+        ImGui::PopStyleColor();
+        ImGui::End();
+    }
+        
+
+   
 }
 
 
