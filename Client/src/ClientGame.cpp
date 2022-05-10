@@ -66,9 +66,12 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
     }
     case GAME_END: {
         printf("THE GAME HAS ENDED\n");
+        Client::setGameEndState(1);
         if (s.data == CAT_WIN) {
+            Client::setWhoWin(1, 0);
             printf("cat win\n");
         } else {
+            Client::setWhoWin(0, 1);
             printf("mice win\n");
         }
         break;

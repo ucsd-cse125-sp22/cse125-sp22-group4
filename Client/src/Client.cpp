@@ -48,6 +48,9 @@ static CollisionDetector cDetector;
 // COLLITION DEBUG
 
 // state variables
+static bool gameEnded = 0;
+static bool miceWin = 0;
+static bool catWin = 0;
 unsigned int my_id;
 static int currTime = 0;
 static double prevXPos;
@@ -72,6 +75,7 @@ static char itemhold = PLAYER_NUM + 1;
 static ImFont* plainFont;
 static ImFont* cuteFont;
 static ImFont* HUGEcuteFont;
+static ImFont* MASSIVEcuteFont;
 
 // callbacks
 static void resizeCallback(GLFWwindow* window, int width, int height);
@@ -239,6 +243,7 @@ bool Client::initializeClient() {
     plainFont = io.Fonts->AddFontDefault();
     cuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 32.0f);
     HUGEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 52.0f);
+    MASSIVEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 70.0f);
 
     return true;
 }
@@ -258,6 +263,7 @@ void Client::displayCallback() {
     glUseProgram(0);
 
     glm::mat4 identityMat = glm::mat4(1);
+
     switch (select) {
     case 0: {
         for (auto character : players) {
@@ -330,6 +336,10 @@ void Client::displayCallback() {
 void Client::idleCallback() {
     Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
     currCamera->update();
+
+    if (gameEnded) {
+        pause = 1;
+    }
 
     if (!pause) {
         backpack->update();
@@ -455,6 +465,33 @@ void Client::ItemHoldGUI() {
 
         ImGui::End();
     }
+}
+
+void Client::GameOverGUI() {
+    ImGuiWindowFlags flags = 0;
+    flags |= ImGuiWindowFlags_NoBackground;
+    flags |= ImGuiWindowFlags_NoTitleBar;
+    flags |= ImGuiWindowFlags_NoScrollbar;
+    flags |= ImGuiWindowFlags_NoResize;
+    ImGui::SetNextWindowSize(ImVec2(330, 200));
+    ImGui::SetNextWindowPos(ImVec2((window_width - 330) / 2, (window_height - 200) / 2), 0, ImVec2(0, 0));
+
+    if (gameEnded) {
+        ImGui::Begin("GAMEOVER GUI", NULL, flags);
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.5f, 0.95f));
+        ImGui::PushFont(MASSIVEcuteFont);
+        if (miceWin) {
+            ImGui::Text("GAME OVER\nMOUSE WIN");
+        }
+        else {
+            ImGui::Text("GAME OVER\nCAT WIN");
+        }
+        ImGui::PopFont();
+        ImGui::PopStyleColor();
+
+        ImGui::End();
+    }
+
 
 }
 
@@ -496,6 +533,15 @@ void Client::updateTime(int t) {
 
 void Client::setItemHold(char h) {
     itemhold = h;
+}
+
+void Client::setGameEndState(bool ge) {
+    gameEnded = ge;
+}
+
+void Client::setWhoWin(bool cat, bool mouse) {
+    catWin = cat;
+    miceWin = mouse;
 }
 
 /**
