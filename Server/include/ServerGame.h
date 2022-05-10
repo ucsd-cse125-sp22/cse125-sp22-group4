@@ -88,6 +88,11 @@ private:
     void mouseDead(int client_id);
     void checkCooldownOver();
 
+    // For collision detection
+    Model playerModels[PLAYER_NUM];
+    int flagId;
+    int bearId;
+
     // these are just for testing respawn
     void isTaken();
     int ans = 0;
