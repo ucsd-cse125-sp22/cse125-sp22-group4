@@ -403,7 +403,7 @@ void Client::timeGUI() {
     double adjustment = 0.2;
     ImGui::SetNextWindowSize(ImVec2(my_image_width * adjustment + 30, my_image_height * adjustment + 50));
     //ImGui::SetNextWindowPos(ImVec2(window_width - (my_image_width / 2) + 170, 0), 0, ImVec2(0, 0));
-    ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width/2) +100, 0), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width/2)+180, 10), 0, ImVec2(0, 0));
     //printf(" % d image height %d image width\n", my_image_height, my_image_width);
     
     ImGui::Begin("Time GUI", NULL, flags);
@@ -415,7 +415,7 @@ void Client::timeGUI() {
 
     ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(my_image_width * adjustment, my_image_height * adjustment));
 
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.0f, 0.5f, 0.95f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.5f, 1.0f, 1.0f));
     ImGui::PushFont(cuteFont);
     ImGui::Text("Countdown: %d:%02d", minute, seconds);
     ImGui::PopFont();
