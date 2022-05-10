@@ -37,7 +37,7 @@ bool Flag::checkGoal()
 	return (this->model == this->goalPos);
 }
 
-
+// TODO: Fix hard coded OBB.
 OBB Flag::getOBB() {
 	return CollisionDetector::computeOBB({ {1,1},{-1,1}, {-1,-1}, {1,-1} }, item_state.model);
 }

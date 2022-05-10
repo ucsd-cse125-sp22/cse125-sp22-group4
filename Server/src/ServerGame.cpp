@@ -13,9 +13,6 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-Model playerModels[PLAYER_NUM];
-int flagId;
-
 ServerGame::ServerGame(void)
 {
     // id's to assign clients for our table
@@ -197,6 +194,10 @@ void ServerGame::start() {
         printf("insert %d into cd\n", i);
     }
     flagId = collision_detector->insert(flag->getOBB());
+    glm::mat4 bearModel = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75));
+    OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
+    bearId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, bearModel));
+
     ServerGame::game_started = true;
 }
 
@@ -225,19 +226,31 @@ void ServerGame::collisionStep() {
                 flag->item_state.hold = i;
                 //mouseDead(i);
             }
-            else if (hitId > 0 && i > 0) {
+            else if (hitId == bearId) {
+                printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
+                player_states[i].model = oldModels[i];
+                if (flag->item_state.hold == i) {
+                    // The player with flag hit bear
+                    // TODO: Game shouldn't end immediately.
+                    announceGameEnd(1);
+                    gameAlive = false;
+                    printf("[ServerGame::collisionStep] Game end!\n");
+                }
+            }
+            else if (hitId > 0 && i > 0 ) {
                 printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i + 1, hitId + 1);
                 player_states[i].model = oldModels[i];
             }
-            else if (i == 0 && hitId > 0) {
+            else if (i == 0 && hitId > 0 && i < PLAYER_NUM) {
                 printf("[ServerGame::collisionStep] Player %d killed player %d!\n", i + 1, hitId + 1);
                 mouseDead(hitId);
             }
+
         }
+    }
         
         // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
 
-    }
     //printf("\n");
 }
 
@@ -305,9 +318,6 @@ void ServerGame::update()
             announceGameEnd(0);
             gameAlive = false;
         }
-    }
-    else {
-        //printf("%d \n", 75 - playTime);
     }
     
     checkCooldownOver();
@@ -469,7 +479,7 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     }
     
 }
-
+const double SPEED = 0.4;
 //Update player_state from move packet.
 void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     PlayerState state = player_states[client_id];
@@ -485,7 +495,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         bool obstacle = maze->leftBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle)
-            moveLocal(state.model, glm::vec3(-0.2, 0, 0));
+            moveLocal(state.model, glm::vec3(-SPEED, 0, 0));
         break;
     }
     case RIGHT:
@@ -493,7 +503,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         bool obstacle = maze->rightBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle)
-            moveLocal(state.model, glm::vec3(0.2, 0, 0));
+            moveLocal(state.model, glm::vec3(SPEED, 0, 0));
         break;
     }
     case BACK:
@@ -501,7 +511,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         bool obstacle = maze->backwardsBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle)
-            moveLocal(state.model, glm::vec3(0, 0, 0.2));
+            moveLocal(state.model, glm::vec3(0, 0, SPEED));
         break;
     }
     case FORWARD:
@@ -509,7 +519,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         bool obstacle = maze->forwardBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle) {
-            moveLocal(state.model, glm::vec3(0, 0, -0.2));
+            moveLocal(state.model, glm::vec3(0, 0, -SPEED));
         }
 
         break;

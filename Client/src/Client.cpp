@@ -39,8 +39,6 @@ int retGameOver;
 int image_width_game_over = 0;
 int image_height_game_over = 0;
 GLuint image_texture_game_over = 0;
-int gameOver = 0;
-int catWon = 0;
 
 std::vector<Model*> sceneObjects;
 
@@ -54,6 +52,8 @@ static CollisionDetector cDetector;
 // COLLITION DEBUG
 
 // state variables
+static bool gameEnded = 0;
+static bool catWon = 0;
 unsigned int my_id;
 static int currTime = 0;
 static double prevXPos;
@@ -78,6 +78,7 @@ static char itemhold = PLAYER_NUM + 1;
 static ImFont* plainFont;
 static ImFont* cuteFont;
 static ImFont* HUGEcuteFont;
+static ImFont* MASSIVEcuteFont;
 
 // callbacks
 static void resizeCallback(GLFWwindow* window, int width, int height);
@@ -246,6 +247,7 @@ bool Client::initializeClient() {
     plainFont = io.Fonts->AddFontDefault();
     cuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 32.0f);
     HUGEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 52.0f);
+    MASSIVEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 70.0f);
 
     return true;
 }
@@ -265,6 +267,7 @@ void Client::displayCallback() {
     glUseProgram(0);
 
     glm::mat4 identityMat = glm::mat4(1);
+
     switch (select) {
     case 0: {
         for (auto character : players) {
@@ -337,6 +340,10 @@ void Client::displayCallback() {
 void Client::idleCallback() {
     Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
     currCamera->update();
+
+    if (gameEnded) {
+        pause = 1;
+    }
 
     if (!pause) {
         backpack->update();
@@ -462,8 +469,9 @@ void Client::ItemHoldGUI() {
 
         ImGui::End();
     }
-
 }
+
+
 
 void TextCentered(std::string text) {
     auto windowWidth = ImGui::GetWindowSize().x;
@@ -473,7 +481,7 @@ void TextCentered(std::string text) {
     ImGui::Text(text.c_str());
 }
 
-void Client::gameOverGUI() {
+void Client::GameOverGUI() {
     double adjustment = 0.7;
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
@@ -483,7 +491,7 @@ void Client::gameOverGUI() {
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
     ImGui::SetNextWindowPos(ImVec2(window_width/6, 0), 0, ImVec2(0, 0));
 
-    if (gameOver == 1) {
+    if (gameEnded == 1) {
         ImGui::Begin("GameOver GUI", NULL, flags);
         ImGui::Image((void*)(intptr_t)image_texture_game_over, ImVec2(image_width_game_over*adjustment, image_height_game_over*adjustment));
     
@@ -558,8 +566,9 @@ void Client::setItemHold(char h) {
     itemhold = h;
 }
 
+
 void Client::setGameOver(int g, int w) {
-    gameOver = g;
+    gameEnded = g;
     catWon = w;
     //printf("%d gameOver %d\n", g, w);
 }

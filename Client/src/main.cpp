@@ -127,7 +127,9 @@ int main(int argc, char** argv) {
         Client::GUI();
         Client::timeGUI();
         Client::ItemHoldGUI();
-        Client::gameOverGUI();
+
+        Client::GameOverGUI();
+
         /////////////////////////////////IMGUI STUFF IGNORE//////////////////////////////////////////////////////////
 
         client->update(Client::getMovementState(), Client::getRotationState());

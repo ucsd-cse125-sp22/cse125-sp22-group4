@@ -33,7 +33,7 @@ namespace Client {
     void GUI();
     void timeGUI();
     void ItemHoldGUI();
-    void gameOverGUI();
+    void GameOverGUI();
 
     MovementState getMovementState();
     RotationState getRotationState();
@@ -46,6 +46,8 @@ namespace Client {
     void updateTime(int t);
     void setGameOver(int g, int w);
     bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
+    void setGameEndState(bool ge);
+    void setWhoWin(bool cat, bool mouse);
 };
 
 #endif // !CLIENT_H
