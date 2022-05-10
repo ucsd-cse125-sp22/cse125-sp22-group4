@@ -232,7 +232,7 @@ void ServerGame::collisionStep() {
                 if (flag->item_state.hold == i) {
                     // The player with flag hit bear
                     // TODO: Game shouldn't end immediately.
-                    announceGameEnd(1);
+                    announceGameEnd(MOUSE_WIN);
                     gameAlive = false;
                     printf("[ServerGame::collisionStep] Game end!\n");
                 }
@@ -315,7 +315,7 @@ void ServerGame::update()
     // TODO: Fix the game timer to a constant. Also 180 on client.
     if (180 - playTime <= 0) {
         if (gameAlive) {
-            announceGameEnd(0);
+            announceGameEnd(CAT_WIN);
             gameAlive = false;
         }
     }
