@@ -26,6 +26,9 @@ private:
     glm::mat4 model;
     float maxX, maxZ, minX, minZ;
 
+    std::map<std::string, BoneInfo> m_BoneInfoMap;
+    int m_BoneCounter = 0;
+
     void loadModel(std::string const& path);
     void processNode(aiNode* node, const aiScene* scene);
     GraphicObject* processMesh(aiMesh* mesh, const aiScene* scene);
@@ -50,6 +53,18 @@ public:
     void setModel(const glm::mat4& m) override;
     const glm::mat4& getModel() const override;
     OBB getOBB() const override;
+
+    void SetVertexBoneDataToDefault(Vertex& vertex);
+    void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
+    void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
+
+    auto& GetBoneInfoMap(){ 
+        return m_BoneInfoMap;
+    }
+    int& GetBoneCount(){
+        return m_BoneCounter;
+    }
+    glm::mat4 ConvertMatrixToGLMFormat(const aiMatrix4x4& from);
 };
 
 #endif

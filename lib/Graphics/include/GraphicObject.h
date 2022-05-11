@@ -13,6 +13,8 @@
 #include "spdlog/spdlog.h"
 #include "CollisionDetector.h"
 
+#define MAX_BONE_INFLUENCE 4
+
 class GraphicObject {
 public:
     virtual ~GraphicObject() = default;
