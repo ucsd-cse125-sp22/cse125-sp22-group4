@@ -1,11 +1,11 @@
-// may need #include "stdafx.h" in visual studio
-//#include "stdafx.h"
-#include "ServerGame.h"
 // used for multi-threading
 #include <process.h>
-//#include <Network/include/NetworkData.h>
-//#include <Network/include/Packets.h>
 #include <iostream>
+#include "ServerGame.h"
+#include "yaml-cpp/yaml.h"
+#include <fstream>
+#include <filesystem>
+#include<map>
 
 void serverLoop();
 ServerGame* server;
@@ -13,8 +13,18 @@ ServerGame* server;
 
 int main()
 {
+    // This should be in repo root
+    double playerSpeed;
+    YAML::Node config = YAML::LoadFile("../../config.yaml");
+    if (config["server"]) {
+        auto serverConf = config["server"];
+        playerSpeed = serverConf["speed"].as<double>();
+    }
+    else {
+        spdlog::info("Cannot find config file");
+    }
     // initialize the server
-    server = new ServerGame();
+    server = new ServerGame(playerSpeed);
     serverLoop();
 }
 

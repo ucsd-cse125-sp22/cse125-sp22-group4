@@ -1,0 +1,10 @@
+shared:
+  port: 2333
+
+
+server:
+  speed: 0.4
+
+
+client:
+  ip: 128.54.70.33

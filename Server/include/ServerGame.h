@@ -14,6 +14,7 @@
 
 // Microseconds / Frames per second
 #define FPS_MAX 1e6/60.0
+#define PLAYER_DEFAULT_SPEED 0.2
 
 class ServerGame
 {
@@ -21,7 +22,7 @@ class ServerGame
 public:
 
     static bool game_started;
-    ServerGame(void);
+    ServerGame(double playerSpeed = PLAYER_DEFAULT_SPEED);
     ~ServerGame(void);
 
     void update();
@@ -47,6 +48,7 @@ private:
     // IDs for the clients connecting for table in ServerNetwork 
     static unsigned int client_id;
     bool gameAlive;
+    double playerSpeed;
 
     Maze* maze;
     Flag* flag;
