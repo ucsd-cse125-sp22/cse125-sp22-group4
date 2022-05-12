@@ -127,6 +127,7 @@ int main(int argc, char** argv) {
         //Client::GUI();
         Client::timeGUI();
         Client::ItemHoldGUI();
+        Client::miniMapGUI();
 
         Client::GameOverGUI();
 

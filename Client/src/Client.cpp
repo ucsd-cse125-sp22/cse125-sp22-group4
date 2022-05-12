@@ -51,6 +51,10 @@ bool retMouseFlagPale;
 int image_width_mouse_flag_pale = 0;
 int image_height_mouse_flag_pale = 0;
 GLuint image_texture_mouse_flag_pale = 0;
+bool retMap;
+int image_width_map = 0;
+int image_height_map = 0;
+GLuint image_texture_map = 0;
 
 std::vector<Model*> sceneObjects;
 
@@ -233,6 +237,7 @@ bool Client::initializeClient() {
     retMouseWin = LoadTextureFromFile("../../objects/celebration.png", &image_texture_mouse_win, &image_width_mouse_win, &image_height_mouse_win);
     retMouseFlag = LoadTextureFromFile("../../objects/cheese.png", &image_texture_mouse_flag, &image_width_mouse_flag, &image_height_mouse_flag);
     retMouseFlagPale = LoadTextureFromFile("../../objects/cheese_opaque.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
+    retMap = LoadTextureFromFile("../../objects/mazeTextured.png", &image_texture_map, &image_width_map, &image_height_map);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -494,7 +499,7 @@ void Client::ItemHoldGUI() {
 
     ImGui::SetNextWindowSize(ImVec2(image_width_mouse_flag * adjustment+10, image_height_mouse_flag*adjustment+10));
    // ImGui::SetNextWindowPos(ImVec2((window_width - 533)/2, window_height/30), 0, ImVec2(0, 0));
-    ImGui::SetNextWindowPos(ImVec2(20, 15), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(200, 15), 0, ImVec2(0, 0));
    
     ImGui::Begin("ItemHold GUI", NULL, flags);
 
@@ -523,6 +528,29 @@ void Client::ItemHoldGUI() {
     ImGui::End();
 }
 
+void Client::miniMapGUI() {
+    double adjustment = 0.5;
+    ImGuiWindowFlags flags = 0;
+    flags |= ImGuiWindowFlags_NoBackground;
+    flags |= ImGuiWindowFlags_NoTitleBar;
+    flags |= ImGuiWindowFlags_NoScrollbar;
+    flags |= ImGuiWindowFlags_NoResize;
+    ImGui::SetNextWindowSize(ImVec2(image_width_map * adjustment, image_height_map * adjustment));
+    ImGui::SetNextWindowPos(ImVec2(-40, -90), 0, ImVec2(0, 0));
+    ImGui::Begin("MiniMap GUI", NULL, flags);
+
+    if (player) {
+        glm::mat4 model = player->getModel();
+        int locX = model[3][0]*.9 + 10;
+        int locZ = abs(model[3][2])*.9 + 19;
+        //printf("x %d z %d\n", locX, locZ);
+        ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(57, 255, 20, 255), 100, 2.f);
+        ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
+    }
+    
+
+    ImGui::End();
+}
 
 
 
