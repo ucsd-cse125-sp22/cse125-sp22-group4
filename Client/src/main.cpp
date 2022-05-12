@@ -115,16 +115,16 @@ int main(int argc, char** argv) {
         }
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        {
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-            //ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+        //{
+        //    ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+        //    //ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+        //    ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-                1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
-        }
-        Client::GUI();
+        //    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+        //        1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        //    ImGui::End();
+        //}
+        //Client::GUI();
         Client::timeGUI();
         Client::ItemHoldGUI();
 

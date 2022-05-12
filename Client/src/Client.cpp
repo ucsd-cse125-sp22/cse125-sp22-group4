@@ -43,6 +43,14 @@ bool retMouseWin;
 int image_width_mouse_win = 0;
 int image_height_mouse_win = 0;
 GLuint image_texture_mouse_win = 0;
+bool retMouseFlag;
+int image_width_mouse_flag = 0;
+int image_height_mouse_flag = 0;
+GLuint image_texture_mouse_flag = 0;
+bool retMouseFlagPale;
+int image_width_mouse_flag_pale = 0;
+int image_height_mouse_flag_pale = 0;
+GLuint image_texture_mouse_flag_pale = 0;
 
 std::vector<Model*> sceneObjects;
 
@@ -62,7 +70,7 @@ unsigned int my_id;
 static int currTime = 0;
 static double prevXPos;
 static double prevYPos;
-static int select = 0;
+static int select = 1;
 static bool pause = false;
 static bool showMouse = false;
 static bool middlePressed = false;
@@ -223,6 +231,8 @@ bool Client::initializeClient() {
     ret = LoadTextureFromFile("../../objects/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
     retGameOver = LoadTextureFromFile("../../objects/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
     retMouseWin = LoadTextureFromFile("../../objects/celebration.png", &image_texture_mouse_win, &image_width_mouse_win, &image_height_mouse_win);
+    retMouseFlag = LoadTextureFromFile("../../objects/cheese.png", &image_texture_mouse_flag, &image_width_mouse_flag, &image_height_mouse_flag);
+    retMouseFlagPale = LoadTextureFromFile("../../objects/cheese_pale.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -261,6 +271,7 @@ bool Client::initializeClient() {
  * Display objects
 **/
 void Client::displayCallback() {
+    isThirdPersonCam = true;
     Camera* currCam = isThirdPersonCam ? thirdPersonCamera : camera;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // activate the shader program and send some values
@@ -474,17 +485,25 @@ void Client::timeGUI() {
 }
 
 void Client::ItemHoldGUI() {
+    double adjustment = 0.15;
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
-    ImGui::SetNextWindowSize(ImVec2(533, 200));
-    ImGui::SetNextWindowPos(ImVec2((window_width - 533)/2, window_height/30), 0, ImVec2(0, 0));
+
+    ImGui::SetNextWindowSize(ImVec2(image_width_mouse_flag * adjustment+10, image_height_mouse_flag*adjustment+10));
+   // ImGui::SetNextWindowPos(ImVec2((window_width - 533)/2, window_height/30), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(20, 15), 0, ImVec2(0, 0));
+   
+    ImGui::Begin("ItemHold GUI", NULL, flags);
+
+   
 
     if (itemhold != PLAYER_NUM + 1) {
-        ImGui::Begin("ItemHold GUI", NULL, flags);
-        if (currTime % 2 == 0) {
+        ImGui::Image((void*)(intptr_t)image_texture_mouse_flag, ImVec2(image_width_mouse_flag * adjustment, image_height_mouse_flag * adjustment));
+
+    /*    if (currTime % 2 == 0) {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 0.95f));
         }
         else {
@@ -493,10 +512,15 @@ void Client::ItemHoldGUI() {
         ImGui::PushFont(HUGEcuteFont);
         ImGui::Text("Player %d is holding the Flag!!", itemhold);
         ImGui::PopFont();
-        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();*/
 
-        ImGui::End();
+       
     }
+    else {
+        ImGui::Image((void*)(intptr_t)image_texture_mouse_flag_pale, ImVec2(image_width_mouse_flag_pale * adjustment, image_height_mouse_flag_pale * adjustment));
+    }
+
+    ImGui::End();
 }
 
 
