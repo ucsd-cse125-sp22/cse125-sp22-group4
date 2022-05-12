@@ -13,10 +13,11 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-ServerGame::ServerGame(void)
+ServerGame::ServerGame(double playerSpeed)
 {
     // id's to assign clients for our table
     client_id = 0;
+    this->playerSpeed = playerSpeed;
 
     // set up the server network to listen 
     network = new ServerNetwork();
@@ -479,7 +480,7 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     }
     
 }
-const double SPEED = 0.4;
+
 //Update player_state from move packet.
 void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     PlayerState state = player_states[client_id];
@@ -495,7 +496,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         bool obstacle = maze->leftBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle)
-            moveLocal(state.model, glm::vec3(-SPEED, 0, 0));
+            moveLocal(state.model, glm::vec3(-playerSpeed, 0, 0));
         break;
     }
     case RIGHT:
@@ -503,7 +504,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         bool obstacle = maze->rightBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle)
-            moveLocal(state.model, glm::vec3(SPEED, 0, 0));
+            moveLocal(state.model, glm::vec3(playerSpeed, 0, 0));
         break;
     }
     case BACK:
@@ -511,7 +512,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         bool obstacle = maze->backwardsBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle)
-            moveLocal(state.model, glm::vec3(0, 0, SPEED));
+            moveLocal(state.model, glm::vec3(0, 0, playerSpeed));
         break;
     }
     case FORWARD:
@@ -519,7 +520,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         bool obstacle = maze->forwardBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
 
         if (!obstacle) {
-            moveLocal(state.model, glm::vec3(0, 0, -SPEED));
+            moveLocal(state.model, glm::vec3(0, 0, -playerSpeed));
         }
 
         break;
