@@ -232,7 +232,7 @@ bool Client::initializeClient() {
     retGameOver = LoadTextureFromFile("../../objects/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
     retMouseWin = LoadTextureFromFile("../../objects/celebration.png", &image_texture_mouse_win, &image_width_mouse_win, &image_height_mouse_win);
     retMouseFlag = LoadTextureFromFile("../../objects/cheese.png", &image_texture_mouse_flag, &image_width_mouse_flag, &image_height_mouse_flag);
-    retMouseFlagPale = LoadTextureFromFile("../../objects/cheese_pale.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
+    retMouseFlagPale = LoadTextureFromFile("../../objects/cheese_opaque.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
