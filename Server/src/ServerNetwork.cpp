@@ -1,7 +1,8 @@
 //#include "stdafx.h" 
 #include "ServerNetwork.h"
+#include "yaml-cpp/yaml.h"
 
-ServerNetwork::ServerNetwork(void)
+ServerNetwork::ServerNetwork()
 {
 
     // create WSADATA object
@@ -31,8 +32,18 @@ ServerNetwork::ServerNetwork(void)
     hints.ai_protocol = IPPROTO_TCP;    // TCP connection!!!
     hints.ai_flags = AI_PASSIVE;
 
+    // Get port from conf file
+    std::string port = DEFAULT_PORT;
+    try {
+        YAML::Node conf = YAML::LoadFile("../../config.yaml");
+        if (conf["port"]) port = conf["port"].as<std::string>();
+    }
+    catch (YAML::BadFile e) {
+        printf("Unable to read config file");
+    }
+
     // Resolve the server address and port
-    iResult = getaddrinfo("0.0.0.0", DEFAULT_PORT, &hints, &result);
+    iResult = getaddrinfo("0.0.0.0", port.c_str(), &hints, &result);
 
     if (iResult != 0) {
         printf("getaddrinfo failed with error: %d\n", iResult);
