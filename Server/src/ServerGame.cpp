@@ -345,7 +345,7 @@ void ServerGame::updateFromConfigFile() {
     if (config["server"]) {
         auto serverConf = config["server"];
         if (serverConf["catSpeed"]) this->catSpeed = serverConf["catSpeed"].as<double>();
-        if (serverConf["mouseSpeed"]) this->catSpeed = serverConf["mouseSpeed"].as<double>();
+        if (serverConf["mouseSpeed"]) this->mouseSpeed = serverConf["mouseSpeed"].as<double>();
         // TODO: if we want accurate Client timers, this should be extracted to be a shared config var
         if (serverConf["roundLengthSec"]) this->roundLengthSec = serverConf["roundLengthSec"].as<double>();
         if (serverConf["cooldownTimeSec"]) this->cooldownTimeSec = serverConf["cooldownTimeSec"].as<double>();

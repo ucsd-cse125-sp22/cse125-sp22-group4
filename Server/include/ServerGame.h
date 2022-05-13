@@ -22,7 +22,7 @@
 #define DEFAULT_ROUNDLENGTHSEC 180
 #define DEFAULT_COOLDOWNTIMESEC 5
 
-#define CAT_ID 1
+#define CAT_ID 0
 
 class ServerGame
 {
