@@ -13,6 +13,9 @@ add_library(Graphics STATIC
     src/CollisionDetector.cpp
     src/Tokenizer.cpp
     src/SceneLoader.cpp
+    src/Bone.cpp
+    src/Animation.cpp
+    src/Animator.cpp
 )
 
 target_include_directories(Graphics PRIVATE
@@ -37,6 +40,9 @@ target_sources(Graphics PRIVATE
     include/CollisionDetector.h
     include/Tokenizer.h
     include/SceneLoader.h
+    include/Bone.h
+    include/Animation.h
+    include/Animator.h
 )
 
 target_link_libraries(Graphics
