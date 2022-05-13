@@ -14,7 +14,7 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-ServerGame::ServerGame() : playerSpeed(0.4), roundLengthSec(180)
+ServerGame::ServerGame() : playerSpeed(0.4), roundLengthSec(180), cooldownTimeSec(5)
 {
     this->ticksSinceConfigCheck = 0;
 
@@ -31,9 +31,6 @@ ServerGame::ServerGame() : playerSpeed(0.4), roundLengthSec(180)
     collision_detector = new CollisionDetector();
 
     playTime = 0; // game play time init
-
-    // I have no idea what the cooldown time is...I put 5 seconds in microseconds
-    cooldownTime = 5000000;
 
     // inaccessible player location for dead mice
     banished = glm::mat4(1);
@@ -350,6 +347,7 @@ void ServerGame::updateFromConfigFile() {
         if (serverConf["playerSpeed"]) this->playerSpeed = serverConf["playerSpeed"].as<double>();
         // TODO: if we want accurate Client timers, this should be extracted to be a shared config var
         if (serverConf["roundLengthSec"]) this->roundLengthSec = serverConf["roundLengthSec"].as<double>();
+        if (serverConf["cooldownTimeSec"]) this->cooldownTimeSec = serverConf["cooldownTimeSec"].as<double>();
     }
   
 }
@@ -362,8 +360,8 @@ void ServerGame::checkCooldownOver() {
             std::pair<int, std::chrono::steady_clock::time_point> deadMouse = cooldown.front();
             int id = deadMouse.first;
             auto stop_mouse = timer_mouse.now();
-            auto diff = std::chrono::duration_cast<std::chrono::microseconds>(stop_mouse - deadMouse.second);
-            int newTime = cooldownTime - diff.count(); // time left
+            auto diff = std::chrono::duration_cast<std::chrono::seconds>(stop_mouse - deadMouse.second);
+            int newTime = this->cooldownTimeSec - diff.count(); // time left
             
             if (newTime <= 0) { // cooldown is over, mouse can be reborn
                 respawnPlayer(id);

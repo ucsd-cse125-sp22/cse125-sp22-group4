@@ -3,6 +3,7 @@ port: 2333
 server:
   playerSpeed: 0.4
   roundLengthSec: 180
+  cooldownTimeSec: 5
 
 
 client:

@@ -50,9 +50,12 @@ private:
     // IDs for the clients connecting for table in ServerNetwork 
     static unsigned int client_id;
     bool gameAlive;
+    
+    // config file fields
     double playerSpeed;
     int ticksSinceConfigCheck;
     int roundLengthSec;
+    int cooldownTimeSec;
 
     Maze* maze;
     Flag* flag;
@@ -87,7 +90,6 @@ private:
     int playTime;
 
     // for dead mouse cooldown
-    int cooldownTime;
     std::queue< std::pair<int, std::chrono::steady_clock::time_point> > cooldown; // player ID and start time
     std::chrono::steady_clock timer_mouse;
     std::chrono::steady_clock::time_point start_mouse;
