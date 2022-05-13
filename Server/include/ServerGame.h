@@ -16,6 +16,11 @@
 #define FPS_MAX 1e6/60.0
 #define PLAYER_DEFAULT_SPEED 0.2
 
+#define CONFIG_FILE "../../config.yaml"
+#define DEFAULT_PLAYERSPEED 0.4
+#define DEFAULT_ROUNDLENGTHSEC 180
+#define DEFAULT_COOLDOWNTIMESEC 5
+
 class ServerGame
 {
 

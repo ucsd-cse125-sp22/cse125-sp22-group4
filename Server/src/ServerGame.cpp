@@ -14,7 +14,7 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-ServerGame::ServerGame() : playerSpeed(0.4), roundLengthSec(180), cooldownTimeSec(5)
+ServerGame::ServerGame() : playerSpeed(DEFAULT_PLAYERSPEED), roundLengthSec(DEFAULT_ROUNDLENGTHSEC), cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC)
 {
     this->ticksSinceConfigCheck = 0;
 
@@ -24,7 +24,7 @@ ServerGame::ServerGame() : playerSpeed(0.4), roundLengthSec(180), cooldownTimeSe
     // id's to assign clients for our table
     client_id = 0;
 
-    // set up the server network to listen 
+    // set up the server network to listen
     network = new ServerNetwork();
     start_time = timer.now();
     maze = new Maze();
@@ -335,7 +335,7 @@ void ServerGame::update()
 void ServerGame::updateFromConfigFile() {
     YAML::Node config;
     try {
-       config = YAML::LoadFile("../../config.yaml");
+       config = YAML::LoadFile(CONFIG_FILE);
     }
     catch (YAML::BadFile e) {
         printf("Unable to read file");
