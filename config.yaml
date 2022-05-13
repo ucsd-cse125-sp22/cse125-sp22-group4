@@ -1,9 +1,7 @@
-shared:
-  port: 2333
-
+port: 2333
 
 server:
-  speed: 0.4
+  playerSpeed: 0.4
 
 
 client:

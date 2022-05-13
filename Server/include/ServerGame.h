@@ -22,7 +22,7 @@ class ServerGame
 public:
 
     static bool game_started;
-    ServerGame(double playerSpeed = PLAYER_DEFAULT_SPEED);
+    ServerGame();
     ~ServerGame(void);
 
     void update();
@@ -44,11 +44,14 @@ public:
     void moveLocal(glm::mat4& model, const glm::vec3& v);
     void printMat4(glm::mat4 mat);
 
+    void updateFromConfigFile();
+
 private:
     // IDs for the clients connecting for table in ServerNetwork 
     static unsigned int client_id;
     bool gameAlive;
     double playerSpeed;
+    int ticksSinceConfigCheck;
 
     Maze* maze;
     Flag* flag;

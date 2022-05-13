@@ -1,6 +1,7 @@
 //#include "stdafx.h" 
 #include "ServerGame.h"
 #include <iostream>
+#include "yaml-cpp/yaml.h"
 
 unsigned int ServerGame::client_id;
 bool ServerGame::game_started;
@@ -13,11 +14,15 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-ServerGame::ServerGame(double playerSpeed)
+ServerGame::ServerGame() : playerSpeed(0.4)
 {
+    this->ticksSinceConfigCheck = 0;
+
+    // Update settings from config file!
+    updateFromConfigFile();
+
     // id's to assign clients for our table
     client_id = 0;
-    this->playerSpeed = playerSpeed;
 
     // set up the server network to listen 
     network = new ServerNetwork();
@@ -306,6 +311,12 @@ void ServerGame::update()
     if (dt.count() >= FPS_MAX) {
         replicateGameState();
         start_time = timer.now();
+
+        // Check config file every sec
+        ++this->ticksSinceConfigCheck;
+        if (this->ticksSinceConfigCheck % 60) {
+            updateFromConfigFile();
+        }
     }
 
     // game countdown
@@ -322,6 +333,23 @@ void ServerGame::update()
     }
     
     checkCooldownOver();
+}
+
+void ServerGame::updateFromConfigFile() {
+    YAML::Node config;
+    try {
+       config = YAML::LoadFile("../../config.yaml");
+    }
+    catch (YAML::BadFile e) {
+        printf("Unable to read file");
+        return;
+    }
+
+    if (config["server"]) {
+        auto serverConf = config["server"];
+        if (serverConf["playerSpeed"]) this->playerSpeed = serverConf["playerSpeed"].as<double>();
+    }
+  
 }
 
 void ServerGame::checkCooldownOver() {
