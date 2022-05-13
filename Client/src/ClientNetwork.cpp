@@ -1,5 +1,6 @@
 //#include "stdafx.h"
 #include "ClientNetwork.h"
+#include "yaml-cpp/yaml.h"
 
 ClientNetwork::ClientNetwork(void) {
 
@@ -28,8 +29,28 @@ ClientNetwork::ClientNetwork(void) {
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_protocol = IPPROTO_TCP;  //TCP connection!!!
 
+
+    // Get ip and port from conf file
+    std::string ipAddr = "";
+    std::string port = DEFAULT_PORT;
+    try {
+        YAML::Node conf = YAML::LoadFile("../../config.yaml");
+        auto clientConf = conf["client"];
+        if (conf["port"]) port = conf["port"].as<std::string>();
+        if (clientConf && clientConf["ipAddr"]) ipAddr = clientConf["ipAddr"].as<std::string>();
+    }
+    catch (YAML::BadFile e) {
+        printf("Unable to read config file");
+    }
+
     //resolve server address and port
-    iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+    if (!ipAddr.empty()) {
+        iResult = getaddrinfo(ipAddr.c_str(), port.c_str(), &hints, &result);
+    }
+    else {
+        // NULL seems to be localhost
+        iResult = getaddrinfo(NULL, port.c_str(), &hints, &result);
+    }
 
     if (iResult != 0)
     {
