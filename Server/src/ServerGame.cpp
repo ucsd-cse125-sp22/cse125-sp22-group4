@@ -14,7 +14,7 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-ServerGame::ServerGame() : playerSpeed(0.4)
+ServerGame::ServerGame() : playerSpeed(0.4), roundLengthSec(180)
 {
     this->ticksSinceConfigCheck = 0;
 
@@ -324,8 +324,8 @@ void ServerGame::update()
     auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
     playTime = test.count();
 
-    // TODO: Fix the game timer to a constant. Also 180 on client.
-    if (180 - playTime <= 0) {
+    // TODO: round length is fixed as 180 on client.
+    if (this->roundLengthSec - playTime <= 0) {
         if (gameAlive) {
             announceGameEnd(CAT_WIN);
             gameAlive = false;
@@ -348,6 +348,8 @@ void ServerGame::updateFromConfigFile() {
     if (config["server"]) {
         auto serverConf = config["server"];
         if (serverConf["playerSpeed"]) this->playerSpeed = serverConf["playerSpeed"].as<double>();
+        // TODO: if we want accurate Client timers, this should be extracted to be a shared config var
+        if (serverConf["roundLengthSec"]) this->roundLengthSec = serverConf["roundLengthSec"].as<double>();
     }
   
 }

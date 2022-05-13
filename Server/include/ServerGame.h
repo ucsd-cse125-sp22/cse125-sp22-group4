@@ -52,6 +52,7 @@ private:
     bool gameAlive;
     double playerSpeed;
     int ticksSinceConfigCheck;
+    int roundLengthSec;
 
     Maze* maze;
     Flag* flag;
