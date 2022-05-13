@@ -5,8 +5,18 @@ Maze::Maze() {}
 
 bool Maze::forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
     // model length and width
-    double length = 0.23; // estimate dino length
-    double modelHalfWidth = .1; // just approximating
+    double length;
+    double modelHalfWidth;
+    
+
+    if (playerID == 0 || playerID == 3) { 
+        length = 0.23; // estimate dino length
+        modelHalfWidth = .1; // just approximating
+    }
+    else {
+        length = .1; // estimate rabbit/teapot length
+        modelHalfWidth = .15;
+    }
 
     // cardinal directions
     bool headingN = mod2 >= 0;
@@ -19,8 +29,17 @@ bool Maze::forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZL
 
 bool Maze::backwardsBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
     // model length and width
-    double length = 0.25; // estimate dino tail length
-    double modelHalfWidth = .08; // just approximating
+    double length; 
+    double modelHalfWidth; 
+
+    if (playerID == 0 || playerID == 3) {
+        length = 0.25; // estimate dino length
+        modelHalfWidth = .08; // just approximating
+    }
+    else {
+        length = .1; // estimate rabbit/teapot length
+        modelHalfWidth = .15;
+    }
 
       // cardinal directions
     bool headingN = mod2 < 0;
@@ -36,8 +55,17 @@ bool Maze::backwardsBlock(int playerID, double currPlayerXLoc, double currPlayer
 
 bool Maze::leftBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
     // model length and width
-    double length = 0.08; // estimate dino length
-    double modelHalfWidth = .23; // just approximating
+    double length; 
+    double modelHalfWidth; 
+
+    if (playerID == 0 || playerID == 3) {
+        length = 0.08; // estimate dino length
+        modelHalfWidth = .23; // just approximating
+    }
+    else {
+        length = .15; // estimate rabbit/teapot length
+        modelHalfWidth = .1;
+    }
     
     // cardinal directions
     bool headingN = mod2 >= 0;
@@ -53,8 +81,17 @@ bool Maze::leftBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc,
 
 bool Maze::rightBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
     // model length and width
-    double length = 0.08; // estimate dino length
-    double modelHalfWidth = .23; // just approximating
+    double length; 
+    double modelHalfWidth; 
+
+    if (playerID == 0 || playerID == 3) {
+        length = 0.08; // estimate dino length
+        modelHalfWidth = .23; // just approximating
+    }
+    else {
+        length = .15; // estimate rabbit/teapot length
+        modelHalfWidth = .1;
+    }
 
     // cardinal directions
     bool headingN = mod2 >= 0;
@@ -261,8 +298,18 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
 bool Maze::rotateBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2, double dir) {
 
     // model length and width
-    double length = 0.16; // estimate dino length
-    double modelHalfWidth = .5; // just approximating
+    double length; 
+    double modelHalfWidth; 
+
+    if (playerID == 0 || playerID == 3) {
+        length = 0.16; // estimate dino length
+        modelHalfWidth = .5; // just approximating
+    }
+    else {
+        length = .15; // estimate rabbit/teapot length
+        modelHalfWidth = .1;
+    }
+
 
     // cardinal directions
     bool headingN = mod2 >= 0;
@@ -389,16 +436,7 @@ bool Maze::rotateBlock(int playerID, double currPlayerXLoc, double currPlayerZLo
             else if (headingE && dir > 0)
                 return true;
         }
-           // return true;
-      /*  else if (abs(angle) > 1.22) {
-            if (distToWall - .3 <= length)
-                return true;
-            else if (abs(angle) > 1.39 && distToWall - .6 <= length)
-                return true;
-            else if (abs(angle) > 1.48 && distToWall - 1 <= length)
-                return true;*/
 
-       // }
     }
 
 
@@ -412,16 +450,7 @@ bool Maze::rotateBlock(int playerID, double currPlayerXLoc, double currPlayerZLo
             else if (headingS && dir < 0)
                 return true;
         }
-            //return true;
-   /*     else if (abs(angle) > 1.22) {
-            if (distToWall - .3 <= length)
-                return true;
-            else if (abs(angle) > 1.39 && distToWall - .6 <= length)
-                return true;
-            else if (abs(angle) > 1.48 && distToWall - 1 <= length)
-                return true;
 
-        }*/
     }
 
 
@@ -436,16 +465,7 @@ bool Maze::rotateBlock(int playerID, double currPlayerXLoc, double currPlayerZLo
             else if (headingW && dir > 0)
                 return true;
         }
-            //return true;
-   /*     else if (abs(angle) > 1.22) {
-            if (distToWall - .3 <= length)
-                return true;
-            else if (abs(angle) > 1.39 && distToWall - .6 <= length)
-                return true;
-            else if (abs(angle) > 1.48 && distToWall - 1 <= length)
-                return true;
 
-        }*/
     }
 
 
@@ -460,16 +480,7 @@ bool Maze::rotateBlock(int playerID, double currPlayerXLoc, double currPlayerZLo
             else if (headingS && dir > 0)
                 return true;
         }
-           // return true;
-        //else if (abs(angle) > 1.22) {
-        //    if (distToWall - .3 <= length)
-        //        return true;
-        //    else if (abs(angle) > 1.39 && distToWall - .6 <= length)
-        //        return true;
-        //    else if (abs(angle) > 1.48 && distToWall - 1 <= length)
-        //        return true;
 
-        //}
     }
 
     return obstacle;
