@@ -6,3 +6,4 @@ x64/
 build/
 Client/bindings/
 imgui.ini
+*.swp
