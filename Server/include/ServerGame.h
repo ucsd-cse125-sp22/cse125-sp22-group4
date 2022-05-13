@@ -17,9 +17,12 @@
 #define PLAYER_DEFAULT_SPEED 0.2
 
 #define CONFIG_FILE "../../config.yaml"
-#define DEFAULT_PLAYERSPEED 0.4
+#define DEFAULT_CATSPEED 0.4
+#define DEFAULT_MOUSESPEED 0.4
 #define DEFAULT_ROUNDLENGTHSEC 180
 #define DEFAULT_COOLDOWNTIMESEC 5
+
+#define CAT_ID 1
 
 class ServerGame
 {
@@ -57,7 +60,8 @@ private:
     bool gameAlive;
     
     // config file fields
-    double playerSpeed;
+    double catSpeed;
+    double mouseSpeed;
     int ticksSinceConfigCheck;
     int roundLengthSec;
     int cooldownTimeSec;

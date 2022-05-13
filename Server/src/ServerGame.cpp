@@ -14,7 +14,7 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-ServerGame::ServerGame() : playerSpeed(DEFAULT_PLAYERSPEED), roundLengthSec(DEFAULT_ROUNDLENGTHSEC), cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC)
+ServerGame::ServerGame() : catSpeed(DEFAULT_CATSPEED), mouseSpeed(DEFAULT_MOUSESPEED), roundLengthSec(DEFAULT_ROUNDLENGTHSEC), cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC)
 {
     this->ticksSinceConfigCheck = 0;
 
@@ -344,7 +344,8 @@ void ServerGame::updateFromConfigFile() {
 
     if (config["server"]) {
         auto serverConf = config["server"];
-        if (serverConf["playerSpeed"]) this->playerSpeed = serverConf["playerSpeed"].as<double>();
+        if (serverConf["catSpeed"]) this->catSpeed = serverConf["catSpeed"].as<double>();
+        if (serverConf["mouseSpeed"]) this->catSpeed = serverConf["mouseSpeed"].as<double>();
         // TODO: if we want accurate Client timers, this should be extracted to be a shared config var
         if (serverConf["roundLengthSec"]) this->roundLengthSec = serverConf["roundLengthSec"].as<double>();
         if (serverConf["cooldownTimeSec"]) this->cooldownTimeSec = serverConf["cooldownTimeSec"].as<double>();
@@ -513,6 +514,7 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
 void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     PlayerState state = player_states[client_id];
     oldModels[client_id] = player_states[client_id].model;
+    double playerSpeed = client_id == CAT_ID ? catSpeed : mouseSpeed;
 
     if (!state.alive) {
         return;
