@@ -26,7 +26,11 @@ static Model* maze;
 static Model* players[PLAYER_NUM];
 static Model* bear;
 static Model* item;
-static Model* knight;
+static Model* morak;
+
+// Animations
+static Animation* CapoeiraAnimation;
+static Animator* animator;
 
 // for ImGui Image display
 int my_image_width = 0;
@@ -216,9 +220,12 @@ bool Client::initializeClient() {
     bear->moveGlobal(glm::vec3(75, -3, -75));
     item = new Model("../../objects/backpack/backpack.obj");
 
-    knight = new Model("../../objects/knight/knight.obj");
-    knight->scale(glm::vec3(0.1f));
-    knight->moveGlobal(glm::vec3(0, -2, 0));
+    morak = new Model("../../objects/morak/morak_samba_small.fbx");
+    morak->scale(glm::vec3(1));
+    morak->moveGlobal(glm::vec3(0, -2, 0));
+
+    CapoeiraAnimation = new Animation("../../objects/morak/morak_samba_small.fbx", morak);
+    animator = new Animator(CapoeiraAnimation);
 
     ret = LoadTextureFromFile("../../objects/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
     retGameOver = LoadTextureFromFile("../../objects/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
@@ -275,11 +282,19 @@ void Client::displayCallback() {
 
     switch (select) {
     case 0: {
+        glUseProgram(shader);
+        auto transforms = animator->GetFinalBoneMatrices();
+        for (int i = 0; i < transforms.size(); ++i) {
+            std::string name = "finalBonesMatrices[" + std::to_string(i) + "]";
+            glUniformMatrix4fv(glGetUniformLocation(shader, name.c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+        }
+        glUseProgram(0);
+
         for (auto character : players) {
             character->draw(currCam->viewProjMat, identityMat, shader);
         }
 
-        knight->draw(currCam->viewProjMat, identityMat, shader);
+        morak->draw(currCam->viewProjMat, identityMat, shader);
        
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
@@ -342,7 +357,7 @@ void Client::displayCallback() {
 /**
  * Update objects when idle
 **/
-void Client::idleCallback() {
+void Client::idleCallback(float dt) {
     Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
     currCamera->update();
 
@@ -358,6 +373,8 @@ void Client::idleCallback() {
         cDetector.update(wall2->getOBB(), 1);
         cDetector.update(tyra->getOBB(), 2);
         // COLLITION DEBUG
+
+        animator->update(dt);
     }
 
     if (!isThirdPersonCam && keyHeld) {

@@ -70,6 +70,7 @@ void Model::loadModel(std::string const& path) {
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | 
                                                    aiProcess_GenSmoothNormals |
                                                    aiProcess_FlipUVs |
+                                                   aiProcess_JoinIdenticalVertices |
                                                    aiProcess_CalcTangentSpace);
     spdlog::info("Finish reading file.", path);
 

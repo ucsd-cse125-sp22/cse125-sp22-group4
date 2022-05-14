@@ -43,18 +43,42 @@ void main() {
         totalNormal += localNormal * weights[i];
     }
 
-    gl_Position = viewProj * model * totalPosition;
+    mat4 BoneTransform  = finalBonesMatrices[boneIds[0]] * weights[0];
+    BoneTransform += finalBonesMatrices[boneIds[1]] * weights[1];
+    BoneTransform += finalBonesMatrices[boneIds[2]] * weights[2];
+    BoneTransform += finalBonesMatrices[boneIds[3]] * weights[3];
+
+    mat3 normalMatrix = transpose(inverse(mat3(BoneTransform)));
+
+    //gl_Position = viewProj * model * totalPosition;
 
     // for shading
-    worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
-    worldPos = vec3(model * vec4(position, 1));
-    texCoords = aTexCoords;
+    //worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
 
     vec3 T = normalize(vec3(model * vec4(tangent, 0)));
     vec3 B = normalize(vec3(model * vec4(biTangent, 0)));
     vec3 N = normalize(vec3(model * vec4(normal, 0)));
     TBN = mat3(T, B, N);
+   
 
+    worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
+    worldPos = vec3(model * vec4(position, 1));
+    texCoords = aTexCoords; 
+    
 
-    //gl_Position = viewProj * model * vec4(position, 1.0f);
+    /*
+    vec3 T = normalize(vec3(normalMatrix* tangent));
+    vec3 B = normalize(vec3(normalMatrix * biTangent));
+    vec3 N = normalize(vec3(normalMatrix * normal));
+    TBN = mat3(T, B, N);
+
+    worldNormal = N;
+    worldPos = vec3(model * totalPosition);
+    texCoords = aTexCoords;
+
+    */
+
+    
+
+    gl_Position = viewProj * model * totalPosition;
 }

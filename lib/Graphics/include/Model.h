@@ -64,7 +64,7 @@ public:
     int& GetBoneCount(){
         return m_BoneCounter;
     }
-    glm::mat4 ConvertMatrixToGLMFormat(const aiMatrix4x4& from);
+    static glm::mat4 ConvertMatrixToGLMFormat(const aiMatrix4x4& from);
 };
 
 #endif
