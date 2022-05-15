@@ -540,8 +540,8 @@ void displayLocation(glm::mat4 model, int id, double adjustment) {
     }
     else if (id == 4) {
         r = 255;
-        g = 255;
-        b = 0;
+        g = 240;
+        b = 31;
     }
     else {
         r = 177;
@@ -555,6 +555,11 @@ void displayLocation(glm::mat4 model, int id, double adjustment) {
     else {
         if (currTime % 2 == 0)
             ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
+    
+        if (itemhold != PLAYER_NUM + 1) { // bearl location hard coded TODO fix
+            if (currTime % 2 == 0)
+                ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*.9 +19, 75*.9+10), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
+        }
     }
     
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
