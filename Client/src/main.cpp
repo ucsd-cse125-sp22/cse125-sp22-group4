@@ -4,6 +4,9 @@
 ClientGame* client;
 
 int main(int argc, char** argv) {
+    // Setup audio
+    CAudioEngine::Init();
+
     // Setup glfw
     glfwSetErrorCallback(Client::errorCallback);
     if (!glfwInit()) {
@@ -138,6 +141,8 @@ int main(int argc, char** argv) {
 
         glfwSwapBuffers(window);
 
+        // Audio
+        CAudioEngine::Update();
     }
 
     // Cleanup
