@@ -528,6 +528,38 @@ void Client::ItemHoldGUI() {
     ImGui::End();
 }
 
+void displayLocation(glm::mat4 model, int id, double adjustment) {
+    int r, g, b;
+    int locX = model[3][0] * .9 + 10;
+    int locZ = abs(model[3][2]) * .9 + 19;
+    //printf("x %d z %d\n", locX, locZ);
+    if (id == 0) {
+        r = 255;
+        g = 0;
+        b = 0;
+    }
+    else if (id == 4) {
+        r = 255;
+        g = 255;
+        b = 0;
+    }
+    else {
+        r = 177;
+        g = 156;
+        b = 217;
+    }
+
+    if (id != 4) {
+        ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
+    }
+    else {
+        if (currTime % 2 == 0)
+            ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
+    }
+    
+    ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
+}
+
 void Client::miniMapGUI() {
     double adjustment = 0.5;
     ImGuiWindowFlags flags = 0;
@@ -539,14 +571,42 @@ void Client::miniMapGUI() {
     ImGui::SetNextWindowPos(ImVec2(-40, -90), 0, ImVec2(0, 0));
     ImGui::Begin("MiniMap GUI", NULL, flags);
 
-    if (player) {
-        glm::mat4 model = player->getModel();
-        int locX = model[3][0]*.9 + 10;
-        int locZ = abs(model[3][2])*.9 + 19;
-        //printf("x %d z %d\n", locX, locZ);
-        ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(57, 255, 20, 255), 100, 2.f);
-        ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
+    if (players[0]) {
+        displayLocation(players[0]->getModel(), 0, adjustment);
     }
+
+    if (players[1]) {
+        displayLocation(players[1]->getModel(), 1, adjustment);
+    }
+
+    if (players[2]) {
+        displayLocation(players[2]->getModel(), 2, adjustment);
+    }
+
+    if (players[3]) {
+        displayLocation(players[3]->getModel(), 3, adjustment);
+    }
+
+    if (item) {
+        displayLocation(item->getModel(), 4, adjustment);
+    }
+
+    //if (player) {
+    //    glm::mat4 model = player->getModel();
+    //    int locX = model[3][0]*.9 + 10;
+    //    int locZ = abs(model[3][2])*.9 + 19;
+    //    //printf("x %d z %d\n", locX, locZ);
+    //    ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(57, 255, 20, 255), 100, 2.f);
+    //    ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
+    //}
+    //if (players[1]) {
+    //    glm::mat4 model = players[1]->getModel();
+    //    int locX = model[3][0] * .9 + 10;
+    //    int locZ = abs(model[3][2]) * .9 + 19;
+    //    //printf("x %d z %d\n", locX, locZ);
+    //    ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(57, 255, 20, 255), 100, 2.f);
+    //    ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
+    //}
     
 
     ImGui::End();
