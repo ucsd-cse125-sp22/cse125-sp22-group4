@@ -19,6 +19,7 @@ target_sources(Client PRIVATE
     include/Client.h
     include/ClientGame.h
     include/ClientNetwork.h
+    include/stb_image.h
 )
 
 target_link_libraries(Client

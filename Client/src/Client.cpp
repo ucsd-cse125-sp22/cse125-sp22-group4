@@ -232,12 +232,12 @@ bool Client::initializeClient() {
     knight->scale(glm::vec3(0.1f));
     knight->moveGlobal(glm::vec3(0, -2, 0));
 
-    ret = LoadTextureFromFile("../../objects/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
-    retGameOver = LoadTextureFromFile("../../objects/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
-    retMouseWin = LoadTextureFromFile("../../objects/celebration.png", &image_texture_mouse_win, &image_width_mouse_win, &image_height_mouse_win);
-    retMouseFlag = LoadTextureFromFile("../../objects/cheese.png", &image_texture_mouse_flag, &image_width_mouse_flag, &image_height_mouse_flag);
-    retMouseFlagPale = LoadTextureFromFile("../../objects/cheese_paler.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
-    retMap = LoadTextureFromFile("../../objects/mazeTextured.png", &image_texture_map, &image_width_map, &image_height_map);
+    ret = LoadTextureFromFile("../../objects/ImGui/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
+    retGameOver = LoadTextureFromFile("../../objects/ImGui/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
+    retMouseWin = LoadTextureFromFile("../../objects/ImGui/celebration.png", &image_texture_mouse_win, &image_width_mouse_win, &image_height_mouse_win);
+    retMouseFlag = LoadTextureFromFile("../../objects/ImGui/cheese.png", &image_texture_mouse_flag, &image_width_mouse_flag, &image_height_mouse_flag);
+    retMouseFlagPale = LoadTextureFromFile("../../objects/ImGui/cheese_paler.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
+    retMap = LoadTextureFromFile("../../objects/ImGui/mazeTextured3.png", &image_texture_map, &image_width_map, &image_height_map);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
