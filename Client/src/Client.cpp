@@ -29,7 +29,7 @@ static Model* item;
 static Model* morak;
 
 // Animations
-static Animation* CapoeiraAnimation;
+static Animation* ThrillerAnimation;
 static Animator* animator;
 
 // for ImGui Image display
@@ -220,12 +220,12 @@ bool Client::initializeClient() {
     bear->moveGlobal(glm::vec3(75, -3, -75));
     item = new Model("../../objects/backpack/backpack.obj");
 
-    morak = new Model("../../objects/morak/morak_samba_small.fbx");
-    morak->scale(glm::vec3(1));
-    morak->moveGlobal(glm::vec3(0, -2, 0));
+    morak = new Model("../../objects/morak/morak.fbx");
+    morak->scale(glm::vec3(0.1));
+    morak->moveGlobal(glm::vec3(0, -2, -5));
 
-    CapoeiraAnimation = new Animation("../../objects/morak/morak_samba_small.fbx", morak);
-    animator = new Animator(CapoeiraAnimation);
+    ThrillerAnimation = new Animation("../../objects/morak/morak.fbx", morak);
+    animator = new Animator(ThrillerAnimation);
 
     ret = LoadTextureFromFile("../../objects/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
     retGameOver = LoadTextureFromFile("../../objects/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);

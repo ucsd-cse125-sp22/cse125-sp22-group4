@@ -69,6 +69,7 @@ void TexturedMesh::draw(const glm::mat4& viewProjMat,
     glUniform4fv(glGetUniformLocation(shader, "specular"), 1, glm::value_ptr(phongMat.specular));
     glUniform4fv(glGetUniformLocation(shader, "emission"), 1, glm::value_ptr(phongMat.emission));
     glUniform1f(glGetUniformLocation(shader, "shininess"), phongMat.shininess);
+    glUniform1i(glGetUniformLocation(shader, "hasBones"), hasBones);
 
     // bind appropriate textures
     unsigned int diffuseNr = 1;

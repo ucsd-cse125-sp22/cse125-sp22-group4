@@ -16,6 +16,7 @@ uniform mat4 model;
 const int MAX_BONES = 100;
 const int MAX_BONE_INFLUENCE = 4;
 uniform mat4 finalBonesMatrices[MAX_BONES];
+uniform int hasBones;
 
 // Outputs of the vertex shader are the inputs of the same name of the fragment shader.
 // The default output, gl_Position, should be assigned something.
@@ -30,8 +31,9 @@ void main() {
     vec3 totalNormal = vec3(0.0f);
 
     for(int i = 0 ; i < MAX_BONE_INFLUENCE ; i++) {
-        if(boneIds[i] == -1) 
+        if(boneIds[i] == -1) {
             continue;
+        }
         if(boneIds[i] >= MAX_BONES) 
         {
             totalPosition = vec4(position,1.0f);
@@ -48,37 +50,48 @@ void main() {
     BoneTransform += finalBonesMatrices[boneIds[2]] * weights[2];
     BoneTransform += finalBonesMatrices[boneIds[3]] * weights[3];
 
-    mat3 normalMatrix = transpose(inverse(mat3(BoneTransform)));
-
-    //gl_Position = viewProj * model * totalPosition;
-
     // for shading
     //worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
 
-    vec3 T = normalize(vec3(model * vec4(tangent, 0)));
-    vec3 B = normalize(vec3(model * vec4(biTangent, 0)));
-    vec3 N = normalize(vec3(model * vec4(normal, 0)));
-    TBN = mat3(T, B, N);
+    if (hasBones == 0) {
+        vec3 T = normalize(vec3(model * vec4(tangent, 0)));
+        vec3 B = normalize(vec3(model * vec4(biTangent, 0)));
+        vec3 N = normalize(vec3(model * vec4(normal, 0)));
+        TBN = mat3(T, B, N);
    
 
-    worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
-    worldPos = vec3(model * vec4(position, 1));
-    texCoords = aTexCoords; 
+        worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
+        worldPos = vec3(model * vec4(position, 1));
+        texCoords = aTexCoords; 
+        gl_Position = viewProj * model * vec4(position, 1.0f);
+    } else {
+        vec3 T = normalize(vec3(model * vec4(tangent, 0)));
+        vec3 B = normalize(vec3(model * vec4(biTangent, 0)));
+        vec3 N = normalize(vec3(model * vec4(normal, 0)));
+        TBN = mat3(T, B, N);
+   
+
+        worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
+        worldPos = vec3(model * vec4(position, 1));
+        texCoords = aTexCoords; 
+        gl_Position = viewProj * model * totalPosition;
+    }
+
     
 
     /*
-    vec3 T = normalize(vec3(normalMatrix* tangent));
-    vec3 B = normalize(vec3(normalMatrix * biTangent));
-    vec3 N = normalize(vec3(normalMatrix * normal));
+    
+    mat3 normalMatrix = transpose(inverse(mat3(BoneTransform)));
+    vec3 T = normalize(normalMatrix * vec3(model * vec4(tangent, 0)));
+    vec3 B = normalize(normalMatrix * vec3(model * vec4(biTangent, 0)));
+    vec3 N = normalize(normalMatrix * vec3(model * vec4(normal, 0)));
     TBN = mat3(T, B, N);
 
-    worldNormal = N;
+    worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
     worldPos = vec3(model * totalPosition);
     texCoords = aTexCoords;
-
     */
 
-    
-
-    gl_Position = viewProj * model * totalPosition;
+    //gl_Position = viewProj * model * vec4(position, 1.0f);
+    //gl_Position = viewProj * model * totalPosition;
 }

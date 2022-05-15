@@ -232,14 +232,16 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 
     // return a mesh object depending on have textures or not
     if (textures.size() != 0) {
-        
-        TexturedMesh* mesh = new TexturedMesh(vertices, indices, textures, mat);
-        OBB obb = mesh->getOBB();
+        TexturedMesh* texmesh = new TexturedMesh(vertices, indices, textures, mat);
+        if (mesh->mNumBones != 0) {
+            texmesh->hasBones = 1;
+        }
+        OBB obb = texmesh->getOBB();
         maxX = maxX > obb.p1.x ? maxX : obb.p1.x;
         maxZ = maxZ > obb.p1.y ? maxZ : obb.p1.y;
         minX = minX < obb.p3.x ? minX : obb.p3.x;
         minZ = minZ < obb.p3.y ? minZ : obb.p3.y;
-        return mesh;
+        return texmesh;
     }
     else {
         std::vector<glm::vec3> points;
