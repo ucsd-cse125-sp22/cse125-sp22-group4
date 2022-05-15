@@ -65,19 +65,17 @@ void main() {
         texCoords = aTexCoords; 
         gl_Position = viewProj * model * vec4(position, 1.0f);
     } else {
-        vec3 T = normalize(vec3(model * vec4(tangent, 0)));
-        vec3 B = normalize(vec3(model * vec4(biTangent, 0)));
-        vec3 N = normalize(vec3(model * vec4(normal, 0)));
+        mat3 normalMatrix = transpose(inverse(mat3(BoneTransform)));
+        vec3 T = normalize(normalMatrix * vec3(model * vec4(tangent, 0)));
+        vec3 B = normalize(normalMatrix * vec3(model * vec4(biTangent, 0)));
+        vec3 N = normalize(normalMatrix * vec3(model * vec4(normal, 0)));
         TBN = mat3(T, B, N);
    
-
         worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
         worldPos = vec3(model * vec4(position, 1));
         texCoords = aTexCoords; 
         gl_Position = viewProj * model * totalPosition;
     }
-
-    
 
     /*
     
@@ -91,7 +89,4 @@ void main() {
     worldPos = vec3(model * totalPosition);
     texCoords = aTexCoords;
     */
-
-    //gl_Position = viewProj * model * vec4(position, 1.0f);
-    //gl_Position = viewProj * model * totalPosition;
 }
