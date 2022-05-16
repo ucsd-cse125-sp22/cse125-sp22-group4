@@ -470,7 +470,8 @@ void ServerGame::receiveFromClients()
 // TODO: Make use of graphics library instead. Have an object wrap the player's positions
 // and use methods to manipulate.
 void ServerGame::moveLocal(glm::mat4& model, const glm::vec3& v) {
-    model = model * glm::translate(glm::mat4(1), v);
+    //model = model * glm::translate(glm::mat4(1), v);
+    model = glm::translate(model, v);
 }
 
 
@@ -504,12 +505,14 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
         return;
     }
 
-    bool obstacle = maze->rotateBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (packet->state.rotationalMatrix[2][0] / packet->state.rotationalMatrix[2][2]));
+    //bool obstacle = maze->rotateBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (packet->state.rotationalMatrix[2][0] / packet->state.rotationalMatrix[2][2]));
   
-    if (!obstacle) {
-        state.model = state.model * packet->state.rotationalMatrix;
+    //if (!obstacle) {
+        printf("Updating %d rotation!\n", client_id);
+        glm::mat4 rotation = glm::rotate(packet->state.delta, glm::vec3(0.0f, 1.0f, 0.0f));
+        state.model = state.model * rotation;
         player_states[client_id] = state;
-    }
+    //}
     
 }
 
@@ -523,6 +526,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         return;
     }
 
+    printf("Updating %d movement!\n", client_id);
     switch (packet->state.dir) {
     case LEFT:
     {

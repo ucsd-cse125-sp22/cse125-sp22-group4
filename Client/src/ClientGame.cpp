@@ -24,7 +24,6 @@ void ClientGame::sendActionPackets(MovementState s)
 
     const unsigned int packet_size = sizeof(MovePacket);
     MovePacket packet;
-    packet.packet_type = KEYSTROKE;
     packet.state = s;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
@@ -39,7 +38,6 @@ void ClientGame::sendRotationPackets(RotationState s) {
 
     const unsigned int packet_size = sizeof(RotatePacket);
     RotatePacket packet;
-    packet.packet_type = ACTION;
     packet.state = s;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
