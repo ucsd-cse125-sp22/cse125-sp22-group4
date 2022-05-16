@@ -362,6 +362,7 @@ void Client::displayCallback() {
 void Client::idleCallback() {
     Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
     currCamera->update();
+    mouseMoving = false;
 
     if (gameEnded) {
         pause = 1;
@@ -661,6 +662,7 @@ MovementState Client::getMovementState() {
 }
 
 RotationState Client::getRotationState() {
+    printf("This is state %d ", mouseMoving);
     return RotationState{
         //currRotationUpdate,
         currRotationDelta,
@@ -744,7 +746,8 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
 **/
 static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
     ImGui_ImplGlfw_CursorPosCallback(window, xPos, yPos);
-    mouseMoving = false;
+
+
     if (isThirdPersonCam && !pause) {
         if (abs(xPos - prevXPos) > 0.0001 || abs(yPos - prevYPos) > 0.001) {
             mouseMoving = true;
@@ -772,7 +775,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
             prevYPos = yPos;
         }
     }
-
+    //printf("Mouse moving: %d", mouseMoving);
 }
 
 /**
