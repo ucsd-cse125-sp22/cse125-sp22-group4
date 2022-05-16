@@ -306,6 +306,21 @@ void ServerGame::update()
     auto stop_time = timer.now();
     auto dt = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
     if (dt.count() >= FPS_MAX) {
+        // game countdown
+        auto stop_t = timer_t.now();
+        auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
+        playTime = test.count();
+
+        // TODO: round length is fixed as 180 on client.
+        if (this->roundLengthSec - playTime <= 0) {
+            if (gameAlive) {
+                announceGameEnd(CAT_WIN);
+                gameAlive = false;
+            }
+        }
+
+        checkCooldownOver();
+
         replicateGameState();
         start_time = timer.now();
 
@@ -316,20 +331,6 @@ void ServerGame::update()
         }
     }
 
-    // game countdown
-    auto stop_t = timer_t.now();
-    auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
-    playTime = test.count();
-
-    // TODO: round length is fixed as 180 on client.
-    if (this->roundLengthSec - playTime <= 0) {
-        if (gameAlive) {
-            announceGameEnd(CAT_WIN);
-            gameAlive = false;
-        }
-    }
-    
-    checkCooldownOver();
 }
 
 void ServerGame::updateFromConfigFile() {
