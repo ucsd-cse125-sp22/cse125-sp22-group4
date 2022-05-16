@@ -328,6 +328,7 @@ void ServerGame::update()
         ++this->ticksSinceConfigCheck;
         if (this->ticksSinceConfigCheck % 60) {
             updateFromConfigFile();
+            this->ticksSinceConfigCheck = 0;
         }
     }
 
