@@ -595,23 +595,6 @@ void Client::miniMapGUI() {
     if (item) {
         displayLocation(item->getModel(), 4, adjustment);
     }
-
-    //if (player) {
-    //    glm::mat4 model = player->getModel();
-    //    int locX = model[3][0]*.9 + 10;
-    //    int locZ = abs(model[3][2])*.9 + 19;
-    //    //printf("x %d z %d\n", locX, locZ);
-    //    ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(57, 255, 20, 255), 100, 2.f);
-    //    ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
-    //}
-    //if (players[1]) {
-    //    glm::mat4 model = players[1]->getModel();
-    //    int locX = model[3][0] * .9 + 10;
-    //    int locZ = abs(model[3][2]) * .9 + 19;
-    //    //printf("x %d z %d\n", locX, locZ);
-    //    ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(57, 255, 20, 255), 100, 2.f);
-    //    ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
-    //}
     
 
     ImGui::End();
@@ -621,18 +604,20 @@ void Client::miniMapGUI() {
 
 
 void Client::GameOverGUI() {
-    double adjustment = 0.7;
+    double adjustment; 
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
-    ImGui::SetNextWindowSize(ImVec2(window_width, window_height));
+    
     
 
     if (gameEnded == 1 && catWon == 0) {
         adjustment = 0.3;
-        ImGui::SetNextWindowPos(ImVec2((window_width-image_width_mouse_win*adjustment)/2, 0), 0, ImVec2(0, 0));
+        ImGui::SetNextWindowSize(ImVec2(image_width_mouse_win * adjustment,image_height_mouse_win * adjustment + 400 ));
+        //ImGui::SetNextWindowPos(ImVec2((window_width-image_width_mouse_win*adjustment)/2, (window_height - image_height_mouse_win * adjustment) / 2), 0, ImVec2(0, 0));
+        ImGui::SetNextWindowPos(ImVec2((window_width - image_width_mouse_win * adjustment) / 2, 50), 0, ImVec2(0, 0));
         ImGui::Begin("GameOver GUI", NULL, flags);      
         ImGui::Image((void*)(intptr_t)image_texture_mouse_win, ImVec2(image_width_mouse_win * adjustment, image_height_mouse_win * adjustment));
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 0.95f));
@@ -645,8 +630,11 @@ void Client::GameOverGUI() {
         ImGui::End();
     }
     else if (gameEnded == 1) {
-        ImGui::SetNextWindowPos(ImVec2((window_width - image_width_game_over * adjustment) / 2, (window_height - image_height_game_over * adjustment) / 2), 0, ImVec2(0, 0));
+        adjustment = 0.9;
+        ImGui::SetNextWindowSize(ImVec2(image_width_game_over * adjustment, window_height));
+        ImGui::SetNextWindowPos(ImVec2((window_width - image_width_game_over * adjustment) / 2, 50), 0, ImVec2(0, 0));
         ImGui::Begin("GameOver GUI", NULL, flags);
+        ImGui::SetCursorPosY(60);
         ImGui::Image((void*)(intptr_t)image_texture_game_over, ImVec2(image_width_game_over * adjustment, image_height_game_over * adjustment));
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 0.95f));
         ImGui::PushFont(HUGEcuteFont);
