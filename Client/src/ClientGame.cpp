@@ -5,6 +5,7 @@
 ClientGame::ClientGame(void)
 {
     network = new ClientNetwork();
+    start_time = timer.now();
 
     // send init packet
     const unsigned int packet_size = sizeof(SimplePacket);
@@ -82,7 +83,11 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
 void ClientGame::update(MovementState s, RotationState r)
 {
     // Don't send action events to server if client is not fully loaded
-    if (loaded) {
+    auto stop_time = timer.now();
+    auto dt = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
+
+    if (dt.count() >= FPS_MAX && loaded) {
+        start_time = timer.now();
         sendActionPackets(s);
         sendRotationPackets(r);
     }

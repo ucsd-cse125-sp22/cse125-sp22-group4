@@ -306,6 +306,8 @@ void ServerGame::update()
     auto stop_time = timer.now();
     auto dt = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
     if (dt.count() >= FPS_MAX) {
+        start_time = timer.now();
+
         // game countdown
         auto stop_t = timer_t.now();
         auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
@@ -322,7 +324,6 @@ void ServerGame::update()
         checkCooldownOver();
 
         replicateGameState();
-        start_time = timer.now();
 
         // Check config file every sec
         ++this->ticksSinceConfigCheck;
