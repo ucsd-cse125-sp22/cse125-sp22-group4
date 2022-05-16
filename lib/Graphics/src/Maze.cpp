@@ -10,12 +10,12 @@ bool Maze::forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZL
     
 
     if (playerID == 0 || playerID == 3) { 
-        length = 0.23; // estimate dino length
+        length = 0.25; // estimate dino length
         modelHalfWidth = .1; // just approximating
     }
     else {
         length = .1; // estimate rabbit/teapot length
-        modelHalfWidth = .15;
+        modelHalfWidth = .25;
     }
 
     // cardinal directions
@@ -38,7 +38,7 @@ bool Maze::backwardsBlock(int playerID, double currPlayerXLoc, double currPlayer
     }
     else {
         length = .1; // estimate rabbit/teapot length
-        modelHalfWidth = .15;
+        modelHalfWidth = .25;
     }
 
       // cardinal directions
@@ -63,7 +63,7 @@ bool Maze::leftBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc,
         modelHalfWidth = .23; // just approximating
     }
     else {
-        length = .15; // estimate rabbit/teapot length
+        length = .2; // estimate rabbit/teapot length
         modelHalfWidth = .1;
     }
     
@@ -89,7 +89,7 @@ bool Maze::rightBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc
         modelHalfWidth = .23; // just approximating
     }
     else {
-        length = .15; // estimate rabbit/teapot length
+        length = .2; // estimate rabbit/teapot length
         modelHalfWidth = .1;
     }
 
@@ -259,7 +259,7 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
         double angle = atan(mod1 / mod2);
 
         double distToWall = abs(distDown / cos(angle)) - modelHalfWidth * abs(sin(angle));
-       // printf("South angle %lf distToWall %lf\n", angle * 180 / pi, distToWall);
+        //printf("South angle %lf distToWall %lf\n", angle * 180 / pi, distToWall);
         if (distToWall <= length)
             return true;
         else if (abs(angle) > 1.22) {
@@ -306,7 +306,7 @@ bool Maze::rotateBlock(int playerID, double currPlayerXLoc, double currPlayerZLo
         modelHalfWidth = .5; // just approximating
     }
     else {
-        length = .15; // estimate rabbit/teapot length
+        length = .2; // estimate rabbit/teapot length
         modelHalfWidth = .1;
     }
 
