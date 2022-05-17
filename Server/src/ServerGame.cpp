@@ -375,7 +375,6 @@ void ServerGame::checkCooldownOver() {
                 cooldown.pop();
                 cooldown.push({ id, deadMouse.second });
             }
-
         }
     }
 }
@@ -508,7 +507,6 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     bool obstacle = maze->rotateBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (rotationMatrix[2][0] / rotationMatrix[2][2]));
   
     if (!obstacle) {
-        printf("Updating %d rotation!\n", client_id);
         state.model = state.model * rotationMatrix;
         player_states[client_id] = state;
     }
@@ -525,7 +523,6 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         return;
     }
 
-    printf("Updating %d movement!\n", client_id);
     switch (packet->state.dir) {
     case LEFT:
     {

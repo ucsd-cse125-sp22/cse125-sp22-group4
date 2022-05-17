@@ -662,9 +662,7 @@ MovementState Client::getMovementState() {
 }
 
 RotationState Client::getRotationState() {
-    printf("This is state %d ", mouseMoving);
     return RotationState{
-        //currRotationUpdate,
         currRotationDelta,
         mouseMoving,
     };
@@ -749,7 +747,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
 
 
     if (isThirdPersonCam && !pause) {
-        if (abs(xPos - prevXPos) > 0.0001 || abs(yPos - prevYPos) > 0.001) {
+        if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.00001) {
             mouseMoving = true;
             double yawAngle = -0.5 * (xPos - prevXPos);
             double pitchAngle = -0.5 * (yPos - prevYPos);
@@ -775,7 +773,6 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
             prevYPos = yPos;
         }
     }
-    //printf("Mouse moving: %d", mouseMoving);
 }
 
 /**
