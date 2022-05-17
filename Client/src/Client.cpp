@@ -532,8 +532,9 @@ void Client::ItemHoldGUI() {
 
 void displayLocation(glm::mat4 model, int id, double adjustment) {
     int r, g, b;
-    int locX = model[3][0] * .9 + 10;
-    int locZ = abs(model[3][2]) * .9 + 19;
+    float locX = model[3][0] * .9 + 10;
+    float locZ = abs(model[3][2]) * .9 + 20;
+    float side = 3.2f;
     //printf("x %d z %d\n", locX, locZ);
     if (id == 0) {
         r = 255;
@@ -551,7 +552,10 @@ void displayLocation(glm::mat4 model, int id, double adjustment) {
         b = 217;
     }
 
-    if (id != 4) {
+    if (id == my_id) {
+        ImGui::GetForegroundDrawList()->AddTriangleFilled(ImVec2(locZ+side, locX), ImVec2(locZ-side, locX+side), ImVec2(locZ-side, locX-side), IM_COL32(r, g, b, 255));
+    }
+    else if (id != 4) {
         ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
     }
     else {
