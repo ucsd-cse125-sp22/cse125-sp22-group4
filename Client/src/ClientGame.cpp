@@ -28,6 +28,9 @@ void ClientGame::sendActionPackets(MovementState s)
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
     NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
+    //std::string packet_string(packet_bytes);
+    //this->packet_stream.append(packet_string);
+
     free(packet_bytes);
 }
 
@@ -42,6 +45,8 @@ void ClientGame::sendRotationPackets(RotationState s) {
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
     NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
+    //std::string packet_string(packet_bytes);
+    //this->packet_stream.append(packet_string);
     free(packet_bytes);
 
     Client::resetRotUpdate();
