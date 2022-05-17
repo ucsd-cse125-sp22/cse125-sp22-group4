@@ -472,7 +472,6 @@ void ServerGame::receiveFromClients()
 // TODO: Make use of graphics library instead. Have an object wrap the player's positions
 // and use methods to manipulate.
 void ServerGame::moveLocal(glm::mat4& model, const glm::vec3& v) {
-    //model = model * glm::translate(glm::mat4(1), v);
     model = glm::translate(model, v);
 }
 

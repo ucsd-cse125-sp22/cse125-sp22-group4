@@ -673,8 +673,6 @@ Model** Client::getPlayers() {
 }
 
 void Client::resetRotUpdate() {
-    //currRotationUpdate = glm::mat4(1);
-    //currRotationUpdate = glm::mat4(1);
     currRotationDelta = 0;
 }
 
@@ -747,13 +745,12 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
 
 
     if (isThirdPersonCam && !pause) {
-        if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.00001) {
+        if (abs(xPos - prevXPos) > MOUSE_THRESH || abs(yPos - prevYPos) > MOUSE_THRESH) {
             mouseMoving = true;
             double yawAngle = -0.5 * (xPos - prevXPos);
             double pitchAngle = -0.5 * (yPos - prevYPos);
            
             float playerSpinDegree = 0.5 * (float)(thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
-            //currRotationUpdate = glm::rotate(glm::radians(playerSpinDegree), glm::vec3(0.0f, 1.0f, 0.0f));
             currRotationDelta = glm::radians(playerSpinDegree);
             thirdPersonCamera->pitch((float)pitchAngle);
 
@@ -762,7 +759,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
         }
     } else {
         if (middlePressed) {
-            if (abs(xPos - prevXPos) > 0.0001 || abs(yPos - prevYPos) > 0.001) {
+            if (abs(xPos - prevXPos) > MOUSE_THRESH || abs(yPos - prevYPos) > MOUSE_THRESH) {
                 mouseMoving = true;
                 double yawAngle = -0.5 * (xPos - prevXPos);
                 double pitchAngle = -0.5 * (yPos - prevYPos);

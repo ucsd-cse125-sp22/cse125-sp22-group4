@@ -3,6 +3,7 @@
 #define PLAYER_NUM 4
 #define ITEM_NUM_LOC 5
 #define MAX_PACKET_SIZE 1000000
+#define MOUSE_THRESH 0.00001
 
 enum Directions { FORWARD, BACK, LEFT, RIGHT };
 
@@ -12,7 +13,6 @@ struct MovementState {
 };
 
 struct RotationState {
-	//glm::mat4 rotationalMatrix;
 	float delta;
 	bool moving;
 };
