@@ -87,6 +87,7 @@ static bool mouseMoving = false;
 static int direction = -1;
 
 static glm::mat4 currRotationUpdate = glm::mat4(1);
+static float currRotationDelta = 0;
 
 static char itemhold = PLAYER_NUM + 1;
 
@@ -361,6 +362,7 @@ void Client::displayCallback() {
 void Client::idleCallback() {
     Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
     currCamera->update();
+    mouseMoving = false;
 
     if (gameEnded) {
         pause = 1;
@@ -661,7 +663,7 @@ MovementState Client::getMovementState() {
 
 RotationState Client::getRotationState() {
     return RotationState{
-        currRotationUpdate,
+        currRotationDelta,
         mouseMoving,
     };
 }
@@ -671,7 +673,7 @@ Model** Client::getPlayers() {
 }
 
 void Client::resetRotUpdate() {
-    currRotationUpdate = glm::mat4(1);
+    currRotationDelta = 0;
 }
 
 void Client::setPlayerfromID(unsigned int id) {
@@ -740,15 +742,16 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
 **/
 static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
     ImGui_ImplGlfw_CursorPosCallback(window, xPos, yPos);
-    mouseMoving = false;
+
+
     if (isThirdPersonCam && !pause) {
-        if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
+        if (abs(xPos - prevXPos) > MOUSE_THRESH || abs(yPos - prevYPos) > MOUSE_THRESH) {
             mouseMoving = true;
             double yawAngle = -0.5 * (xPos - prevXPos);
             double pitchAngle = -0.5 * (yPos - prevYPos);
            
             float playerSpinDegree = 0.5 * (float)(thirdPersonCamera->upVec.y > 0 ? yawAngle : -yawAngle);
-            currRotationUpdate = glm::rotate(glm::radians(playerSpinDegree), glm::vec3(0.0f, 1.0f, 0.0f));
+            currRotationDelta = glm::radians(playerSpinDegree);
             thirdPersonCamera->pitch((float)pitchAngle);
 
             prevXPos = xPos;
@@ -756,7 +759,7 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
         }
     } else {
         if (middlePressed) {
-            if (abs(xPos - prevXPos) > 0.00001 || abs(yPos - prevYPos) > 0.0001) {
+            if (abs(xPos - prevXPos) > MOUSE_THRESH || abs(yPos - prevYPos) > MOUSE_THRESH) {
                 mouseMoving = true;
                 double yawAngle = -0.5 * (xPos - prevXPos);
                 double pitchAngle = -0.5 * (yPos - prevYPos);
@@ -767,7 +770,6 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
             prevYPos = yPos;
         }
     }
-
 }
 
 /**

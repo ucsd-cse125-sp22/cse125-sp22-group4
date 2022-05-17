@@ -306,6 +306,8 @@ void ServerGame::update()
     auto stop_time = timer.now();
     auto dt = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
     if (dt.count() >= FPS_MAX) {
+        start_time = timer.now();
+
         // game countdown
         auto stop_t = timer_t.now();
         auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
@@ -322,7 +324,6 @@ void ServerGame::update()
         checkCooldownOver();
 
         replicateGameState();
-        start_time = timer.now();
 
         // Check config file every sec
         ++this->ticksSinceConfigCheck;
@@ -374,7 +375,6 @@ void ServerGame::checkCooldownOver() {
                 cooldown.pop();
                 cooldown.push({ id, deadMouse.second });
             }
-
         }
     }
 }
@@ -422,44 +422,47 @@ void ServerGame::receiveFromClients()
             continue;
 
         int i = 0;
-        ushort packet_class = get_packet_class(&(network_data[i]));
-        switch (packet_class) {
-        case SIMPLE: {
-            SimplePacket* pack = (SimplePacket*)malloc(sizeof(SimplePacket));
-            memcpy(pack, &network_data[i], sizeof(SimplePacket));
-            handleSimplePacket(client_id, pack);
-            i += sizeof(SimplePacket);
-            free(pack);
-            break;
-        }
-        case MOVE:
-        {
-            MovePacket* pack = (MovePacket*)malloc(sizeof(MovePacket));
-            memcpy(pack, &network_data[i], sizeof(MovePacket));
-            handleMovePacket(client_id, pack);
 
-            i += sizeof(MovePacket);
-            free(pack);
+        while (i < data_length) {
+            ushort packet_class = get_packet_class(&(network_data[i]));
+            switch (packet_class) {
+            case SIMPLE: {
+                SimplePacket* pack = (SimplePacket*)malloc(sizeof(SimplePacket));
+                memcpy(pack, &network_data[i], sizeof(SimplePacket));
+                handleSimplePacket(client_id, pack);
+                i += sizeof(SimplePacket);
+                free(pack);
+                break;
+            }
+            case MOVE:
+            {
+                MovePacket* pack = (MovePacket*)malloc(sizeof(MovePacket));
+                memcpy(pack, &network_data[i], sizeof(MovePacket));
+                handleMovePacket(client_id, pack);
 
-            // TODO: Fix replication... Currently not in lock-step.
-            // Note: Moving replication outside of CASE results in dead client.
-            //replicateGameState();
-            break;
-        }
-        case ROTATE:
-        {
-            RotatePacket* pack = (RotatePacket*)malloc(sizeof(RotatePacket));
-            memcpy(pack, &network_data[i], sizeof(RotatePacket));
-            handleRotatePacket(client_id, pack);
+                i += sizeof(MovePacket);
+                free(pack);
 
-            i += sizeof(RotatePacket);
-            free(pack);
+                // TODO: Fix replication... Currently not in lock-step.
+                // Note: Moving replication outside of CASE results in dead client.
+                //replicateGameState();
+                break;
+            }
+            case ROTATE:
+            {
+                RotatePacket* pack = (RotatePacket*)malloc(sizeof(RotatePacket));
+                memcpy(pack, &network_data[i], sizeof(RotatePacket));
+                handleRotatePacket(client_id, pack);
 
-            break;
-        }
-        default:
-            printf("error in packet types\n");
-            break;
+                i += sizeof(RotatePacket);
+                free(pack);
+
+                break;
+            }
+            default:
+                printf("error in packet types\n");
+                break;
+            }
         }
     }
     // Replicate game state when everything is processed in this frame.
@@ -469,7 +472,7 @@ void ServerGame::receiveFromClients()
 // TODO: Make use of graphics library instead. Have an object wrap the player's positions
 // and use methods to manipulate.
 void ServerGame::moveLocal(glm::mat4& model, const glm::vec3& v) {
-    model = model * glm::translate(glm::mat4(1), v);
+    model = glm::translate(model, v);
 }
 
 
@@ -482,10 +485,6 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
 			SOCKET player_socket = iter->second;
             SimplePacket id_packet;
             id_packet.packet_type = INIT_CONNECTION;
-
-
-
-
             // Note: Cast from uint to char (should be safe, assuming < 16 players...)
             id_packet.data = (char)iter->first;
             char* packet_bytes = packet_to_bytes(&id_packet, sizeof(id_packet));
@@ -503,10 +502,11 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
         return;
     }
 
-    bool obstacle = maze->rotateBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (packet->state.rotationalMatrix[2][0] / packet->state.rotationalMatrix[2][2]));
+    glm::mat4 rotationMatrix = glm::rotate(packet->state.delta, glm::vec3(0.0f, 1.0f, 0.0f));
+    bool obstacle = maze->rotateBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (rotationMatrix[2][0] / rotationMatrix[2][2]));
   
     if (!obstacle) {
-        state.model = state.model * packet->state.rotationalMatrix;
+        state.model = state.model * rotationMatrix;
         player_states[client_id] = state;
     }
     

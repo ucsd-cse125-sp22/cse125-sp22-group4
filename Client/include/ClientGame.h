@@ -2,10 +2,13 @@
 
 #include <winsock2.h>
 #include <Windows.h>
+#include <chrono>
 #include "ClientNetwork.h"
 #include "Client.h"
 //#include "Network/include/NetworkData.h"
 #include "Network/include/Packets.h"
+
+#define FPS_MAX 1e6/120.0
 
 class ClientGame
 {
@@ -39,6 +42,9 @@ public:
     unsigned int getPlayer_id();
 
 private:
+    std::chrono::high_resolution_clock timer;
+    std::chrono::steady_clock::time_point start_time;
+    std::string packet_stream;
 
     Model** players;
     unsigned int player_id;
