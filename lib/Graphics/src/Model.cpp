@@ -67,11 +67,23 @@ void Model::loadModel(std::string const& path) {
     spdlog::info("Read file {} via Assimp...", path);
     stbi_set_flip_vertically_on_load(true);
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | 
-                                                   aiProcess_GenSmoothNormals |
-                                                   aiProcess_FlipUVs |
-                                                   aiProcess_JoinIdenticalVertices |
-                                                   aiProcess_CalcTangentSpace);
+    const aiScene* scene;
+
+    if (path.substr(path.find_last_of(".") + 1) == "fbx") {
+        scene = importer.ReadFile(path, aiProcess_Triangulate |
+            aiProcess_GenSmoothNormals |
+            aiProcess_JoinIdenticalVertices |
+            aiProcess_CalcTangentSpace);
+    }
+    else {
+        scene = importer.ReadFile(path, aiProcess_Triangulate |
+            aiProcess_GenSmoothNormals |
+            aiProcess_FlipUVs |
+            aiProcess_JoinIdenticalVertices |
+            aiProcess_CalcTangentSpace);
+    }
+
+
     spdlog::info("Finish reading file.", path);
 
     // check for errors

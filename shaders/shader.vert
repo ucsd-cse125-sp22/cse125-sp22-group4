@@ -58,7 +58,6 @@ void main() {
         vec3 B = normalize(vec3(model * vec4(biTangent, 0)));
         vec3 N = normalize(vec3(model * vec4(normal, 0)));
         TBN = mat3(T, B, N);
-   
 
         worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
         worldPos = vec3(model * vec4(position, 1));
@@ -70,9 +69,9 @@ void main() {
         vec3 B = normalize(normalMatrix * vec3(model * vec4(biTangent, 0)));
         vec3 N = normalize(normalMatrix * vec3(model * vec4(normal, 0)));
         TBN = mat3(T, B, N);
-   
-        worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
-        worldPos = vec3(model * vec4(position, 1));
+
+        worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(N, 0)));
+        worldPos = vec3(model * totalPosition);
         texCoords = aTexCoords; 
         gl_Position = viewProj * model * totalPosition;
     }

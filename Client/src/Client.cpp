@@ -26,10 +26,10 @@ static Model* maze;
 static Model* players[PLAYER_NUM];
 static Model* bear;
 static Model* item;
-static Model* morak;
+static Model* demoChar;
 
 // Animations
-static Animation* ThrillerAnimation;
+static Animation* demoAnimation;
 static Animator* animator;
 
 // for ImGui Image display
@@ -220,12 +220,12 @@ bool Client::initializeClient() {
     bear->moveGlobal(glm::vec3(75, -3, -75));
     item = new Model("../../objects/backpack/backpack.obj");
 
-    morak = new Model("../../objects/morak/morak.fbx");
-    morak->scale(glm::vec3(0.1));
-    morak->moveGlobal(glm::vec3(0, -2, -5));
+    demoChar = new Model("../../objects/Kachujin/jog.fbx");
+    demoChar->scale(glm::vec3(0.3));
+    demoChar->moveGlobal(glm::vec3(9, -2, -5));
 
-    ThrillerAnimation = new Animation("../../objects/morak/morak.fbx", morak);
-    animator = new Animator(ThrillerAnimation);
+    demoAnimation = new Animation("../../objects/Kachujin/jog.fbx", demoChar);
+    animator = new Animator(demoAnimation);
 
     ret = LoadTextureFromFile("../../objects/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
     retGameOver = LoadTextureFromFile("../../objects/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
@@ -294,7 +294,7 @@ void Client::displayCallback() {
             character->draw(currCam->viewProjMat, identityMat, shader);
         }
 
-        morak->draw(currCam->viewProjMat, identityMat, shader);
+        demoChar->draw(currCam->viewProjMat, identityMat, shader);
        
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
