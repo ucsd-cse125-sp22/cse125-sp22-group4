@@ -85,6 +85,7 @@ static CollisionDetector cDetector;
 
 // state variables
 static bool gameEnded = 0;
+static bool gameStarted = 0;
 static bool catWon = 0;
 unsigned int my_id;
 static int currTime = 0;
@@ -258,7 +259,7 @@ bool Client::initializeClient() {
     retGameStart = LoadTextureFromFile("../../objects/ImGui/game_start_maze2.jpg", &image_texture_game_start, &image_width_game_start, &image_height_game_start);
     retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
     retStartMouse = LoadTextureFromFile("../../objects/ImGui/mao_mouse.png", &image_texture_start_mouse, &image_width_start_mouse, &image_height_start_mouse);
-    retStartCatuate = LoadTextureFromFile("../../objects/ImGui/catuate.png", &image_texture_start_catuate, &image_width_start_catuate, &image_height_start_catuate);
+    retStartCatuate = LoadTextureFromFile("../../objects/ImGui/catuate2.png", &image_texture_start_catuate, &image_width_start_catuate, &image_height_start_catuate);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -592,12 +593,17 @@ void displayLocation(glm::mat4 model, int id, double adjustment) {
 }
 
 void Client::miniMapGUI() {
+
+    if (gameStarted == 0)
+        return;
+
     double adjustment = 0.5;
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
+
     ImGui::SetNextWindowSize(ImVec2(image_width_map * adjustment, image_height_map * adjustment));
     ImGui::SetNextWindowPos(ImVec2(-40, -90), 0, ImVec2(0, 0));
     ImGui::Begin("MiniMap GUI", NULL, flags);
@@ -627,6 +633,10 @@ void Client::miniMapGUI() {
 }
 
 void Client::GameStartGUI() {
+
+    if (gameStarted == 1)
+        return;
+
     double adjustment = 3.0f;
     double adjust_cat = 0.5f;
     double adjust_mouse = 0.3f;
@@ -651,9 +661,19 @@ void Client::GameStartGUI() {
     //float mouseLoc = window_width - image_width_start_mouse * adjust_mouse;
     ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse) / 2 + 20));
     ImGui::Image((void*)(intptr_t)image_texture_start_mouse, ImVec2(image_width_start_mouse * adjust_mouse, image_height_start_mouse * adjust_mouse));
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_start_catuate) / 2, 40));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_start_catuate* adjust_catuate) / 2, 40));
     ImGui::Image((void*)(intptr_t)image_texture_start_catuate, ImVec2(image_width_start_catuate*adjust_catuate, image_height_start_catuate*adjust_catuate));
     //ImGui::PopStyleColor();
+    float buttonLoc = 3 * window_width / 4;
+    ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 2));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 0.95f));
+    ImGui::PushFont(HUGEcuteFont);
+    if (ImGui::Button("Start Game"))
+    {
+        gameStarted = 1;
+    }
+    ImGui::PopStyleColor();
+    ImGui::PopFont();
     ImGui::End();
 }
 
