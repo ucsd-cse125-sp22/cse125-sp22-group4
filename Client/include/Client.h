@@ -10,6 +10,7 @@
 #include "Graphics/include/ThirdPersonCamera.h"
 #include "Graphics/include/Skybox.h"
 #include "Graphics/include/SceneLoader.h"
+#include "Graphics/include/Animator.h"
 
 #include "Constants/include/constants.h"
 
@@ -28,7 +29,7 @@ namespace Client {
 
     bool initializeClient();
     void displayCallback();
-    void idleCallback();
+    void idleCallback(float dt);
     void cleanup();
     void GUI();
     void timeGUI();
@@ -48,6 +49,7 @@ namespace Client {
     void updateTime(int t);
     void setGameOver(int g, int w);
     bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
+    void calcFinalBoneMatrix(Animator* animator);
 };
 
 #endif // !CLIENT_H

@@ -95,9 +95,20 @@ int main(int argc, char** argv) {
 
     client->setPlayers(Client::getPlayers());
 
+    float currentFrame = 0;
+    float deltaTime = 0;
+    float lastFrame = 0;
+
     // Main loop
     while (!glfwWindowShouldClose(window))
     {
+
+        currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
+        //printf("currentFrame: %f, lastFrame: %f, deltaTime: %f \n", currentFrame, lastFrame, deltaTime);
+
         // Poll and handle events (inputs, window resize, etc.)
         // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
         // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
@@ -127,7 +138,7 @@ int main(int argc, char** argv) {
         //        1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         //    ImGui::End();
         //}
-        //Client::GUI();
+        Client::GUI();
         Client::timeGUI();
         Client::ItemHoldGUI();
         Client::miniMapGUI();
@@ -142,7 +153,7 @@ int main(int argc, char** argv) {
         ImGui::Render();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        Client::idleCallback();
+        Client::idleCallback(deltaTime);
         Client::displayCallback();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

@@ -26,7 +26,15 @@ static Model* maze;
 static Model* players[PLAYER_NUM];
 static Model* bear;
 static Model* item;
-static Model* knight;
+static Model* demoChar;
+static Model* demoChar2;
+
+// Animations
+static Animation* demoAnimation;
+static Animator* animator;
+static Animation* demoAnimation2;
+static Animator* animator2;
+
 
 // for ImGui Image display
 int my_image_width = 0;
@@ -96,7 +104,7 @@ static bool pause = false;
 static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
-static const char* scenes[4] = { "3rd Person Tyra", "Baby Maze", "Backpack", "Scene import"};
+static const char* scenes[4] = { "Animation Demo", "Maze", "Backpack", "Scene import Demo"};
 
 static bool keys[4];
 static bool keyHeld = false;
@@ -222,7 +230,7 @@ bool Client::initializeClient() {
 
     // initialize light sources
     lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {1, 1, 1, 0} };
-    lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {1, 1, 1, 1} };
+    lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {0.8, 0.8, 0.8, 1} };
     lightCount = lightPosn.size();
 
     // initialize objects
@@ -246,9 +254,19 @@ bool Client::initializeClient() {
     bear->moveGlobal(glm::vec3(75, -3, -75));
     item = new Model("../../objects/backpack/backpack.obj");
 
-    knight = new Model("../../objects/knight/knight.obj");
-    knight->scale(glm::vec3(0.1f));
-    knight->moveGlobal(glm::vec3(0, -2, 0));
+    demoChar = new Model("../../objects/Kachujin/jog.fbx");
+    demoChar->scale(glm::vec3(0.3));
+    demoChar->moveGlobal(glm::vec3(9, -2, -2));
+
+    demoAnimation = new Animation("../../objects/Kachujin/jog.fbx", demoChar);
+    animator = new Animator(demoAnimation);
+
+    demoChar2 = new Model("../../objects/morak/morak_samba_small.fbx");
+    demoAnimation2 = new Animation("../../objects/morak/morak_samba_small.fbx", demoChar2);
+    animator2 = new Animator(demoAnimation2);
+    demoChar2->scale(glm::vec3(0.6));
+    demoChar2->moveGlobal(glm::vec3(0, -2, 0));
+
 
     ret = LoadTextureFromFile("../../objects/ImGui/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
     retGameOver = LoadTextureFromFile("../../objects/ImGui/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
@@ -298,7 +316,7 @@ bool Client::initializeClient() {
  * Display objects
 **/
 void Client::displayCallback() {
-    isThirdPersonCam = true;
+
     Camera* currCam = isThirdPersonCam ? thirdPersonCamera : camera;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // activate the shader program and send some values
@@ -310,14 +328,19 @@ void Client::displayCallback() {
     glUseProgram(0);
 
     glm::mat4 identityMat = glm::mat4(1);
-
+    isThirdPersonCam = false;
     switch (select) {
     case 0: {
+
         for (auto character : players) {
             character->draw(currCam->viewProjMat, identityMat, shader);
         }
 
-        knight->draw(currCam->viewProjMat, identityMat, shader);
+        calcFinalBoneMatrix(animator);
+        demoChar->draw(currCam->viewProjMat, identityMat, shader);
+
+        calcFinalBoneMatrix(animator2);
+        demoChar2->draw(currCam->viewProjMat, identityMat, shader);
        
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
@@ -346,6 +369,7 @@ void Client::displayCallback() {
     }
 
     case 1: {
+        isThirdPersonCam = true;
         maze->draw(currCam->viewProjMat, identityMat, shader);
         tyra->draw(currCam->viewProjMat, identityMat, shader);
         bear->draw(currCam->viewProjMat, identityMat, shader);
@@ -380,7 +404,7 @@ void Client::displayCallback() {
 /**
  * Update objects when idle
 **/
-void Client::idleCallback() {
+void Client::idleCallback(float dt) {
     Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
     currCamera->update();
     mouseMoving = false;
@@ -397,6 +421,9 @@ void Client::idleCallback() {
         cDetector.update(wall2->getOBB(), 1);
         cDetector.update(tyra->getOBB(), 2);
         // COLLITION DEBUG
+
+        animator->update(dt);
+        animator2->update(dt);
     }
 
     if (!isThirdPersonCam && keyHeld) {
@@ -437,6 +464,12 @@ void Client::cleanup() {
     delete skybox;
     delete bear;
     delete item;
+    delete demoChar;
+    delete demoChar2;
+    delete animator;
+    delete animator2;
+    delete demoAnimation;
+    delete demoAnimation2;
 
     // COLLISION DEBUG
     delete wall1;
@@ -772,6 +805,16 @@ void Client::setGameOver(int g, int w) {
     gameEnded = g;
     catWon = w;
     //printf("%d gameOver %d\n", g, w);
+}
+
+void Client::calcFinalBoneMatrix(Animator* animator) {
+    glUseProgram(shader);
+    auto transforms = animator->GetFinalBoneMatrices();
+    for (int i = 0; i < transforms.size(); ++i) {
+        std::string name = "finalBonesMatrices[" + std::to_string(i) + "]";
+        glUniformMatrix4fv(glGetUniformLocation(shader, name.c_str()), 1, GL_FALSE, &transforms[i][0][0]);
+    }
+    glUseProgram(0);
 }
 
 /**

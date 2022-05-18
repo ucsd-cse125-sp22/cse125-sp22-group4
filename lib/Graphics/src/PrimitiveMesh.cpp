@@ -5,6 +5,7 @@ PrimitiveMesh::PrimitiveMesh() {
     model = glm::mat4(1);
     phongMat = { glm::vec4(0), glm::vec4(0), glm::vec4(0), glm::vec4(0), 0 };
     maxX = maxZ = minX = minZ = 0;
+    hasBones = 0;
 }
 
 PrimitiveMesh::PrimitiveMesh(const PrimitiveMesh& old) {
@@ -30,6 +31,7 @@ PrimitiveMesh::PrimitiveMesh(const std::vector<glm::vec3>& _points,
     indices = _indices;
     phongMat = _phongMat;
     model = glm::mat4(1);
+    hasBones = 0;
 
     maxX = points[0].x;
     maxZ = points[0].z;
@@ -69,6 +71,7 @@ void PrimitiveMesh::draw(const glm::mat4& viewProjMat,
     glUniform4fv(glGetUniformLocation(shader, "specular"), 1, glm::value_ptr(phongMat.specular));
     glUniform4fv(glGetUniformLocation(shader, "emission"), 1, glm::value_ptr(phongMat.emission));
     glUniform1f(glGetUniformLocation(shader, "shininess"), phongMat.shininess);
+    glUniform1i(glGetUniformLocation(shader, "hasBones"), hasBones);
 
     // draw mesh
     glBindVertexArray(VAO);

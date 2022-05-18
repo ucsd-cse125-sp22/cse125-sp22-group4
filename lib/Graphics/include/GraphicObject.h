@@ -10,8 +10,11 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/transform.hpp"
+#include <glm/gtx/quaternion.hpp>
 #include "spdlog/spdlog.h"
 #include "CollisionDetector.h"
+
+#define MAX_BONE_INFLUENCE 4
 
 class GraphicObject {
 public:
@@ -27,6 +30,7 @@ public:
     virtual void setModel(const glm::mat4& m) = 0;
     virtual const glm::mat4& getModel() const = 0;
     virtual OBB getOBB() const = 0;
+    int hasBones = 0;
 };
 
 #endif // !GRAPHIC_OBJECT_H

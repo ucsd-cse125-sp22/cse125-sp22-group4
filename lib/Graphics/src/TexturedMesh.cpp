@@ -69,6 +69,7 @@ void TexturedMesh::draw(const glm::mat4& viewProjMat,
     glUniform4fv(glGetUniformLocation(shader, "specular"), 1, glm::value_ptr(phongMat.specular));
     glUniform4fv(glGetUniformLocation(shader, "emission"), 1, glm::value_ptr(phongMat.emission));
     glUniform1f(glGetUniformLocation(shader, "shininess"), phongMat.shininess);
+    glUniform1i(glGetUniformLocation(shader, "hasBones"), hasBones);
 
     // bind appropriate textures
     unsigned int diffuseNr = 1;
@@ -178,6 +179,12 @@ void TexturedMesh::bindBuffers() {
     // vertex bitangent
     glEnableVertexAttribArray(4);
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+    // bone ids
+    glEnableVertexAttribArray(5);
+    glVertexAttribIPointer(5, 4, GL_INT, sizeof(Vertex), (void*)offsetof(Vertex, m_BoneIDs));
+    //weights
+    glEnableVertexAttribArray(6);
+    glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, m_Weights));
 
     // unbind VAO and VBOs.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
