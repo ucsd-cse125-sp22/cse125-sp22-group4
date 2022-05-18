@@ -84,7 +84,6 @@ void main() {
         vec3 normal = vec3(texture(texture_normal1, texCoords));
         normal = normal * 2.0 - 1.0;
         realNormal = normalize(TBN * normal);
-        //realNormal = worldNormal;
         realAmbient = texture(texture_ambient1, texCoords) * ambientLight;
         realDiffuse = texture(texture_diffuse1, texCoords) * diffuse;
         realSpecular = texture(texture_specular1, texCoords) * specular;
@@ -113,5 +112,4 @@ void main() {
     }
 
     fragColor = col + realAmbient + realEmission;
-    //fragColor = vec4((realNormal + vec3(1))/2, 1);
 }

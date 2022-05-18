@@ -50,9 +50,6 @@ void main() {
     BoneTransform += finalBonesMatrices[boneIds[2]] * weights[2];
     BoneTransform += finalBonesMatrices[boneIds[3]] * weights[3];
 
-    // for shading
-    //worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
-
     if (hasBones == 0) {
         vec3 T = normalize(vec3(model * vec4(tangent, 0)));
         vec3 B = normalize(vec3(model * vec4(biTangent, 0)));
@@ -75,17 +72,4 @@ void main() {
         texCoords = aTexCoords; 
         gl_Position = viewProj * model * totalPosition;
     }
-
-    /*
-    
-    mat3 normalMatrix = transpose(inverse(mat3(BoneTransform)));
-    vec3 T = normalize(normalMatrix * vec3(model * vec4(tangent, 0)));
-    vec3 B = normalize(normalMatrix * vec3(model * vec4(biTangent, 0)));
-    vec3 N = normalize(normalMatrix * vec3(model * vec4(normal, 0)));
-    TBN = mat3(T, B, N);
-
-    worldNormal = normalize(vec3(inverse(transpose(model)) * vec4(normal, 0)));
-    worldPos = vec3(model * totalPosition);
-    texCoords = aTexCoords;
-    */
 }
