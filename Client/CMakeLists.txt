@@ -27,4 +27,7 @@ target_link_libraries(Client
     Graphics
     Network
     Constants
+    Audio
+    ${LIB_INCLUDE}/Audio/fmodstudio_vc.lib
+    ${LIB_INCLUDE}/Audio/fmod_vc.lib
 )

@@ -10,6 +10,7 @@ mkdir build
 cd build
 conan install .. -s build_type=Release --build missing
 cmake ..
+bash ../build.sh
 ```
 
 ## Visual Studio Setup
