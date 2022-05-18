@@ -11,6 +11,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <queue>
+#include <unordered_map>
 
 // Microseconds / Frames per second
 #define FPS_MAX 1e6/60.0
@@ -23,6 +24,14 @@
 #define DEFAULT_COOLDOWNTIMESEC 5
 
 #define CAT_ID 0
+
+// W,S,A,D
+const glm::vec3 DIR_TO_VEC[4] = {
+   glm::vec3(0, 0, -1),
+   glm::vec3(0, 0, 1),
+   glm::vec3(-1, 0, 0),
+   glm::vec3(1, 0, 0)
+};
 
 class ServerGame
 {

@@ -22,6 +22,8 @@ void ClientGame::sendActionPackets(MovementState s)
         return;
     }
 
+    printf("I'm sendung!\n");
+
     const unsigned int packet_size = sizeof(MovePacket);
     MovePacket packet;
     packet.state = s;

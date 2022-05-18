@@ -761,10 +761,10 @@ void Client::GameOverGUI() {
 
 
 MovementState Client::getMovementState() {
-    return MovementState{
-        direction,
-        keyHeld
-    };
+    MovementState ms;
+    memcpy(ms.dir, keys, sizeof(ms.dir));
+    ms.held = keyHeld;
+    return ms;
 }
 
 RotationState Client::getRotationState() {

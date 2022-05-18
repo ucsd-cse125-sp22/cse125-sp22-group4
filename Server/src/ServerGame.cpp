@@ -209,7 +209,6 @@ void ServerGame::isTaken() {
     if (ans == 0) {
         ans = 1;
         respawnItem();
-
     }
 }
 
@@ -518,46 +517,53 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     oldModels[client_id] = player_states[client_id].model;
     double playerSpeed = client_id == CAT_ID ? catSpeed : mouseSpeed;
 
-    if (!state.alive) {
+    if (!state.alive || !packet->state.held) {
         return;
     }
+    
+    glm::vec3 netDirection = glm::vec3(0);
+    for (int i = 0; i < 4; ++i) {
+        bool obstacle = false;
+        int direction = packet->state.dir[i];
+        if (!direction)
+            continue;
 
-    switch (packet->state.dir) {
-    case LEFT:
-    {
-        bool obstacle = maze->leftBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
-
-        if (!obstacle)
-            moveLocal(state.model, glm::vec3(-playerSpeed, 0, 0));
-        break;
-    }
-    case RIGHT:
-    {
-        bool obstacle = maze->rightBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
-
-        if (!obstacle)
-            moveLocal(state.model, glm::vec3(playerSpeed, 0, 0));
-        break;
-    }
-    case BACK:
-    {
-        bool obstacle = maze->backwardsBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
-
-        if (!obstacle)
-            moveLocal(state.model, glm::vec3(0, 0, playerSpeed));
-        break;
-    }
-    case FORWARD:
-    {
-        bool obstacle = maze->forwardBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
-
-        if (!obstacle) {
-            moveLocal(state.model, glm::vec3(0, 0, -playerSpeed));
+        switch (i) {
+            case LEFT:
+            {
+                obstacle = maze->leftBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+                break;
+            }
+            case RIGHT:
+            {
+                obstacle = maze->rightBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+                break;
+            }
+            case BACK:
+            {
+                obstacle = maze->backwardsBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+                break;
+            }
+            case FORWARD:
+            {
+                obstacle = maze->forwardBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+                break;
+            }
         }
 
-        break;
+        if (!obstacle) {
+            netDirection += DIR_TO_VEC[i];
+        }
     }
-    }
+
+    // TODO: Normalizing the direction causes major slowdowns...
+    float norm = glm::length2(netDirection);
+    if (norm < 0.1)
+        return;
+    
+    glm::vec3 delta = netDirection * (float) (playerSpeed / norm);
+    moveLocal(state.model, delta);
+
     // Actually do the update...
     player_states[client_id] = state;
 }

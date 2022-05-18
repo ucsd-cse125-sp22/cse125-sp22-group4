@@ -8,7 +8,7 @@
 enum Directions { FORWARD, BACK, LEFT, RIGHT };
 
 struct MovementState {
-	int dir;
+	bool dir[4];
 	bool held;
 };
 
