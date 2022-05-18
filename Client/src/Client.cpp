@@ -59,6 +59,14 @@ bool retGameStart;
 int image_width_game_start = 0;
 int image_height_game_start = 0;
 GLuint image_texture_game_start = 0;
+bool retStartMouse;
+int image_width_start_mouse = 0;
+int image_height_start_mouse = 0;
+GLuint image_texture_start_mouse = 0;
+bool retStartCat;
+int image_width_start_cat = 0;
+int image_height_start_cat = 0;
+GLuint image_texture_start_cat = 0;
 
 std::vector<Model*> sceneObjects;
 
@@ -243,7 +251,8 @@ bool Client::initializeClient() {
     retMouseFlag = LoadTextureFromFile("../../objects/ImGui/cheese.png", &image_texture_mouse_flag, &image_width_mouse_flag, &image_height_mouse_flag);
     retMouseFlagPale = LoadTextureFromFile("../../objects/ImGui/cheese_paler.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
     retMap = LoadTextureFromFile("../../objects/ImGui/mazeTextured3.png", &image_texture_map, &image_width_map, &image_height_map);
-    retGameStart = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_game_start, &image_width_game_start, &image_height_game_start);
+    retGameStart = LoadTextureFromFile("../../objects/ImGui/game_start_maze2.jpg", &image_texture_game_start, &image_width_game_start, &image_height_game_start);
+    retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -612,7 +621,8 @@ void Client::miniMapGUI() {
 }
 
 void Client::GameStartGUI() {
-    double adjustment = 0.5f;
+    double adjustment = 2.0f;
+    double adjust_cat = 0.5f;
     ImGuiWindowFlags flags = 0;
     //flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
@@ -622,10 +632,14 @@ void Client::GameStartGUI() {
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::Begin("GameStart GUI", NULL, flags);
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0.5f, 1.0f, 1.0f));
-    ImGui::SetCursorPosY(0);
+    //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1.0, 1.0f, 1.0f, 1.0f));
+    ImGui::SetCursorPos(ImVec2((window_width-image_width_game_start*adjustment)/2,(window_height-image_height_game_start*adjustment)/2));
     ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment, image_height_game_start * adjustment));
-    ImGui::PopStyleColor();
+    float catLoc = ((window_width - image_width_game_start * adjustment) / 2 - image_width_start_cat * adjust_cat) / 2;
+    ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat) / 2));
+    
+    ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * adjust_cat, image_height_start_cat * adjust_cat));
+    //ImGui::PopStyleColor();
     ImGui::End();
 }
 
