@@ -38,6 +38,7 @@ public:
     void setItem(glm::mat4 location);
     void setTime(int t);
     void gameEnd(int gameOver, int catWon);
+    void setNumPlayers(int p);
 
     unsigned int getPlayer_id();
 

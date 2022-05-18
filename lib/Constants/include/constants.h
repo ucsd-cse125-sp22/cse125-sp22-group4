@@ -30,4 +30,5 @@ struct ItemState {
 
 struct GameState {
 	int gameTime;
+	int numPlayers;
 };

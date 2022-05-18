@@ -131,8 +131,9 @@ void ClientGame::update(MovementState s, RotationState r)
                 }
 
                 Client::setItemHold(packet->item_state.hold);
-                
+                setNumPlayers(packet->game.numPlayers);
                 //printMat4(packet->item_state.model);
+                
                 setTime(packet->game.gameTime);
 
                 i += sizeof(GameStatePacket);
@@ -149,6 +150,10 @@ void ClientGame::update(MovementState s, RotationState r)
 
 void ClientGame::setItem(glm::mat4 location) {
     Client::updateItemLocation(location);
+}
+
+void ClientGame::setNumPlayers(int p) {
+    Client::setNumPlayers(p);
 }
 
 void ClientGame::setTime(int t) {
