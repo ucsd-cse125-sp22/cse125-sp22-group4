@@ -253,6 +253,7 @@ bool Client::initializeClient() {
     retMap = LoadTextureFromFile("../../objects/ImGui/mazeTextured3.png", &image_texture_map, &image_width_map, &image_height_map);
     retGameStart = LoadTextureFromFile("../../objects/ImGui/game_start_maze2.jpg", &image_texture_game_start, &image_width_game_start, &image_height_game_start);
     retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
+    retStartMouse = LoadTextureFromFile("../../objects/ImGui/mao_mouse.png", &image_texture_start_mouse, &image_width_start_mouse, &image_height_start_mouse);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -623,6 +624,7 @@ void Client::miniMapGUI() {
 void Client::GameStartGUI() {
     double adjustment = 2.0f;
     double adjust_cat = 0.5f;
+    double adjust_mouse = 0.5f;
     ImGuiWindowFlags flags = 0;
     //flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
@@ -639,6 +641,9 @@ void Client::GameStartGUI() {
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat) / 2));
     
     ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * adjust_cat, image_height_start_cat * adjust_cat));
+    float mouseLoc = window_width - ((window_width - image_width_game_start * adjustment) / 2 - image_width_start_mouse * adjust_mouse) / 2;
+    ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse) / 2));
+    ImGui::Image((void*)(intptr_t)image_texture_start_mouse, ImVec2(image_width_start_mouse * adjust_mouse, image_height_start_mouse * adjust_mouse));
     //ImGui::PopStyleColor();
     ImGui::End();
 }
