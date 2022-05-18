@@ -35,6 +35,7 @@ namespace Client {
     void ItemHoldGUI();
     void GameOverGUI();
     void miniMapGUI();
+    void GameStartGUI();
 
     MovementState getMovementState();
     RotationState getRotationState();
