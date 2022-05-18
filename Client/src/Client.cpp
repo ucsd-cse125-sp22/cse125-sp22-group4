@@ -67,6 +67,10 @@ bool retStartCat;
 int image_width_start_cat = 0;
 int image_height_start_cat = 0;
 GLuint image_texture_start_cat = 0;
+bool retStartCatuate;
+int image_width_start_catuate = 0;
+int image_height_start_catuate = 0;
+GLuint image_texture_start_catuate = 0;
 
 std::vector<Model*> sceneObjects;
 
@@ -254,6 +258,7 @@ bool Client::initializeClient() {
     retGameStart = LoadTextureFromFile("../../objects/ImGui/game_start_maze2.jpg", &image_texture_game_start, &image_width_game_start, &image_height_game_start);
     retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
     retStartMouse = LoadTextureFromFile("../../objects/ImGui/mao_mouse.png", &image_texture_start_mouse, &image_width_start_mouse, &image_height_start_mouse);
+    retStartCatuate = LoadTextureFromFile("../../objects/ImGui/catuate.png", &image_texture_start_catuate, &image_width_start_catuate, &image_height_start_catuate);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -622,9 +627,10 @@ void Client::miniMapGUI() {
 }
 
 void Client::GameStartGUI() {
-    double adjustment = 2.0f;
+    double adjustment = 3.0f;
     double adjust_cat = 0.5f;
-    double adjust_mouse = 0.5f;
+    double adjust_mouse = 0.3f;
+    double adjust_catuate = 1.5f;
     ImGuiWindowFlags flags = 0;
     //flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
@@ -641,9 +647,12 @@ void Client::GameStartGUI() {
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat) / 2));
     
     ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * adjust_cat, image_height_start_cat * adjust_cat));
-    float mouseLoc = window_width - ((window_width - image_width_game_start * adjustment) / 2 - image_width_start_mouse * adjust_mouse) / 2;
-    ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse) / 2));
+    float mouseLoc = (window_width - image_width_game_start * adjustment) / 2 + ((window_width - image_width_game_start * adjustment) / 2 - image_width_start_mouse * adjust_mouse) / 2;
+    //float mouseLoc = window_width - image_width_start_mouse * adjust_mouse;
+    ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse) / 2 + 20));
     ImGui::Image((void*)(intptr_t)image_texture_start_mouse, ImVec2(image_width_start_mouse * adjust_mouse, image_height_start_mouse * adjust_mouse));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_start_catuate) / 2, 40));
+    ImGui::Image((void*)(intptr_t)image_texture_start_catuate, ImVec2(image_width_start_catuate*adjust_catuate, image_height_start_catuate*adjust_catuate));
     //ImGui::PopStyleColor();
     ImGui::End();
 }
