@@ -29,6 +29,8 @@ private:
     std::map<std::string, BoneInfo> m_BoneInfoMap;
     int m_BoneCounter = 0;
 
+    bool isFBX;
+
     void loadModel(std::string const& path);
     void processNode(aiNode* node, const aiScene* scene);
     GraphicObject* processMesh(aiMesh* mesh, const aiScene* scene);

@@ -49,6 +49,8 @@ namespace Client {
     bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
     void setGameEndState(bool ge);
     void setWhoWin(bool cat, bool mouse);
+
+    void calcFinalBoneMatrix(Animator* animator);
 };
 
 #endif // !CLIENT_H

@@ -70,12 +70,14 @@ void Model::loadModel(std::string const& path) {
     const aiScene* scene;
 
     if (path.substr(path.find_last_of(".") + 1) == "fbx") {
+        isFBX = true;
         scene = importer.ReadFile(path, aiProcess_Triangulate |
             aiProcess_GenSmoothNormals |
             aiProcess_JoinIdenticalVertices |
             aiProcess_CalcTangentSpace);
     }
     else {
+        isFBX = false;
         scene = importer.ReadFile(path, aiProcess_Triangulate |
             aiProcess_GenSmoothNormals |
             aiProcess_FlipUVs |
@@ -204,9 +206,17 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 
     // 3. normal maps
-    std::vector<Texture> normalMaps =
-        loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
-    textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+    std::vector<Texture> normalMaps;
+    if (isFBX) {
+        normalMaps =
+            loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
+        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+    }
+    else {
+        normalMaps =
+            loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+        textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+    }
 
     // 4. AO maps
     std::vector<Texture> ambientOcclusionMaps =
