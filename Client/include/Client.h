@@ -50,6 +50,7 @@ namespace Client {
     void setGameOver(int g, int w);
     bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
     void calcFinalBoneMatrix(Animator* animator);
+    void setNumPlayers(int p);
 };
 
 #endif // !CLIENT_H

@@ -386,6 +386,7 @@ void ServerGame::replicateGameState() {
 
     packet.item_state = flag->item_state;
     packet.game.gameTime = playTime;
+    packet.game.numPlayers = client_id;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
 

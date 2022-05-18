@@ -94,6 +94,7 @@ static CollisionDetector cDetector;
 // state variables
 static bool gameEnded = 0;
 static bool gameStarted = 0;
+static int numPlayers = 0;
 static bool catWon = 0;
 unsigned int my_id;
 static int currTime = 0;
@@ -700,11 +701,18 @@ void Client::GameStartGUI() {
     float buttonLoc = 3 * window_width / 4;
     ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 2));
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 0.95f));
-    ImGui::PushFont(HUGEcuteFont);
+    ImGui::PushFont(MASSIVEcuteFont);
     if (ImGui::Button("Start Game"))
     {
         gameStarted = 1;
     }
+    ImGui::PopFont();
+    ImGui::PushFont(cuteFont);
+    ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 4));
+    if (numPlayers == 1)
+        ImGui::Text("%d player has joined", numPlayers);
+    else
+        ImGui::Text("%d players have joined", numPlayers);
     ImGui::PopStyleColor();
     ImGui::PopFont();
     ImGui::End();
@@ -790,6 +798,10 @@ void Client::setPlayerfromID(unsigned int id) {
 
 void Client::updateItemLocation(glm::mat4 location) {
     item->setModel(location);
+}
+
+void Client::setNumPlayers(int p) {
+    numPlayers = p;
 }
 
 void Client::updateTime(int t) {
