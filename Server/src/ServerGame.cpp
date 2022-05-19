@@ -569,12 +569,12 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         }
     }
 
-    // TODO: Normalizing the direction causes major slowdowns...
-    float norm = glm::length2(netDirection);
-    if (norm < 0.1)
+    if (glm::length2(netDirection) < 0.1)
         return;
+
+    netDirection = glm::normalize(netDirection);
     
-    glm::vec3 delta = netDirection * (float) (playerSpeed / norm);
+    glm::vec3 delta = netDirection * (float) playerSpeed;
     moveLocal(state.model, delta);
 
     // Actually do the update...
