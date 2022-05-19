@@ -673,46 +673,56 @@ void Client::GameStartGUI() {
     if (gameStarted == 1)
         return;
 
-    double adjustment = 3.0f;
-    double adjust_cat = 0.5f;
-    double adjust_mouse = 0.3f;
-    double adjust_catuate = 1.5f;
+    double adjustment = 3.5f;
+    double adjust_cat = 0.6f;
+    double adjust_mouse = 0.4f;
+    double adjust_catuate = 2.0f;
     ImGuiWindowFlags flags = 0;
+    float height_resize = window_height / static_cast<float>(1017);
+    float width_resize = window_width / static_cast<float>(1920);
     //flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
+    //printf("height %d width %d\n", (window_height / 1017), (window_width / 1920));
 
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.0f, 1.0f));
     ImGui::Begin("GameStart GUI", NULL, flags);
+    ImGui::PopStyleColor();
     //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1.0, 1.0f, 1.0f, 1.0f));
-    ImGui::SetCursorPos(ImVec2((window_width-image_width_game_start*adjustment)/2,(window_height-image_height_game_start*adjustment)/2));
-    ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment, image_height_game_start * adjustment));
-    float catLoc = ((window_width - image_width_game_start * adjustment) / 2 - image_width_start_cat * adjust_cat) / 2;
-    ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat) / 2));
+    ImGui::SetCursorPos(ImVec2((window_width-image_width_game_start*adjustment*width_resize)/2,(window_height-image_height_game_start*adjustment*height_resize)/2));
+    //ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment, image_height_game_start * adjustment));
+    ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment * width_resize, image_height_game_start * adjustment * height_resize));
+    float catLoc = ((window_width - image_width_game_start * adjustment * width_resize) / 2 - image_width_start_cat * adjust_cat*width_resize) / 2;
+    ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat *height_resize) / 2));
     
-    ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * adjust_cat, image_height_start_cat * adjust_cat));
-    float mouseLoc = (window_width - image_width_game_start * adjustment) / 2 + ((window_width - image_width_game_start * adjustment) / 2 - image_width_start_mouse * adjust_mouse) / 2;
+    ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * adjust_cat*width_resize, image_height_start_cat * adjust_cat*height_resize));
+    float mouseLoc = (window_width - image_width_game_start * adjustment*width_resize) / 2 + ((window_width - image_width_game_start * adjustment*width_resize) / 2 - image_width_start_mouse * adjust_mouse*width_resize) / 2;
     //float mouseLoc = window_width - image_width_start_mouse * adjust_mouse;
-    ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse) / 2 + 20));
-    ImGui::Image((void*)(intptr_t)image_texture_start_mouse, ImVec2(image_width_start_mouse * adjust_mouse, image_height_start_mouse * adjust_mouse));
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_start_catuate* adjust_catuate) / 2, 40));
-    ImGui::Image((void*)(intptr_t)image_texture_start_catuate, ImVec2(image_width_start_catuate*adjust_catuate, image_height_start_catuate*adjust_catuate));
+    ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse*height_resize) / 2 + 20));
+    ImGui::Image((void*)(intptr_t)image_texture_start_mouse, ImVec2(image_width_start_mouse * adjust_mouse*width_resize, image_height_start_mouse * adjust_mouse*height_resize));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_start_catuate* adjust_catuate*width_resize) / 2, 40));
+    ImGui::Image((void*)(intptr_t)image_texture_start_catuate, ImVec2(image_width_start_catuate*adjust_catuate*width_resize, image_height_start_catuate*adjust_catuate*height_resize));
     //ImGui::PopStyleColor();
     float buttonLoc = 3 * window_width / 4;
     ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 2));
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 0.95f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.0f, 0.0f, 1.0f));
     ImGui::PushFont(MASSIVEcuteFont);
 
-
-    if (ImGui::Button("Start Game") && my_id == 0)
-    {
-        gameStartPressed = true;
+    if (my_id == 0) {
+        if (ImGui::Button("Start Game"))
+        {
+            gameStartPressed = true;
+        }
     }
+    else
+        ImGui::Button("Join Party"); // this actually doesn't do anything right now
+   
     ImGui::PopFont();
     ImGui::PushFont(cuteFont);
-    ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 4));
+    ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 3));
     if (numPlayers == 1)
         ImGui::Text("%d player has joined", numPlayers);
     else

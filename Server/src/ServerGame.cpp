@@ -294,7 +294,9 @@ void ServerGame::update()
     // Receive from clients as fast as possible.
     receiveFromClients();
     //collision should be handled as fast as movement is handled
-    if (!ServerGame::game_started) return;
+    if (!ServerGame::game_started) {
+        return;
+    }
     collisionStep();
 
     // Calculate tick
@@ -316,6 +318,8 @@ void ServerGame::update()
             }
         }
 
+       
+
         checkCooldownOver();
         replicateGameState();
 
@@ -326,6 +330,9 @@ void ServerGame::update()
             this->ticksSinceConfigCheck = 0;
         }
     }
+
+ 
+
 
 }
 
@@ -378,7 +385,7 @@ void ServerGame::replicateGameState() {
     const unsigned int packet_size = sizeof(GameStatePacket);
     GameStatePacket packet;
     memcpy(packet.player_states, player_states, sizeof(player_states));
-
+   
     packet.item_state = flag->item_state;
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;
