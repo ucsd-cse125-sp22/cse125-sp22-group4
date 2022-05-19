@@ -146,7 +146,11 @@ int main(int argc, char** argv) {
         Client::GameOverGUI();
 
         /////////////////////////////////IMGUI STUFF IGNORE//////////////////////////////////////////////////////////
-
+        if (Client::checkGameStart()) {
+            //client->
+            client->sendGameStart();
+            printf("Sending start game!\n");
+        }
         client->update(Client::getMovementState(), Client::getRotationState());
 
         // Rendering

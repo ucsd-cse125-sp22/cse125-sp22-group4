@@ -49,6 +49,16 @@ void ClientGame::sendRotationPackets(RotationState s) {
     Client::resetRotUpdate();
 }
 
+void ClientGame::sendGameStart() {
+    const unsigned int packet_size = sizeof(SimplePacket);
+    SimplePacket packet;
+    packet.packet_type = GAME_START;
+
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+    NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
+    free(packet_bytes);
+}
+
 void ClientGame::handleSimplePacket(SimplePacket s) {
     switch (s.packet_type) {
     case INIT_CONNECTION:
@@ -57,12 +67,19 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
         loaded = true; // TODO: Figure out if this is the right place to set loaded=True.
         std::cout << "My player id is " << player_id << std::endl;
         Client::setPlayerfromID(player_id);
+
+        // If player is joinning late, they should still learn if game is alive/dead.
+        if (s.data2) {
+            Client::setGameStart();
+        }
         break;
     }
     case GAME_START:
     {
         // Notify player starts.
         // Init player timer.
+        printf("Got game start packet\n");
+        Client::setGameStart();
         break;
     }
     case GAME_END: {

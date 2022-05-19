@@ -94,6 +94,8 @@ static CollisionDetector cDetector;
 // state variables
 static bool gameEnded = 0;
 static bool gameStarted = 0;
+static bool gameStartPressed = 0;
+
 static int numPlayers = 0;
 static bool catWon = 0;
 unsigned int my_id;
@@ -702,9 +704,11 @@ void Client::GameStartGUI() {
     ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 2));
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 0.95f));
     ImGui::PushFont(MASSIVEcuteFont);
-    if (ImGui::Button("Start Game"))
+
+
+    if (ImGui::Button("Start Game") && my_id == 0)
     {
-        gameStarted = 1;
+        gameStartPressed = true;
     }
     ImGui::PopFont();
     ImGui::PushFont(cuteFont);
@@ -727,8 +731,6 @@ void Client::GameOverGUI() {
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
     
-    
-
     if (gameEnded == 1 && catWon == 0) {
         adjustment = 0.3;
         ImGui::SetNextWindowSize(ImVec2(image_width_mouse_win * adjustment,image_height_mouse_win * adjustment + 400 ));
@@ -761,9 +763,6 @@ void Client::GameOverGUI() {
         ImGui::PopStyleColor();
         ImGui::End();
     }
-        
-
-   
 }
 
 
@@ -812,6 +811,17 @@ void Client::setItemHold(char h) {
     itemhold = h;
 }
 
+void Client::setGameStart() {
+    gameStarted = 1;
+}
+
+bool Client::checkGameStart() {
+    if (gameStartPressed) {
+        gameStartPressed = false;
+        return true;
+    }
+    return false;
+}
 
 void Client::setGameOver(int g, int w) {
     gameEnded = g;

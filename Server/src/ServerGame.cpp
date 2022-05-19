@@ -16,6 +16,7 @@ void spin(glm::mat4& model, float deg) {
 
 ServerGame::ServerGame() : catSpeed(DEFAULT_CATSPEED), mouseSpeed(DEFAULT_MOUSESPEED), roundLengthSec(DEFAULT_ROUNDLENGTHSEC), cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC)
 {
+    gameAlive = false;
     this->ticksSinceConfigCheck = 0;
 
     // Update settings from config file!
@@ -288,11 +289,6 @@ void ServerGame::update()
     {
         client_id++;
         printf("client %d has been connected to the server\n", client_id);
-        if (client_id == 1) {
-            // Send game start packets?
-            printf("Game start\n");
-            start();
-        }
     }
 
     // Receive from clients as fast as possible.
@@ -321,7 +317,6 @@ void ServerGame::update()
         }
 
         checkCooldownOver();
-
         replicateGameState();
 
         // Check config file every sec
@@ -442,10 +437,6 @@ void ServerGame::receiveFromClients()
 
                 i += sizeof(MovePacket);
                 free(pack);
-
-                // TODO: Fix replication... Currently not in lock-step.
-                // Note: Moving replication outside of CASE results in dead client.
-                //replicateGameState();
                 break;
             }
             case ROTATE:
@@ -456,7 +447,6 @@ void ServerGame::receiveFromClients()
 
                 i += sizeof(RotatePacket);
                 free(pack);
-
                 break;
             }
             default:
@@ -485,11 +475,33 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
 			SOCKET player_socket = iter->second;
             SimplePacket id_packet;
             id_packet.packet_type = INIT_CONNECTION;
-            // Note: Cast from uint to char (should be safe, assuming < 16 players...)
+            
+            // Send back ID to client
             id_packet.data = (char)iter->first;
+            // Tell client if game is up
+            id_packet.data2 = (char)gameAlive;
             char* packet_bytes = packet_to_bytes(&id_packet, sizeof(id_packet));
             network->sendToSocket(player_socket, packet_bytes, sizeof(id_packet));
 		}
+        break;
+    }
+    case GAME_START:
+    {
+        // If we recieve a GAME_START packet from client, bounce to other clients!
+        printf("Receive game start packet?\n");
+        if (gameAlive) {
+            printf("game is already up...?\n");
+            break;
+        }
+
+
+        printf("Game start!\n");
+        start();
+
+        char* packet_bytes = packet_to_bytes(packet, sizeof(SimplePacket));
+        size_t packet_size = sizeof(SimplePacket);
+        network->sendToAll(packet_bytes, packet_size);
+        break;
     }
     }
 }

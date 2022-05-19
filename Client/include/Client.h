@@ -47,7 +47,12 @@ namespace Client {
     void setItemHold(char h);
     void updateItemLocation(glm::mat4 location);
     void updateTime(int t);
+
+    bool checkGameStart();
+    void setGameStart();
     void setGameOver(int g, int w);
+
+
     bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
     void calcFinalBoneMatrix(Animator* animator);
     void setNumPlayers(int p);

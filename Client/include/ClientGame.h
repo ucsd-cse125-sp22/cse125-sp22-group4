@@ -20,6 +20,7 @@ public:
 
     ClientNetwork* network;
 
+    void sendGameStart();
     void sendActionPackets(MovementState s);
     void sendRotationPackets(RotationState s);
     void handleSimplePacket(SimplePacket s);
