@@ -276,7 +276,7 @@ bool Client::initializeClient() {
     retMouseWin = LoadTextureFromFile("../../objects/ImGui/celebration.png", &image_texture_mouse_win, &image_width_mouse_win, &image_height_mouse_win);
     retMouseFlag = LoadTextureFromFile("../../objects/ImGui/cheese.png", &image_texture_mouse_flag, &image_width_mouse_flag, &image_height_mouse_flag);
     retMouseFlagPale = LoadTextureFromFile("../../objects/ImGui/cheese_paler.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
-    retMap = LoadTextureFromFile("../../objects/ImGui/mazeTextured3.png", &image_texture_map, &image_width_map, &image_height_map);
+    retMap = LoadTextureFromFile("../../objects/ImGui/minimap.png", &image_texture_map, &image_width_map, &image_height_map);
     retGameStart = LoadTextureFromFile("../../objects/ImGui/game_start_maze2.jpg", &image_texture_game_start, &image_width_game_start, &image_height_game_start);
     retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
     retStartMouse = LoadTextureFromFile("../../objects/ImGui/mao_mouse.png", &image_texture_start_mouse, &image_width_start_mouse, &image_height_start_mouse);
@@ -587,10 +587,10 @@ void Client::ItemHoldGUI() {
     ImGui::End();
 }
 
-void displayLocation(glm::mat4 model, int id, double adjustment) {
+void displayLocation(glm::mat4 model, int id, double adjustment, float height_resize, float width_resize) {
     int r, g, b;
-    float locX = model[3][0] * .9 + 10;
-    float locZ = abs(model[3][2]) * .9 + 20;
+    float locX = model[3][0] * 1.15+26;
+    float locZ = abs(model[3][2])*1.15 +24;
     float side = 3.2f;
     //printf("x %d z %d\n", locX, locZ);
     if (id == 0) {
@@ -621,7 +621,7 @@ void displayLocation(glm::mat4 model, int id, double adjustment) {
     
         if (itemhold != PLAYER_NUM + 1) { // bearl location hard coded TODO fix
             if (currTime % 2 == 0)
-                ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*.9 +19, 75*.9+10), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
+                ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*1.15 + 24, 75* 1.15 + 26), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
         }
     }
     
@@ -633,35 +633,37 @@ void Client::miniMapGUI() {
     if (gameStarted == 0)
         return;
 
-    double adjustment = 0.5;
+    double adjustment = 0.3;
+    float height_resize = window_height / static_cast<float>(1017);
+    float width_resize = window_width / static_cast<float>(1920);
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
 
-    ImGui::SetNextWindowSize(ImVec2(image_width_map * adjustment, image_height_map * adjustment));
-    ImGui::SetNextWindowPos(ImVec2(-40, -90), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowSize(ImVec2(image_width_map * adjustment+10, image_height_map * adjustment+10));
+    ImGui::SetNextWindowPos(ImVec2(15, 15), 0, ImVec2(0, 0));
     ImGui::Begin("MiniMap GUI", NULL, flags);
 
     if (players[0]) {
-        displayLocation(players[0]->getModel(), 0, adjustment);
+        displayLocation(players[0]->getModel(), 0, adjustment, height_resize, width_resize);
     }
 
     if (players[1]) {
-        displayLocation(players[1]->getModel(), 1, adjustment);
+        displayLocation(players[1]->getModel(), 1, adjustment, height_resize, width_resize);
     }
 
     if (players[2]) {
-        displayLocation(players[2]->getModel(), 2, adjustment);
+        displayLocation(players[2]->getModel(), 2, adjustment, height_resize, width_resize);
     }
 
     if (players[3]) {
-        displayLocation(players[3]->getModel(), 3, adjustment);
+        displayLocation(players[3]->getModel(), 3, adjustment, height_resize, width_resize);
     }
 
     if (item) {
-        displayLocation(item->getModel(), 4, adjustment);
+        displayLocation(item->getModel(), 4, adjustment, height_resize, width_resize);
     }
     
 
