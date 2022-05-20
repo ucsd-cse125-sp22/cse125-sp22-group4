@@ -26,6 +26,7 @@ static Model* maze;
 static Model* players[PLAYER_NUM];
 static Model* bear;
 static Model* item;
+static Model* geisel;
 static Model* demoChar;
 static Model* demoChar2;
 
@@ -34,6 +35,8 @@ static Animation* demoAnimation;
 static Animator* animator;
 static Animation* demoAnimation2;
 static Animator* animator2;
+static Animation* geiselAnimation;
+static Animator* geiselAnimator;
 
 
 // for ImGui Image display
@@ -79,6 +82,15 @@ bool retStartCatuate;
 int image_width_start_catuate = 0;
 int image_height_start_catuate = 0;
 GLuint image_texture_start_catuate = 0;
+bool retCatIcon;
+int image_width_cat_icon = 0;
+int image_height_cat_icon = 0;
+GLuint image_texture_cat_icon = 0;
+bool retMouseIcon;
+int image_width_mouse_icon = 0;
+int image_height_mouse_icon = 0;
+GLuint image_texture_mouse_icon = 0;
+
 
 std::vector<Model*> sceneObjects;
 
@@ -255,6 +267,7 @@ bool Client::initializeClient() {
     maze->moveGlobal(glm::vec3(0, -3, 0));
     bear = new Model("../../objects/bear/bear.obj");
     bear->moveGlobal(glm::vec3(75, -3, -75));
+   
     item = new Model("../../objects/backpack/backpack.obj");
 
     demoChar = new Model("../../objects/Kachujin/jog.fbx");
@@ -263,6 +276,12 @@ bool Client::initializeClient() {
 
     demoAnimation = new Animation("../../objects/Kachujin/jog.fbx", demoChar);
     animator = new Animator(demoAnimation);
+
+    geisel = new Model("../../objects/Geisel.fbx");
+    
+    geisel->moveGlobal(glm::vec3(75, -3, -75));
+    geiselAnimation = new Animation("../../objects/Geisel.fbx", geisel);
+    geiselAnimator = new Animator(geiselAnimation);
 
     demoChar2 = new Model("../../objects/morak/morak_samba_small.fbx");
     demoAnimation2 = new Animation("../../objects/morak/morak_samba_small.fbx", demoChar2);
@@ -281,6 +300,8 @@ bool Client::initializeClient() {
     retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
     retStartMouse = LoadTextureFromFile("../../objects/ImGui/mao_mouse.png", &image_texture_start_mouse, &image_width_start_mouse, &image_height_start_mouse);
     retStartCatuate = LoadTextureFromFile("../../objects/ImGui/catuate2.png", &image_texture_start_catuate, &image_width_start_catuate, &image_height_start_catuate);
+    retCatIcon = LoadTextureFromFile("../../objects/ImGui/cat_icon.png", &image_texture_cat_icon, &image_width_cat_icon, &image_height_cat_icon);
+    retMouseIcon = LoadTextureFromFile("../../objects/ImGui/mouse_icon.png", &image_texture_mouse_icon, &image_width_mouse_icon, &image_height_mouse_icon);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -375,7 +396,11 @@ void Client::displayCallback() {
         isThirdPersonCam = true;
         maze->draw(currCam->viewProjMat, identityMat, shader);
         tyra->draw(currCam->viewProjMat, identityMat, shader);
-        bear->draw(currCam->viewProjMat, identityMat, shader);
+        //bear->draw(currCam->viewProjMat, identityMat, shader);
+        
+        calcFinalBoneMatrix(geiselAnimator);
+        geisel->draw(currCam->viewProjMat, identityMat, shader);
+        
         teapot->draw(currCam->viewProjMat, identityMat, shader);
         bunny->draw(currCam->viewProjMat, identityMat, shader);
         tyra2->draw(currCam->viewProjMat, identityMat, shader);
@@ -427,6 +452,7 @@ void Client::idleCallback(float dt) {
 
         animator->update(dt);
         animator2->update(dt);
+        //geiselAnimator->update(dt);
     }
 
     if (!isThirdPersonCam && keyHeld) {
@@ -467,6 +493,9 @@ void Client::cleanup() {
     delete skybox;
     delete bear;
     delete item;
+    delete geisel;
+    delete geiselAnimation;
+    delete geiselAnimator;
     delete demoChar;
     delete demoChar2;
     delete animator;
@@ -609,11 +638,19 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
         b = 217;
     }
 
+    //double adjust_icon = 0.01f;
+    float icon_size = 8.0f;
+    
+
     if (id == my_id) {
-        ImGui::GetForegroundDrawList()->AddTriangleFilled(ImVec2(locZ+side, locX), ImVec2(locZ-side, locX+side), ImVec2(locZ-side, locX-side), IM_COL32(r, g, b, 255));
+        //ImGui::SetCursorPos(ImVec2(locZ, locX));
+        ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_cat_icon, ImVec2(locZ-icon_size, locX-icon_size), ImVec2(locZ+icon_size, locX+icon_size), ImVec2(0, 0), ImVec2(1, 1));
+        //ImGui::Image((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_icon, image_height_cat_icon * adjust_icon));
+        //ImGui::GetForegroundDrawList()->AddTriangleFilled(ImVec2(locZ+side, locX), ImVec2(locZ-side, locX+side), ImVec2(locZ-side, locX-side), IM_COL32(r, g, b, 255));
     }
     else if (id != 4) {
-        ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
+        ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_icon, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+        //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
     }
     else {
         if (currTime % 2 == 0)
@@ -625,7 +662,7 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
         }
     }
     
-    ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
+    
 }
 
 void Client::miniMapGUI() {
@@ -645,11 +682,11 @@ void Client::miniMapGUI() {
     ImGui::SetNextWindowSize(ImVec2(image_width_map * adjustment+10, image_height_map * adjustment+10));
     ImGui::SetNextWindowPos(ImVec2(15, 15), 0, ImVec2(0, 0));
     ImGui::Begin("MiniMap GUI", NULL, flags);
-
+    ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
+    
     if (players[0]) {
         displayLocation(players[0]->getModel(), 0, adjustment, height_resize, width_resize);
     }
-
     if (players[1]) {
         displayLocation(players[1]->getModel(), 1, adjustment, height_resize, width_resize);
     }
@@ -690,7 +727,8 @@ void Client::GameStartGUI() {
 
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.0f, 1.0f));
+    //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.0f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
     ImGui::Begin("GameStart GUI", NULL, flags);
     ImGui::PopStyleColor();
     //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1.0, 1.0f, 1.0f, 1.0f));
