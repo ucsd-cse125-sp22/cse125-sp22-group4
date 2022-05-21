@@ -28,6 +28,8 @@ static Model* bear;
 static Model* item;
 static Model* geisel;
 static Model* sungod;
+static Model* stonehenge;
+static Model* fallenstar;
 static Model* demoChar;
 static Model* demoChar2;
 
@@ -269,7 +271,11 @@ bool Client::initializeClient() {
     maze = new Model("../../objects/maze_textured/maze3D.obj");
     maze->moveGlobal(glm::vec3(0, -3, 0));
     bear = new Model("../../objects/bear/bear.obj");
-    bear->moveGlobal(glm::vec3(75, -3, -75));
+    bear->moveGlobal(glm::vec3(55, -3, -135));
+    bear->scale(glm::vec3(0.5));
+    fallenstar = new Model("../../objects/fallenstar/fallenstar.obj");
+    fallenstar->moveGlobal(glm::vec3(70, 2, -5));
+    //stonehenge = new Model("../../objects/stonehenge/stonehenge.obj");
    
     item = new Model("../../objects/scroll/Scroll.obj");
     item->scale(glm::vec3(0.3));
@@ -406,15 +412,17 @@ void Client::displayCallback() {
         isThirdPersonCam = true;
         maze->draw(currCam->viewProjMat, identityMat, shader);
         tyra->draw(currCam->viewProjMat, identityMat, shader);
-        //bear->draw(currCam->viewProjMat, identityMat, shader);
+        bear->draw(currCam->viewProjMat, identityMat, shader);
        
         geisel->draw(currCam->viewProjMat, identityMat, shader);
         sungod->draw(currCam->viewProjMat, identityMat, shader);
+        fallenstar->draw(currCam->viewProjMat, identityMat, shader);
         
         teapot->draw(currCam->viewProjMat, identityMat, shader);
         bunny->draw(currCam->viewProjMat, identityMat, shader);
         tyra2->draw(currCam->viewProjMat, identityMat, shader);
         item->draw(currCam->viewProjMat, identityMat, shader);
+       
         
         break;
     }
@@ -502,6 +510,7 @@ void Client::cleanup() {
     delete skybox;
     delete bear;
     delete sungod;
+    delete fallenstar;
     delete item;
     delete geisel;
     delete demoChar;

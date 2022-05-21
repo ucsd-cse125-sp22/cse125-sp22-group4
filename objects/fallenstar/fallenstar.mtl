@@ -1,0 +1,90 @@
+# Blender MTL File: 'fallenstar.blend'
+# Material Count: 8
+
+newmtl Chimney-base.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.457536 0.178358 0.123754
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-uv.png
+
+newmtl Chimney-top.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.456273 0.214141
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-uv.png
+
+newmtl Door-top.002
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.043735 0.043735 0.043735
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-uv.png
+
+newmtl House-base.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.404160 0.623100 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-uv.png
+
+newmtl Roof-base.002
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.046963 0.046963 0.046963
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-uv.png
+
+newmtl White.002
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.911400 0.911400 0.911400
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-uv.png
+
+newmtl Window-inner.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.102476 0.102476 0.102476
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-uv.png
+
+newmtl Window-outer.001
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.710561 0.710561 0.710561
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd models/towers/fallenstar/fallenstar-uv.png

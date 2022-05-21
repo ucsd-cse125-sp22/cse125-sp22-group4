@@ -1,0 +1,12 @@
+# Blender MTL File: 'stonehenge.blend'
+# Material Count: 1
+
+newmtl Stone
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.205258 0.191446 0.252947
+Ks 0.700000 0.700000 0.700000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
