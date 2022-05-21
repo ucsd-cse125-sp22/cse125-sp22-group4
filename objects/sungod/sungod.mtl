@@ -10,4 +10,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd .
+map_Ka ./TexturesCom_Wall_PlasterDamaged3_4x2_1K_ao.png
+map_Kd ./sungod-texture.png
+map_Bump ./TexturesCom_Wall_PlasterDamaged3_4x2_1K_normal.png
+map_Ks ./TexturesCom_Wall_PlasterDamaged3_4x2_1K_height.png
+map_Ns ./TexturesCom_Wall_PlasterDamaged3_4x2_1K_roughness.png

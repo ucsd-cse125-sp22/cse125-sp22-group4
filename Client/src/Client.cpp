@@ -286,10 +286,8 @@ bool Client::initializeClient() {
     geisel->scale(glm::vec3(0.005));
 
     sungod = new Model("../../objects/sungod/sungod.obj");
-    sungod->moveGlobal(glm::vec3(70, 5, -5));
-    sungod->scale(glm::vec3(5.0));
-
-
+    sungod->moveGlobal(glm::vec3(70, 10, -5));
+    sungod->scale(glm::vec3(2));
 
     demoChar2 = new Model("../../objects/morak/morak_samba_small.fbx");
     demoAnimation2 = new Animation("../../objects/morak/morak_samba_small.fbx", demoChar2);
@@ -408,6 +406,7 @@ void Client::displayCallback() {
         //bear->draw(currCam->viewProjMat, identityMat, shader);
        
         geisel->draw(currCam->viewProjMat, identityMat, shader);
+        sungod->draw(currCam->viewProjMat, identityMat, shader);
         
         teapot->draw(currCam->viewProjMat, identityMat, shader);
         bunny->draw(currCam->viewProjMat, identityMat, shader);
@@ -499,6 +498,7 @@ void Client::cleanup() {
     delete maze;
     delete skybox;
     delete bear;
+    delete sungod;
     delete item;
     delete geisel;
     delete demoChar;
