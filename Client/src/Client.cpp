@@ -35,9 +35,6 @@ static Animation* demoAnimation;
 static Animator* animator;
 static Animation* demoAnimation2;
 static Animator* animator2;
-static Animation* geiselAnimation;
-static Animator* geiselAnimator;
-
 
 // for ImGui Image display
 int my_image_width = 0;
@@ -277,11 +274,10 @@ bool Client::initializeClient() {
     demoAnimation = new Animation("../../objects/Kachujin/jog.fbx", demoChar);
     animator = new Animator(demoAnimation);
 
-    geisel = new Model("../../objects/Geisel.fbx");
+    geisel = new Model("../../objects/Geisel/Geisel.fbx");
     
-    geisel->moveGlobal(glm::vec3(75, -3, -75));
-    geiselAnimation = new Animation("../../objects/Geisel.fbx", geisel);
-    geiselAnimator = new Animator(geiselAnimation);
+    geisel->moveGlobal(glm::vec3(75, 5, -75));
+    geisel->scale(glm::vec3(0.005));
 
     demoChar2 = new Model("../../objects/morak/morak_samba_small.fbx");
     demoAnimation2 = new Animation("../../objects/morak/morak_samba_small.fbx", demoChar2);
@@ -397,8 +393,7 @@ void Client::displayCallback() {
         maze->draw(currCam->viewProjMat, identityMat, shader);
         tyra->draw(currCam->viewProjMat, identityMat, shader);
         //bear->draw(currCam->viewProjMat, identityMat, shader);
-        
-        calcFinalBoneMatrix(geiselAnimator);
+       
         geisel->draw(currCam->viewProjMat, identityMat, shader);
         
         teapot->draw(currCam->viewProjMat, identityMat, shader);
@@ -452,7 +447,6 @@ void Client::idleCallback(float dt) {
 
         animator->update(dt);
         animator2->update(dt);
-        //geiselAnimator->update(dt);
     }
 
     if (!isThirdPersonCam && keyHeld) {
@@ -494,8 +488,6 @@ void Client::cleanup() {
     delete bear;
     delete item;
     delete geisel;
-    delete geiselAnimation;
-    delete geiselAnimator;
     delete demoChar;
     delete demoChar2;
     delete animator;
