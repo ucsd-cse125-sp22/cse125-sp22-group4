@@ -27,6 +27,7 @@ static Model* players[PLAYER_NUM];
 static Model* bear;
 static Model* item;
 static Model* geisel;
+static Model* sungod;
 static Model* demoChar;
 static Model* demoChar2;
 
@@ -87,6 +88,10 @@ bool retMouseIcon;
 int image_width_mouse_icon = 0;
 int image_height_mouse_icon = 0;
 GLuint image_texture_mouse_icon = 0;
+bool retDiploma;
+int image_width_diploma = 0;
+int image_height_diploma = 0;
+GLuint image_texture_diploma = 0;
 
 
 std::vector<Model*> sceneObjects;
@@ -106,6 +111,7 @@ static bool gameStarted = 0;
 static bool gameStartPressed = 0;
 
 static int numPlayers = 0;
+static int finalTime = 0;
 static bool catWon = 0;
 unsigned int my_id;
 static int currTime = 0;
@@ -279,6 +285,12 @@ bool Client::initializeClient() {
     geisel->moveGlobal(glm::vec3(75, 5, -75));
     geisel->scale(glm::vec3(0.005));
 
+    sungod = new Model("../../objects/sungod/sungod.obj");
+    sungod->moveGlobal(glm::vec3(70, 5, -5));
+    sungod->scale(glm::vec3(5.0));
+
+
+
     demoChar2 = new Model("../../objects/morak/morak_samba_small.fbx");
     demoAnimation2 = new Animation("../../objects/morak/morak_samba_small.fbx", demoChar2);
     animator2 = new Animator(demoAnimation2);
@@ -298,6 +310,7 @@ bool Client::initializeClient() {
     retStartCatuate = LoadTextureFromFile("../../objects/ImGui/catuate2.png", &image_texture_start_catuate, &image_width_start_catuate, &image_height_start_catuate);
     retCatIcon = LoadTextureFromFile("../../objects/ImGui/cat_icon.png", &image_texture_cat_icon, &image_width_cat_icon, &image_height_cat_icon);
     retMouseIcon = LoadTextureFromFile("../../objects/ImGui/mouse_icon.png", &image_texture_mouse_icon, &image_width_mouse_icon, &image_height_mouse_icon);
+    retDiploma = LoadTextureFromFile("../../objects/ImGui/diploma.png", &image_texture_diploma, &image_width_diploma, &image_height_diploma);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -533,17 +546,21 @@ void TextYCentered(std::string text) {
 
 void Client::timeGUI() {
     ImGuiWindowFlags flags = 0;
+   
     flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
-    double adjustment = 0.2;
+    double adjustment = 0.27;
     ImGui::SetNextWindowSize(ImVec2(my_image_width * adjustment + 30, my_image_height * adjustment + 50));
     //ImGui::SetNextWindowPos(ImVec2(window_width - (my_image_width / 2) + 170, 0), 0, ImVec2(0, 0));
     ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width*adjustment)-30, 10), 0, ImVec2(0, 0));
     //printf(" % d image height %d image width\n", my_image_height, my_image_width);
     
     ImGui::Begin("Time GUI", NULL, flags);
+
+    if (gameEnded)
+        currTime = finalTime;
 
     // get game countdown time
     int time = 180 - currTime;
@@ -554,14 +571,14 @@ void Client::timeGUI() {
         minute = 0;
         seconds = 0;
     }
-        
+     
 
     ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(my_image_width * adjustment, my_image_height * adjustment));
 
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.5f, 1.0f, 1.0f));
     ImGui::PushFont(cuteFont);
     ImGui::SetCursorPosY((my_image_width * adjustment)/2);
-    ImGui::SetCursorPosX((my_image_height * adjustment) / 2 + 25);
+    ImGui::SetCursorPosX((my_image_height * adjustment) / 2 + 32);
     ImGui::Text("%d:%02d", minute, seconds);
     ImGui::PopFont();
     ImGui::PopStyleColor();
@@ -570,7 +587,8 @@ void Client::timeGUI() {
 }
 
 void Client::ItemHoldGUI() {
-    double adjustment = 0.15;
+    double adjustment = 0.18;
+    
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
@@ -579,7 +597,7 @@ void Client::ItemHoldGUI() {
 
     ImGui::SetNextWindowSize(ImVec2(image_width_mouse_flag * adjustment+10, image_height_mouse_flag*adjustment+10));
    // ImGui::SetNextWindowPos(ImVec2((window_width - 533)/2, window_height/30), 0, ImVec2(0, 0));
-    ImGui::SetNextWindowPos(ImVec2(200, 15), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(230, 15), 0, ImVec2(0, 0));
    
     ImGui::Begin("ItemHold GUI", NULL, flags);
 
@@ -645,12 +663,17 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
         //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
     }
     else {
-        if (currTime % 2 == 0)
-            ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
+      /*  if (currTime % 2 == 0)
+            ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);*/
     
         if (itemhold != PLAYER_NUM + 1) { // bearl location hard coded TODO fix
             if (currTime % 2 == 0)
-                ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*1.15 + 24, 75* 1.15 + 26), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
+                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_diploma, ImVec2(75 * 1.15 + 24 - icon_size, 75 * 1.15 + 26 - icon_size), ImVec2(75 * 1.15 + 24 + icon_size, 75 * 1.15 + 26 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+                //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*1.15 + 24, 75* 1.15 + 26), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
+        }
+        else {
+            if (currTime % 2 == 0)
+                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         }
     }
     
@@ -868,6 +891,7 @@ bool Client::checkGameStart() {
 void Client::setGameOver(int g, int w) {
     gameEnded = g;
     catWon = w;
+    finalTime = currTime;
     //printf("%d gameOver %d\n", g, w);
 }
 
