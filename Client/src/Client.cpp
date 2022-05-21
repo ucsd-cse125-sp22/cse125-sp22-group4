@@ -271,7 +271,9 @@ bool Client::initializeClient() {
     bear = new Model("../../objects/bear/bear.obj");
     bear->moveGlobal(glm::vec3(75, -3, -75));
    
-    item = new Model("../../objects/backpack/backpack.obj");
+    item = new Model("../../objects/scroll/Scroll.obj");
+    item->scale(glm::vec3(0.3));
+    //item = new Model("../../objects/backpack/backpack.obj");
 
     demoChar = new Model("../../objects/Kachujin/jog.fbx");
     demoChar->scale(glm::vec3(0.3));
@@ -286,8 +288,9 @@ bool Client::initializeClient() {
     geisel->scale(glm::vec3(0.005));
 
     sungod = new Model("../../objects/sungod/sungod.obj");
-    sungod->moveGlobal(glm::vec3(70, 10, -5));
-    sungod->scale(glm::vec3(2));
+    sungod->moveGlobal(glm::vec3(105, 2, -135));
+    sungod->spin(90);
+    //sungod->scale(glm::vec3(2));
 
     demoChar2 = new Model("../../objects/morak/morak_samba_small.fbx");
     demoAnimation2 = new Animation("../../objects/morak/morak_samba_small.fbx", demoChar2);
