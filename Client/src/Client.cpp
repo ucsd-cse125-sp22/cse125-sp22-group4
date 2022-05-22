@@ -611,7 +611,7 @@ void Client::ItemHoldGUI() {
 
     ImGui::SetNextWindowSize(ImVec2(image_width_mouse_flag * adjustment+10, image_height_mouse_flag*adjustment+10));
    // ImGui::SetNextWindowPos(ImVec2((window_width - 533)/2, window_height/30), 0, ImVec2(0, 0));
-    ImGui::SetNextWindowPos(ImVec2(230, 15), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(280, 15), 0, ImVec2(0, 0));
    
     ImGui::Begin("ItemHold GUI", NULL, flags);
 
@@ -642,10 +642,10 @@ void Client::ItemHoldGUI() {
 
 void displayLocation(glm::mat4 model, int id, double adjustment, float height_resize, float width_resize) {
     int r, g, b;
-    float multX = 1.15 + 26;
-    float multZ = 1.15 + 24;
-    float locX = model[3][0] * 1.15 + 25;
-    float locZ = abs(model[3][2]) * 1.15 + 25;
+    //float multX = 1.15 + 26;
+    //float multZ = 1.15 + 24;
+    float locX = model[3][0] * 1.55 + 25;
+    float locZ = abs(model[3][2]) * 1.55 + 25;
     float side = 3.2f;
     //printf("x %d z %d\n", locX, locZ);
     if (id == 0) {
@@ -705,7 +705,7 @@ void Client::miniMapGUI() {
     if (gameStarted == 0)
         return;
 
-    double adjustment = 0.3;
+    double adjustment = 0.4;
     float height_resize = window_height / static_cast<float>(1017);
     float width_resize = window_width / static_cast<float>(1920);
     ImGuiWindowFlags flags = 0;
@@ -714,7 +714,7 @@ void Client::miniMapGUI() {
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
 
-    ImGui::SetNextWindowSize(ImVec2(image_width_map * adjustment+10, image_height_map * adjustment+10));
+    ImGui::SetNextWindowSize(ImVec2(image_width_map * adjustment+15, image_height_map * adjustment+15));
     ImGui::SetNextWindowPos(ImVec2(15, 15), 0, ImVec2(0, 0));
     ImGui::Begin("MiniMap GUI", NULL, flags);
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
