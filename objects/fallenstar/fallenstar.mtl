@@ -10,7 +10,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models/towers/fallenstar/fallenstar-uv.png
+map_Kd ./fallenstar-uv.png
+map_Bump normal.jpg
+map_Ks specular.jpg
 
 newmtl Chimney-top.001
 Ns 225.000000
@@ -21,7 +23,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models/towers/fallenstar/fallenstar-uv.png
+map_Kd ./fallenstar-uv.png
+map_Bump normal.jpg
+map_Ks specular.jpg
 
 newmtl Door-top.002
 Ns 225.000000
@@ -32,7 +36,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models/towers/fallenstar/fallenstar-uv.png
+map_Kd ./fallenstar-uv.png
+map_Bump normal.jpg
+map_Ks specular.jpg
 
 newmtl House-base.001
 Ns 225.000000
@@ -43,7 +49,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models/towers/fallenstar/fallenstar-uv.png
+map_Kd ./fallenstar-uv.png
+map_Bump normal.jpg
+map_Ks specular.jpg
 
 newmtl Roof-base.002
 Ns 225.000000
@@ -54,7 +62,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models/towers/fallenstar/fallenstar-uv.png
+map_Kd ./fallenstar-uv.png
+map_Bump normal.jpg
+map_Ks specular.jpg
 
 newmtl White.002
 Ns 225.000000
@@ -65,7 +75,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models/towers/fallenstar/fallenstar-uv.png
+map_Kd ./fallenstar-uv.png
+map_Bump normal.jpg
+map_Ks specular.jpg
 
 newmtl Window-inner.001
 Ns 225.000000
@@ -76,7 +88,9 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models/towers/fallenstar/fallenstar-uv.png
+map_Kd ./fallenstar-uv.png
+map_Bump normal.jpg
+map_Ks specular.jpg
 
 newmtl Window-outer.001
 Ns 225.000000
@@ -87,4 +101,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd models/towers/fallenstar/fallenstar-uv.png
+map_Kd ./fallenstar-uv.png
+map_Bump normal.jpg
+map_Ks specular.jpg

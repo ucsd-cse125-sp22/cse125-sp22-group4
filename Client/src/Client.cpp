@@ -277,7 +277,7 @@ bool Client::initializeClient() {
     fallenstar->moveGlobal(glm::vec3(70, 2, -5));
     //stonehenge = new Model("../../objects/stonehenge/stonehenge.obj");
    
-    item = new Model("../../objects/scroll/Scroll.obj");
+    item = new Model("../../objects/scroll/Scroll.fbx");
     item->scale(glm::vec3(0.3));
     //item = new Model("../../objects/backpack/backpack.obj");
 
