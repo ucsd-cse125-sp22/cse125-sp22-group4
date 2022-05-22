@@ -125,4 +125,8 @@ private:
     int ans = 0;
 
     glm::mat4 destModel; // where item is taken to
+
+    // for limited cat view of item in minimap
+    int catViewItemTime = 5; // time in seconds cat can view item in minimap
+    bool catViewItem = false;
 };

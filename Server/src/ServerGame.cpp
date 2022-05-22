@@ -14,6 +14,10 @@ void spin(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+void flip(glm::mat4& model, float deg) {
+    model = model * glm::rotate(glm::radians(deg), glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
 ServerGame::ServerGame() : catSpeed(DEFAULT_CATSPEED), mouseSpeed(DEFAULT_MOUSESPEED), roundLengthSec(DEFAULT_ROUNDLENGTHSEC), cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC)
 {
     gameAlive = false;
@@ -118,21 +122,27 @@ void ServerGame::assignSpawnItem() {
 
     glm::mat4 originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(145, 1, -25));
-    spin(originalLoc, 180);
+    flip(originalLoc, 90);
+    //spin(originalLoc, 180);
     oldItemPositions[0] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(125, 1, -145));
-    spin(originalLoc, 90);
+    flip(originalLoc, 90);
+    spin(originalLoc, 180);
     oldItemPositions[1] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(15, 1, -35));
-    spin(originalLoc, 180);
+    flip(originalLoc, 90);
+    //spin(originalLoc, 180);
     oldItemPositions[2] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(5, 1, -145));
+    flip(originalLoc, 90);
+    spin(originalLoc, 180);
     oldItemPositions[3] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(95, 1, -55));
+    flip(originalLoc, 90);
     oldItemPositions[4] = originalLoc;
 
     flagInitLoc = oldItemPositions[random];
@@ -383,6 +393,7 @@ void ServerGame::updateFromConfigFile() {
 }
 
 void ServerGame::checkCooldownOver() {
+
     // check cooldown queue for dead mice
     if (!cooldown.empty()) {
         int numDeadMice = cooldown.size();
@@ -391,8 +402,15 @@ void ServerGame::checkCooldownOver() {
             int id = deadMouse.first;
             auto stop_mouse = timer_mouse.now();
             auto diff = std::chrono::duration_cast<std::chrono::seconds>(stop_mouse - deadMouse.second);
-            int newTime = this->cooldownTimeSec - diff.count(); // time left
+            int newTime = this->cooldownTimeSec - diff.count(); // time left in cooldown
+            int viewTime = catViewItemTime - diff.count(); // time cat can view items in minimap
             
+            if (viewTime <= 0) {
+                catViewItem = false;
+            }
+            else
+                catViewItem = true;
+
             if (newTime <= 0) { // cooldown is over, mouse can be reborn
                 respawnPlayer(id);
                 cooldown.pop();
@@ -415,6 +433,7 @@ void ServerGame::replicateGameState() {
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;
     packet.game.dest = destModel;
+    packet.game.catViewItem = catViewItem;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
 

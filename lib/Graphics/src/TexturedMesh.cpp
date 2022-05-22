@@ -120,6 +120,10 @@ void TexturedMesh::spin(float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+void TexturedMesh::flip(float deg) {
+    model = model * glm::rotate(glm::radians(deg), glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
 void TexturedMesh::scale(const glm::vec3& rate) {
     model = model * glm::scale(rate);
 }

@@ -31,6 +31,7 @@ public:
               GLuint shader) const override;
     void update() override;
     void spin(float deg) override;
+    void flip(float deg) override;
     void scale(const glm::vec3& rate) override;
     void moveLocal(const glm::vec3& v) override;
     void moveGlobal(const glm::vec3& v) override;

@@ -152,6 +152,7 @@ void ClientGame::update(MovementState s, RotationState r)
                 Client::setItemHold(packet->item_state.hold);
                 setNumPlayers(packet->game.numPlayers);
                 setFinalDest(packet->game.dest);
+                Client::setCatViewItem(packet->game.catViewItem);
                 //printMat4(packet->item_state.model);
                 
                 setTime(packet->game.gameTime);

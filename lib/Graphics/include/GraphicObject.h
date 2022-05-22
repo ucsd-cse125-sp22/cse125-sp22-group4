@@ -24,6 +24,7 @@ public:
                       GLuint shader) const = 0;
     virtual void update() = 0;
     virtual void spin(float deg) = 0;
+    virtual void flip(float deg) = 0;
     virtual void scale(const glm::vec3& rate) = 0;
     virtual void moveLocal(const glm::vec3& v) = 0;
     virtual void moveGlobal(const glm::vec3& v) = 0;

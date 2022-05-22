@@ -22,6 +22,10 @@ void FakeModel::spin(float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+void FakeModel::flip(float deg) {
+    model = model * glm::rotate(glm::radians(deg), glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
 void FakeModel::scale(const glm::vec3& rate) {
     model = model * glm::scale(rate);
 }

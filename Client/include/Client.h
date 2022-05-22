@@ -47,6 +47,7 @@ namespace Client {
     void setItemHold(char h);
     void updateItemLocation(glm::mat4 location);
     void updateTime(int t);
+    void setCatViewItem(bool c);
 
     bool checkGameStart();
     void setGameStart();

@@ -111,7 +111,7 @@ static CollisionDetector cDetector;
 static bool gameEnded = 0;
 static bool gameStarted = 0;
 static bool gameStartPressed = 0;
-
+static bool catSeesItem = false;
 static int numPlayers = 0;
 static int finalTime = 0;
 static bool catWon = 0;
@@ -278,8 +278,9 @@ bool Client::initializeClient() {
     fallenstar = new Model("../../objects/fallenstar/fallenstar.obj");
     fallenstar->moveGlobal(glm::vec3(95, 2, -35));
    
-    item = new Model("../../objects/scroll/Scroll.fbx");
-    item->scale(glm::vec3(0.1));
+    item = new Model("../../objects/DiplomaFrame/DiplomaFrame.fbx");
+    item->flip(90);
+    //item->scale(glm::vec3(0.1));
     //item = new Model("../../objects/backpack/backpack.obj");
 
     demoChar = new Model("../../objects/Kachujin/jog.fbx");
@@ -667,7 +668,7 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
     float icon_size = 8.0f;
     
 
-    if (id == my_id) {
+    if (id == 0) {
         //ImGui::SetCursorPos(ImVec2(locZ, locX));
         ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_cat_icon, ImVec2(locZ-icon_size, locX-icon_size), ImVec2(locZ+icon_size, locX+icon_size), ImVec2(0, 0), ImVec2(1, 1));
         //ImGui::Image((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_icon, image_height_cat_icon * adjust_icon));
@@ -718,7 +719,7 @@ void Client::miniMapGUI() {
     ImGui::Begin("MiniMap GUI", NULL, flags);
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
     
-    if (players[0]) {
+    if (players[0] && my_id == 0) {
         displayLocation(players[0]->getModel(), 0, adjustment, height_resize, width_resize);
     }
     if (players[1]) {
@@ -733,7 +734,8 @@ void Client::miniMapGUI() {
         displayLocation(players[3]->getModel(), 3, adjustment, height_resize, width_resize);
     }
 
-    if (item) {
+    
+    if (item && (my_id != 0 || catSeesItem)) {
         displayLocation(item->getModel(), 4, adjustment, height_resize, width_resize);
     }
     
@@ -885,6 +887,10 @@ void Client::updateItemLocation(glm::mat4 location) {
 
 void Client::setNumPlayers(int p) {
     numPlayers = p;
+}
+
+void Client::setCatViewItem(bool c) {
+    catSeesItem = c;
 }
 
 void Client::updateTime(int t) {

@@ -33,6 +33,10 @@ void Model::spin(float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+void Model::flip(float deg) {
+    model = model * glm::rotate(glm::radians(deg), glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
 void Model::rotate(const glm::vec3& v) {
     model = model * glm::rotate(v.x, glm::vec3(1.0f, 0.0f, 0.0f));
     model = model * glm::rotate(v.y, glm::vec3(0.0f, 1.0f, 0.0f));
