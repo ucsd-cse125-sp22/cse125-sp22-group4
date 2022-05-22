@@ -126,6 +126,8 @@ static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[4] = { "Animation Demo", "Maze", "Backpack", "Scene import Demo"};
 
+static glm::mat4 finalDest = glm::mat4(1); //where item is taken to
+
 static bool keys[4];
 static bool keyHeld = false;
 static bool mouseMoving = false;
@@ -274,11 +276,10 @@ bool Client::initializeClient() {
     bear->moveGlobal(glm::vec3(55, -3, -135));
     bear->scale(glm::vec3(0.5));
     fallenstar = new Model("../../objects/fallenstar/fallenstar.obj");
-    fallenstar->moveGlobal(glm::vec3(70, 2, -5));
-    //stonehenge = new Model("../../objects/stonehenge/stonehenge.obj");
+    fallenstar->moveGlobal(glm::vec3(95, 2, -35));
    
     item = new Model("../../objects/scroll/Scroll.fbx");
-    item->scale(glm::vec3(0.3));
+    item->scale(glm::vec3(0.1));
     //item = new Model("../../objects/backpack/backpack.obj");
 
     demoChar = new Model("../../objects/Kachujin/jog.fbx");
@@ -640,8 +641,10 @@ void Client::ItemHoldGUI() {
 
 void displayLocation(glm::mat4 model, int id, double adjustment, float height_resize, float width_resize) {
     int r, g, b;
-    float locX = model[3][0] * 1.15+26;
-    float locZ = abs(model[3][2])*1.15 +24;
+    float multX = 1.15 + 26;
+    float multZ = 1.15 + 24;
+    float locX = model[3][0] * 1.15 + 25;
+    float locZ = abs(model[3][2]) * 1.15 + 25;
     float side = 3.2f;
     //printf("x %d z %d\n", locX, locZ);
     if (id == 0) {
@@ -679,8 +682,12 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
             ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);*/
     
         if (itemhold != PLAYER_NUM + 1) { // bearl location hard coded TODO fix
-            if (currTime % 2 == 0)
-                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_diploma, ImVec2(75 * 1.15 + 24 - icon_size, 75 * 1.15 + 26 - icon_size), ImVec2(75 * 1.15 + 24 + icon_size, 75 * 1.15 + 26 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+            if (currTime % 2 == 0) {
+                float locX1 = finalDest[3][0] * 1.15 + 25;
+                float locZ1 = abs(finalDest[3][2]) * 1.15 + 25;
+                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_diploma, ImVec2(locZ1 - icon_size, locX1 - icon_size), ImVec2(locZ1 + icon_size, locX1 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+            }
+              
                 //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*1.15 + 24, 75* 1.15 + 26), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
         }
         else {
@@ -886,6 +893,10 @@ void Client::updateTime(int t) {
 
 void Client::setItemHold(char h) {
     itemhold = h;
+}
+
+void Client::setFinalDest(glm::mat4 location) {
+    finalDest = location;
 }
 
 void Client::setGameStart() {

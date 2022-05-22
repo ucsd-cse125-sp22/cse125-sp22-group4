@@ -50,6 +50,7 @@ public:
     void assignSpawnItem();
     void respawnItem();
     void respawnPlayer(int client_id);
+    void spawnFinalDestination();
     void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
@@ -122,4 +123,6 @@ private:
     // these are just for testing respawn
     void isTaken();
     int ans = 0;
+
+    glm::mat4 destModel; // where item is taken to
 };

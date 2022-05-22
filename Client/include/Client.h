@@ -56,6 +56,7 @@ namespace Client {
     bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
     void calcFinalBoneMatrix(Animator* animator);
     void setNumPlayers(int p);
+    void setFinalDest(glm::mat4 location);
 };
 
 #endif // !CLIENT_H

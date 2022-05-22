@@ -118,18 +118,21 @@ void ServerGame::assignSpawnItem() {
 
     glm::mat4 originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(145, 1, -25));
+    spin(originalLoc, 180);
     oldItemPositions[0] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(125, 1, -145));
+    spin(originalLoc, 90);
     oldItemPositions[1] = originalLoc;
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(5, 1, -5));
+    moveGlobal(originalLoc, glm::vec3(15, 1, -35));
+    spin(originalLoc, 180);
     oldItemPositions[2] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(5, 1, -145));
     oldItemPositions[3] = originalLoc;
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(96, 1, -53));
+    moveGlobal(originalLoc, glm::vec3(95, 1, -55));
     oldItemPositions[4] = originalLoc;
 
     flagInitLoc = oldItemPositions[random];
@@ -198,11 +201,33 @@ void ServerGame::start() {
         printf("insert %d into cd\n", i);
     }
     flagId = collision_detector->insert(flag->getOBB());
-    glm::mat4 bearModel = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75));
-    OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
-    bearId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, bearModel));
+    spawnFinalDestination();
 
     ServerGame::game_started = true;
+}
+
+void ServerGame::spawnFinalDestination() {
+    time_t t;
+    srand((unsigned)time(&t));
+    int random = rand() % 4;
+
+    switch (random) {
+    case 0: // fallenstar
+        destModel = glm::translate(glm::mat4(1), glm::vec3(95, 2, -35));
+        break;
+    case 1: // geisel
+        destModel = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75));
+        break;
+    case 2: // bearl
+        destModel = glm::translate(glm::mat4(1), glm::vec3(55, -3, -135));
+        break;
+    case 3: // sungod
+        destModel = glm::translate(glm::mat4(1), glm::vec3(105, 2, -135));
+        break;
+    }
+     
+    OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
+    bearId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
 }
 
 // i made this function just to get respawn from repeatedly being called
@@ -389,6 +414,7 @@ void ServerGame::replicateGameState() {
     packet.item_state = flag->item_state;
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;
+    packet.game.dest = destModel;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
 

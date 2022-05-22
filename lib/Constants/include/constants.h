@@ -31,4 +31,5 @@ struct ItemState {
 struct GameState {
 	int gameTime;
 	int numPlayers;
+	glm::mat4 dest = glm::mat4(1);
 };

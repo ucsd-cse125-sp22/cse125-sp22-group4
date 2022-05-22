@@ -151,6 +151,7 @@ void ClientGame::update(MovementState s, RotationState r)
 
                 Client::setItemHold(packet->item_state.hold);
                 setNumPlayers(packet->game.numPlayers);
+                setFinalDest(packet->game.dest);
                 //printMat4(packet->item_state.model);
                 
                 setTime(packet->game.gameTime);
@@ -177,6 +178,10 @@ void ClientGame::setNumPlayers(int p) {
 
 void ClientGame::setTime(int t) {
     Client::updateTime(t);
+}
+
+void ClientGame::setFinalDest(glm::mat4 location) {
+    Client::setFinalDest(location);
 }
 
 void ClientGame::gameEnd(int gameOver, int catWon) {
