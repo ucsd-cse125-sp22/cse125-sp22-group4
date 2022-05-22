@@ -30,6 +30,8 @@ static Model* geisel;
 static Model* sungod;
 static Model* stonehenge;
 static Model* fallenstar;
+static Model* item2;
+static Model* item3;
 static Model* demoChar;
 static Model* demoChar2;
 
@@ -279,8 +281,12 @@ bool Client::initializeClient() {
     fallenstar->moveGlobal(glm::vec3(95, 2, -35));
    
     item = new Model("../../objects/DiplomaFrame/DiplomaFrame.fbx");
-    item->flip(90);
-    //item->scale(glm::vec3(0.1));
+    item2 = new Model("../../objects/computer/computer.obj");
+    item2->moveGlobal(glm::vec3(70, 0, -5));
+    item2->scale(glm::vec3(5));
+    item3 = new Model("../../objects/backpack2/backpack2.obj");
+    item3->moveGlobal(glm::vec3(65, -5, -10));
+    item3->scale(glm::vec3(.1));
     //item = new Model("../../objects/backpack/backpack.obj");
 
     demoChar = new Model("../../objects/Kachujin/jog.fbx");
@@ -424,7 +430,8 @@ void Client::displayCallback() {
         bunny->draw(currCam->viewProjMat, identityMat, shader);
         tyra2->draw(currCam->viewProjMat, identityMat, shader);
         item->draw(currCam->viewProjMat, identityMat, shader);
-       
+        item2->draw(currCam->viewProjMat, identityMat, shader);
+        item3->draw(currCam->viewProjMat, identityMat, shader);
         
         break;
     }
