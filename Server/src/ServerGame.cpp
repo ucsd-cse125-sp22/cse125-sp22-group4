@@ -380,8 +380,6 @@ void ServerGame::updateFromConfigFile() {
         return;
     }
 
-    if (config["player0DevMode"]) this->player0DevMode = config["player0DevMode"].as<bool>();
-
     if (config["server"]) {
         auto serverConf = config["server"];
         if (serverConf["catSpeed"]) this->catSpeed = serverConf["catSpeed"].as<double>();
@@ -389,8 +387,8 @@ void ServerGame::updateFromConfigFile() {
         // TODO: if we want accurate Client timers, this should be extracted to be a shared config var
         if (serverConf["roundLengthSec"]) this->roundLengthSec = serverConf["roundLengthSec"].as<double>();
         if (serverConf["cooldownTimeSec"]) this->cooldownTimeSec = serverConf["cooldownTimeSec"].as<double>();
+		if (serverConf["player0DevMode"]) this->player0DevMode = serverConf["player0DevMode"].as<bool>();
 	}
-  
 }
 
 void ServerGame::checkCooldownOver() {

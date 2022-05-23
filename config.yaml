@@ -1,14 +1,13 @@
 port: 2333
 
-# Allows player 0 to be a cat and a mouse - can kill other mice, hold item,
-# see everything on the minimap
-player0DevMode: false
-
 server:
   catSpeed: 0.4
   mouseSpeed: 0.4
   roundLengthSec: 180
   cooldownTimeSec: 5
+  # Allows player 0 to be a cat and a mouse - can kill other mice, hold item,
+  # see everything on the minimap
+  player0DevMode: false
 
 
 
