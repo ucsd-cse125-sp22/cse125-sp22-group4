@@ -18,7 +18,11 @@ void flip(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
-ServerGame::ServerGame() : catSpeed(DEFAULT_CATSPEED), mouseSpeed(DEFAULT_MOUSESPEED), roundLengthSec(DEFAULT_ROUNDLENGTHSEC), cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC), player0DevMode(DEFAULT_PLAYER0DEVMODE)
+ServerGame::ServerGame() :
+    catSpeed(DEFAULT_CATSPEED), mouseSpeed(DEFAULT_MOUSESPEED),
+    roundLengthSec(DEFAULT_ROUNDLENGTHSEC),
+    cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC),
+    player0DevMode(DEFAULT_PLAYER0DEVMODE), catViewItemSec(DEFAULT_CATVIEWITEMSEC)
 {
     gameAlive = false;
     this->ticksSinceConfigCheck = 0;
@@ -387,6 +391,12 @@ void ServerGame::updateFromConfigFile() {
         // TODO: if we want accurate Client timers, this should be extracted to be a shared config var
         if (serverConf["roundLengthSec"]) this->roundLengthSec = serverConf["roundLengthSec"].as<double>();
         if (serverConf["cooldownTimeSec"]) this->cooldownTimeSec = serverConf["cooldownTimeSec"].as<double>();
+        if (serverConf["catViewItemSec"]) {
+            // catViewItemSec is only checked while the mouse is dead, so the view time MUST be less than the
+            // time it takes a mouse to respawn. TODO: Uncouple these
+            double confCatViewItemSec = serverConf["catViewItemSec"].as<double>();
+            this->catViewItemSec = confCatViewItemSec < this->cooldownTimeSec ? confCatViewItemSec : this->cooldownTimeSec;
+        }
 		if (serverConf["player0DevMode"]) this->player0DevMode = serverConf["player0DevMode"].as<bool>();
 	}
 }
@@ -402,13 +412,9 @@ void ServerGame::checkCooldownOver() {
             auto stop_mouse = timer_mouse.now();
             auto diff = std::chrono::duration_cast<std::chrono::seconds>(stop_mouse - deadMouse.second);
             int newTime = this->cooldownTimeSec - diff.count(); // time left in cooldown
-            int viewTime = catViewItemTime - diff.count(); // time cat can view items in minimap
+            int viewTime = catViewItemSec - diff.count(); // time cat can view items in minimap
             
-            if (viewTime <= 0) {
-                catViewItem = false;
-            }
-            else
-                catViewItem = true;
+            catViewItem = viewTime > 0;
 
             if (newTime <= 0) { // cooldown is over, mouse can be reborn
                 respawnPlayer(id);
