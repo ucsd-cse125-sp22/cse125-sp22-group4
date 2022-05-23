@@ -2,6 +2,8 @@
 #include "Graphics/include/GraphicObject.h"
 #include "Graphics/include/CollisionDetector.h"
 #include "Constants/include/constants.h"
+#include <chrono>
+#include <unordered_set>
 
 class Item
 {
@@ -34,5 +36,39 @@ public:
 private:
 	glm::mat4 initPos;
 	glm::mat4 goalPos; // potentially its own class?
+};
+
+class StationaryObjective {
+public:
+	virtual OBB getOBB();
+	virtual float getProgress();
+	virtual bool checkAward();
+	virtual void interact(int client_id, bool on);
+
+protected:
+	StationaryObjective(bool toggled, bool disabled) : toggled(toggled), disabled(disabled) {};
+
+	// position of objective
+	glm::mat4 model = glm::mat4(1);
+	// If the objective is being used by player
+	bool toggled;
+	// If the objective can still be used
+	bool disabled;
+};
+
+class SitAndHoldObjective : public StationaryObjective {
+public:
+	SitAndHoldObjective(float s) : StationaryObjective(false, false), seconds(s) {};
+	OBB getOBB() override;
+	float getProgress() override;
+	bool checkAward() override;
+	void interact(int client_id, bool on) override;
+
+private:
+	float seconds;
+	std::unordered_set<int> players_in_zone;
+
+	std::chrono::high_resolution_clock timer;
+	std::chrono::steady_clock::time_point start_time;
 };
 
