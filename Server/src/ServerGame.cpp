@@ -398,7 +398,6 @@ void ServerGame::updateFromConfigFile() {
        config = YAML::LoadFile(CONFIG_FILE);
     }
     catch (YAML::BadFile e) {
-        printf("Unable to read file");
         return;
     }
 

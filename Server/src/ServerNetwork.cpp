@@ -39,7 +39,7 @@ ServerNetwork::ServerNetwork()
         if (conf["port"]) port = conf["port"].as<std::string>();
     }
     catch (YAML::BadFile e) {
-        printf("Unable to read config file");
+        printf("Unable to read config file\n");
     }
 
     // Resolve the server address and port

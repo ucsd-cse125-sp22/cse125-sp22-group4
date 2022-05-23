@@ -7,3 +7,4 @@ build/
 Client/bindings/
 imgui.ini
 *.swp
+config.yaml
