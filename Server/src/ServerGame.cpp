@@ -317,9 +317,10 @@ void ServerGame::mouseDead(int client_id) {
     state.alive = false;
     state.model = banished;
     player_states[client_id] = state;
+    catViewItem = true;
 
-    start_mouse = timer_mouse.now();
-    cooldown.push({ client_id, start_mouse });
+    lastMouseDeath = timer_mouse.now();
+    cooldown.push({ client_id, timer_mouse.now() });
     
     //printMat4(player_states[client_id].model);
     // call mouse.die function???
@@ -363,7 +364,6 @@ void ServerGame::update()
                 gameAlive = false;
             }
         }
-
        
 
         checkCooldownOver();
@@ -408,12 +408,7 @@ void ServerGame::updateFromConfigFile() {
         // TODO: if we want accurate Client timers, this should be extracted to be a shared config var
         if (serverConf["roundLengthSec"]) this->roundLengthSec = serverConf["roundLengthSec"].as<double>();
         if (serverConf["cooldownTimeSec"]) this->cooldownTimeSec = serverConf["cooldownTimeSec"].as<double>();
-        if (serverConf["catViewItemSec"]) {
-            // catViewItemSec is only checked while the mouse is dead, so the view time MUST be less than the
-            // time it takes a mouse to respawn. TODO: Uncouple these
-            double confCatViewItemSec = serverConf["catViewItemSec"].as<double>();
-            this->catViewItemSec = confCatViewItemSec < this->cooldownTimeSec ? confCatViewItemSec : this->cooldownTimeSec;
-        }
+        if (serverConf["catViewItemSec"]) this->catViewItemSec = serverConf["catViewItemSec"].as<double>();
 		if (serverConf["player0DevMode"]) this->player0DevMode = serverConf["player0DevMode"].as<bool>();
 	}
 }
@@ -429,23 +424,21 @@ void ServerGame::checkCooldownOver() {
             auto stop_mouse = timer_mouse.now();
             auto diff = std::chrono::duration_cast<std::chrono::seconds>(stop_mouse - deadMouse.second);
             int newTime = this->cooldownTimeSec - diff.count(); // time left in cooldown
-            int viewTime = catViewItemSec - diff.count(); // time cat can view items in minimap
             
-            catViewItem = viewTime >= 0;
-            
-            if (!catViewItem) { // this if block assumes catViewItem > cooldown timer
-                cooldown.pop();
-            }
-            else if (newTime <= 0) { // cooldown is over, mouse can be reborn
+            if (newTime <= 0) { // cooldown is over, mouse can be reborn
                 respawnPlayer(id);
                 cooldown.pop();
-                cooldown.push({ id, deadMouse.second }); // mouse stays in queue until catViewItem is true
             }
             else { // cooldown is still going, stick mouse to back of queue
                 cooldown.pop();
                 cooldown.push({ id, deadMouse.second });
             }
         }
+    }
+
+    if (catViewItem) {
+        // catViewItem is true if the cat has viewed the item for less time than catViewItemSec
+        catViewItem = std::chrono::duration_cast<std::chrono::seconds>(timer_mouse.now() - lastMouseDeath).count() < catViewItemSec;
     }
 }
 
