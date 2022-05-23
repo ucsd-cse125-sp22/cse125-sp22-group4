@@ -96,6 +96,10 @@ bool retDiploma;
 int image_width_diploma = 0;
 int image_height_diploma = 0;
 GLuint image_texture_diploma = 0;
+bool retHourglass;
+int image_width_hourglass = 0;
+int image_height_hourglass = 0;
+GLuint image_texture_hourglass = 0;
 
 
 std::vector<Model*> sceneObjects;
@@ -113,6 +117,7 @@ static CollisionDetector cDetector;
 static bool gameEnded = 0;
 static bool gameStarted = 0;
 static bool gameStartPressed = 0;
+static int finalDestRotateTime = -1;
 static bool catSeesItem = false;
 static int numPlayers = 0;
 static int finalTime = 0;
@@ -327,6 +332,7 @@ bool Client::initializeClient() {
     retCatIcon = LoadTextureFromFile("../../objects/ImGui/cat_icon.png", &image_texture_cat_icon, &image_width_cat_icon, &image_height_cat_icon);
     retMouseIcon = LoadTextureFromFile("../../objects/ImGui/mouse_icon.png", &image_texture_mouse_icon, &image_width_mouse_icon, &image_height_mouse_icon);
     retDiploma = LoadTextureFromFile("../../objects/ImGui/diploma.png", &image_texture_diploma, &image_width_diploma, &image_height_diploma);
+    retHourglass = LoadTextureFromFile("../../objects/ImGui/hourglass.png", &image_texture_hourglass, &image_width_hourglass, &image_height_hourglass);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -692,8 +698,8 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
     
         if (itemhold != PLAYER_NUM + 1) { // bearl location hard coded TODO fix
             if (currTime % 2 == 0) {
-                float locX1 = finalDest[3][0] * 1.15 + 25;
-                float locZ1 = abs(finalDest[3][2]) * 1.15 + 25;
+                float locX1 = finalDest[3][0] * 1.55 + 25;
+                float locZ1 = abs(finalDest[3][2]) * 1.55 + 25;
                 ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_diploma, ImVec2(locZ1 - icon_size, locX1 - icon_size), ImVec2(locZ1 + icon_size, locX1 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
             }
               
@@ -748,6 +754,28 @@ void Client::miniMapGUI() {
     }
     
 
+    ImGui::End();
+}
+
+void Client::finalDestGUI() {
+    if (finalDestRotateTime < 0)
+        return;
+
+    ImGuiWindowFlags flags = 0;
+
+    flags |= ImGuiWindowFlags_NoBackground;
+    flags |= ImGuiWindowFlags_NoTitleBar;
+    flags |= ImGuiWindowFlags_NoScrollbar;
+    flags |= ImGuiWindowFlags_NoResize;
+
+    ImGui::SetNextWindowSize(ImVec2(200, 200), 0);
+    ImGui::SetNextWindowPos(ImVec2(window_width - 400, 15));
+    ImGui::Begin("FinalDest GUI", NULL, flags);
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 110 / 255.0f, 51 / 255.0f, 1.0f));
+    ImGui::PushFont(cuteFont);
+    ImGui::Text("0:%02d", finalDestRotateTime);
+    ImGui::PopFont();
+    ImGui::PopStyleColor();
     ImGui::End();
 }
 
@@ -909,8 +937,10 @@ void Client::setItemHold(char h) {
     itemhold = h;
 }
 
-void Client::setFinalDest(glm::mat4 location) {
+void Client::setFinalDest(glm::mat4 location, int f) {
     finalDest = location;
+    finalDestRotateTime = f;
+    //printf("%d finalDest \n", finalDestRotateTime);
 }
 
 void Client::setGameStart() {

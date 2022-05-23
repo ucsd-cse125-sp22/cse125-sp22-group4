@@ -132,4 +132,12 @@ private:
 
     // for limited cat view of item in minimap
     bool catViewItem = false;
+
+    // for final destination rotation
+    std::chrono::steady_clock timer_finalDest;
+    std::chrono::steady_clock::time_point start_finalDest;
+    bool flag_taken = false;
+    void checkFinalDestRotates();
+    int finalDestTime = -1; // how much time has elapsed
+    int finalDestRotatesTime = 45; // how long it takes for final dest to rotate
 };

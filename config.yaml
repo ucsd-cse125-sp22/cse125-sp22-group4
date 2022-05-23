@@ -9,7 +9,7 @@ server:
   catViewItemSec: 5
   # Allows player 0 to be a cat and a mouse - can kill other mice, hold item,
   # see everything on the minimap
-  player0DevMode: false
+  player0DevMode: true
 
 
 

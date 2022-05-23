@@ -33,4 +33,5 @@ struct GameState {
 	int numPlayers;
 	glm::mat4 dest = glm::mat4(1);
 	bool catViewItem;
+	int finalDestRotateTime;
 };

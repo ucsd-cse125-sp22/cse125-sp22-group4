@@ -138,7 +138,7 @@ void ServerGame::assignSpawnItem() {
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(15, 1, -35));
     //flip(originalLoc, 90);
-    //spin(originalLoc, 180);
+    spin(originalLoc, 90);
     oldItemPositions[2] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(5, 1, -145));
@@ -268,6 +268,12 @@ void ServerGame::collisionStep() {
             if (hitId == flagId) {
                 if (i == CAT_ID && !player0DevMode) break; // Cat can't hold item!
                 flag->item_state.hold = i;
+                if (!flag_taken) {
+                    flag_taken = true;
+                    start_finalDest = timer_finalDest.now();
+                }
+
+
             }
             else if (hitId == bearId) {
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
@@ -361,6 +367,7 @@ void ServerGame::update()
        
 
         checkCooldownOver();
+        checkFinalDestRotates();
         replicateGameState();
 
         // Check config file every sec
@@ -370,10 +377,19 @@ void ServerGame::update()
             this->ticksSinceConfigCheck = 0;
         }
     }
+}
 
- 
+void ServerGame::checkFinalDestRotates() {
+    if (flag_taken) {
+        auto stop_finalDest = timer_finalDest.now();
+        auto diff = std::chrono::duration_cast<std::chrono::seconds>(stop_finalDest - start_finalDest);
+        finalDestTime = finalDestRotatesTime - diff.count();
+        //printf("%d new time\n", newTime);
+        if (finalDestRotatesTime < 0) {
+            flag_taken = false;
 
-
+        }
+    }
 }
 
 void ServerGame::updateFromConfigFile() {
@@ -444,6 +460,7 @@ void ServerGame::replicateGameState() {
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;
     packet.game.dest = destModel;
+    packet.game.finalDestRotateTime = finalDestTime;
     packet.game.catViewItem = catViewItem || player0DevMode;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);

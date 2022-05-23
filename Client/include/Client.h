@@ -37,6 +37,7 @@ namespace Client {
     void GameOverGUI();
     void miniMapGUI();
     void GameStartGUI();
+    void finalDestGUI();
 
     MovementState getMovementState();
     RotationState getRotationState();
@@ -57,7 +58,7 @@ namespace Client {
     bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height);
     void calcFinalBoneMatrix(Animator* animator);
     void setNumPlayers(int p);
-    void setFinalDest(glm::mat4 location);
+    void setFinalDest(glm::mat4 location, int f);
 };
 
 #endif // !CLIENT_H

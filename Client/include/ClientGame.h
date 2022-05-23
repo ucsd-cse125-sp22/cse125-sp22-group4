@@ -40,7 +40,7 @@ public:
     void setTime(int t);
     void gameEnd(int gameOver, int catWon);
     void setNumPlayers(int p);
-    void setFinalDest(glm::mat4 location);
+    void setFinalDest(glm::mat4 location, int f);
 
     unsigned int getPlayer_id();
 
