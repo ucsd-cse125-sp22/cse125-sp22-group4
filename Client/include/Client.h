@@ -51,7 +51,6 @@ namespace Client {
 
     bool checkGameStart();
     void setGameStart();
-    void updatePlayer0DevMode();
     void setGameOver(int g, int w);
 
 
