@@ -6,7 +6,6 @@ server:
   mouseSpeed: 0.4
   roundLengthSec: 180
   cooldownTimeSec: 5
-  # Note: The *minimum* value for this is cooldownTimeSec
   catViewItemSec: 5
   # Allows player 0 to be a cat and a mouse - can kill other mice, hold item,
   # see everything on the minimap
