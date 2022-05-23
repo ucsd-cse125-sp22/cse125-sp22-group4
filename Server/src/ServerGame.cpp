@@ -18,6 +18,7 @@ void flip(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
+
 ServerGame::ServerGame() :
     catSpeed(DEFAULT_CATSPEED), mouseSpeed(DEFAULT_MOUSESPEED),
     roundLengthSec(DEFAULT_ROUNDLENGTHSEC),
@@ -126,32 +127,33 @@ void ServerGame::assignSpawnItem() {
 
     glm::mat4 originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(145, 1, -25));
-    flip(originalLoc, 90);
-    //spin(originalLoc, 180);
+    //flip(originalLoc, 90);
+    spin(originalLoc, 90);
     oldItemPositions[0] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(125, 1, -145));
-    flip(originalLoc, 90);
+    //flip(originalLoc, 90);
     spin(originalLoc, 180);
     oldItemPositions[1] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(15, 1, -35));
-    flip(originalLoc, 90);
+    //flip(originalLoc, 90);
     //spin(originalLoc, 180);
     oldItemPositions[2] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(5, 1, -145));
-    flip(originalLoc, 90);
-    spin(originalLoc, 180);
+    //flip(originalLoc, 90);
+    spin(originalLoc, 90);
     oldItemPositions[3] = originalLoc;
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(95, 1, -55));
-    flip(originalLoc, 90);
+    //flip(originalLoc, 90);
     oldItemPositions[4] = originalLoc;
 
     flagInitLoc = oldItemPositions[random];
 
     flag = new Flag(flagInitLoc, glm::mat4(1));
+    flag->item_state.model = flag->item_state.model * glm::scale(glm::vec3(0.2f));
     flag->randomSpawn = random; // remember new location
 }
 
@@ -414,11 +416,15 @@ void ServerGame::checkCooldownOver() {
             int newTime = this->cooldownTimeSec - diff.count(); // time left in cooldown
             int viewTime = catViewItemSec - diff.count(); // time cat can view items in minimap
             
-            catViewItem = viewTime > 0;
-
-            if (newTime <= 0) { // cooldown is over, mouse can be reborn
+            catViewItem = viewTime >= 0;
+            
+            if (!catViewItem) { // this if block assumes catViewItem > cooldown timer
+                cooldown.pop();
+            }
+            else if (newTime <= 0) { // cooldown is over, mouse can be reborn
                 respawnPlayer(id);
                 cooldown.pop();
+                cooldown.push({ id, deadMouse.second }); // mouse stays in queue until catViewItem is true
             }
             else { // cooldown is still going, stick mouse to back of queue
                 cooldown.pop();

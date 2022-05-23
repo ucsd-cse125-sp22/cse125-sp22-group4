@@ -280,7 +280,8 @@ bool Client::initializeClient() {
     fallenstar = new Model("../../objects/fallenstar/fallenstar.obj");
     fallenstar->moveGlobal(glm::vec3(95, 2, -35));
    
-    item = new Model("../../objects/DiplomaFrame/DiplomaFrame.fbx");
+    item = new Model("../../objects/diploma/diploma.dae");
+   
     item2 = new Model("../../objects/computer/computer.obj");
     item2->moveGlobal(glm::vec3(70, 0, -5));
     item2->scale(glm::vec3(5));
