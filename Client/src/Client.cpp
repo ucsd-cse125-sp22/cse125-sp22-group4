@@ -457,7 +457,7 @@ void Client::displayCallback() {
     }
 
     case 1: {
-        isThirdPersonCam = true;
+        //isThirdPersonCam = true;
         maze->draw(currCam->viewProjMat, identityMat, shader);
         tyra->draw(currCam->viewProjMat, identityMat, shader);
         bear->draw(currCam->viewProjMat, identityMat, shader);
