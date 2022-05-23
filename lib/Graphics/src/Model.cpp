@@ -1,9 +1,5 @@
 #include "Model.h"
 
-static unsigned int TextureFromFile(const char* path,
-    const std::string& directory,
-    bool gamma = false);
-
 Model::Model(std::string const& path, bool gamma) : gammaCorrection(gamma) {
     model = glm::mat4(1);
     maxX = maxZ = -FLT_MAX;
@@ -317,7 +313,9 @@ std::vector<Texture> Model::loadMaterialTextures(const aiMaterial* mat,
         // if texture hasn't been loaded already, load it
         if (!skip) {
             Texture texture;
-            texture.id = TextureFromFile(texturePath.C_Str(), this->directory);
+            std::string filename = std::string(texturePath.C_Str());
+            filename = this->directory + '/' + filename;
+            texture.id = TextureFromFile(filename);
             texture.type = typeName;
             texture.path = texturePath.C_Str();
             textures.push_back(texture);
@@ -328,11 +326,7 @@ std::vector<Texture> Model::loadMaterialTextures(const aiMaterial* mat,
     return textures;
 }
 
-unsigned int TextureFromFile(const char* path,
-                             const std::string& directory,
-                             bool gamma) {
-    std::string filename = std::string(path);
-    filename = directory + '/' + filename;
+unsigned int Model::TextureFromFile(std::string filename, bool gamma) {
 
     unsigned int textureID;
     glGenTextures(1, &textureID);
@@ -365,7 +359,7 @@ unsigned int TextureFromFile(const char* path,
         stbi_image_free(data);
     }
     else {
-        spdlog::error("Texture failed to load at: {}", path);
+        spdlog::error("Texture failed to load at: {}", filename);
         stbi_image_free(data);
     }
 
