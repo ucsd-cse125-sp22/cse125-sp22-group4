@@ -22,6 +22,7 @@
 #define DEFAULT_MOUSESPEED 0.4
 #define DEFAULT_ROUNDLENGTHSEC 180
 #define DEFAULT_COOLDOWNTIMESEC 5
+#define DEFAULT_PLAYER0DEVMODE false
 
 #define CAT_ID 0
 
@@ -75,6 +76,7 @@ private:
     int ticksSinceConfigCheck;
     int roundLengthSec;
     int cooldownTimeSec;
+    bool player0DevMode; // allow player 0 to kill mice, hold item, and see everything on the minimap
 
     Maze* maze;
     Flag* flag;

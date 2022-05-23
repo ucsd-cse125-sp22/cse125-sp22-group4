@@ -18,7 +18,7 @@ void flip(glm::mat4& model, float deg) {
     model = model * glm::rotate(glm::radians(deg), glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
-ServerGame::ServerGame() : catSpeed(DEFAULT_CATSPEED), mouseSpeed(DEFAULT_MOUSESPEED), roundLengthSec(DEFAULT_ROUNDLENGTHSEC), cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC)
+ServerGame::ServerGame() : catSpeed(DEFAULT_CATSPEED), mouseSpeed(DEFAULT_MOUSESPEED), roundLengthSec(DEFAULT_ROUNDLENGTHSEC), cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC), player0DevMode(DEFAULT_PLAYER0DEVMODE)
 {
     gameAlive = false;
     this->ticksSinceConfigCheck = 0;
@@ -260,9 +260,8 @@ void ServerGame::collisionStep() {
     for (int i = 0; i < PLAYER_NUM; ++i) {
         for (int hitId : collision_detector->check(i)) {
             if (hitId == flagId) {
-                //printf("[ServerGame::collisionStep] Player %d hit the flag!\n", i);         
+                if (i == CAT_ID && !player0DevMode) break; // Cat can't hold item!
                 flag->item_state.hold = i;
-                //mouseDead(i);
             }
             else if (hitId == bearId) {
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
@@ -381,6 +380,8 @@ void ServerGame::updateFromConfigFile() {
         return;
     }
 
+    if (config["player0DevMode"]) this->player0DevMode = config["player0DevMode"].as<bool>();
+
     if (config["server"]) {
         auto serverConf = config["server"];
         if (serverConf["catSpeed"]) this->catSpeed = serverConf["catSpeed"].as<double>();
@@ -388,7 +389,7 @@ void ServerGame::updateFromConfigFile() {
         // TODO: if we want accurate Client timers, this should be extracted to be a shared config var
         if (serverConf["roundLengthSec"]) this->roundLengthSec = serverConf["roundLengthSec"].as<double>();
         if (serverConf["cooldownTimeSec"]) this->cooldownTimeSec = serverConf["cooldownTimeSec"].as<double>();
-    }
+	}
   
 }
 
@@ -433,7 +434,7 @@ void ServerGame::replicateGameState() {
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;
     packet.game.dest = destModel;
-    packet.game.catViewItem = catViewItem;
+    packet.game.catViewItem = catViewItem || player0DevMode;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
 

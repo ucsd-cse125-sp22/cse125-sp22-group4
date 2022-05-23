@@ -1,6 +1,7 @@
 #include "Client.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+#include <yaml-cpp/yaml.h>
 
 // shader, camera and light
 static GLuint shader;
@@ -113,6 +114,7 @@ static CollisionDetector cDetector;
 static bool gameEnded = 0;
 static bool gameStarted = 0;
 static bool gameStartPressed = 0;
+static bool player0DevMode = false;
 static bool catSeesItem = false;
 static int numPlayers = 0;
 static int finalTime = 0;
@@ -500,6 +502,9 @@ void Client::idleCallback(float dt) {
             break;
         }
     }
+
+    // update status of player0DevMode from config file
+    updatePlayer0DevMode();
 }
 
 /**
@@ -742,7 +747,7 @@ void Client::miniMapGUI() {
     }
 
     
-    if (item && (my_id != 0 || catSeesItem)) {
+    if (item && (my_id != 0 || catSeesItem || player0DevMode)) {
         displayLocation(item->getModel(), 4, adjustment, height_resize, width_resize);
     }
     
@@ -914,6 +919,16 @@ void Client::setFinalDest(glm::mat4 location) {
 
 void Client::setGameStart() {
     gameStarted = 1;
+}
+
+void Client::updatePlayer0DevMode() {
+    try {
+        YAML::Node conf = YAML::LoadFile("../../config.yaml");
+        if (conf["player0DevMode"]) player0DevMode = conf["player0DevMode"].as<bool>();
+    }
+    catch (YAML::BadFile e) {
+        spdlog::info("Could not open conf file when updating player0DevMode");
+    }
 }
 
 bool Client::checkGameStart() {
