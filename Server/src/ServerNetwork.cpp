@@ -39,7 +39,8 @@ ServerNetwork::ServerNetwork()
         if (conf["port"]) port = conf["port"].as<std::string>();
     }
     catch (YAML::BadFile e) {
-        printf("Unable to read config file\n");
+        printf("No config.yaml found - using default game values\n");
+        printf("If you want a config file, use config.yaml.example to create your config.yaml at the project root!\n");
     }
 
     // Resolve the server address and port
