@@ -775,10 +775,10 @@ void Client::finalDestGUI() {
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 110 / 255.0f, 51 / 255.0f, 1.0f));
     ImGui::PushFont(cuteFont);
     //ImGui::SetCursorPos(ImVec2(window_width - 450 + (image_width_hourglass*adjustment)/2, 15 + (image_height_hourglass*adjustment) / 2));
-    ImGui::SetCursorPosY(65 + image_width_hourglass*adjustment/2);
+    ImGui::SetCursorPosY(68 + image_width_hourglass*adjustment/2);
     auto windowWidth = ImGui::GetWindowSize().x;
     //auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
-    ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 1);
+    ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 2);
     ImGui::Text("0:%02d", finalDestRotateTime);
     ImGui::PopFont();
     ImGui::PopStyleColor();

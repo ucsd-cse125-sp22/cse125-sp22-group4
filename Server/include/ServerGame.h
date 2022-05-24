@@ -53,6 +53,7 @@ public:
     void respawnItem();
     void respawnPlayer(int client_id);
     void spawnFinalDestination();
+    void respawnFinalDest();
     void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
@@ -100,6 +101,7 @@ private:
     //model of item and player locations at spawn
     glm::mat4 oldItemPositions[ITEM_NUM_LOC];
     glm::mat4 oldPlayerPositions[PLAYER_NUM];
+    glm::mat4 oldFinalDestinations[4];
 
     //player location for dead mice
     glm::mat4 banished;
@@ -140,4 +142,5 @@ private:
     void checkFinalDestRotates();
     int finalDestTime = -1; // how much time has elapsed
     int finalDestRotatesTime = 45; // how long it takes for final dest to rotate
+    int finalDestLoc = -1;
 };

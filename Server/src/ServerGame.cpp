@@ -227,23 +227,44 @@ void ServerGame::spawnFinalDestination() {
     srand((unsigned)time(&t));
     int random = rand() % 4;
 
+    oldFinalDestinations[0] = glm::translate(glm::mat4(1), glm::vec3(95, 2, -35)); // fallenstar
+    oldFinalDestinations[1] = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75)); // geisel
+    oldFinalDestinations[2] = glm::translate(glm::mat4(1), glm::vec3(55, -3, -135)); // bearl
+    oldFinalDestinations[3] = glm::translate(glm::mat4(1), glm::vec3(105, 2, -135)); // sungod
+
+    destModel = oldFinalDestinations[random];
+    finalDestLoc = random;
+    OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
+    bearId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
+}
+
+void ServerGame::respawnFinalDest() {
+    time_t t;
+    srand((unsigned)time(&t));
+    int random = finalDestLoc;
+    //printf("random %d\n", random);
+    while (random == finalDestLoc)
+        random = rand() % 4;
+
     switch (random) {
     case 0: // fallenstar
-        destModel = glm::translate(glm::mat4(1), glm::vec3(95, 2, -35));
+        destModel = oldFinalDestinations[0];
         break;
     case 1: // geisel
-        destModel = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75));
+        destModel = oldFinalDestinations[1];
         break;
     case 2: // bearl
-        destModel = glm::translate(glm::mat4(1), glm::vec3(55, -3, -135));
+        destModel = oldFinalDestinations[2];
         break;
     case 3: // sungod
-        destModel = glm::translate(glm::mat4(1), glm::vec3(105, 2, -135));
+        destModel = oldFinalDestinations[3];
         break;
     }
      
+    finalDestLoc = random;
     OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
-    bearId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
+    collision_detector->update(CollisionDetector::computeOBB(bearOBB, destModel), bearId);
+    //bearId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
 }
 
 // i made this function just to get respawn from repeatedly being called
@@ -384,10 +405,10 @@ void ServerGame::checkFinalDestRotates() {
         auto stop_finalDest = timer_finalDest.now();
         auto diff = std::chrono::duration_cast<std::chrono::seconds>(stop_finalDest - start_finalDest);
         finalDestTime = finalDestRotatesTime - diff.count();
-        //printf("%d new time\n", newTime);
-        if (finalDestRotatesTime < 0) {
+        //printf("%d new time\n", finalDestTime);
+        if (finalDestTime < 0) {
+            respawnFinalDest();
             flag_taken = false;
-
         }
     }
 }
