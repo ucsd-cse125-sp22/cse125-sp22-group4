@@ -438,7 +438,7 @@ void Client::displayCallback() {
         tyra2->draw(currCam->viewProjMat, identityMat, shader);
         item->draw(currCam->viewProjMat, identityMat, shader);
         item2->draw(currCam->viewProjMat, identityMat, shader);
-        item3->draw(currCam->viewProjMat, identityMat, shader);
+        //item3->draw(currCam->viewProjMat, identityMat, shader);
         
         break;
     }
@@ -696,7 +696,7 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
       /*  if (currTime % 2 == 0)
             ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);*/
     
-        if (itemhold != PLAYER_NUM + 1) { // bearl location hard coded TODO fix
+        if (itemhold == my_id) { // final Dest location revealed only to player with item
             if (currTime % 2 == 0) {
                 float locX1 = finalDest[3][0] * 1.55 + 25;
                 float locZ1 = abs(finalDest[3][2]) * 1.55 + 25;
@@ -705,7 +705,7 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
               
                 //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*1.15 + 24, 75* 1.15 + 26), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
         }
-        else {
+        else if (itemhold == PLAYER_NUM + 1) { // if no player holding flag, show location of flag
             if (currTime % 2 == 0)
                 ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         }
@@ -758,7 +758,7 @@ void Client::miniMapGUI() {
 }
 
 void Client::finalDestGUI() {
-    if (finalDestRotateTime < 0)
+    if (finalDestRotateTime < 0 || gameEnded == 1)
         return;
 
     ImGuiWindowFlags flags = 0;
@@ -775,7 +775,7 @@ void Client::finalDestGUI() {
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 110 / 255.0f, 51 / 255.0f, 1.0f));
     ImGui::PushFont(cuteFont);
     //ImGui::SetCursorPos(ImVec2(window_width - 450 + (image_width_hourglass*adjustment)/2, 15 + (image_height_hourglass*adjustment) / 2));
-    ImGui::SetCursorPosY(68 + image_width_hourglass*adjustment/2);
+    ImGui::SetCursorPosY(70 + image_width_hourglass*adjustment/2);
     auto windowWidth = ImGui::GetWindowSize().x;
     //auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
     ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 2);

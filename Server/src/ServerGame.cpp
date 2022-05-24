@@ -333,6 +333,8 @@ void ServerGame::mouseDead(int client_id) {
     if (flag->item_state.hold == client_id) {
         flag->item_state.hold = 5;
         respawnItem();
+        flag_taken = false;
+        finalDestTime = -1;
     }
         
     state.alive = false;
@@ -408,7 +410,8 @@ void ServerGame::checkFinalDestRotates() {
         //printf("%d new time\n", finalDestTime);
         if (finalDestTime < 0) {
             respawnFinalDest();
-            flag_taken = false;
+            start_finalDest = timer_finalDest.now();
+            //flag_taken = false;
         }
     }
 }
