@@ -291,8 +291,8 @@ bool Client::initializeClient() {
     item2->moveGlobal(glm::vec3(70, 0, -5));
     item2->scale(glm::vec3(5));
     item3 = new Model("../../objects/books/books.fbx");
-    item3->moveGlobal(glm::vec3(65, -5, -10));
-    item3->scale(glm::vec3(.01));
+    item3->moveGlobal(glm::vec3(65, -1, -10));
+    item3->scale(glm::vec3(5));
     
     //item = new Model("../../objects/backpack/backpack.obj");
 
@@ -439,7 +439,7 @@ void Client::displayCallback() {
         tyra2->draw(currCam->viewProjMat, identityMat, shader);
         item->draw(currCam->viewProjMat, identityMat, shader);
         item2->draw(currCam->viewProjMat, identityMat, shader);
-        //item3->draw(currCam->viewProjMat, identityMat, shader);
+        item3->draw(currCam->viewProjMat, identityMat, shader);
         
         break;
     }
