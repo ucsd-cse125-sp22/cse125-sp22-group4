@@ -28,6 +28,10 @@ struct ItemState {
 	char hold = 5;
 };
 
+struct Item2State {
+	glm::mat4 model = glm::mat4(1);
+};
+
 struct GameState {
 	int gameTime;
 	int numPlayers;

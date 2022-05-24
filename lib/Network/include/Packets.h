@@ -77,6 +77,7 @@ struct GameStatePacket {
 	ushort packet_class = GAME_STATE;
 	PlayerState player_states[PLAYER_NUM];
 	ItemState item_state;
+	Item2State item2_state;
 	GameState game;
 };
 

@@ -928,6 +928,11 @@ void Client::updateItemLocation(glm::mat4 location) {
     item->setModel(location);
 }
 
+void Client::updateItem2Location(glm::mat4 location) {
+    item2->setModel(location);
+    item2->scale(glm::vec3(5));
+}
+
 void Client::setNumPlayers(int p) {
     numPlayers = p;
 }

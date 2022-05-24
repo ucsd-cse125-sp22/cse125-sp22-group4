@@ -124,30 +124,30 @@ void ServerGame::assignSpawnItem() {
     srand((unsigned)time(&t));
     int random = rand() % 5;
     printf("%d spawn\n", random);
-
+    
+    // location 1
     glm::mat4 originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(145, 1, -25));
-    //flip(originalLoc, 90);
     spin(originalLoc, 90);
     oldItemPositions[0] = originalLoc;
+    // location 2
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(125, 1, -145));
-    //flip(originalLoc, 90);
     spin(originalLoc, 180);
     oldItemPositions[1] = originalLoc;
+    // location 3
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(15, 1, -35));
-    //flip(originalLoc, 90);
     spin(originalLoc, 90);
     oldItemPositions[2] = originalLoc;
+    // location 4
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(5, 1, -145));
-    //flip(originalLoc, 90);
     spin(originalLoc, 90);
     oldItemPositions[3] = originalLoc;
+    //location 5
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(95, 1, -55));
-    //flip(originalLoc, 90);
     oldItemPositions[4] = originalLoc;
 
     flagInitLoc = oldItemPositions[random];
@@ -156,6 +156,50 @@ void ServerGame::assignSpawnItem() {
     flag = new Flag(flagInitLoc, glm::mat4(1));
     flag->item_state.model = flag->item_state.model * glm::scale(glm::vec3(0.2f));
     flag->randomSpawn = random; // remember new location
+}
+
+void ServerGame::assignSpawnItem2() {
+
+    glm::mat4 initLoc = glm::mat4(1);
+    time_t t;
+
+    srand((unsigned)time(&t));
+    int random = rand() % 5;
+    printf("%d spawn\n", random);
+
+    // location 1
+    glm::mat4 originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(35, 1, -45));
+    spin(originalLoc, 90);
+    oldItem2Positions[0] = originalLoc;
+    // location 2
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(125, 1, -145));
+    spin(originalLoc, 180);
+    oldItem2Positions[1] = originalLoc;
+    // location 3
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(15, 1, -35));
+    spin(originalLoc, 90);
+    oldItem2Positions[2] = originalLoc;
+    // location 4
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(5, 1, -145));
+    spin(originalLoc, 90);
+    oldItem2Positions[3] = originalLoc;
+    //location 5
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(95, 1, -55));
+    oldItem2Positions[4] = originalLoc;
+
+    //initLoc = oldItem2Positions[random];
+    initLoc = oldItem2Positions[0];
+
+
+    //flag = new Flag(flagInitLoc, glm::mat4(1));
+    //flag->item_state.model = flag->item_state.model * glm::scale(glm::vec3(0.2f));
+    //flag->randomSpawn = random; // remember new location
+    stationary->setPosition(initLoc);
 }
 
 void ServerGame::respawnItem() {
@@ -177,9 +221,10 @@ void ServerGame::respawnItem() {
 
 void ServerGame::setupStationaryObjective() {
     stationary = new SitAndHoldObjective(10.0);
-    glm::mat4 originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(70, 0, -5));
-    stationary->setPosition(originalLoc);
+    assignSpawnItem2();
+    //glm::mat4 originalLoc = glm::mat4(1);
+    //moveGlobal(originalLoc, glm::vec3(70, 0, -5));
+    //stationary->setPosition(originalLoc);
 }
 
 void ServerGame::start() {
@@ -477,6 +522,7 @@ void ServerGame::replicateGameState() {
     memcpy(packet.player_states, player_states, sizeof(player_states));
    
     packet.item_state = flag->item_state;
+    packet.item2_state.model = stationary->model;
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;
     packet.game.dest = destModel;

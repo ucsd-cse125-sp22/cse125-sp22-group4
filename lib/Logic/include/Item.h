@@ -47,12 +47,13 @@ public:
 	void setPosition(glm::mat4 pos) {
 		model = pos;
 	}
+	// position of objective
+	glm::mat4 model = glm::mat4(1);
 
 protected:
 	StationaryObjective(bool toggled, bool disabled) : toggled(toggled), disabled(disabled) {};
 
-	// position of objective
-	glm::mat4 model = glm::mat4(1);
+	
 	// If the objective is being used by player
 	bool toggled;
 	// If the objective can still be used

@@ -53,6 +53,7 @@ public:
 
     void assignSpawn(int client_id);
     void assignSpawnItem();
+    void assignSpawnItem2();
     void respawnItem();
     void respawnPlayer(int client_id);
     void spawnFinalDestination();
@@ -104,6 +105,7 @@ private:
 
     //model of item and player locations at spawn
     glm::mat4 oldItemPositions[ITEM_NUM_LOC];
+    glm::mat4 oldItem2Positions[ITEM_NUM_LOC];
     glm::mat4 oldPlayerPositions[PLAYER_NUM];
     glm::mat4 oldFinalDestinations[4];
 
