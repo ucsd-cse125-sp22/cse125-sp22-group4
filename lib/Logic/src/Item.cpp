@@ -53,7 +53,7 @@ void SitAndHoldObjective::interact(int client_id, bool on) {
 		return;
 
 	// Allow multiple players to be in sit&hold objective
-	bool in_set = players_in_zone.find(client_id) == players_in_zone.end();
+	bool in_set = players_in_zone.find(client_id) != players_in_zone.end();
 	if (on && !in_set) {
 		players_in_zone.insert(client_id);
 	}
@@ -64,6 +64,7 @@ void SitAndHoldObjective::interact(int client_id, bool on) {
 	bool pastToggle = toggled;
 	toggled = !players_in_zone.empty();
 	if (pastToggle == false && toggled == true)
+		printf("start timer\n");
 		start_time = timer.now();
 }
 
@@ -72,7 +73,8 @@ float SitAndHoldObjective::getProgress() {
 		return 0.0;
 
 	auto timeNow = timer.now();
-	return std::chrono::duration_cast<std::chrono::seconds>(timeNow - start_time).count();
+	auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - start_time);
+	return dt.count()*1.0e3;
 }
 
 bool SitAndHoldObjective::checkAward() {
@@ -85,5 +87,6 @@ bool SitAndHoldObjective::checkAward() {
 		disabled = true;
 		return true;
 	}
+	printf("Making progress! %3.3lf\n", getProgress());
 	return false;
 }

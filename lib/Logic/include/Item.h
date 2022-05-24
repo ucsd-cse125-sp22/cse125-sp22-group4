@@ -40,10 +40,13 @@ private:
 
 class StationaryObjective {
 public:
-	virtual OBB getOBB();
-	virtual float getProgress();
-	virtual bool checkAward();
-	virtual void interact(int client_id, bool on);
+	virtual OBB getOBB() = 0;
+	virtual float getProgress() = 0;
+	virtual bool checkAward() = 0;
+	virtual void interact(int client_id, bool on) = 0;
+	void setPosition(glm::mat4 pos) {
+		model = pos;
+	}
 
 protected:
 	StationaryObjective(bool toggled, bool disabled) : toggled(toggled), disabled(disabled) {};
@@ -64,11 +67,12 @@ public:
 	bool checkAward() override;
 	void interact(int client_id, bool on) override;
 
+
 private:
 	float seconds;
 	std::unordered_set<int> players_in_zone;
 
-	std::chrono::high_resolution_clock timer;
+	std::chrono::steady_clock timer;
 	std::chrono::steady_clock::time_point start_time;
 };
 

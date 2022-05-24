@@ -46,8 +46,11 @@ public:
 
     void update();
     void collisionStep();
-
     void receiveFromClients();
+
+    void setupStationaryObjective();
+    void checkStationaryObjective();
+
     void assignSpawn(int client_id);
     void assignSpawnItem();
     void respawnItem();
@@ -83,6 +86,7 @@ private:
 
     Maze* maze;
     Flag* flag;
+    SitAndHoldObjective* stationary;
 
     // The ServerNetwork object 
     ServerNetwork* network;
@@ -125,6 +129,7 @@ private:
     Model playerModels[PLAYER_NUM];
     int flagId;
     int bearId;
+    int stationaryId;
 
     // these are just for testing respawn
     void isTaken();

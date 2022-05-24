@@ -152,6 +152,7 @@ void ServerGame::assignSpawnItem() {
 
     flagInitLoc = oldItemPositions[random];
 
+
     flag = new Flag(flagInitLoc, glm::mat4(1));
     flag->item_state.model = flag->item_state.model * glm::scale(glm::vec3(0.2f));
     flag->randomSpawn = random; // remember new location
@@ -174,6 +175,12 @@ void ServerGame::respawnItem() {
     flag->randomSpawn = random; // remember new location
 }
 
+void ServerGame::setupStationaryObjective() {
+    stationary = new SitAndHoldObjective(10.0);
+    glm::mat4 originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(70, 0, -5));
+    stationary->setPosition(originalLoc);
+}
 
 void ServerGame::start() {
     gameAlive = true;
@@ -191,16 +198,18 @@ void ServerGame::start() {
 
     // Move item to spawn
     assignSpawnItem();
+    setupStationaryObjective();
 
-    // Move players to spawns
+    // Move players to spawn and setup collision
     for (int i = 0; i < PLAYER_NUM; ++i) {
         assignSpawn(i);
         collision_detector->insert(fakePlayerModels[i].getOBB());
         printf("insert %d into cd\n", i);
     }
     flagId = collision_detector->insert(flag->getOBB());
-    spawnFinalDestination();
+    stationaryId = collision_detector->insert(stationary->getOBB());
 
+    spawnFinalDestination();
     ServerGame::game_started = true;
 }
 
@@ -228,6 +237,7 @@ void ServerGame::respawnFinalDest() {
     while (random == finalDestLoc)
         random = rand() % 4;
 
+    OBB collisionModel;
     switch (random) {
     case 0: // fallenstar
         destModel = oldFinalDestinations[0];
@@ -267,6 +277,7 @@ void ServerGame::collisionStep() {
     collision_detector->update(flag->getOBB(), flagId);
 
     for (int i = 0; i < PLAYER_NUM; ++i) {
+        bool in_stationary = false;
         for (int hitId : collision_detector->check(i)) {
             if (hitId == flagId) {
                 if (i == CAT_ID && !player0DevMode) break; // Cat can't hold item!
@@ -275,8 +286,10 @@ void ServerGame::collisionStep() {
                     flag_taken = true;
                     start_finalDest = timer_finalDest.now();
                 }
-
-
+            }
+            else if (hitId == stationaryId) {
+                stationary->interact(i, true);
+                in_stationary = true;
             }
             else if (hitId == bearId) {
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
@@ -298,6 +311,11 @@ void ServerGame::collisionStep() {
                 mouseDead(hitId);
             }
 
+        }
+
+        // Tell stationary that player is not in
+        if (!in_stationary) {
+            stationary->interact(i, false);
         }
     }
         
@@ -329,7 +347,11 @@ void ServerGame::mouseDead(int client_id) {
     // call mouse.die function???
 }
 
-
+void ServerGame::checkStationaryObjective() {
+    if (stationary->checkAward()) {
+        printf("YOU WIN!\n");
+    }
+}
 
 void ServerGame::update()
 {
@@ -368,7 +390,7 @@ void ServerGame::update()
             }
         }
        
-
+        checkStationaryObjective();
         checkCooldownOver();
         checkFinalDestRotates();
         replicateGameState();
