@@ -49,6 +49,7 @@ public:
 	}
 	// position of objective
 	glm::mat4 model = glm::mat4(1);
+	int randomSpawn;
 
 protected:
 	StationaryObjective(bool toggled, bool disabled) : toggled(toggled), disabled(disabled) {};

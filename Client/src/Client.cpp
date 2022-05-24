@@ -683,13 +683,13 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
     float icon_size = 8.0f;
     
 
-    if (id == 0) {
+    if (id == 0) { // display cat
         //ImGui::SetCursorPos(ImVec2(locZ, locX));
         ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_cat_icon, ImVec2(locZ-icon_size, locX-icon_size), ImVec2(locZ+icon_size, locX+icon_size), ImVec2(0, 0), ImVec2(1, 1));
         //ImGui::Image((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_icon, image_height_cat_icon * adjust_icon));
         //ImGui::GetForegroundDrawList()->AddTriangleFilled(ImVec2(locZ+side, locX), ImVec2(locZ-side, locX+side), ImVec2(locZ-side, locX-side), IM_COL32(r, g, b, 255));
     }
-    else if (id != 4) {
+    else if (id < 4) { // display mice
         ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_icon, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
     }
@@ -706,7 +706,11 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
               
                 //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*1.15 + 24, 75* 1.15 + 26), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
         }
-        else if (itemhold == PLAYER_NUM + 1) { // if no player holding flag, show location of flag
+        else if (id == 4 && itemhold == PLAYER_NUM + 1) { // if no player holding flag, show location of flag
+            if (currTime % 2 == 0)
+                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+        }
+        else if (id == 5) {
             if (currTime % 2 == 0)
                 ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         }
@@ -753,7 +757,10 @@ void Client::miniMapGUI() {
     if (item && (my_id != 0 || catSeesItem)) {
         displayLocation(item->getModel(), 4, adjustment, height_resize, width_resize);
     }
-    
+
+    if (item2 && (my_id != 0 || catSeesItem)) {
+        displayLocation(item2->getModel(), 5, adjustment, height_resize, width_resize);
+    }
 
     ImGui::End();
 }
