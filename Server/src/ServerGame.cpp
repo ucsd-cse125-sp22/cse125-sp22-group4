@@ -170,25 +170,7 @@ void ServerGame::respawnItem() {
     printf("%d random\n", random);
 
     // choose random respawn location
-    switch (random) {
-    case 0:
-        flag->item_state.model = oldItemPositions[0];
-        break;
-    case 1:
-        flag->item_state.model = oldItemPositions[1];
-        break;
-    case 2:
-        flag->item_state.model = oldItemPositions[2];
-        break;
-    case 3:
-        flag->item_state.model = oldItemPositions[3];
-        break;
-    case 4:
-        flag->item_state.model = oldItemPositions[4];
-        break;
-    }
-
-   
+    flag->item_state.model = oldItemPositions[random];
     flag->randomSpawn = random; // remember new location
 }
 
