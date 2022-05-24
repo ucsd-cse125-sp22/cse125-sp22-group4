@@ -49,8 +49,7 @@ OBB SitAndHoldObjective::getOBB() {
 }
 
 void SitAndHoldObjective::interact(int client_id, bool on) {
-	if (disabled)
-		return;
+	if (disabled) return;
 
 	// Allow multiple players to be in sit&hold objective
 	bool in_set = players_in_zone.find(client_id) != players_in_zone.end();
@@ -63,30 +62,29 @@ void SitAndHoldObjective::interact(int client_id, bool on) {
 
 	bool pastToggle = toggled;
 	toggled = !players_in_zone.empty();
-	if (pastToggle == false && toggled == true)
+	if (pastToggle == false && toggled == true) {
 		printf("start timer\n");
 		start_time = timer.now();
+	}
 }
 
 float SitAndHoldObjective::getProgress() {
-	if (disabled || !toggled)
-		return 0.0;
+	if (disabled || !toggled) return 0.0;
 
 	auto timeNow = timer.now();
 	auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - start_time);
-	return dt.count()*1.0e3;
+	return dt.count() / 1.0e3;
 }
 
 bool SitAndHoldObjective::checkAward() {
 	// If objective is disabled or not being worked on, disable
-	if (disabled || !toggled)
-		return false;
+	if (disabled || !toggled) return false;
 
 	if (getProgress() >= seconds) {
 		// Reward! Then disable yourself
 		disabled = true;
 		return true;
 	}
-	printf("Making progress! %3.3lf\n", getProgress());
+	printf("Stationary: Making progress! %3.3lf\n", getProgress());
 	return false;
 }

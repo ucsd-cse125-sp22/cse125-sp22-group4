@@ -396,7 +396,7 @@ void ServerGame::mouseDead(int client_id) {
 
 void ServerGame::checkStationaryObjective() {
     if (stationary->checkAward()) {
-        printf("YOU WIN!\n");
+        printf("Stationary: Completed!\n");
     }
 }
 
