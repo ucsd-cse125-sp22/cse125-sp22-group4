@@ -52,19 +52,19 @@ void SitAndHoldObjective::interact(int client_id, bool on) {
 	if (disabled)
 		return;
 
-	// Allow 
-	if (on && players_in_zone.find(client_id) == players_in_zone.end()) {
+	// Allow multiple players to be in sit&hold objective
+	bool in_set = players_in_zone.find(client_id) == players_in_zone.end();
+	if (on && !in_set) {
 		players_in_zone.insert(client_id);
 	}
-	else if (!on && players_in_zone.find(client_id) != players_in_zone.end()) {
+	else if (!on && in_set) {
 		players_in_zone.erase(client_id);
 	}
 
 	bool pastToggle = toggled;
 	toggled = !players_in_zone.empty();
-	if (pastToggle == false && toggled == true) {
+	if (pastToggle == false && toggled == true)
 		start_time = timer.now();
-	}
 }
 
 float SitAndHoldObjective::getProgress() {
