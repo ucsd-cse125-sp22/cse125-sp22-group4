@@ -78,6 +78,7 @@ struct GameStatePacket {
 	PlayerState player_states[PLAYER_NUM];
 	ItemState item_state;
 	Item2State item2_state;
+	Item3State item3_state;
 	GameState game;
 };
 

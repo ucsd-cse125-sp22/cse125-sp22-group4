@@ -32,7 +32,11 @@ struct ItemState {
 struct Item2State {
 	glm::mat4 model = glm::mat4(1);
 	float timeLeftHolding = 0.0f;
-	int hold = -1;
+};
+
+struct Item3State {
+	glm::mat4 model = glm::mat4(1);
+	float timeLeftHolding = 0.0f;
 };
 
 struct GameState {

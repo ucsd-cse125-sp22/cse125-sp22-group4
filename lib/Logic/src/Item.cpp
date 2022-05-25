@@ -45,7 +45,8 @@ OBB Flag::getOBB() {
 // ====== SitAndHoldObjective ======
 OBB SitAndHoldObjective::getOBB() {
 	// TODO: Fix hard coded OBB.
-	return CollisionDetector::computeOBB({ {2,2},{-2,2}, {-2,-2}, {2,-2} }, model);
+	return CollisionDetector::computeOBB({ {1,1},{-1,1}, {-1,-1}, {1,-1} }, model);
+	//return CollisionDetector::computeOBB({ {2,2},{-2,2}, {-2,-2}, {2,-2} }, model);
 }
 
 void SitAndHoldObjective::interact(int client_id, bool on) {

@@ -220,7 +220,7 @@ void ServerGame::assignSpawnItem3() {
     glm::mat4 originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(5, 0, -5));
     scale(originalLoc, glm::vec3(5));
-    //spin(originalLoc, 90);
+    spin(originalLoc, 90);
     oldItem3Positions[0] = originalLoc;
     // location 2
     originalLoc = glm::mat4(1);
@@ -617,7 +617,9 @@ void ServerGame::replicateGameState() {
     packet.item_state = flag->item_state;
     packet.item2_state.model = stationary->model;
     packet.item2_state.timeLeftHolding = stationary->getProgress();
-    packet.item2_state.hold = stationary->holdId;
+    packet.item3_state.model = stationary2->model;
+    packet.item3_state.timeLeftHolding = stationary2->getProgress();
+
     //packet.item2_state.players_in_zone = stationary->players_in_zone;
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;

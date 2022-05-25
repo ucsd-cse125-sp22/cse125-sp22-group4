@@ -108,6 +108,10 @@ bool retZeroesOnes;
 int image_width_zeroes_ones = 0;
 int image_height_zeroes_ones = 0;
 GLuint image_texture_zeroes_ones = 0;
+bool retFireplace;
+int image_width_fireplace = 0;
+int image_height_fireplace = 0;
+GLuint image_texture_fireplace = 0;
 
 
 std::vector<Model*> sceneObjects;
@@ -127,6 +131,7 @@ static bool gameStarted = 0;
 static bool gameStartPressed = 0;
 static int finalDestRotateTime = -1;
 static int timeLeftStationaryItem = 0;
+static int timeLeftStationaryItem2 = 0;
 static int stationaryId = -1;
 static bool catSeesItem = false;
 static int numPlayers = 0;
@@ -346,6 +351,7 @@ bool Client::initializeClient() {
     retHourglass = LoadTextureFromFile("../../objects/ImGui/hourglass.png", &image_texture_hourglass, &image_width_hourglass, &image_height_hourglass);
     retPartyIcon = LoadTextureFromFile("../../objects/ImGui/party_icon.png", &image_texture_party_icon, &image_width_party_icon, &image_height_party_icon);
     retZeroesOnes = LoadTextureFromFile("../../objects/ImGui/zeroes_and_ones.jpg", &image_texture_zeroes_ones, &image_width_zeroes_ones, &image_height_zeroes_ones);
+    retFireplace = LoadTextureFromFile("../../objects/ImGui/fireplace.png", &image_texture_fireplace, &image_width_fireplace, &image_height_fireplace);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -706,7 +712,7 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
             if (currTime % 2 == 0)
                 ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         }
-        else if (id == 5) {
+        else if (id >= 5) {
             if (currTime % 2 == 0)
                 ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         }
@@ -758,6 +764,10 @@ void Client::miniMapGUI() {
         displayLocation(item2->getModel(), 5, adjustment, height_resize, width_resize);
     }
 
+    if (item3 && (my_id != 0 || catSeesItem)) {
+        displayLocation(item3->getModel(), 6, adjustment, height_resize, width_resize);
+    }
+
     ImGui::End();
 }
 
@@ -790,33 +800,29 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded == 1 || timeLeftStationaryItem == 0)
+    if (gameEnded == 1)
         return;
-   /* for (std::unordered_set<T>::iterator itr = players_in_zone.begin(); itr != players_in_zone.end(); ++itr) {
-    }*/
+ 
     ImGuiWindowFlags flags = 0;
-    //float adjustment = 0.15f;
-    //flags |= ImGuiWindowFlags_NoBackground;
+
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
 
-    //ImGui::SetNextWindowSize(ImVec2(180, 200), 0);
-    //ImGui::SetNextWindowPos(ImVec2(window_width - 450, 16));
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
-    ImGui::Begin("StationaryItem GUI", NULL, flags);
-    ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
-    //ImGui::Image((void*)(intptr_t)image_texture_hourglass, ImVec2(image_width_hourglass * adjustment, image_height_hourglass * adjustment));
-    //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 110 / 255.0f, 51 / 255.0f, 1.0f));
-    //ImGui::PushFont(cuteFont);
-    //ImGui::SetCursorPosY(77 + image_width_hourglass * adjustment / 2);
-    //auto windowWidth = ImGui::GetWindowSize().x;
-    //ImGui::SetCursorPosX((windowWidth - image_width_hourglass * adjustment) * 0.5f + 2);
-    //ImGui::Text("0:%02d", 9-timeLeftStationaryItem);
-    //ImGui::PopFont();
-    //ImGui::PopStyleColor();
-    ImGui::End();
+
+    if (timeLeftStationaryItem > 0) { // for computer stationary item
+        ImGui::Begin("StationaryItem GUI", NULL, flags);
+        ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
+        ImGui::End();
+    }
+    else if (timeLeftStationaryItem2 > 0) { // for books stationary item
+        ImGui::Begin("StationaryItem2 GUI", NULL, flags);
+        ImGui::Image((void*)(intptr_t)image_texture_fireplace, ImVec2(window_width, window_height));
+        ImGui::End();
+    }
+  
 }
 
 void Client::GameStartGUI() {
@@ -966,9 +972,17 @@ void Client::updateItem2Location(glm::mat4 location) {
     //item2->scale(glm::vec3(5));
 }
 
-void Client::setStationaryItemCountdown(float t, int h) {
+void Client::updateItem3Location(glm::mat4 location) {
+    item3->setModel(location);
+}
+
+void Client::setStationaryItemCountdown(float t) {
     timeLeftStationaryItem = (int)t;
-    stationaryId = h;
+    //players_in_zone = players;
+}
+
+void Client::setStationaryItem2Countdown(float t) {
+    timeLeftStationaryItem2 = (int)t;
     //players_in_zone = players;
 }
 

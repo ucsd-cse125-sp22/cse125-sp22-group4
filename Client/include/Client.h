@@ -52,7 +52,9 @@ namespace Client {
     void updateTime(int t);
     void setCatViewItem(bool c);
     void updateItem2Location(glm::mat4 location);
-    void setStationaryItemCountdown(float t, int h);
+    void updateItem3Location(glm::mat4 location);
+    void setStationaryItemCountdown(float t);
+    void setStationaryItem2Countdown(float t);
 
     bool checkGameStart();
     void setGameStart();
