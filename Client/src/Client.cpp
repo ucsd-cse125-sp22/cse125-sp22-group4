@@ -272,8 +272,12 @@ bool Client::initializeClient() {
     lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {0.8, 0.8, 0.8, 1} };
     lightCount = lightPosn.size();
 
+    // particle properties
+    ParticleProperty demoparticle = {
+    };
+
     //initialize particle system
-    particlesystem = new ParticleSystem(particleShader, "../../particles/80.png", 500, glm::mat4(1));
+    particlesystem = new ParticleSystem(particleShader, "../../particles/80.png", demoparticle);
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -511,7 +515,7 @@ void Client::idleCallback(float dt) {
         animator->update(dt);
         animator2->update(dt);
 
-        particlesystem->update(dt, *demoChar2, 2, glm::vec3(x,y,z));
+        particlesystem->update(dt, 2, glm::vec3(x,y,z));
     }
 
     if (!isThirdPersonCam && keyHeld) {

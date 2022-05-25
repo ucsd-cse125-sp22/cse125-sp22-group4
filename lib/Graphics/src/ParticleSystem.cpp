@@ -1,9 +1,16 @@
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, unsigned int _amount, glm::mat4 _model) {
+ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, ParticleProperty properties) {
 	shader = _shader;
-	amount = _amount;
-    model = _model;
+	amount = properties.amount;
+    particleLife = properties.Life;
+    particleVelocity = properties.Velocity;
+    randomPositionRange = properties.randomPositionRange;
+    randomColor = properties.randomColor;
+    colorFade = properties.colorFade;
+    blendMethod = properties.blendMethod;
+
+    model = glm::mat4(1); 
 
     //load texture from textureFile
     glGenTextures(1, &TextureID);
@@ -55,12 +62,12 @@ ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, unsigned 
         this->particles.push_back(Particle());
 }
 
-void ParticleSystem::update(float dt, GraphicObject& object, unsigned int newParticles, glm::vec3 offset) {
+void ParticleSystem::update(float dt, unsigned int newParticles, glm::vec3 offset) {
     // add new particles 
     for (unsigned int i = 0; i < newParticles; ++i)
     {
         int unusedParticle = this->firstUnusedParticle();
-        this->respawnParticle(this->particles[unusedParticle], object, offset);
+        this->respawnParticle(this->particles[unusedParticle], offset);
     }
     // update all particles
     for (unsigned int i = 0; i < this->amount; ++i)
@@ -70,7 +77,7 @@ void ParticleSystem::update(float dt, GraphicObject& object, unsigned int newPar
         if (p.Life > 0.0f)
         {	// particle is alive, thus update
             p.Position -= p.Velocity * dt;
-            p.Color.a -= dt * 10.0f;
+            p.Color.a -= dt * colorFade;
         }
     }
 }
@@ -79,7 +86,13 @@ void ParticleSystem::draw(const glm::mat4& viewProjMat, const glm::vec3& Camera_
     // use additive blending to give it a 'glow' effect
     glDepthMask(false);
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if (blendMethod == 0) {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    else {
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    }
+    
     glUseProgram(shader);
     for (Particle particle : particles)
     {
@@ -98,7 +111,7 @@ void ParticleSystem::draw(const glm::mat4& viewProjMat, const glm::vec3& Camera_
             glBindVertexArray(0);
         }
     }
-   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
    glDepthMask(true);
    glDisable(GL_BLEND);
 }
@@ -123,15 +136,23 @@ unsigned int ParticleSystem::firstUnusedParticle() {
     return 0;
 }
 
-void ParticleSystem::respawnParticle(Particle& particle, GraphicObject& object, glm::vec3 offset) {
-    glm::vec3 objpos = object.getModel()[3];
-    float random_x = ((rand() % 100) - 50) / 10.0f;
-    float random_y = ((rand() % 100) - 50) / 10.0f;
-    float random_z = ((rand() % 100) - 50) / 10.0f;
+void ParticleSystem::respawnParticle(Particle& particle, glm::vec3 offset) {
+
+    particle.Life = particleLife;
+    particle.Velocity = particleVelocity;
+
+    float LO = -randomPositionRange;
+    float HI = randomPositionRange;
+    float random_x = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+    float random_y = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+    float random_z = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+    particle.Position = glm::vec3(random_x + offset.x, random_y + offset.y, random_z + offset.z);
 
     float rColor = 0.5f + ((rand() % 100) / 100.0f);
-    particle.Position = glm::vec3(random_x + offset.x, random_y + offset.y, random_z + offset.z);
-    particle.Color = glm::vec4(rColor, rColor, rColor, 1.0f);
-    particle.Life = 0.5f;
-    particle.Velocity = glm::vec3(0, -10, 0);
+    if (randomColor) {
+        particle.Color = glm::vec4(rColor, rColor, rColor, 1.0f);
+    }
+    else {
+        particle.Color = glm::vec4(1, 1, 1, 1.0f);
+    }
 }
