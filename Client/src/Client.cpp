@@ -104,6 +104,10 @@ bool retPartyIcon;
 int image_width_party_icon = 0;
 int image_height_party_icon = 0;
 GLuint image_texture_party_icon = 0;
+bool retZeroesOnes;
+int image_width_zeroes_ones = 0;
+int image_height_zeroes_ones = 0;
+GLuint image_texture_zeroes_ones = 0;
 
 
 std::vector<Model*> sceneObjects;
@@ -298,7 +302,7 @@ bool Client::initializeClient() {
     item2->scale(glm::vec3(5));
     item3 = new Model("../../objects/books/books.fbx");
     item3->moveGlobal(glm::vec3(65, -1, -10));
-    item3->scale(glm::vec3(5));
+    item3->scale(glm::vec3(6));
     
     //item = new Model("../../objects/backpack/backpack.obj");
 
@@ -341,6 +345,7 @@ bool Client::initializeClient() {
     retDiploma = LoadTextureFromFile("../../objects/ImGui/diploma.png", &image_texture_diploma, &image_width_diploma, &image_height_diploma);
     retHourglass = LoadTextureFromFile("../../objects/ImGui/hourglass.png", &image_texture_hourglass, &image_width_hourglass, &image_height_hourglass);
     retPartyIcon = LoadTextureFromFile("../../objects/ImGui/party_icon.png", &image_texture_party_icon, &image_width_party_icon, &image_height_party_icon);
+    retZeroesOnes = LoadTextureFromFile("../../objects/ImGui/zeroes_and_ones.jpg", &image_texture_zeroes_ones, &image_width_zeroes_ones, &image_height_zeroes_ones);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -676,14 +681,10 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
     
 
     if (id == 0) { // display cat
-        //ImGui::SetCursorPos(ImVec2(locZ, locX));
         ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_cat_icon, ImVec2(locZ-icon_size, locX-icon_size), ImVec2(locZ+icon_size, locX+icon_size), ImVec2(0, 0), ImVec2(1, 1));
-        //ImGui::Image((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_icon, image_height_cat_icon * adjust_icon));
-        //ImGui::GetForegroundDrawList()->AddTriangleFilled(ImVec2(locZ+side, locX), ImVec2(locZ-side, locX+side), ImVec2(locZ-side, locX-side), IM_COL32(r, g, b, 255));
     }
     else if (id < 4) { // display mice
         ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_icon, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
-        //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(locZ, locX), 2, IM_COL32(r, g, b, 255), 100, 2.f);
     }
     else {
       /*  if (currTime % 2 == 0)
@@ -794,26 +795,27 @@ void Client::stationaryItemGUI() {
    /* for (std::unordered_set<T>::iterator itr = players_in_zone.begin(); itr != players_in_zone.end(); ++itr) {
     }*/
     ImGuiWindowFlags flags = 0;
-    float adjustment = 0.15f;
-    flags |= ImGuiWindowFlags_NoBackground;
+    //float adjustment = 0.15f;
+    //flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
 
-    ImGui::SetNextWindowSize(ImVec2(180, 200), 0);
-    ImGui::SetNextWindowPos(ImVec2(window_width - 450, 16));
+    //ImGui::SetNextWindowSize(ImVec2(180, 200), 0);
+    //ImGui::SetNextWindowPos(ImVec2(window_width - 450, 16));
+    ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::Begin("StationaryItem GUI", NULL, flags);
-    ImGui::Image((void*)(intptr_t)image_texture_hourglass, ImVec2(image_width_hourglass * adjustment, image_height_hourglass * adjustment));
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 110 / 255.0f, 51 / 255.0f, 1.0f));
-    ImGui::PushFont(cuteFont);
-    //ImGui::SetCursorPos(ImVec2(window_width - 450 + (image_width_hourglass*adjustment)/2, 15 + (image_height_hourglass*adjustment) / 2));
-    ImGui::SetCursorPosY(77 + image_width_hourglass * adjustment / 2);
-    auto windowWidth = ImGui::GetWindowSize().x;
-    //auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
-    ImGui::SetCursorPosX((windowWidth - image_width_hourglass * adjustment) * 0.5f + 2);
-    ImGui::Text("0:%02d", 9-timeLeftStationaryItem);
-    ImGui::PopFont();
-    ImGui::PopStyleColor();
+    ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
+    //ImGui::Image((void*)(intptr_t)image_texture_hourglass, ImVec2(image_width_hourglass * adjustment, image_height_hourglass * adjustment));
+    //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 110 / 255.0f, 51 / 255.0f, 1.0f));
+    //ImGui::PushFont(cuteFont);
+    //ImGui::SetCursorPosY(77 + image_width_hourglass * adjustment / 2);
+    //auto windowWidth = ImGui::GetWindowSize().x;
+    //ImGui::SetCursorPosX((windowWidth - image_width_hourglass * adjustment) * 0.5f + 2);
+    //ImGui::Text("0:%02d", 9-timeLeftStationaryItem);
+    //ImGui::PopFont();
+    //ImGui::PopStyleColor();
     ImGui::End();
 }
 
