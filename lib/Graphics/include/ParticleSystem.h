@@ -29,7 +29,7 @@ public:
     glm::mat4 model;
 
     void update(float dt, GraphicObject& object, unsigned int newParticles, glm::vec3 offset = glm::vec3(0.0f));
-    void draw(const glm::mat4& viewProjMat);
+    void draw(const glm::mat4& viewProjMat, const glm::vec3& Camera_Right, const glm::vec3& Camera_Up);
 
 };
 #endif // !PARTICLESYSTEM_H

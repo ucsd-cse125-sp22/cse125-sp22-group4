@@ -32,24 +32,22 @@ ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, unsigned 
     printf("texture nrChannels: %d\n", nrChannels);
 
     unsigned int VBO;
-    float particle_quad[] = {
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f,
-
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f
+    static const GLfloat g_vertex_buffer_data[] = {
+         -0.5f, -0.5f, 0.0f,
+          0.5f, -0.5f, 0.0f,
+         -0.5f,  0.5f, 0.0f,
+          0.5f,  0.5f, 0.0f,
     };
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(particle_quad), particle_quad, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
     // set mesh attributes
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glBindVertexArray(0);
 
 
@@ -77,7 +75,7 @@ void ParticleSystem::update(float dt, GraphicObject& object, unsigned int newPar
     }
 }
 
-void ParticleSystem::draw(const glm::mat4& viewProjMat) {
+void ParticleSystem::draw(const glm::mat4& viewProjMat, const glm::vec3& Camera_Right, const glm::vec3& Camera_Up) {
     // use additive blending to give it a 'glow' effect
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glUseProgram(shader);
@@ -89,6 +87,8 @@ void ParticleSystem::draw(const glm::mat4& viewProjMat) {
             glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
             glUniform3fv(glGetUniformLocation(shader, "offset"), 1, glm::value_ptr(particle.Position));
             glUniform4fv(glGetUniformLocation(shader, "color"), 1, glm::value_ptr(particle.Color));
+            glUniform3fv(glGetUniformLocation(shader, "CameraRight_worldspace"), 1, glm::value_ptr(Camera_Right));
+            glUniform3fv(glGetUniformLocation(shader, "CameraUp_worldspace"), 1, glm::value_ptr(Camera_Up));
             glActiveTexture(GL_TEXTURE0); 
             glBindTexture(GL_TEXTURE_2D, TextureID);
             glBindVertexArray(VAO);
@@ -129,5 +129,5 @@ void ParticleSystem::respawnParticle(Particle& particle, GraphicObject& object, 
     particle.Position = glm::vec3(random_x + offset.x, random_y + offset.y, random_z + offset.z);
     particle.Color = glm::vec4(rColor, rColor, rColor, 1.0f);
     particle.Life = 0.5f;
-    particle.Velocity = glm::vec3(0, 0, 0);
+    particle.Velocity = glm::vec3(0, -10, 0);
 }

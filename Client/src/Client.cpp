@@ -397,6 +397,9 @@ void Client::displayCallback() {
     glUniform1i(glGetUniformLocation(particleShader, "sprite"), 0);
     glUseProgram(0);
 
+    glm::vec3 Camera_Right = glm::vec3(currCam->view[0][0], currCam->view[1][0], currCam->view[2][0]);
+    glm::vec3 Camera_Up = glm::vec3(currCam->view[0][1], currCam->view[1][1], currCam->view[2][1]);
+
     glm::mat4 identityMat = glm::mat4(1);
     isThirdPersonCam = false;
     switch (select) {
@@ -414,7 +417,7 @@ void Client::displayCallback() {
        
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
-        particlesystem->draw(currCam->viewProjMat);
+        particlesystem->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
 
         // COLLITION DEBUG
         /*
