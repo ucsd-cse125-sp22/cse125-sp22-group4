@@ -66,7 +66,7 @@ void SitAndHoldObjective::interact(int client_id, bool on) {
 	bool pastToggle = toggled;
 	toggled = !players_in_zone.empty();
 	if (pastToggle == false && toggled == true) {
-		printf("start timer\n");
+		progress = 0;
 		start_time = timer.now();
 	}
 }
@@ -75,8 +75,12 @@ float SitAndHoldObjective::getProgress() {
 	if (disabled || !toggled) return 0.0;
 
 	auto timeNow = timer.now();
-	auto dt = std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - start_time);
-	return dt.count() / 1.0e3;
+	float dt = std::chrono::duration_cast<std::chrono::milliseconds>(timeNow - start_time).count() / 1.0e3;
+	start_time = timer.now();
+
+	int zone_multiplier = players_in_zone.size();
+	progress += zone_multiplier > 1 ? dt * pow(PROGRESS_SCALE, zone_multiplier) : dt;
+	return progress;
 }
 
 bool SitAndHoldObjective::checkAward() {

@@ -2,8 +2,12 @@
 #include "Graphics/include/GraphicObject.h"
 #include "Graphics/include/CollisionDetector.h"
 #include "Constants/include/constants.h"
+
+#include <math.h>
 #include <chrono>
 #include <unordered_set>
+
+#define PROGRESS_SCALE 1.15
 
 class Item
 {
@@ -73,6 +77,7 @@ public:
 
 private:
 	float seconds;
+	float progress;
 	
 
 	std::chrono::steady_clock timer;
