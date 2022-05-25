@@ -961,7 +961,7 @@ void Client::updateItemLocation(glm::mat4 location) {
 
 void Client::updateItem2Location(glm::mat4 location) {
     item2->setModel(location);
-    item2->scale(glm::vec3(5));
+    //item2->scale(glm::vec3(5));
 }
 
 void Client::setStationaryItemCountdown(float t, int h) {
