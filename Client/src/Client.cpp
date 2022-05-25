@@ -100,6 +100,10 @@ bool retHourglass;
 int image_width_hourglass = 0;
 int image_height_hourglass = 0;
 GLuint image_texture_hourglass = 0;
+bool retPartyIcon;
+int image_width_party_icon = 0;
+int image_height_party_icon = 0;
+GLuint image_texture_party_icon = 0;
 
 
 std::vector<Model*> sceneObjects;
@@ -334,6 +338,7 @@ bool Client::initializeClient() {
     retMouseIcon = LoadTextureFromFile("../../objects/ImGui/mouse_icon.png", &image_texture_mouse_icon, &image_width_mouse_icon, &image_height_mouse_icon);
     retDiploma = LoadTextureFromFile("../../objects/ImGui/diploma.png", &image_texture_diploma, &image_width_diploma, &image_height_diploma);
     retHourglass = LoadTextureFromFile("../../objects/ImGui/hourglass.png", &image_texture_hourglass, &image_width_hourglass, &image_height_hourglass);
+    retPartyIcon = LoadTextureFromFile("../../objects/ImGui/party_icon.png", &image_texture_party_icon, &image_width_party_icon, &image_height_party_icon);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -680,7 +685,7 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
     }
 
     //double adjust_icon = 0.01f;
-    float icon_size = 8.0f;
+    float icon_size = 10.0f;
     
 
     if (id == 0) { // display cat
@@ -701,7 +706,10 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
             if (currTime % 2 == 0) {
                 float locX1 = finalDest[3][0] * 1.55 + 25;
                 float locZ1 = abs(finalDest[3][2]) * 1.55 + 25;
-                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_diploma, ImVec2(locZ1 - icon_size, locX1 - icon_size), ImVec2(locZ1 + icon_size, locX1 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+                //ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_diploma, ImVec2(locZ1 - icon_size, locX1 - icon_size), ImVec2(locZ1 + icon_size, locX1 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+                icon_size = 12.0f;
+                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_party_icon, ImVec2(locZ1 - icon_size, locX1 - icon_size), ImVec2(locZ1 + icon_size, locX1 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+            
             }
               
                 //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*1.15 + 24, 75* 1.15 + 26), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
@@ -783,7 +791,7 @@ void Client::finalDestGUI() {
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 110 / 255.0f, 51 / 255.0f, 1.0f));
     ImGui::PushFont(cuteFont);
     //ImGui::SetCursorPos(ImVec2(window_width - 450 + (image_width_hourglass*adjustment)/2, 15 + (image_height_hourglass*adjustment) / 2));
-    ImGui::SetCursorPosY(70 + image_width_hourglass*adjustment/2);
+    ImGui::SetCursorPosY(77 + image_width_hourglass*adjustment/2);
     auto windowWidth = ImGui::GetWindowSize().x;
     //auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
     ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 2);

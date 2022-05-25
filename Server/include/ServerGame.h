@@ -151,4 +151,8 @@ private:
     int finalDestTime = -1; // how much time has elapsed
     int finalDestRotatesTime = 45; // how long it takes for final dest to rotate
     int finalDestLoc = -1;
+
+    // for only doing stationary item respawn once per 60 seconds
+    bool firstTimer = false;
+    bool secondTimer = false;
 };

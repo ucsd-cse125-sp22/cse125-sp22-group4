@@ -169,27 +169,27 @@ void ServerGame::assignSpawnItem2() {
 
     // location 1
     glm::mat4 originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(35, 1, -45));
+    moveGlobal(originalLoc, glm::vec3(35, 0, -45));
     //spin(originalLoc, 90);
     oldItem2Positions[0] = originalLoc;
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(25, 1, -75));
+    moveGlobal(originalLoc, glm::vec3(25, 0, -75));
     spin(originalLoc, 180);
     oldItem2Positions[1] = originalLoc;
     // location 3
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(55, 1, -95));
+    moveGlobal(originalLoc, glm::vec3(55, 0, -95));
     spin(originalLoc, 90);
     oldItem2Positions[2] = originalLoc;
     // location 4
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(125, 1, -25));
+    moveGlobal(originalLoc, glm::vec3(125, 0, -25));
     spin(originalLoc, 90);
     oldItem2Positions[3] = originalLoc;
     //location 5
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(125, 1, -115));
+    moveGlobal(originalLoc, glm::vec3(125, 0, -115));
     oldItem2Positions[4] = originalLoc;
 
     initLoc = oldItem2Positions[random];
@@ -446,6 +446,17 @@ void ServerGame::update()
         auto stop_t = timer_t.now();
         auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
         playTime = test.count();
+
+        if (playTime == 60 && !firstTimer) {
+            firstTimer = true;
+            respawnItem2();
+        }
+        else if (playTime == 120 && !secondTimer) {
+            secondTimer = true;
+            respawnItem2();
+        }
+           
+        
 
         // TODO: round length is fixed as 180 on client.
         if (this->roundLengthSec - playTime <= 0) {
