@@ -403,10 +403,12 @@ void ServerGame::collisionStep() {
                 }
             }
             else if (hitId == stationaryId) {
+                if (i == CAT_ID && !player0DevMode) break; // Cat can't hold objective!
                 stationary->interact(i, true);
                 in_stationary = true;
             }
             else if (hitId == stationary2Id) {
+                if (i == CAT_ID && !player0DevMode) break; // Cat can't hold objective!
                 stationary2->interact(i, true);
                 in_stationary2 = true;
             }
