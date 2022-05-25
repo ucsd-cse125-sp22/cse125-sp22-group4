@@ -16,6 +16,7 @@ struct ParticleProperty {
     unsigned int amount              = 500;   //total amount of particles
     float        Life                = 1.0f; //how long it can live
     glm::vec3    Velocity            = glm::vec3(0, -5, 0);     //initial velocity of particle
+    glm::vec3    useRandomVelocity   = glm::vec3(0, 0, 0);      //the amount of randomness each frame on velocity
     int          randomPositionRange = 5;    //random respawn position from -range to range
     bool         randomColor         = 0;    //use random color each particle or not
     float        colorFade           = 0.5f; //how quick the particle will fade, bigger the quicker
@@ -32,6 +33,7 @@ private:
     unsigned int amount;
     float particleLife;
     glm::vec3 particleVelocity;
+    glm::vec3 useRandomVelocity;
     int randomPositionRange;
     bool randomColor;
     float colorFade;
