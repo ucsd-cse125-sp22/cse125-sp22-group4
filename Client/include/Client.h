@@ -11,6 +11,7 @@
 #include "Graphics/include/Skybox.h"
 #include "Graphics/include/SceneLoader.h"
 #include "Graphics/include/Animator.h"
+#include "Graphics/include/ParticleSystem.h"
 
 #include "Constants/include/constants.h"
 
