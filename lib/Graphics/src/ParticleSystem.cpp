@@ -5,8 +5,31 @@ ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, unsigned 
 	amount = _amount;
     model = _model;
 
-    std::string s(textureFile);
-    TextureID = Model::TextureFromFile(s);
+    //load texture from textureFile
+    glGenTextures(1, &TextureID);
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load(textureFile, &width, &height, &nrChannels, 0);
+
+    if (!data) {
+        spdlog::error("Particle Texture failed to load at: {}", textureFile);
+    }
+
+    glBindTexture(GL_TEXTURE_2D, TextureID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    // unbind texture
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    stbi_image_free(data);
+
+    printf("texture id: %u\n", TextureID);
+    printf("texture width: %d\n", width);
+    printf("texture height: %d\n", height);
+    printf("texture nrChannels: %d\n", nrChannels);
 
     unsigned int VBO;
     float particle_quad[] = {
@@ -18,9 +41,9 @@ ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, unsigned 
         1.0f, 1.0f, 1.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f
     };
-    glGenVertexArrays(1, &this->VAO);
+    glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glBindVertexArray(this->VAO);
+    glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(particle_quad), particle_quad, GL_STATIC_DRAW);
@@ -28,6 +51,7 @@ ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, unsigned 
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glBindVertexArray(0);
+
 
     for (unsigned int i = 0; i < this->amount; ++i)
         this->particles.push_back(Particle());
@@ -48,7 +72,7 @@ void ParticleSystem::update(float dt, GraphicObject& object, unsigned int newPar
         if (p.Life > 0.0f)
         {	// particle is alive, thus update
             p.Position -= p.Velocity * dt;
-            p.Color.a -= dt * 2.5f;
+            p.Color.a -= dt * 10.0f;
         }
     }
 }
@@ -57,7 +81,7 @@ void ParticleSystem::draw(const glm::mat4& viewProjMat) {
     // use additive blending to give it a 'glow' effect
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glUseProgram(shader);
-    for (Particle particle : this->particles)
+    for (Particle particle : particles)
     {
         if (particle.Life > 0.0f)
         {
@@ -65,8 +89,9 @@ void ParticleSystem::draw(const glm::mat4& viewProjMat) {
             glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(model));
             glUniform3fv(glGetUniformLocation(shader, "offset"), 1, glm::value_ptr(particle.Position));
             glUniform4fv(glGetUniformLocation(shader, "color"), 1, glm::value_ptr(particle.Color));
+            glActiveTexture(GL_TEXTURE0); 
             glBindTexture(GL_TEXTURE_2D, TextureID);
-            glBindVertexArray(this->VAO);
+            glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);
             glBindVertexArray(0);
         }
@@ -96,10 +121,13 @@ unsigned int ParticleSystem::firstUnusedParticle() {
 
 void ParticleSystem::respawnParticle(Particle& particle, GraphicObject& object, glm::vec3 offset) {
     glm::vec3 objpos = object.getModel()[3];
-    float random = ((rand() % 100) - 50) / 10.0f;
+    float random_x = ((rand() % 100) - 50) / 10.0f;
+    float random_y = ((rand() % 100) - 50) / 10.0f;
+    float random_z = ((rand() % 100) - 50) / 10.0f;
+
     float rColor = 0.5f + ((rand() % 100) / 100.0f);
-    particle.Position = objpos + random + offset;
+    particle.Position = glm::vec3(random_x + offset.x, random_y + offset.y, random_z + offset.z);
     particle.Color = glm::vec4(rColor, rColor, rColor, 1.0f);
-    particle.Life = 1.0f;
-    particle.Velocity = glm::vec3(1.0f);
+    particle.Life = 0.5f;
+    particle.Velocity = glm::vec3(0, 0, 0);
 }

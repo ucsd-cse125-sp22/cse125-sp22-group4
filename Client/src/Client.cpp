@@ -5,6 +5,7 @@
 // shader, camera and light
 static GLuint shader;
 static GLuint skyboxShader;
+static GLuint particleShader;
 static Camera* camera;
 static ThirdPersonCamera* thirdPersonCamera;
 static int lightCount;
@@ -40,6 +41,9 @@ static Animation* demoAnimation;
 static Animator* animator;
 static Animation* demoAnimation2;
 static Animator* animator2;
+
+//Particles
+static ParticleSystem* particlesystem;
 
 // for ImGui Image display
 int my_image_width = 0;
@@ -160,6 +164,11 @@ static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[4] = { "Animation Demo", "Maze", "Backpack", "Scene import Demo"};
 
+//for particle demo
+float x = 0.0f;
+float y = 0.0f;
+float z = 0.0f;
+
 static glm::mat4 finalDest = glm::mat4(1); //where item is taken to
 
 static bool keys[4];
@@ -272,12 +281,18 @@ bool Client::initializeClient() {
     // initialize shader
     shader = Shader::loadShaders("../../shaders/shader.vert", "../../shaders/shader.frag");
     skyboxShader = Shader::loadShaders("../../shaders/skyboxShader.vert", "../../shaders/skyboxShader.frag");
+    particleShader = Shader::loadShaders("../../shaders/particleShader.vert", "../../shaders/particleShader.frag");
+
     if (!shader) {
-        spdlog::error("Failed to initialize shader programs.");
+        spdlog::error("Failed to initialize main shader programs.");
         return false;
     }
     if (!skyboxShader) {
         spdlog::error("Failed to initialize skyboxShader programs.");
+        return false;
+    }
+    if (!particleShader) {
+        spdlog::error("Failed to initialize particleShader programs.");
         return false;
     }
 
@@ -288,6 +303,9 @@ bool Client::initializeClient() {
     lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {1, 1, 1, 0} };
     lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {0.8, 0.8, 0.8, 1} };
     lightCount = lightPosn.size();
+
+    //initialize particle system
+    particlesystem = new ParticleSystem(particleShader, "../../particles/particle.png", 500, glm::mat4(1));
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -415,6 +433,10 @@ void Client::displayCallback() {
     glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
     glUseProgram(0);
 
+    glUseProgram(particleShader);
+    glUniform1i(glGetUniformLocation(particleShader, "sprite"), 0);
+    glUseProgram(0);
+
     glm::mat4 identityMat = glm::mat4(1);
     isThirdPersonCam = false;
     switch (select) {
@@ -431,6 +453,8 @@ void Client::displayCallback() {
         demoChar2->draw(currCam->viewProjMat, identityMat, shader);
        
         ground->draw(currCam->viewProjMat, identityMat, shader);
+
+        particlesystem->draw(currCam->viewProjMat);
 
         // COLLITION DEBUG
         /*
@@ -519,6 +543,8 @@ void Client::idleCallback(float dt) {
 
         animator->update(dt);
         animator2->update(dt);
+
+        particlesystem->update(dt, *demoChar2, 2, glm::vec3(x,y,z));
     }
 
     if (!isThirdPersonCam && keyHeld) {
@@ -586,6 +612,11 @@ void Client::GUI() {
     ImGui::Separator();
     ImGui::Text("Press F to toggle show/hide mouse");
     ImGui::ListBox("Scene Selection", &select, scenes, IM_ARRAYSIZE(scenes), IM_ARRAYSIZE(scenes));
+    ImGui::Separator();
+    ImGui::Text("particle demo pos");
+    ImGui::SliderFloat("particle x", &x, 0.0f, 5.0f);
+    ImGui::SliderFloat("particle y", &y, 0.0f, 5.0f);
+    ImGui::SliderFloat("particle z", &z, 0.0f, 5.0f);
     ImGui::End();
 }
 
