@@ -200,7 +200,6 @@ void Client::setupGLSettings() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_DEPTH_CLAMP);
     glEnable(GL_MULTISAMPLE);
-    glEnable(GL_BLEND);
     glDepthFunc(GL_LEQUAL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -274,7 +273,7 @@ bool Client::initializeClient() {
     lightCount = lightPosn.size();
 
     //initialize particle system
-    particlesystem = new ParticleSystem(particleShader, "../../particles/star.png", 500, glm::mat4(1));
+    particlesystem = new ParticleSystem(particleShader, "../../particles/80.png", 500, glm::mat4(1));
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));

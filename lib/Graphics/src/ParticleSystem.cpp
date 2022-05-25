@@ -77,7 +77,9 @@ void ParticleSystem::update(float dt, GraphicObject& object, unsigned int newPar
 
 void ParticleSystem::draw(const glm::mat4& viewProjMat, const glm::vec3& Camera_Right, const glm::vec3& Camera_Up) {
     // use additive blending to give it a 'glow' effect
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    glDepthMask(false);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glUseProgram(shader);
     for (Particle particle : particles)
     {
@@ -96,7 +98,9 @@ void ParticleSystem::draw(const glm::mat4& viewProjMat, const glm::vec3& Camera_
             glBindVertexArray(0);
         }
     }
-   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glDepthMask(true);
+   glDisable(GL_BLEND);
 }
 
 //get next dead particle
