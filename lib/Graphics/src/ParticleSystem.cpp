@@ -92,11 +92,11 @@ void ParticleSystem::draw(const glm::mat4& viewProjMat, const glm::vec3& Camera_
             glActiveTexture(GL_TEXTURE0); 
             glBindTexture(GL_TEXTURE_2D, TextureID);
             glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
             glBindVertexArray(0);
         }
     }
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 //get next dead particle

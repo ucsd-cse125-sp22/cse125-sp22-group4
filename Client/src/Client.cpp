@@ -200,9 +200,10 @@ void Client::setupGLSettings() {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_DEPTH_CLAMP);
     glEnable(GL_MULTISAMPLE);
+    glEnable(GL_BLEND);
     glDepthFunc(GL_LEQUAL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 // Simple helper function to load an image into a OpenGL texture with common settings
@@ -273,7 +274,7 @@ bool Client::initializeClient() {
     lightCount = lightPosn.size();
 
     //initialize particle system
-    particlesystem = new ParticleSystem(particleShader, "../../particles/particle.png", 500, glm::mat4(1));
+    particlesystem = new ParticleSystem(particleShader, "../../particles/star.png", 500, glm::mat4(1));
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -402,6 +403,16 @@ void Client::displayCallback() {
 
     glm::mat4 identityMat = glm::mat4(1);
     isThirdPersonCam = false;
+
+    //performance tradeoff: drawing skybox first
+    //to enable alpha blending for particle system
+    glUseProgram(skyboxShader);
+    glUniform1i(glGetUniformLocation(skyboxShader, "skybox"), 0);
+    glUseProgram(0);
+    //drop right column
+    glm::mat4 viewNoTranslate = glm::mat4(glm::mat3(currCam->view));
+    skybox->draw(currCam->projection * viewNoTranslate, skyboxShader);
+
     switch (select) {
     case 0: {
 
@@ -474,13 +485,7 @@ void Client::displayCallback() {
     }
     }
 
-    //drawOBB skybox last for efficiency
-    glUseProgram(skyboxShader);
-    glUniform1i(glGetUniformLocation(skyboxShader, "skybox"), 0);
-    glUseProgram(0);
-    //drop right column
-    glm::mat4 viewNoTranslate = glm::mat4(glm::mat3(currCam->view));
-    skybox->draw(currCam->projection* viewNoTranslate, skyboxShader);
+
 }
 
 /**
