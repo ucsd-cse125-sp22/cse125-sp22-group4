@@ -12,23 +12,40 @@ struct Particle {
     Particle() : Position(0.0f), Velocity(0.0f), Color(1.0f), Life(0.0f) { }
 };
 
+struct ParticleProperty {
+    unsigned int amount              = 500;   //total amount of particles
+    float        Life                = 1.0f; //how long it can live
+    glm::vec3    Velocity            = glm::vec3(0, -5, 0);     //initial velocity of particle
+    int          randomPositionRange = 5;    //random respawn position from -range to range
+    bool         randomColor         = 0;    //use random color each particle or not
+    float        colorFade           = 0.5f; //how quick the particle will fade, bigger the quicker
+    unsigned int blendMethod         = 0;    //how to blend particles, 0 for covering up, 1 for additive
+};
+
 class ParticleSystem{
 private:
     std::vector<Particle> particles;
-    unsigned int amount;
     GLint shader;
     unsigned int VAO;
     unsigned int TextureID;
 
+    unsigned int amount;
+    float particleLife;
+    glm::vec3 particleVelocity;
+    int randomPositionRange;
+    bool randomColor;
+    float colorFade;
+    unsigned int blendMethod;
+
     unsigned int firstUnusedParticle();
-    void respawnParticle(Particle& particle, GraphicObject& object, glm::vec3 offset = glm::vec3(0.0f));
+    void respawnParticle(Particle& particle, glm::vec3 offset = glm::vec3(0.0f));
 public:
-    ParticleSystem(GLint _shader, const char* textureFile, unsigned int _amount, glm::mat4 _model);
+    ParticleSystem(GLint _shader, const char* textureFile, ParticleProperty properties);
     ~ParticleSystem() = default;
 
     glm::mat4 model;
 
-    void update(float dt, GraphicObject& object, unsigned int newParticles, glm::vec3 offset = glm::vec3(0.0f));
+    void update(float dt, unsigned int newParticles, glm::vec3 offset = glm::vec3(0.0f));
     void draw(const glm::mat4& viewProjMat, const glm::vec3& Camera_Right, const glm::vec3& Camera_Up);
 
 };

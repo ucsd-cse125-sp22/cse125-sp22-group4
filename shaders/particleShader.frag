@@ -15,8 +15,5 @@ out vec4 fragColor;
 
 void main() {
 	vec4 texColor = texture(sprite, TexCoords);
-	//if(texColor.a < 1) {
-	//	discard;
-	//}
-	fragColor = texColor;
+	fragColor = texColor * ParticleColor;
 }
