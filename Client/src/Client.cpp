@@ -43,7 +43,10 @@ static Animation* demoAnimation2;
 static Animator* animator2;
 
 //Particles
-static ParticleSystem* particlesystem;
+static ParticleSystem* smokeparticles;
+static ParticleSystem* flameparticles;
+static ParticleSystem* glintparticles;
+
 
 // for ImGui Image display
 int my_image_width = 0;
@@ -305,11 +308,43 @@ bool Client::initializeClient() {
     lightCount = lightPosn.size();
 
     // particle properties
-    ParticleProperty demoparticle = {
+    ParticleProperty smoke = {
+        700,    //amount
+        3.0f,   //Life
+        glm::vec3(0, -3, 0), //Velocity
+        glm::vec3(1, 0, 1), //useRandomVelocity
+        2,      //randomPositionRange
+        1,      //randomColor
+        0.3f,   //colorFade
+        0,      //blendMethod
+    };
+
+    ParticleProperty flame = {
+        200,    //amount
+        0.5f,   //Life
+        glm::vec3(0, -5, 0), //Velocity
+        glm::vec3(0, 3, 0), //useRandomVelocity
+        2,     //randomPositionRange
+        1,      //randomColor
+        1.0f,   //colorFade
+        1,      //blendMethod
+    };
+
+    ParticleProperty glint = {
+        150,    //amount
+        1.0f,   //Life
+        glm::vec3(0, 2, 0), //Velocity
+        glm::vec3(5, 1, 5), //useRandomVelocity
+        2,      //randomPositionRange
+        0,      //randomColor
+        0.7f,   //colorFade
+        0,      //blendMethod
     };
 
     //initialize particle system
-    particlesystem = new ParticleSystem(particleShader, "../../particles/80.png", demoparticle);
+    smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
+    flameparticles = new ParticleSystem(particleShader, "../../particles/flame.png", flame);
+    glintparticles = new ParticleSystem(particleShader, "../../particles/glint.png", glint);
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -467,11 +502,13 @@ void Client::displayCallback() {
         demoChar->draw(currCam->viewProjMat, identityMat, shader);
 
         calcFinalBoneMatrix(animator2);
-        demoChar2->draw(currCam->viewProjMat, identityMat, shader);
+        //demoChar2->draw(currCam->viewProjMat, identityMat, shader);
        
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
-        particlesystem->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        smokeparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        flameparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        glintparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
 
         // COLLITION DEBUG
         /*
@@ -555,7 +592,9 @@ void Client::idleCallback(float dt) {
         animator->update(dt);
         animator2->update(dt);
 
-        particlesystem->update(dt, 2, glm::vec3(x,y,z));
+        smokeparticles->update(dt, 2, glm::vec3(x,y + 1,z));
+        flameparticles->update(dt, 1, glm::vec3(x, y - 2, z));
+        glintparticles->update(dt, 2, glm::vec3(-7, 4, 0));
     }
 
     if (!isThirdPersonCam && keyHeld) {

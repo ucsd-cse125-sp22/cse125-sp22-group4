@@ -5,6 +5,7 @@ ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, ParticleP
 	amount = properties.amount;
     particleLife = properties.Life;
     particleVelocity = properties.Velocity;
+    useRandomVelocity = properties.useRandomVelocity;
     randomPositionRange = properties.randomPositionRange;
     randomColor = properties.randomColor;
     colorFade = properties.colorFade;
@@ -15,6 +16,7 @@ ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, ParticleP
     //load texture from textureFile
     glGenTextures(1, &TextureID);
     int width, height, nrChannels;
+    stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(textureFile, &width, &height, &nrChannels, 0);
 
     if (!data) {
@@ -78,6 +80,12 @@ void ParticleSystem::update(float dt, unsigned int newParticles, glm::vec3 offse
         {	// particle is alive, thus update
             p.Position -= p.Velocity * dt;
             p.Color.a -= dt * colorFade;
+            float random_x = -useRandomVelocity.x + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2* useRandomVelocity.x)));
+            float random_y = -useRandomVelocity.y + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * useRandomVelocity.y)));
+            float random_z = -useRandomVelocity.z + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * useRandomVelocity.z)));
+            p.Velocity.x += random_x/10.0f;
+            p.Velocity.y += random_y/10.0f;
+            p.Velocity.z += random_z/10.0f;
         }
     }
 }
