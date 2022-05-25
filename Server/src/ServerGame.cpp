@@ -202,14 +202,55 @@ void ServerGame::assignSpawnItem2() {
     oldItem2Positions[4] = originalLoc;
 
     initLoc = oldItem2Positions[random];
-    //initLoc = oldItem2Positions[0];
-
-
-    //flag = new Flag(flagInitLoc, glm::mat4(1));
-    //flag->item_state.model = flag->item_state.model * glm::scale(glm::vec3(0.2f));
-    //flag->randomSpawn = random; // remember new location
+   
     stationary->setPosition(initLoc);
     stationary->randomSpawn = random;
+}
+
+void ServerGame::assignSpawnItem3() {
+
+    glm::mat4 initLoc = glm::mat4(1);
+    time_t t;
+
+    srand((unsigned)time(&t));
+    int random = rand() % 5;
+    printf("%d spawn\n", random);
+
+    // location 1
+    glm::mat4 originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(5, 0, -5));
+    scale(originalLoc, glm::vec3(5));
+    //spin(originalLoc, 90);
+    oldItem3Positions[0] = originalLoc;
+    // location 2
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(25, 0, -75));
+    scale(originalLoc, glm::vec3(5));
+    //spin(originalLoc, 180);
+    oldItem3Positions[1] = originalLoc;
+    // location 3
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(55, 0, -95));
+    spin(originalLoc, 90);
+    scale(originalLoc, glm::vec3(5));
+    oldItem3Positions[2] = originalLoc;
+    // location 4
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(125, 0, -25));
+    spin(originalLoc, 90);
+    scale(originalLoc, glm::vec3(5));
+    oldItem3Positions[3] = originalLoc;
+    //location 5
+    originalLoc = glm::mat4(1);
+    moveGlobal(originalLoc, glm::vec3(125, 0, -115));
+    scale(originalLoc, glm::vec3(5));
+    oldItem3Positions[4] = originalLoc;
+
+    //initLoc = oldItem3Positions[random];
+    initLoc = oldItem3Positions[0];
+
+    stationary2->setPosition(initLoc);
+    stationary2->randomSpawn = random;
 }
 
 void ServerGame::respawnItem2() {
@@ -246,12 +287,12 @@ void ServerGame::respawnItem() {
     flag->randomSpawn = random; // remember new location
 }
 
-void ServerGame::setupStationaryObjective() {
+void ServerGame::setupStationaryObjectives() {
     stationary = new SitAndHoldObjective(10.0);
     assignSpawnItem2();
-    //glm::mat4 originalLoc = glm::mat4(1);
-    //moveGlobal(originalLoc, glm::vec3(70, 0, -5));
-    //stationary->setPosition(originalLoc);
+
+    stationary2 = new SitAndHoldObjective(10.0);
+    assignSpawnItem3();
 }
 
 void ServerGame::start() {
@@ -270,7 +311,7 @@ void ServerGame::start() {
 
     // Move item to spawn
     assignSpawnItem();
-    setupStationaryObjective();
+    setupStationaryObjectives();
 
     // Move players to spawn and setup collision
     for (int i = 0; i < PLAYER_NUM; ++i) {
@@ -280,6 +321,7 @@ void ServerGame::start() {
     }
     flagId = collision_detector->insert(flag->getOBB());
     stationaryId = collision_detector->insert(stationary->getOBB());
+    stationary2Id = collision_detector->insert(stationary2->getOBB());
 
     spawnFinalDestination();
     ServerGame::game_started = true;
@@ -350,6 +392,7 @@ void ServerGame::collisionStep() {
 
     for (int i = 0; i < PLAYER_NUM; ++i) {
         bool in_stationary = false;
+        bool in_stationary2 = false;
         for (int hitId : collision_detector->check(i)) {
             if (hitId == flagId) {
                 if (i == CAT_ID && !player0DevMode) break; // Cat can't hold item!
@@ -362,6 +405,10 @@ void ServerGame::collisionStep() {
             else if (hitId == stationaryId) {
                 stationary->interact(i, true);
                 in_stationary = true;
+            }
+            else if (hitId == stationary2Id) {
+                stationary2->interact(i, true);
+                in_stationary2 = true;
             }
             else if (hitId == bearId) {
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
@@ -388,6 +435,10 @@ void ServerGame::collisionStep() {
         // Tell stationary that player is not in
         if (!in_stationary) {
             stationary->interact(i, false);
+        }
+
+        if (!in_stationary2) {
+            stationary2->interact(i, false);
         }
     }
         
@@ -421,9 +472,12 @@ void ServerGame::mouseDead(int client_id) {
     // call mouse.die function???
 }
 
-void ServerGame::checkStationaryObjective() {
+void ServerGame::checkStationaryObjectives() {
     if (stationary->checkAward()) {
         printf("Stationary: Completed!\n");
+    }
+    if (stationary2->checkAward()) {
+        printf("Stationary2: Completed!\n");
     }
 }
 
@@ -476,7 +530,7 @@ void ServerGame::update()
             }
         }
        
-        checkStationaryObjective();
+        checkStationaryObjectives();
         checkCooldownOver();
         checkFinalDestRotates();
         replicateGameState();

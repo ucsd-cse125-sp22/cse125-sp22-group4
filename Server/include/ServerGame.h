@@ -48,12 +48,13 @@ public:
     void collisionStep();
     void receiveFromClients();
 
-    void setupStationaryObjective();
-    void checkStationaryObjective();
+    void setupStationaryObjectives();
+    void checkStationaryObjectives();
 
     void assignSpawn(int client_id);
     void assignSpawnItem();
     void assignSpawnItem2();
+    void assignSpawnItem3();
     void respawnItem();
     void respawnItem2();
     void respawnPlayer(int client_id);
@@ -89,6 +90,7 @@ private:
     Maze* maze;
     Flag* flag;
     SitAndHoldObjective* stationary;
+    SitAndHoldObjective* stationary2;
 
     // The ServerNetwork object 
     ServerNetwork* network;
@@ -107,6 +109,7 @@ private:
     //model of item and player locations at spawn
     glm::mat4 oldItemPositions[ITEM_NUM_LOC];
     glm::mat4 oldItem2Positions[ITEM_NUM_LOC];
+    glm::mat4 oldItem3Positions[ITEM_NUM_LOC];
     glm::mat4 oldPlayerPositions[PLAYER_NUM];
     glm::mat4 oldFinalDestinations[4];
 
@@ -133,6 +136,7 @@ private:
     int flagId;
     int bearId;
     int stationaryId;
+    int stationary2Id;
 
     // these are just for testing respawn
     void isTaken();
