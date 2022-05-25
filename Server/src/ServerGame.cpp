@@ -390,6 +390,9 @@ void ServerGame::collisionStep() {
         collision_detector->update(CollisionDetector::computeOBB(fakePlayerModels[i].getOBB(), player_states[i].model), i);
     }
 
+    // Update objective bounding boxes
+    collision_detector->update(stationary->getOBB(), stationaryId);
+    collision_detector->update(stationary2->getOBB(), stationary2Id);
     collision_detector->update(flag->getOBB(), flagId);
 
     for (int i = 0; i < PLAYER_NUM; ++i) {
@@ -629,16 +632,19 @@ void ServerGame::replicateGameState() {
     memcpy(packet.player_states, player_states, sizeof(player_states));
    
     packet.item_state = flag->item_state;
+
+
+    // ==== STATIONARY TASKS ====
     packet.item2_state.model = stationary->model;
     packet.item2_state.timeLeftHolding = stationary->getProgress();
-
     for (int i = 0; i < 4; i++)
         packet.item2_state.holdId[i] = stationary->holdId[i];
+
     packet.item3_state.model = stationary2->model;
     packet.item3_state.timeLeftHolding = stationary2->getProgress();
-
     for (int i = 0; i < 4; i++)
         packet.item3_state.holdId[i] = stationary2->holdId[i];
+    // ==========================
 
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;
