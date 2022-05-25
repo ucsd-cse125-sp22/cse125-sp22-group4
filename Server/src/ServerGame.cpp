@@ -27,7 +27,8 @@ ServerGame::ServerGame() :
     catSpeed(DEFAULT_CATSPEED), mouseSpeed(DEFAULT_MOUSESPEED),
     roundLengthSec(DEFAULT_ROUNDLENGTHSEC),
     cooldownTimeSec(DEFAULT_COOLDOWNTIMESEC),
-    player0DevMode(DEFAULT_PLAYER0DEVMODE), catViewItemSec(DEFAULT_CATVIEWITEMSEC)
+    player0DevMode(DEFAULT_PLAYER0DEVMODE), catViewItemSec(DEFAULT_CATVIEWITEMSEC),
+    pointsToWin(DEFAULT_POINTSTOWIN)
 {
     gameAlive = false;
     this->ticksSinceConfigCheck = 0;
@@ -45,6 +46,7 @@ ServerGame::ServerGame() :
     collision_detector = new CollisionDetector();
 
     playTime = 0; // game play time init
+    points = 0;
 
     // inaccessible player location for dead mice
     banished = glm::mat4(1);
@@ -340,7 +342,7 @@ void ServerGame::spawnFinalDestination() {
     destModel = oldFinalDestinations[random];
     finalDestLoc = random;
     OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
-    bearId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
+    goalId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
 }
 
 void ServerGame::respawnFinalDest() {
@@ -369,7 +371,7 @@ void ServerGame::respawnFinalDest() {
      
     finalDestLoc = random;
     OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
-    collision_detector->update(CollisionDetector::computeOBB(bearOBB, destModel), bearId);
+    collision_detector->update(CollisionDetector::computeOBB(bearOBB, destModel), goalId);
     //bearId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
 }
 
@@ -412,15 +414,17 @@ void ServerGame::collisionStep() {
                 stationary2->interact(i, true);
                 in_stationary2 = true;
             }
-            else if (hitId == bearId) {
+            else if (hitId == goalId) {
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
                 player_states[i].model = oldModels[i];
                 if (flag->item_state.hold == i) {
-                    // The player with flag hit bear
-                    // TODO: Game shouldn't end immediately.
-                    announceGameEnd(MOUSE_WIN);
-                    gameAlive = false;
-                    printf("[ServerGame::collisionStep] Game end!\n");
+                    // The player with flag hit goal!
+                    printf("Item brought to goal!\n");
+                    ++points;
+                    // TODO: This respawns the item, we need to take it out of the map!
+					flag->item_state.hold = 5;
+                    flag_taken = false;
+                    finalDestTime = -1;
                 }
             }
             else if (hitId > 0 && i > 0 ) {
@@ -477,9 +481,12 @@ void ServerGame::mouseDead(int client_id) {
 void ServerGame::checkStationaryObjectives() {
     if (stationary->checkAward()) {
         printf("Stationary: Completed!\n");
+        ++points;
+        
     }
     if (stationary2->checkAward()) {
         printf("Stationary2: Completed!\n");
+        ++points;
     }
 }
 
@@ -536,6 +543,11 @@ void ServerGame::update()
         checkCooldownOver();
         checkFinalDestRotates();
         replicateGameState();
+
+        if (points == pointsToWin) {
+            announceGameEnd(MOUSE_WIN);
+            gameAlive = false;
+        }
 
         // Check config file every sec
         ++this->ticksSinceConfigCheck;

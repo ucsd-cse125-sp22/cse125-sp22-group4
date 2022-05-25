@@ -25,6 +25,8 @@
 #define DEFAULT_CATVIEWITEMSEC 5
 #define DEFAULT_PLAYER0DEVMODE false
 
+#define DEFAULT_POINTSTOWIN 3
+
 #define CAT_ID 0
 
 // W,S,A,D
@@ -87,6 +89,9 @@ private:
     bool player0DevMode; // allow player 0 to kill mice, hold item, and see everything on the minimap
     int catViewItemSec; // time in seconds cat can view item in minimap
 
+    int points;
+    const int pointsToWin;
+
     Maze* maze;
     Flag* flag;
     SitAndHoldObjective* stationary;
@@ -134,7 +139,7 @@ private:
     // For collision detection
     Model playerModels[PLAYER_NUM];
     int flagId;
-    int bearId;
+    int goalId;
     int stationaryId;
     int stationary2Id;
 
