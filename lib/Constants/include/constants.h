@@ -1,5 +1,6 @@
 #pragma once
 #include "Graphics/include/GraphicObject.h"
+#include <unordered_set>
 #define PLAYER_NUM 4
 #define ITEM_NUM_LOC 5
 #define MAX_PACKET_SIZE 1000000
@@ -30,6 +31,8 @@ struct ItemState {
 
 struct Item2State {
 	glm::mat4 model = glm::mat4(1);
+	float timeLeftHolding = 0.0f;
+	int hold = -1;
 };
 
 struct GameState {

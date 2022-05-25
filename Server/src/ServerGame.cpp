@@ -175,7 +175,7 @@ void ServerGame::assignSpawnItem2() {
     // location 2
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(25, 0, -75));
-    spin(originalLoc, 180);
+    //spin(originalLoc, 180);
     oldItem2Positions[1] = originalLoc;
     // location 3
     originalLoc = glm::mat4(1);
@@ -447,6 +447,7 @@ void ServerGame::update()
         auto test = std::chrono::duration_cast<std::chrono::seconds>(stop_t - start_t);
         playTime = test.count();
 
+        // check to rotate stationary items
         if (playTime == 60 && !firstTimer) {
             firstTimer = true;
             respawnItem2();
@@ -552,6 +553,9 @@ void ServerGame::replicateGameState() {
    
     packet.item_state = flag->item_state;
     packet.item2_state.model = stationary->model;
+    packet.item2_state.timeLeftHolding = stationary->getProgress();
+    packet.item2_state.hold = stationary->holdId;
+    //packet.item2_state.players_in_zone = stationary->players_in_zone;
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;
     packet.game.dest = destModel;

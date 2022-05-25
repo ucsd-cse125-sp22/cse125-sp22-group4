@@ -54,6 +54,7 @@ void SitAndHoldObjective::interact(int client_id, bool on) {
 	// Allow multiple players to be in sit&hold objective
 	bool in_set = players_in_zone.find(client_id) != players_in_zone.end();
 	if (on && !in_set) {
+		holdId = client_id;
 		players_in_zone.insert(client_id);
 	}
 	else if (!on && in_set) {

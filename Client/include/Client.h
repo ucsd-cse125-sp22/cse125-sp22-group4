@@ -20,6 +20,7 @@
 #include "spdlog/spdlog.h"
 
 #include <string>
+#include <unordered_set>
 
 namespace Client {
     GLFWwindow* createWindow(int width, int height, std::string windowTitle);
@@ -38,6 +39,7 @@ namespace Client {
     void miniMapGUI();
     void GameStartGUI();
     void finalDestGUI();
+    void stationaryItemGUI();
 
     MovementState getMovementState();
     RotationState getRotationState();
@@ -50,6 +52,7 @@ namespace Client {
     void updateTime(int t);
     void setCatViewItem(bool c);
     void updateItem2Location(glm::mat4 location);
+    void setStationaryItemCountdown(float t, int h);
 
     bool checkGameStart();
     void setGameStart();

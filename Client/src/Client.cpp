@@ -122,6 +122,8 @@ static bool gameEnded = 0;
 static bool gameStarted = 0;
 static bool gameStartPressed = 0;
 static int finalDestRotateTime = -1;
+static int timeLeftStationaryItem = 0;
+static int stationaryId = -1;
 static bool catSeesItem = false;
 static int numPlayers = 0;
 static int finalTime = 0;
@@ -630,7 +632,6 @@ void Client::ItemHoldGUI() {
     flags |= ImGuiWindowFlags_NoResize;
 
     ImGui::SetNextWindowSize(ImVec2(image_width_mouse_flag * adjustment+10, image_height_mouse_flag*adjustment+10));
-   // ImGui::SetNextWindowPos(ImVec2((window_width - 533)/2, window_height/30), 0, ImVec2(0, 0));
     ImGui::SetNextWindowPos(ImVec2(280, 15), 0, ImVec2(0, 0));
    
     ImGui::Begin("ItemHold GUI", NULL, flags);
@@ -639,17 +640,6 @@ void Client::ItemHoldGUI() {
 
     if (itemhold != PLAYER_NUM + 1) {
         ImGui::Image((void*)(intptr_t)image_texture_mouse_flag, ImVec2(image_width_mouse_flag * adjustment, image_height_mouse_flag * adjustment));
-
-    /*    if (currTime % 2 == 0) {
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 0.95f));
-        }
-        else {
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 0.95f));
-        }
-        ImGui::PushFont(HUGEcuteFont);
-        ImGui::Text("Player %d is holding the Flag!!", itemhold);
-        ImGui::PopFont();
-        ImGui::PopStyleColor();*/
 
        
     }
@@ -662,8 +652,6 @@ void Client::ItemHoldGUI() {
 
 void displayLocation(glm::mat4 model, int id, double adjustment, float height_resize, float width_resize) {
     int r, g, b;
-    //float multX = 1.15 + 26;
-    //float multZ = 1.15 + 24;
     float locX = model[3][0] * 1.55 + 25;
     float locZ = abs(model[3][2]) * 1.55 + 25;
     float side = 3.2f;
@@ -684,7 +672,6 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
         b = 217;
     }
 
-    //double adjust_icon = 0.01f;
     float icon_size = 10.0f;
     
 
@@ -774,7 +761,7 @@ void Client::miniMapGUI() {
 }
 
 void Client::finalDestGUI() {
-    if (finalDestRotateTime < 0 || gameEnded == 1)
+    if (finalDestRotateTime < 0 || gameEnded == 1 || itemhold != my_id)
         return;
 
     ImGuiWindowFlags flags = 0;
@@ -796,6 +783,35 @@ void Client::finalDestGUI() {
     //auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
     ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 2);
     ImGui::Text("0:%02d", finalDestRotateTime);
+    ImGui::PopFont();
+    ImGui::PopStyleColor();
+    ImGui::End();
+}
+
+void Client::stationaryItemGUI() {
+    if (gameEnded == 1 || timeLeftStationaryItem == 0)
+        return;
+   /* for (std::unordered_set<T>::iterator itr = players_in_zone.begin(); itr != players_in_zone.end(); ++itr) {
+    }*/
+    ImGuiWindowFlags flags = 0;
+    float adjustment = 0.15f;
+    flags |= ImGuiWindowFlags_NoBackground;
+    flags |= ImGuiWindowFlags_NoTitleBar;
+    flags |= ImGuiWindowFlags_NoScrollbar;
+    flags |= ImGuiWindowFlags_NoResize;
+
+    ImGui::SetNextWindowSize(ImVec2(180, 200), 0);
+    ImGui::SetNextWindowPos(ImVec2(window_width - 450, 16));
+    ImGui::Begin("StationaryItem GUI", NULL, flags);
+    ImGui::Image((void*)(intptr_t)image_texture_hourglass, ImVec2(image_width_hourglass * adjustment, image_height_hourglass * adjustment));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 110 / 255.0f, 51 / 255.0f, 1.0f));
+    ImGui::PushFont(cuteFont);
+    //ImGui::SetCursorPos(ImVec2(window_width - 450 + (image_width_hourglass*adjustment)/2, 15 + (image_height_hourglass*adjustment) / 2));
+    ImGui::SetCursorPosY(77 + image_width_hourglass * adjustment / 2);
+    auto windowWidth = ImGui::GetWindowSize().x;
+    //auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
+    ImGui::SetCursorPosX((windowWidth - image_width_hourglass * adjustment) * 0.5f + 2);
+    ImGui::Text("0:%02d", 9-timeLeftStationaryItem);
     ImGui::PopFont();
     ImGui::PopStyleColor();
     ImGui::End();
@@ -946,6 +962,12 @@ void Client::updateItemLocation(glm::mat4 location) {
 void Client::updateItem2Location(glm::mat4 location) {
     item2->setModel(location);
     item2->scale(glm::vec3(5));
+}
+
+void Client::setStationaryItemCountdown(float t, int h) {
+    timeLeftStationaryItem = (int)t;
+    stationaryId = h;
+    //players_in_zone = players;
 }
 
 void Client::setNumPlayers(int p) {

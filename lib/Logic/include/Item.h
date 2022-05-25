@@ -50,6 +50,7 @@ public:
 	// position of objective
 	glm::mat4 model = glm::mat4(1);
 	int randomSpawn;
+	int holdId;
 
 protected:
 	StationaryObjective(bool toggled, bool disabled) : toggled(toggled), disabled(disabled) {};
@@ -68,11 +69,11 @@ public:
 	float getProgress() override;
 	bool checkAward() override;
 	void interact(int client_id, bool on) override;
-
+	std::unordered_set<int> players_in_zone;
 
 private:
 	float seconds;
-	std::unordered_set<int> players_in_zone;
+	
 
 	std::chrono::steady_clock timer;
 	std::chrono::steady_clock::time_point start_time;
