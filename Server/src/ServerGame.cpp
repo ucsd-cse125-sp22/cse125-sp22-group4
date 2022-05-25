@@ -617,10 +617,15 @@ void ServerGame::replicateGameState() {
     packet.item_state = flag->item_state;
     packet.item2_state.model = stationary->model;
     packet.item2_state.timeLeftHolding = stationary->getProgress();
+
+    for (int i = 0; i < 4; i++)
+        packet.item2_state.holdId[i] = stationary->holdId[i];
     packet.item3_state.model = stationary2->model;
     packet.item3_state.timeLeftHolding = stationary2->getProgress();
 
-    //packet.item2_state.players_in_zone = stationary->players_in_zone;
+    for (int i = 0; i < 4; i++)
+        packet.item3_state.holdId[i] = stationary2->holdId[i];
+
     packet.game.gameTime = playTime;
     packet.game.numPlayers = client_id;
     packet.game.dest = destModel;

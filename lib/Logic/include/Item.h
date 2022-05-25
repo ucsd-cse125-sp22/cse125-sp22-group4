@@ -50,7 +50,7 @@ public:
 	// position of objective
 	glm::mat4 model = glm::mat4(1);
 	int randomSpawn;
-	int holdId;
+	bool holdId[4] = { false, false, false , false };
 
 protected:
 	StationaryObjective(bool toggled, bool disabled) : toggled(toggled), disabled(disabled) {};

@@ -132,6 +132,8 @@ static bool gameStartPressed = 0;
 static int finalDestRotateTime = -1;
 static int timeLeftStationaryItem = 0;
 static int timeLeftStationaryItem2 = 0;
+static bool* holdIdStationary;
+static bool* holdIdStationary2;
 static int stationaryId = -1;
 static bool catSeesItem = false;
 static int numPlayers = 0;
@@ -661,7 +663,7 @@ void Client::ItemHoldGUI() {
     ImGui::End();
 }
 
-void displayLocation(glm::mat4 model, int id, double adjustment, float height_resize, float width_resize) {
+void displayLocation(glm::mat4 model, int id) {
     int r, g, b;
     float locX = model[3][0] * 1.55 + 25;
     float locZ = abs(model[3][2]) * 1.55 + 25;
@@ -683,7 +685,7 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
         b = 217;
     }
 
-    float icon_size = 10.0f;
+    float icon_size = 11.0f;
     
 
     if (id == 0) { // display cat
@@ -709,10 +711,12 @@ void displayLocation(glm::mat4 model, int id, double adjustment, float height_re
                 //ImGui::GetForegroundDrawList()->AddCircle(ImVec2(75*1.15 + 24, 75* 1.15 + 26), 2, IM_COL32(204, 0, 204, 255), 100, 2.f);
         }
         else if (id == 4 && itemhold == PLAYER_NUM + 1) { // if no player holding flag, show location of flag
+            icon_size = 9.0f;
             if (currTime % 2 == 0)
                 ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         }
         else if (id >= 5) {
+            icon_size = 9.0f;
             if (currTime % 2 == 0)
                 ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         }
@@ -741,31 +745,31 @@ void Client::miniMapGUI() {
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
     
     if (players[0] && my_id == 0) {
-        displayLocation(players[0]->getModel(), 0, adjustment, height_resize, width_resize);
+        displayLocation(players[0]->getModel(), 0);
     }
     if (players[1]) {
-        displayLocation(players[1]->getModel(), 1, adjustment, height_resize, width_resize);
+        displayLocation(players[1]->getModel(), 1);
     }
 
     if (players[2]) {
-        displayLocation(players[2]->getModel(), 2, adjustment, height_resize, width_resize);
+        displayLocation(players[2]->getModel(), 2);
     }
 
     if (players[3]) {
-        displayLocation(players[3]->getModel(), 3, adjustment, height_resize, width_resize);
+        displayLocation(players[3]->getModel(), 3);
     }
 
     
     if (item && (my_id != 0 || catSeesItem)) {
-        displayLocation(item->getModel(), 4, adjustment, height_resize, width_resize);
+        displayLocation(item->getModel(), 4);
     }
 
     if (item2 && (my_id != 0 || catSeesItem)) {
-        displayLocation(item2->getModel(), 5, adjustment, height_resize, width_resize);
+        displayLocation(item2->getModel(), 5);
     }
 
     if (item3 && (my_id != 0 || catSeesItem)) {
-        displayLocation(item3->getModel(), 6, adjustment, height_resize, width_resize);
+        displayLocation(item3->getModel(), 6);
     }
 
     ImGui::End();
@@ -800,7 +804,7 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded == 1)
+    if (gameEnded == 1 || my_id == 0) // don't display on game over or if cat
         return;
  
     ImGuiWindowFlags flags = 0;
@@ -812,12 +816,12 @@ void Client::stationaryItemGUI() {
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
 
-    if (timeLeftStationaryItem > 0) { // for computer stationary item
+    if (timeLeftStationaryItem > 0 && holdIdStationary[my_id]) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
         ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
         ImGui::End();
     }
-    else if (timeLeftStationaryItem2 > 0) { // for books stationary item
+    else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id]) { // for books stationary item
         ImGui::Begin("StationaryItem2 GUI", NULL, flags);
         ImGui::Image((void*)(intptr_t)image_texture_fireplace, ImVec2(window_width, window_height));
         ImGui::End();
@@ -976,14 +980,14 @@ void Client::updateItem3Location(glm::mat4 location) {
     item3->setModel(location);
 }
 
-void Client::setStationaryItemCountdown(float t) {
+void Client::setStationaryItemCountdown(float t, bool* holdId) {
     timeLeftStationaryItem = (int)t;
-    //players_in_zone = players;
+    holdIdStationary = holdId;
 }
 
-void Client::setStationaryItem2Countdown(float t) {
+void Client::setStationaryItem2Countdown(float t, bool* holdId) {
     timeLeftStationaryItem2 = (int)t;
-    //players_in_zone = players;
+    holdIdStationary2 = holdId;
 }
 
 void Client::setNumPlayers(int p) {

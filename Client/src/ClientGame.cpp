@@ -152,8 +152,8 @@ void ClientGame::update(MovementState s, RotationState r)
                 setFinalDest(packet->game.dest, packet->game.finalDestRotateTime);
                 Client::updateItem2Location(packet->item2_state.model);
                 Client::updateItem3Location(packet->item3_state.model);
-                Client::setStationaryItemCountdown(packet->item2_state.timeLeftHolding);
-                Client::setStationaryItem2Countdown(packet->item3_state.timeLeftHolding);
+                Client::setStationaryItemCountdown(packet->item2_state.timeLeftHolding, packet->item2_state.holdId);
+                Client::setStationaryItem2Countdown(packet->item3_state.timeLeftHolding, packet->item3_state.holdId);
                 Client::setCatViewItem(packet->game.catViewItem);
                 //printMat4(packet->item_state.model);
                 

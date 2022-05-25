@@ -53,8 +53,8 @@ namespace Client {
     void setCatViewItem(bool c);
     void updateItem2Location(glm::mat4 location);
     void updateItem3Location(glm::mat4 location);
-    void setStationaryItemCountdown(float t);
-    void setStationaryItem2Countdown(float t);
+    void setStationaryItemCountdown(float t, bool* holdId);
+    void setStationaryItem2Countdown(float t, bool* holdId);
 
     bool checkGameStart();
     void setGameStart();
