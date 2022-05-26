@@ -90,6 +90,7 @@ bool SitAndHoldObjective::checkAward() {
 	if (getProgress() >= seconds) {
 		// Reward! Then disable yourself
 		disabled = true;
+		taskSuccess = true;
 		return true;
 	}
 	printf("Stationary: Making progress! %3.3lf\n", getProgress());

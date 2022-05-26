@@ -131,7 +131,7 @@ void ServerGame::assignSpawnItem() {
 
     srand((unsigned)time(&t));
     int random = rand() % 5;
-    printf("%d spawn\n", random);
+    printf("%d item spawn\n", random);
     
     // location 1
     glm::mat4 originalLoc = glm::mat4(1);
@@ -350,11 +350,11 @@ void ServerGame::spawnFinalDestination() {
     time_t t;
     srand((unsigned)time(&t));
     int random = rand() % 4;
-
-    oldFinalDestinations[0] = glm::translate(glm::mat4(1), glm::vec3(95, 2, -35)); // fallenstar
+    printf("spawn final dest %d\n", random);
+    oldFinalDestinations[0] = glm::translate(glm::mat4(1), glm::vec3(95, 0, -35)); // fallenstar
     oldFinalDestinations[1] = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75)); // geisel
     oldFinalDestinations[2] = glm::translate(glm::mat4(1), glm::vec3(55, -3, -135)); // bearl
-    oldFinalDestinations[3] = glm::translate(glm::mat4(1), glm::vec3(105, 2, -135)); // sungod
+    oldFinalDestinations[3] = glm::translate(glm::mat4(1), glm::vec3(105, -1, -135)); // sungod
 
     destModel = oldFinalDestinations[random];
     finalDestLoc = random;
@@ -364,10 +364,10 @@ void ServerGame::respawnFinalDest() {
     time_t t;
     srand((unsigned)time(&t));
     int random = finalDestLoc;
-    //printf("random %d\n", random);
+    
     while (random == finalDestLoc)
         random = rand() % 4;
-
+    printf("respawn final dest %d\n", random);
     OBB collisionModel;
 
     // TODO: adjust OBB accordingly
@@ -437,6 +437,7 @@ void ServerGame::collisionStep() {
             else if (hitId == goalId) {
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
                 player_states[i].model = oldModels[i];
+                printf("flag %d i %d\n", flag->item_state.hold, i);
                 if (flag->item_state.hold == i) {
                     // The player with flag hit goal!
                     printf("Item brought to goal!\n");
@@ -661,11 +662,13 @@ void ServerGame::replicateGameState() {
     // ==== STATIONARY TASKS ====
     packet.item2_state.model = stationary->model;
     packet.item2_state.timeLeftHolding = stationary->getProgress();
+    packet.item2_state.taskSuccess = stationary->taskSuccess;
     for (int i = 0; i < 4; i++)
         packet.item2_state.holdId[i] = stationary->holdId[i];
 
     packet.item3_state.model = stationary2->model;
     packet.item3_state.timeLeftHolding = stationary2->getProgress();
+    packet.item3_state.taskSuccess = stationary2->taskSuccess;
     for (int i = 0; i < 4; i++)
         packet.item3_state.holdId[i] = stationary2->holdId[i];
     // ==========================
