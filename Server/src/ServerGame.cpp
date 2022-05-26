@@ -512,6 +512,13 @@ void ServerGame::update()
     receiveFromClients();
     //collision should be handled as fast as movement is handled
     if (!ServerGame::game_started) {
+        // Still need to tell clients game state...
+        auto stop_time = timer.now();
+        auto dt = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
+        if (dt.count() >= FPS_MAX) {
+            start_time = timer.now();
+            updatePlayerCount();
+        }
         return;
     }
     collisionStep();
@@ -622,6 +629,17 @@ void ServerGame::checkCooldownOver() {
         // catViewItem is true if the cat has viewed the item for less time than catViewItemSec
         catViewItem = std::chrono::duration_cast<std::chrono::seconds>(timer_mouse.now() - lastMouseDeath).count() < catViewItemSec;
     }
+}
+
+void ServerGame::updatePlayerCount() {
+    const unsigned int packet_size = sizeof(GameStatePacket);
+    GameStatePacket packet;
+    memcpy(packet.player_states, player_states, sizeof(player_states));
+    packet.game.numPlayers = client_id;
+
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+    network->sendToAll(packet_bytes, packet_size);
+    free(packet_bytes);
 }
 
 //broadcast game state to all clients

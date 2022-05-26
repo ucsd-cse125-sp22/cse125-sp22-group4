@@ -67,6 +67,7 @@ public:
     void handleSimplePacket(int client_id, SimplePacket* s);
     void handleRotatePacket(int client_id, RotatePacket* s);
 
+    void updatePlayerCount();
     void replicateGameState();
     void announceGameEnd(bool winner);
 
