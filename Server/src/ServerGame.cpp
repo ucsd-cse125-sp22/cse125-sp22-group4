@@ -298,13 +298,15 @@ void ServerGame::setupStationaryObjectives() {
 }
 
 void ServerGame::start() {
-    gameAlive = true;
+    gameAlive = false;
+    playTime = 0; // Reset play time
+    points = 0; // Reset points
 
+    // Announce game start
     const unsigned int packet_size = sizeof(SimplePacket);
     SimplePacket packet;
     packet.packet_type = GAME_START;
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
-
     network->sendToAll(packet_bytes, packet_size);
     free(packet_bytes);
 
@@ -451,9 +453,6 @@ void ServerGame::collisionStep() {
         }
     }
         
-        // All inserts are in start(), so we know *for now* if it isn't the flag or -1, it's another player
-
-    //printf("\n");
 }
 
 void ServerGame::mouseDead(int client_id) {
@@ -476,9 +475,6 @@ void ServerGame::mouseDead(int client_id) {
 
     lastMouseDeath = timer_mouse.now();
     cooldown.push({ client_id, timer_mouse.now() });
-    
-    //printMat4(player_states[client_id].model);
-    // call mouse.die function???
 }
 
 void ServerGame::checkStationaryObjectives() {
@@ -495,7 +491,6 @@ void ServerGame::checkStationaryObjectives() {
 
 void ServerGame::update()
 {
-  
     // get new clients
     if (network->acceptNewClient(client_id))
     {
@@ -531,8 +526,6 @@ void ServerGame::update()
             secondTimer = true;
             respawnItem2();
         }
-           
-        
 
         // TODO: round length is fixed as 180 on client.
         if (this->roundLengthSec - playTime <= 0) {
@@ -566,11 +559,9 @@ void ServerGame::checkFinalDestRotates() {
         auto stop_finalDest = timer_finalDest.now();
         auto diff = std::chrono::duration_cast<std::chrono::seconds>(stop_finalDest - start_finalDest);
         finalDestTime = finalDestRotatesTime - diff.count();
-        //printf("%d new time\n", finalDestTime);
         if (finalDestTime < 0) {
             respawnFinalDest();
             start_finalDest = timer_finalDest.now();
-            //flag_taken = false;
         }
     }
 }
@@ -724,7 +715,6 @@ void ServerGame::receiveFromClients()
             }
         }
     }
-    // Replicate game state when everything is processed in this frame.
 }
 
 //method to translate the model matrix
@@ -757,12 +747,9 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
     case GAME_START:
     {
         // If we recieve a GAME_START packet from client, bounce to other clients!
-        printf("Receive game start packet?\n");
         if (gameAlive) {
-            printf("game is already up...?\n");
             break;
         }
-
 
         printf("Game start!\n");
         start();
@@ -842,7 +829,6 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         return;
 
     netDirection = glm::normalize(netDirection);
-    
     glm::vec3 delta = netDirection * (float) playerSpeed;
     moveLocal(state.model, delta);
 
