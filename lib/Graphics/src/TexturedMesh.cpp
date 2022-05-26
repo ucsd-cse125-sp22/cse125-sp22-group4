@@ -63,7 +63,6 @@ void TexturedMesh::draw(const glm::mat4& viewProjMat,
     // get the locations and send the uniforms to the shader
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(actualModel));
-    glUniform1i(glGetUniformLocation(shader, "mode"), 1);
     glUniform4fv(glGetUniformLocation(shader, "ambient"), 1, glm::value_ptr(phongMat.ambient));
     glUniform4fv(glGetUniformLocation(shader, "diffuse"), 1, glm::value_ptr(phongMat.diffuse));
     glUniform4fv(glGetUniformLocation(shader, "specular"), 1, glm::value_ptr(phongMat.specular));
@@ -72,35 +71,38 @@ void TexturedMesh::draw(const glm::mat4& viewProjMat,
     glUniform1i(glGetUniformLocation(shader, "hasBones"), hasBones);
 
     // bind appropriate textures
-    unsigned int diffuseNr = 1;
-    unsigned int specularNr = 1;
-    unsigned int normalNr = 1;
-    unsigned int heightNr = 1;
-    unsigned int ambientNr = 1;
-    unsigned int shininessNr = 1;
+    unsigned int diffuseNr = 0;
+    unsigned int specularNr = 0;
+    unsigned int normalNr = 0;
+    unsigned int ambientNr = 0;
+    unsigned int shininessNr = 0;
     for (unsigned int i = 0; i < textures.size(); i++) {
         glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
         // retrieve texture number (the N in diffuse_textureN)
         std::string number;
         std::string name = textures[i].type;
         if (name == "texture_diffuse")
-            number = std::to_string(diffuseNr++);
+            number = std::to_string(++diffuseNr);
         else if (name == "texture_specular")
-            number = std::to_string(specularNr++); // transfer unsigned int to string
+            number = std::to_string(++specularNr); // transfer unsigned int to string
         else if (name == "texture_normal")
-            number = std::to_string(normalNr++); // transfer unsigned int to string
-        else if (name == "texture_height")
-            number = std::to_string(heightNr++); // transfer unsigned int to string
+            number = std::to_string(++normalNr); // transfer unsigned int to string
         else if (name == "texture_ambient")
-            number = std::to_string(ambientNr++); // transfer unsigned int to string
+            number = std::to_string(++ambientNr); // transfer unsigned int to string
         else if (name == "texture_shininess")
-            number = std::to_string(shininessNr++); // transfer unsigned int to string
+            number = std::to_string(++shininessNr); // transfer unsigned int to string
 
         // now set the sampler to the correct texture unit
         glUniform1i(glGetUniformLocation(shader, (name + number).c_str()), i);
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textures[i].id);
     }
+
+    glUniform1i(glGetUniformLocation(shader, "diffuseMode"), diffuseNr);
+    glUniform1i(glGetUniformLocation(shader, "specularMode"), specularNr);
+    glUniform1i(glGetUniformLocation(shader, "normalMode"), normalNr);
+    glUniform1i(glGetUniformLocation(shader, "ambientMode"), ambientNr);
+    glUniform1i(glGetUniformLocation(shader, "shininessMode"), shininessNr);
 
     // draw mesh
     glBindVertexArray(VAO);

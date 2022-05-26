@@ -20,18 +20,23 @@ uniform vec4 lightColorn[10]; // colors of lights
 uniform mat4 model;
 
 //material parameters.
-uniform int mode;
 uniform vec4 ambient;
 uniform vec4 diffuse;
 uniform vec4 specular;
 uniform vec4 emission;
 uniform float shininess;
+
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_normal1;
-uniform sampler2D texture_height1;
 uniform sampler2D texture_ambient1;
 uniform sampler2D texture_shininess1;
+
+uniform int diffuseMode;
+uniform int specularMode;
+uniform int normalMode;
+uniform int ambientMode;
+uniform int shininessMode;
 
 vec4 ComputeLight (const in vec3 direction, const in vec4 lightcolor, const in vec3 normal,
                     const in vec3 halfvec, const in vec4 mydiffuse,
@@ -42,7 +47,7 @@ vec4 ComputeLight (const in vec3 direction, const in vec4 lightcolor, const in v
     float nDotH = dot(normal, halfvec);
     vec4 phong = myspecular * lightcolor * pow(max(nDotH, 0.0), myshininess) ;
 
-    vec4 retval = lambert + phong ;
+    vec4 retval = lambert + phong;
     return retval ;
 }
 
@@ -62,35 +67,18 @@ void main() {
     vec4 realAmbient = vec4(0);
     vec4 realDiffuse = vec4(0);
     vec4 realSpecular = vec4(0);
-    vec4 realEmission = vec4(0);
     float realShininess = 0;
+    
     vec4 ambientLight = vec4(0.1);
-
+    vec4 normalTexture = texture(texture_normal1, texCoords);
     vec4 roughnessTexture = texture(texture_shininess1, texCoords);
     float roughnessGrey = (0.299 * roughnessTexture[0] + 0.587 * roughnessTexture[1] + 0.114 * 0.587 * roughnessTexture[2]);
 
-    switch (mode) {
-    // phong
-    case 0:
-        realNormal = worldNormal;
-        realAmbient = ambient * ambientLight;
-        realDiffuse = diffuse;
-        realSpecular = specular;
-        realEmission = emission;
-        realShininess = shininess;
-        break;
-    // textured
-    case 1:
-        vec3 normal = vec3(texture(texture_normal1, texCoords));
-        normal = normal * 2.0 - 1.0;
-        realNormal = normalize(TBN * normal);
-        realAmbient = texture(texture_ambient1, texCoords) * ambientLight;
-        realDiffuse = texture(texture_diffuse1, texCoords) * diffuse;
-        realSpecular = texture(texture_specular1, texCoords) * specular;
-        realShininess = roughnessGrey * shininess ;
-        //realShininess = shininess;
-        break;
-    }
+    realNormal = normalMode == 1 ? normalize(TBN * (vec3(normalTexture) * 2.0 - 1.0)) : worldNormal;
+    realAmbient = ambientMode == 1 ? texture(texture_ambient1, texCoords) * ambientLight : ambient * ambientLight;
+    realDiffuse = diffuseMode == 1 ? texture(texture_diffuse1, texCoords) * diffuse : diffuse;
+    realSpecular = specularMode == 1 ? texture(texture_specular1, texCoords) * specular : specular;
+    realShininess = shininessMode == 1 ? roughnessGrey * shininess : shininess;
 
     for(int i = 0; i < lightCount; ++i) {
         //directional
@@ -111,5 +99,6 @@ void main() {
         }
     }
 
-    fragColor = col + realAmbient + realEmission;
+    fragColor = col + realAmbient + emission;
+    //fragColor = vec4(realNormal + vec3(1) / 2, 1);
 }
