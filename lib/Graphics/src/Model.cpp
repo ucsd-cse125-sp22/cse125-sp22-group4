@@ -224,7 +224,7 @@ GraphicObject* Model::processMesh(aiMesh* mesh, const aiScene* scene) {
 
     // 4. AO maps
     std::vector<Texture> ambientOcclusionMaps =
-        loadMaterialTextures(material, aiTextureType_LIGHTMAP, "texture_ambient");
+        loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_ambient");
     textures.insert(textures.end(), ambientOcclusionMaps.begin(), ambientOcclusionMaps.end());
 
     // 5. Roughness maps

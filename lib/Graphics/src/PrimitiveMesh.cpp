@@ -65,13 +65,18 @@ void PrimitiveMesh::draw(const glm::mat4& viewProjMat,
     // get the locations and send the uniforms to the shader
     glUniformMatrix4fv(glGetUniformLocation(shader, "viewProj"), 1, false, glm::value_ptr(viewProjMat));
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, false, glm::value_ptr(actualModel));
-    glUniform1i(glGetUniformLocation(shader, "mode"), 0);
     glUniform4fv(glGetUniformLocation(shader, "ambient"), 1, glm::value_ptr(phongMat.ambient));
     glUniform4fv(glGetUniformLocation(shader, "diffuse"), 1, glm::value_ptr(phongMat.diffuse));
     glUniform4fv(glGetUniformLocation(shader, "specular"), 1, glm::value_ptr(phongMat.specular));
     glUniform4fv(glGetUniformLocation(shader, "emission"), 1, glm::value_ptr(phongMat.emission));
     glUniform1f(glGetUniformLocation(shader, "shininess"), phongMat.shininess);
     glUniform1i(glGetUniformLocation(shader, "hasBones"), hasBones);
+
+    glUniform1i(glGetUniformLocation(shader, "diffuseMode"), 0);
+    glUniform1i(glGetUniformLocation(shader, "specularMode"), 0);
+    glUniform1i(glGetUniformLocation(shader, "normalMode"), 0);
+    glUniform1i(glGetUniformLocation(shader, "ambientMode"), 0);
+    glUniform1i(glGetUniformLocation(shader, "shininessMode"), 0);
 
     // draw mesh
     glBindVertexArray(VAO);
