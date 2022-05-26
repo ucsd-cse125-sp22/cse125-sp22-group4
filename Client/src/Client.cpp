@@ -352,8 +352,8 @@ bool Client::initializeClient() {
     retDiploma = LoadTextureFromFile("../../objects/ImGui/diploma.png", &image_texture_diploma, &image_width_diploma, &image_height_diploma);
     retHourglass = LoadTextureFromFile("../../objects/ImGui/hourglass.png", &image_texture_hourglass, &image_width_hourglass, &image_height_hourglass);
     retPartyIcon = LoadTextureFromFile("../../objects/ImGui/party_icon.png", &image_texture_party_icon, &image_width_party_icon, &image_height_party_icon);
-    retZeroesOnes = LoadTextureFromFile("../../objects/ImGui/zeroes_and_ones.jpg", &image_texture_zeroes_ones, &image_width_zeroes_ones, &image_height_zeroes_ones);
-    retFireplace = LoadTextureFromFile("../../objects/ImGui/fireplace.png", &image_texture_fireplace, &image_width_fireplace, &image_height_fireplace);
+    retZeroesOnes = LoadTextureFromFile("../../objects/ImGui/nyan.png", &image_texture_zeroes_ones, &image_width_zeroes_ones, &image_height_zeroes_ones);
+    retFireplace = LoadTextureFromFile("../../objects/ImGui/fireplace2.png", &image_texture_fireplace, &image_width_fireplace, &image_height_fireplace);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
