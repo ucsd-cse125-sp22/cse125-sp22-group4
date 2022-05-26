@@ -64,6 +64,14 @@ bool retMouseFlagPale;
 int image_width_mouse_flag_pale = 0;
 int image_height_mouse_flag_pale = 0;
 GLuint image_texture_mouse_flag_pale = 0;
+bool retOneThird;
+int image_width_one_third = 0;
+int image_height_one_third = 0;
+GLuint image_texture_one_third = 0;
+bool retTwoThirds;
+int image_width_two_thirds = 0;
+int image_height_two_thirds = 0;
+GLuint image_texture_two_thirds = 0;
 bool retMap;
 int image_width_map = 0;
 int image_height_map = 0;
@@ -134,8 +142,10 @@ static int timeLeftStationaryItem = 0;
 static int timeLeftStationaryItem2 = 0;
 static bool* holdIdStationary;
 static bool* holdIdStationary2;
-static int stationaryId = -1;
+static bool stationary1 = false;
+static bool stationary2 = false;
 static bool catSeesItem = false;
+static int cheese = 0;
 static int numPlayers = 0;
 static int finalTime = 0;
 static bool catWon = 0;
@@ -341,7 +351,7 @@ bool Client::initializeClient() {
     retGameOver = LoadTextureFromFile("../../objects/ImGui/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
     retMouseWin = LoadTextureFromFile("../../objects/ImGui/celebration.png", &image_texture_mouse_win, &image_width_mouse_win, &image_height_mouse_win);
     retMouseFlag = LoadTextureFromFile("../../objects/ImGui/cheese.png", &image_texture_mouse_flag, &image_width_mouse_flag, &image_height_mouse_flag);
-    retMouseFlagPale = LoadTextureFromFile("../../objects/ImGui/cheese_paler.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
+    retMouseFlagPale = LoadTextureFromFile("../../objects/ImGui/cheese_paler2.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
     retMap = LoadTextureFromFile("../../objects/ImGui/minimap.png", &image_texture_map, &image_width_map, &image_height_map);
     retGameStart = LoadTextureFromFile("../../objects/ImGui/game_start_maze2.jpg", &image_texture_game_start, &image_width_game_start, &image_height_game_start);
     retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
@@ -354,6 +364,8 @@ bool Client::initializeClient() {
     retPartyIcon = LoadTextureFromFile("../../objects/ImGui/party_icon.png", &image_texture_party_icon, &image_width_party_icon, &image_height_party_icon);
     retZeroesOnes = LoadTextureFromFile("../../objects/ImGui/nyan.png", &image_texture_zeroes_ones, &image_width_zeroes_ones, &image_height_zeroes_ones);
     retFireplace = LoadTextureFromFile("../../objects/ImGui/fireplace2.png", &image_texture_fireplace, &image_width_fireplace, &image_height_fireplace);
+    retOneThird = LoadTextureFromFile("../../objects/ImGui/one_third.png", &image_texture_one_third, &image_width_one_third, &image_height_one_third);
+    retTwoThirds = LoadTextureFromFile("../../objects/ImGui/two_thirds.png", &image_texture_two_thirds, &image_width_two_thirds, &image_height_two_thirds);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -643,21 +655,32 @@ void Client::ItemHoldGUI() {
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
+    int tasks = 0;
+
+    if (itemhold != PLAYER_NUM + 1) 
+        tasks++;
+    if (stationary1)
+        tasks++;
+    if (stationary2)
+        tasks++;
 
     ImGui::SetNextWindowSize(ImVec2(image_width_mouse_flag * adjustment+10, image_height_mouse_flag*adjustment+10));
     ImGui::SetNextWindowPos(ImVec2(280, 15), 0, ImVec2(0, 0));
    
     ImGui::Begin("ItemHold GUI", NULL, flags);
 
-   
-
-    if (itemhold != PLAYER_NUM + 1) {
-        ImGui::Image((void*)(intptr_t)image_texture_mouse_flag, ImVec2(image_width_mouse_flag * adjustment, image_height_mouse_flag * adjustment));
-
-       
+    
+    if (tasks == 0) {
+        ImGui::Image((void*)(intptr_t)image_texture_mouse_flag_pale, ImVec2(image_width_mouse_flag_pale * adjustment, image_height_mouse_flag_pale * adjustment));
+    }
+    else if (tasks == 1) {
+        ImGui::Image((void*)(intptr_t)image_texture_one_third, ImVec2(image_width_one_third * adjustment, image_height_one_third * adjustment));
+    }
+    else if (tasks == 2) {
+        ImGui::Image((void*)(intptr_t)image_texture_two_thirds, ImVec2(image_width_two_thirds * adjustment, image_height_two_thirds * adjustment));
     }
     else {
-        ImGui::Image((void*)(intptr_t)image_texture_mouse_flag_pale, ImVec2(image_width_mouse_flag_pale * adjustment, image_height_mouse_flag_pale * adjustment));
+        ImGui::Image((void*)(intptr_t)image_texture_mouse_flag, ImVec2(image_width_mouse_flag * adjustment, image_height_mouse_flag * adjustment));
     }
 
     ImGui::End();
@@ -804,7 +827,7 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded == 1 || my_id == 0) // don't display on game over or if cat
+    if (gameEnded == 1) //|| my_id == 0) // don't display on game over or if cat
         return;
  
     ImGuiWindowFlags flags = 0;
@@ -988,14 +1011,16 @@ void Client::updateItem3Location(glm::mat4 location) {
     item3->setModel(location);
 }
 
-void Client::setStationaryItemCountdown(float t, bool* holdId) {
+void Client::setStationaryItemCountdown(float t, bool* holdId, bool s) {
     timeLeftStationaryItem = (int)t;
     holdIdStationary = holdId;
+    stationary1 = s;
 }
 
-void Client::setStationaryItem2Countdown(float t, bool* holdId) {
+void Client::setStationaryItem2Countdown(float t, bool* holdId, bool s) {
     timeLeftStationaryItem2 = (int)t;
     holdIdStationary2 = holdId;
+    stationary2 = s;
 }
 
 void Client::setNumPlayers(int p) {

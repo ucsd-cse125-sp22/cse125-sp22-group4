@@ -55,6 +55,7 @@ public:
 	glm::mat4 model = glm::mat4(1);
 	int randomSpawn;
 	bool holdId[4] = { false, false, false , false };
+	bool taskSuccess = false;
 
 protected:
 	StationaryObjective(bool toggled, bool disabled) : toggled(toggled), disabled(disabled) {};
