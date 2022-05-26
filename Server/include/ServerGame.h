@@ -144,10 +144,6 @@ private:
     int stationaryId;
     int stationary2Id;
 
-    // these are just for testing respawn
-    void isTaken();
-    int ans = 0;
-
     glm::mat4 destModel; // where item is taken to
 
     // for limited cat view of item in minimap

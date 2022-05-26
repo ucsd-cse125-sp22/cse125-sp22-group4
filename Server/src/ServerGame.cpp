@@ -392,13 +392,6 @@ void ServerGame::respawnFinalDest() {
     //bearId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
 }
 
-// i made this function just to get respawn from repeatedly being called
-void ServerGame::isTaken() {
-    if (ans == 0) {
-        ans = 1;
-        respawnItem();
-    }
-}
 
 void ServerGame::collisionStep() {
 
@@ -437,7 +430,7 @@ void ServerGame::collisionStep() {
             else if (hitId == goalId) {
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
                 player_states[i].model = oldModels[i];
-                printf("flag %d i %d\n", flag->item_state.hold, i);
+                //printf("flag %d i %d\n", flag->item_state.hold, i);
                 if (flag->item_state.hold == i) {
                     // The player with flag hit goal!
                     printf("Item brought to goal!\n");
@@ -452,7 +445,7 @@ void ServerGame::collisionStep() {
                 printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i + 1, hitId + 1);
                 player_states[i].model = oldModels[i];
             }
-            else if (i == 0 && hitId > 0 && i < PLAYER_NUM) {
+            else if (i == 0 && hitId > 0 && hitId < PLAYER_NUM) {
                 printf("[ServerGame::collisionStep] Player %d killed player %d!\n", i + 1, hitId + 1);
                 mouseDead(hitId);
             }
