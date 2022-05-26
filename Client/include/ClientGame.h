@@ -9,6 +9,7 @@
 #include "Network/include/Packets.h"
 
 #define FPS_MAX 1e6/120.0
+#define END_SCREEN_TIME 8
 
 class ClientGame
 {
@@ -49,7 +50,10 @@ private:
     std::chrono::steady_clock::time_point start_time;
     std::string packet_stream;
 
+    std::chrono::steady_clock::time_point time_ended;
+
     Model** players;
     unsigned int player_id;
     bool loaded;
+    bool game_ended;
 };

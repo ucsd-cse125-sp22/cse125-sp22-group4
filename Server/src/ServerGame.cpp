@@ -30,7 +30,8 @@ ServerGame::ServerGame() :
     player0DevMode(DEFAULT_PLAYER0DEVMODE), catViewItemSec(DEFAULT_CATVIEWITEMSEC),
     pointsToWin(DEFAULT_POINTSTOWIN)
 {
-    gameAlive = false;
+    gameAlive = false; // Will be toggled on/off depending on the round
+    game_started = false; // Will only be false once.
     this->ticksSinceConfigCheck = 0;
 
     // Update settings from config file!
@@ -83,6 +84,7 @@ ServerGame::ServerGame() :
 
 void ServerGame::assignSpawn(int client_id) {
     PlayerState& state = player_states[client_id];
+    state.model = glm::mat4(1);
     switch (client_id) {
     case 0:
         //player 1 starting location
@@ -298,7 +300,7 @@ void ServerGame::setupStationaryObjectives() {
 }
 
 void ServerGame::start() {
-    gameAlive = false;
+    gameAlive = true;
     playTime = 0; // Reset play time
     points = 0; // Reset points
 
@@ -315,20 +317,28 @@ void ServerGame::start() {
 
     // Move item to spawn
     assignSpawnItem();
+    spawnFinalDestination();
     setupStationaryObjectives();
 
     // Move players to spawn and setup collision
+
+    if (!game_started) {
+        for (int i = 0; i < PLAYER_NUM; ++i) {
+            collision_detector->insert(fakePlayerModels[i].getOBB());
+            printf("insert %d into cd\n", i);
+        }
+        flagId = collision_detector->insert(flag->getOBB());
+        stationaryId = collision_detector->insert(stationary->getOBB());
+        stationary2Id = collision_detector->insert(stationary2->getOBB());
+        ServerGame::game_started = true;
+    }
+
+    // Move to original positions
+    //
     for (int i = 0; i < PLAYER_NUM; ++i) {
         assignSpawn(i);
-        collision_detector->insert(fakePlayerModels[i].getOBB());
-        printf("insert %d into cd\n", i);
+        player_states[client_id].alive = true;
     }
-    flagId = collision_detector->insert(flag->getOBB());
-    stationaryId = collision_detector->insert(stationary->getOBB());
-    stationary2Id = collision_detector->insert(stationary2->getOBB());
-
-    spawnFinalDestination();
-    ServerGame::game_started = true;
 }
 
 void ServerGame::spawnFinalDestination() {
@@ -528,11 +538,9 @@ void ServerGame::update()
         }
 
         // TODO: round length is fixed as 180 on client.
-        if (this->roundLengthSec - playTime <= 0) {
-            if (gameAlive) {
-                announceGameEnd(CAT_WIN);
-                gameAlive = false;
-            }
+        if (this->roundLengthSec - playTime <= 0 && gameAlive) {
+            announceGameEnd(CAT_WIN);
+            gameAlive = false;
         }
        
         checkStationaryObjectives();
@@ -540,7 +548,7 @@ void ServerGame::update()
         checkFinalDestRotates();
         replicateGameState();
 
-        if (points == pointsToWin) {
+        if (points == pointsToWin && gameAlive) {
             announceGameEnd(MOUSE_WIN);
             gameAlive = false;
         }

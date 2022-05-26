@@ -31,6 +31,7 @@ namespace Client {
     bool initializeClient();
     void displayCallback();
     void idleCallback(float dt);
+    void restore();
     void cleanup();
     void GUI();
     void timeGUI();

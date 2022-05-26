@@ -829,6 +829,14 @@ void Client::stationaryItemGUI() {
   
 }
 
+void Client::restore() {
+    gameStarted = 0;
+    gameEnded = 0;
+    catWon = 0;
+    currTime = 0;
+    pause = 0;
+}
+
 void Client::GameStartGUI() {
 
     if (gameStarted == 1)
@@ -903,7 +911,7 @@ void Client::GameOverGUI() {
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
     
-    if (gameEnded == 1 && catWon == 0) {
+    if (gameEnded && !catWon) {
         adjustment = 0.3;
         ImGui::SetNextWindowSize(ImVec2(image_width_mouse_win * adjustment,image_height_mouse_win * adjustment + 400 ));
         //ImGui::SetNextWindowPos(ImVec2((window_width-image_width_mouse_win*adjustment)/2, (window_height - image_height_mouse_win * adjustment) / 2), 0, ImVec2(0, 0));
@@ -919,7 +927,7 @@ void Client::GameOverGUI() {
         ImGui::PopStyleColor();
         ImGui::End();
     }
-    else if (gameEnded == 1) {
+    else if (gameEnded) {
         adjustment = 0.9;
         ImGui::SetNextWindowSize(ImVec2(image_width_game_over * adjustment, window_height));
         ImGui::SetNextWindowPos(ImVec2((window_width - image_width_game_over * adjustment) / 2, 50), 0, ImVec2(0, 0));

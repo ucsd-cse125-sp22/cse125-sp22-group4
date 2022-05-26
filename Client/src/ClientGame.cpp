@@ -6,6 +6,7 @@ ClientGame::ClientGame(void)
 {
     network = new ClientNetwork();
     start_time = timer.now();
+    game_ended = false;
 
     // send init packet
     const unsigned int packet_size = sizeof(SimplePacket);
@@ -82,6 +83,15 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
     }
     case GAME_END: {
         printf("THE GAME HAS ENDED\n");
+        if (game_ended) {
+            printf("The game has already ended\n");
+            break;
+        }
+
+
+        // For determining how long to display end screen
+        game_ended = true;
+        time_ended = timer.now();
         
         if (s.data == CAT_WIN) {
             printf("cat win\n");
@@ -100,6 +110,15 @@ void ClientGame::update(MovementState s, RotationState r)
     // Don't send action events to server if client is not fully loaded
     auto stop_time = timer.now();
     auto dt = std::chrono::duration_cast<std::chrono::microseconds>(stop_time - start_time);
+
+    if (game_ended) {
+        auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(stop_time - time_ended).count();
+        printf("%d elapsed\n", elapsed);
+        if (elapsed >= END_SCREEN_TIME) {
+            game_ended = false;
+            Client::restore();
+        }
+    }
 
     if (dt.count() >= FPS_MAX && loaded) {
         start_time = timer.now();
