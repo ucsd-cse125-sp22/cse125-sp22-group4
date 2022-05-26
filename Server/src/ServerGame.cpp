@@ -322,7 +322,7 @@ void ServerGame::start() {
 
     // Move players to spawn and setup collision
 
-    if (!game_started) {
+    if (!ServerGame::game_started) {
         for (int i = 0; i < PLAYER_NUM; ++i) {
             collision_detector->insert(fakePlayerModels[i].getOBB());
             printf("insert %d into cd\n", i);
@@ -330,6 +330,11 @@ void ServerGame::start() {
         flagId = collision_detector->insert(flag->getOBB());
         stationaryId = collision_detector->insert(stationary->getOBB());
         stationary2Id = collision_detector->insert(stationary2->getOBB());
+
+        // TODO: Fix OBB of goal
+        OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
+        goalId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
+
         ServerGame::game_started = true;
     }
 
@@ -353,8 +358,6 @@ void ServerGame::spawnFinalDestination() {
 
     destModel = oldFinalDestinations[random];
     finalDestLoc = random;
-    OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
-    goalId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
 }
 
 void ServerGame::respawnFinalDest() {
@@ -366,6 +369,8 @@ void ServerGame::respawnFinalDest() {
         random = rand() % 4;
 
     OBB collisionModel;
+
+    // TODO: adjust OBB accordingly
     switch (random) {
     case 0: // fallenstar
         destModel = oldFinalDestinations[0];
@@ -521,6 +526,8 @@ void ServerGame::update()
         }
         return;
     }
+
+
     collisionStep();
 
     // Calculate tick
