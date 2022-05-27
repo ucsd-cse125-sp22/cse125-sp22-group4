@@ -27,7 +27,6 @@ struct PlayerState {
 struct ItemState {
 	glm::mat4 model = glm::mat4(1);
 	char hold = 5;
-	bool taskSuccess = false;
 };
 
 struct Item2State {

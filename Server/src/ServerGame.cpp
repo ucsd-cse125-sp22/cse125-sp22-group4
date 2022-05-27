@@ -736,7 +736,6 @@ void ServerGame::replicateGameState() {
     memcpy(packet.player_states, player_states, sizeof(player_states));
    
     packet.item_state = flag->item_state;
-    packet.item_state.taskSuccess = flag->taskSuccess;
 
 
     // ==== STATIONARY TASKS ====
