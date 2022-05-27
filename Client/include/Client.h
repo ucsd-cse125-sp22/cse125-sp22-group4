@@ -49,7 +49,7 @@ namespace Client {
 
     void resetRotUpdate();
     void setPlayerfromID(unsigned int id);
-    void setItemHold(char h);
+    void setItemHold(char h, bool s);
     void updateItemLocation(glm::mat4 location);
     void updateTime(int t);
     void setCatViewItem(bool c);

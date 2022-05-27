@@ -174,8 +174,6 @@ void ServerGame::respawnPlayer(int client_id) {
             spin(state.model, 270);
         }
         break;
-        
-
     }
 
     state.model = newModel;
@@ -519,6 +517,7 @@ void ServerGame::collisionStep() {
                     ++points;
                     // TODO: This respawns the item, we need to take it out of the map!
 					flag->item_state.hold = 5;
+                    flag->taskSuccess = true;
                     moveGlobal(flag->item_state.model, glm::vec3(0, 100.0f, 0)); // just making it go away..
                     flag_taken = false;
                     finalDestTime = -1;
@@ -737,6 +736,7 @@ void ServerGame::replicateGameState() {
     memcpy(packet.player_states, player_states, sizeof(player_states));
    
     packet.item_state = flag->item_state;
+    packet.item_state.taskSuccess = flag->taskSuccess;
 
 
     // ==== STATIONARY TASKS ====

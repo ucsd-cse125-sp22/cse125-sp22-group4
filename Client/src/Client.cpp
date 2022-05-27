@@ -149,6 +149,7 @@ static int timeLeftStationaryItem = 0;
 static int timeLeftStationaryItem2 = 0;
 static bool* holdIdStationary;
 static bool* holdIdStationary2;
+static bool task1 = false;
 static bool stationary1 = false;
 static bool stationary2 = false;
 static bool catSeesItem = false;
@@ -738,7 +739,7 @@ void Client::ItemHoldGUI() {
     flags |= ImGuiWindowFlags_NoResize;
     int tasks = 0;
 
-    if (itemhold != PLAYER_NUM + 1) 
+    if (itemhold != PLAYER_NUM + 1 || task1) 
         tasks++;
     if (stationary1)
         tasks++;
@@ -1099,8 +1100,9 @@ void Client::updateTime(int t) {
     currTime = t;
 }
 
-void Client::setItemHold(char h) {
+void Client::setItemHold(char h, bool s) {
     itemhold = h;
+    task1 = s;
 }
 
 void Client::setFinalDest(glm::mat4 location, int f) {
