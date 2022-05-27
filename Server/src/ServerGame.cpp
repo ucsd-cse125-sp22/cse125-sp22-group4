@@ -322,6 +322,9 @@ void ServerGame::respawnItem2() {
     time_t t;
     srand((unsigned)time(&t));
 
+    if (stationary->model[3][1] > 10)
+        return;
+
     // get new respawn location
     while (oldNum == random) {
         random = rand() % 5;
@@ -338,6 +341,9 @@ void ServerGame::respawnItem3() {
     int random = stationary2->randomSpawn;
     time_t t;
     srand((unsigned)time(&t));
+
+    if (stationary2->model[3][1] > 10)
+        return;
 
     // get new respawn location
     while (oldNum == random) {
@@ -565,11 +571,13 @@ void ServerGame::mouseDead(int client_id) {
 
 void ServerGame::checkStationaryObjectives() {
     if (stationary->checkAward()) {
+        moveGlobal(stationary->model, glm::vec3(0, 100, 0));
         printf("Stationary: Completed!\n");
         ++points;
         
     }
     if (stationary2->checkAward()) {
+        moveGlobal(stationary2->model, glm::vec3(0, 100, 0));
         printf("Stationary2: Completed!\n");
         ++points;
     }
