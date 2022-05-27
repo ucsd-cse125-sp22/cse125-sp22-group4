@@ -228,30 +228,30 @@ void ServerGame::assignSpawnItem3() {
     oldItem3Positions[0] = originalLoc;
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(25, 0, -75));
+    moveGlobal(originalLoc, glm::vec3(15, 0, -55));
     scale(originalLoc, glm::vec3(5));
     //spin(originalLoc, 180);
     oldItem3Positions[1] = originalLoc;
     // location 3
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(55, 0, -95));
+    moveGlobal(originalLoc, glm::vec3(95, 0, -95));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[2] = originalLoc;
     // location 4
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(125, 0, -25));
+    moveGlobal(originalLoc, glm::vec3(105, 0, -125));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[3] = originalLoc;
     //location 5
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(125, 0, -115));
+    moveGlobal(originalLoc, glm::vec3(135, 0, -95));
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[4] = originalLoc;
 
-    //initLoc = oldItem3Positions[random];
-    initLoc = oldItem3Positions[0];
+    initLoc = oldItem3Positions[random];
+    //initLoc = oldItem3Positions[0];
 
     stationary2->setPosition(initLoc);
     stationary2->randomSpawn = random;
