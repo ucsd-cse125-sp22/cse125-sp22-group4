@@ -151,11 +151,9 @@ void ParticleSystem::respawnParticle(Particle& particle, glm::vec3 offset) {
     particle.Life = particleLife;
     particle.Velocity = particleVelocity;
 
-    float LO = -randomPositionRange;
-    float HI = randomPositionRange;
-    float random_x = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
-    float random_y = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
-    float random_z = LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)));
+    float random_x = -randomPositionRange.x + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2*randomPositionRange.x)));
+    float random_y = -randomPositionRange.y + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2*randomPositionRange.y)));
+    float random_z = -randomPositionRange.z + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2*randomPositionRange.z)));
     particle.Position = glm::vec3(random_x + offset.x, random_y + offset.y, random_z + offset.z);
 
     float rColor = 0.5f + ((rand() % 100) / 100.0f);
