@@ -47,6 +47,8 @@ static ParticleSystem* smokeparticles;
 static ParticleSystem* flameparticles;
 static ParticleSystem* glintparticles;
 
+static ParticleSystem* trailparticles;
+
 
 // for ImGui Image display
 int my_image_width = 0;
@@ -314,7 +316,7 @@ bool Client::initializeClient() {
         3.0f,   //Life
         glm::vec3(0, -3, 0), //Velocity
         glm::vec3(1, 0, 1), //useRandomVelocity
-        2,      //randomPositionRange
+        glm::vec3(2, 2, 2), //randomPositionRange
         1,      //randomColor
         0.3f,   //colorFade
         0,      //blendMethod
@@ -325,7 +327,7 @@ bool Client::initializeClient() {
         0.5f,   //Life
         glm::vec3(0, -5, 0), //Velocity
         glm::vec3(0, 3, 0), //useRandomVelocity
-        2,     //randomPositionRange
+        glm::vec3(2, 2, 2), //randomPositionRange
         1,      //randomColor
         1.0f,   //colorFade
         1,      //blendMethod
@@ -336,9 +338,20 @@ bool Client::initializeClient() {
         1.0f,   //Life
         glm::vec3(0, 2, 0), //Velocity
         glm::vec3(5, 1, 5), //useRandomVelocity
-        2,      //randomPositionRange
+        glm::vec3(2, 2, 2),      //randomPositionRange
         0,      //randomColor
         0.7f,   //colorFade
+        0,      //blendMethod
+    };
+
+    ParticleProperty trail = {
+        200,    //amount
+        0.7f,   //Life
+        glm::vec3(0, -2, 0), //Velocity
+        glm::vec3(1, 2, 1), //useRandomVelocity
+        glm::vec3(1.5, 0, 1.5), //randomPositionRange
+        1,      //randomColor
+        1.0f,   //colorFade
         0,      //blendMethod
     };
 
@@ -346,6 +359,7 @@ bool Client::initializeClient() {
     smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
     flameparticles = new ParticleSystem(particleShader, "../../particles/flame.png", flame);
     glintparticles = new ParticleSystem(particleShader, "../../particles/glint.png", glint);
+    trailparticles = new ParticleSystem(particleShader, "../../particles/dust.png", trail);
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -551,6 +565,8 @@ void Client::displayCallback() {
         item->draw(currCam->viewProjMat, identityMat, shader);
         item2->draw(currCam->viewProjMat, identityMat, shader);
         item3->draw(currCam->viewProjMat, identityMat, shader);
+
+        trailparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         
         break;
     }
@@ -596,6 +612,16 @@ void Client::idleCallback(float dt) {
         smokeparticles->update(dt, 2, glm::vec3(x,y + 1,z));
         flameparticles->update(dt, 1, glm::vec3(x, y - 2, z));
         glintparticles->update(dt, 2, glm::vec3(-7, 4, 0));
+
+        glm::mat4 trailModel = tyra->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, -2, -2));
+        glm::vec3 catpos = trailModel[3];
+
+        if (keyHeld) {
+            trailparticles->update(dt, 2, catpos);
+        }
+        else {
+            trailparticles->update(dt, 0, catpos);
+        }
     }
 
     if (!isThirdPersonCam && keyHeld) {
