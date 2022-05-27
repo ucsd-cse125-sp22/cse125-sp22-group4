@@ -687,26 +687,11 @@ void Client::ItemHoldGUI() {
 }
 
 void displayLocation(glm::mat4 model, int id) {
-    int r, g, b;
     float locX = model[3][0] * 1.55 + 25;
     float locZ = abs(model[3][2]) * 1.55 + 25;
-    float side = 3.2f;
-    //printf("x %d z %d\n", locX, locZ);
-    if (id == 0) {
-        r = 255;
-        g = 0;
-        b = 0;
-    }
-    else if (id == 4) {
-        r = 255;
-        g = 240;
-        b = 31;
-    }
-    else {
-        r = 177;
-        g = 156;
-        b = 217;
-    }
+    
+    if (model[3][1] > 10) // this is a hack, manually checking if banished height
+        return;
 
     float icon_size = 11.0f;
     
@@ -818,7 +803,6 @@ void Client::finalDestGUI() {
     //ImGui::SetCursorPos(ImVec2(window_width - 450 + (image_width_hourglass*adjustment)/2, 15 + (image_height_hourglass*adjustment) / 2));
     ImGui::SetCursorPosY(77 + image_width_hourglass*adjustment/2);
     auto windowWidth = ImGui::GetWindowSize().x;
-    //auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
     ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 2);
     ImGui::Text("0:%02d", finalDestRotateTime);
     ImGui::PopFont();
@@ -1004,7 +988,6 @@ void Client::updateItemLocation(glm::mat4 location) {
 
 void Client::updateItem2Location(glm::mat4 location) {
     item2->setModel(location);
-    //item2->scale(glm::vec3(5));
 }
 
 void Client::updateItem3Location(glm::mat4 location) {

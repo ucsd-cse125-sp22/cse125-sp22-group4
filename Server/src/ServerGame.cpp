@@ -267,11 +267,28 @@ void ServerGame::respawnItem2() {
     while (oldNum == random) {
         random = rand() % 5;
     }
-    printf("%d random\n", random);
+    printf("%d random item2\n", random);
 
     // choose random respawn location
     stationary->setPosition(oldItem2Positions[random]);
     stationary->randomSpawn = random; // remember new location
+}
+
+void ServerGame::respawnItem3() {
+    int oldNum = stationary2->randomSpawn;
+    int random = stationary2->randomSpawn;
+    time_t t;
+    srand((unsigned)time(&t));
+
+    // get new respawn location
+    while (oldNum == random) {
+        random = rand() % 5;
+    }
+    printf("%d random item3\n", random);
+
+    // choose random respawn location
+    stationary2->setPosition(oldItem3Positions[random]);
+    stationary2->randomSpawn = random; // remember new location
 }
 
 void ServerGame::respawnItem() {
@@ -284,7 +301,7 @@ void ServerGame::respawnItem() {
     while (oldNum == random) {
         random = rand() % 5;
     }
-    printf("%d random\n", random);
+    printf("%d random item1\n", random);
 
     // choose random respawn location
     flag->item_state.model = oldItemPositions[random];
@@ -437,6 +454,7 @@ void ServerGame::collisionStep() {
                     ++points;
                     // TODO: This respawns the item, we need to take it out of the map!
 					flag->item_state.hold = 5;
+                    moveGlobal(flag->item_state.model, glm::vec3(0, 100.0f, 0)); // just making it go away..
                     flag_taken = false;
                     finalDestTime = -1;
                 }
@@ -539,10 +557,12 @@ void ServerGame::update()
         if (playTime == 60 && !firstTimer) {
             firstTimer = true;
             respawnItem2();
+            respawnItem3();
         }
         else if (playTime == 120 && !secondTimer) {
             secondTimer = true;
             respawnItem2();
+            respawnItem3();
         }
 
         // TODO: round length is fixed as 180 on client.

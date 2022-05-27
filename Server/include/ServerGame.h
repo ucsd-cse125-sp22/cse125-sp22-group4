@@ -59,6 +59,7 @@ public:
     void assignSpawnItem3();
     void respawnItem();
     void respawnItem2();
+    void respawnItem3();
     void respawnPlayer(int client_id);
     void spawnFinalDestination();
     void respawnFinalDest();
