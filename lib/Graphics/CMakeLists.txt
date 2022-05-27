@@ -16,6 +16,7 @@ add_library(Graphics STATIC
     src/Bone.cpp
     src/Animation.cpp
     src/Animator.cpp
+    src/ParticleSystem.cpp
 )
 
 target_include_directories(Graphics PRIVATE
@@ -43,6 +44,7 @@ target_sources(Graphics PRIVATE
     include/Bone.h
     include/Animation.h
     include/Animator.h
+    include/ParticleSystem.h
 )
 
 target_link_libraries(Graphics

@@ -57,6 +57,8 @@ public:
     const glm::mat4& getModel() const override;
     OBB getOBB() const override;
 
+    static unsigned int TextureFromFile(std::string filename, bool gamma = false);
+
     void SetVertexBoneDataToDefault(Vertex& vertex);
     void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
     void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);

@@ -5,6 +5,7 @@
 // shader, camera and light
 static GLuint shader;
 static GLuint skyboxShader;
+static GLuint particleShader;
 static Camera* camera;
 static ThirdPersonCamera* thirdPersonCamera;
 static int lightCount;
@@ -40,6 +41,12 @@ static Animation* demoAnimation;
 static Animator* animator;
 static Animation* demoAnimation2;
 static Animator* animator2;
+
+//Particles
+static ParticleSystem* smokeparticles;
+static ParticleSystem* flameparticles;
+static ParticleSystem* glintparticles;
+
 
 // for ImGui Image display
 int my_image_width = 0;
@@ -160,6 +167,11 @@ static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[4] = { "Animation Demo", "Maze", "Backpack", "Scene import Demo"};
 
+//for particle demo
+float x = 0.0f;
+float y = 0.0f;
+float z = 0.0f;
+
 static glm::mat4 finalDest = glm::mat4(1); //where item is taken to
 
 static bool keys[4];
@@ -225,7 +237,7 @@ void Client::setupGLSettings() {
     glEnable(GL_MULTISAMPLE);
     glDepthFunc(GL_LEQUAL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 // Simple helper function to load an image into a OpenGL texture with common settings
@@ -272,12 +284,18 @@ bool Client::initializeClient() {
     // initialize shader
     shader = Shader::loadShaders("../../shaders/shader.vert", "../../shaders/shader.frag");
     skyboxShader = Shader::loadShaders("../../shaders/skyboxShader.vert", "../../shaders/skyboxShader.frag");
+    particleShader = Shader::loadShaders("../../shaders/particleShader.vert", "../../shaders/particleShader.frag");
+
     if (!shader) {
-        spdlog::error("Failed to initialize shader programs.");
+        spdlog::error("Failed to initialize main shader programs.");
         return false;
     }
     if (!skyboxShader) {
         spdlog::error("Failed to initialize skyboxShader programs.");
+        return false;
+    }
+    if (!particleShader) {
+        spdlog::error("Failed to initialize particleShader programs.");
         return false;
     }
 
@@ -288,6 +306,45 @@ bool Client::initializeClient() {
     lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {1, 1, 1, 0} };
     lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {0.8, 0.8, 0.8, 1} };
     lightCount = lightPosn.size();
+
+    // particle properties
+    ParticleProperty smoke = {
+        700,    //amount
+        3.0f,   //Life
+        glm::vec3(0, -3, 0), //Velocity
+        glm::vec3(1, 0, 1), //useRandomVelocity
+        2,      //randomPositionRange
+        1,      //randomColor
+        0.3f,   //colorFade
+        0,      //blendMethod
+    };
+
+    ParticleProperty flame = {
+        200,    //amount
+        0.5f,   //Life
+        glm::vec3(0, -5, 0), //Velocity
+        glm::vec3(0, 3, 0), //useRandomVelocity
+        2,     //randomPositionRange
+        1,      //randomColor
+        1.0f,   //colorFade
+        1,      //blendMethod
+    };
+
+    ParticleProperty glint = {
+        150,    //amount
+        1.0f,   //Life
+        glm::vec3(0, 2, 0), //Velocity
+        glm::vec3(5, 1, 5), //useRandomVelocity
+        2,      //randomPositionRange
+        0,      //randomColor
+        0.7f,   //colorFade
+        0,      //blendMethod
+    };
+
+    //initialize particle system
+    smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
+    flameparticles = new ParticleSystem(particleShader, "../../particles/flame.png", flame);
+    glintparticles = new ParticleSystem(particleShader, "../../particles/glint.png", glint);
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -415,8 +472,25 @@ void Client::displayCallback() {
     glUniform4fv(glGetUniformLocation(shader, "lightColorn"), lightCount, (float*)lightColorn.data());
     glUseProgram(0);
 
+    glUseProgram(particleShader);
+    glUniform1i(glGetUniformLocation(particleShader, "sprite"), 0);
+    glUseProgram(0);
+
+    glm::vec3 Camera_Right = glm::vec3(currCam->view[0][0], currCam->view[1][0], currCam->view[2][0]);
+    glm::vec3 Camera_Up = glm::vec3(currCam->view[0][1], currCam->view[1][1], currCam->view[2][1]);
+
     glm::mat4 identityMat = glm::mat4(1);
     isThirdPersonCam = false;
+
+    //performance tradeoff: drawing skybox first
+    //to enable alpha blending for particle system
+    glUseProgram(skyboxShader);
+    glUniform1i(glGetUniformLocation(skyboxShader, "skybox"), 0);
+    glUseProgram(0);
+    //drop right column
+    glm::mat4 viewNoTranslate = glm::mat4(glm::mat3(currCam->view));
+    skybox->draw(currCam->projection * viewNoTranslate, skyboxShader);
+
     switch (select) {
     case 0: {
 
@@ -428,9 +502,13 @@ void Client::displayCallback() {
         demoChar->draw(currCam->viewProjMat, identityMat, shader);
 
         calcFinalBoneMatrix(animator2);
-        demoChar2->draw(currCam->viewProjMat, identityMat, shader);
+        //demoChar2->draw(currCam->viewProjMat, identityMat, shader);
        
         ground->draw(currCam->viewProjMat, identityMat, shader);
+
+        smokeparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        flameparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        glintparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
 
         // COLLITION DEBUG
         /*
@@ -487,13 +565,7 @@ void Client::displayCallback() {
     }
     }
 
-    //drawOBB skybox last for efficiency
-    glUseProgram(skyboxShader);
-    glUniform1i(glGetUniformLocation(skyboxShader, "skybox"), 0);
-    glUseProgram(0);
-    //drop right column
-    glm::mat4 viewNoTranslate = glm::mat4(glm::mat3(currCam->view));
-    skybox->draw(currCam->projection* viewNoTranslate, skyboxShader);
+
 }
 
 /**
@@ -519,6 +591,10 @@ void Client::idleCallback(float dt) {
 
         animator->update(dt);
         animator2->update(dt);
+
+        smokeparticles->update(dt, 2, glm::vec3(x,y + 1,z));
+        flameparticles->update(dt, 1, glm::vec3(x, y - 2, z));
+        glintparticles->update(dt, 2, glm::vec3(-7, 4, 0));
     }
 
     if (!isThirdPersonCam && keyHeld) {
@@ -586,6 +662,11 @@ void Client::GUI() {
     ImGui::Separator();
     ImGui::Text("Press F to toggle show/hide mouse");
     ImGui::ListBox("Scene Selection", &select, scenes, IM_ARRAYSIZE(scenes), IM_ARRAYSIZE(scenes));
+    ImGui::Separator();
+    ImGui::Text("particle demo pos");
+    ImGui::SliderFloat("particle x", &x, 0.0f, 5.0f);
+    ImGui::SliderFloat("particle y", &y, 0.0f, 5.0f);
+    ImGui::SliderFloat("particle z", &z, 0.0f, 5.0f);
     ImGui::End();
 }
 
