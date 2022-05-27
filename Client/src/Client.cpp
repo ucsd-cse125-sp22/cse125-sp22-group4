@@ -1131,9 +1131,9 @@ void Client::updateTime(int t) {
     currTime = t;
 }
 
-void Client::setItemHold(char h) {
+void Client::setItemHold(char h, bool s) {
     itemhold = h;
-    //task1 = s;
+    task1 = s;
 }
 
 void Client::setFinalDest(glm::mat4 location, int f) {

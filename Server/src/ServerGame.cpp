@@ -287,7 +287,7 @@ void ServerGame::assignSpawnItem3() {
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(15, 0, -55));
     scale(originalLoc, glm::vec3(5));
-    //spin(originalLoc, 180);
+    spin(originalLoc, 90);
     oldItem3Positions[1] = originalLoc;
     // location 3
     originalLoc = glm::mat4(1);
@@ -304,6 +304,7 @@ void ServerGame::assignSpawnItem3() {
     //location 5
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(135, 0, -95));
+    spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[4] = originalLoc;
 
@@ -517,7 +518,7 @@ void ServerGame::collisionStep() {
                     ++points;
                     // TODO: This respawns the item, we need to take it out of the map!
 					flag->item_state.hold = 5;
-                    flag->taskSuccess = true;
+                    flag->item_state.taskSuccess = true;
                     moveGlobal(flag->item_state.model, glm::vec3(0, 100.0f, 0)); // just making it go away..
                     flag_taken = false;
                     finalDestTime = -1;

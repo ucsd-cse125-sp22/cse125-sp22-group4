@@ -36,7 +36,7 @@ public:
 	~Flag();
 	ItemState item_state;
 	int randomSpawn;
-	bool taskSuccess = false;
+	
 
 private:
 	glm::mat4 initPos;

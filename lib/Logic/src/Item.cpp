@@ -27,7 +27,8 @@ Flag::Flag(glm::mat4 initialPos, glm::mat4 endPos)
 	goalPos = endPos;
 	item_state = {
 		initialPos,
-		5
+		5,
+		false
 	};
 }
 
