@@ -119,7 +119,66 @@ void ServerGame::assignSpawn(int client_id) {
 
 void ServerGame::respawnPlayer(int client_id) {
     PlayerState& state = player_states[client_id];
-    state.model = oldPlayerPositions[client_id];
+    glm::mat4 newModel = glm::mat4(1);
+    if (client_id == 0)
+        return;
+    //state.model = oldPlayerPositions[client_id];
+    time_t t;
+
+    srand((unsigned)time(&t));
+    int random = rand() % 3;
+
+    switch (client_id) {
+    case 1:
+        if (random == 0) {
+            moveGlobal(newModel, glm::vec3(145, 0, -75));
+            spin(newModel, 90);
+        }
+        else if (random == 1) {
+            moveGlobal(newModel, glm::vec3(35, 0, -105));
+            spin(newModel, 90);
+        }
+        else {
+            moveGlobal(newModel, glm::vec3(115, 0, -45));
+            spin(newModel, 90);
+        }
+        break;
+
+    case 2:
+        if (random == 0) {
+            moveGlobal(newModel, glm::vec3(75, 0, -145));
+            spin(newModel, 180);
+            
+        }
+        else if (random == 1) {
+            moveGlobal(newModel, glm::vec3(115, 0, -85));
+            spin(newModel, 180);
+        }
+        else {
+            moveGlobal(newModel, glm::vec3(55, 0, -15));
+            spin(newModel, 180);
+        }
+        break;
+        
+    case 3:
+        if (random == 0) {
+            moveGlobal(newModel, glm::vec3(5, 0, -75));
+            spin(state.model, 270);
+        }
+        else if (random == 1) {
+            moveGlobal(newModel, glm::vec3(85, 0, -105));
+            spin(state.model, 270);
+        }
+        else {
+            moveGlobal(newModel, glm::vec3(145, 0, -105));
+            spin(state.model, 270);
+        }
+        break;
+        
+
+    }
+
+    state.model = newModel;
     state.alive = true;
     player_states[client_id] = state;
 }
