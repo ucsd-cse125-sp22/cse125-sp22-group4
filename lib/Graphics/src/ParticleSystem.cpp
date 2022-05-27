@@ -35,10 +35,12 @@ ParticleSystem::ParticleSystem(GLint _shader, const char* textureFile, ParticleP
 
     stbi_image_free(data);
 
+    /*
     printf("texture id: %u\n", TextureID);
     printf("texture width: %d\n", width);
     printf("texture height: %d\n", height);
     printf("texture nrChannels: %d\n", nrChannels);
+    */
 
     unsigned int VBO;
     static const GLfloat g_vertex_buffer_data[] = {
