@@ -871,10 +871,15 @@ void Client::finalDestGUI() {
 
     ImGuiWindowFlags flags = 0;
     float adjustment = 0.15f;
+    int time = 180 - currTime;
     flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
+
+    if (finalDestRotateTime < time)
+        time = finalDestRotateTime;
+
 
     ImGui::SetNextWindowSize(ImVec2(180, 200), 0);
     ImGui::SetNextWindowPos(ImVec2(window_width - 450, 16));
@@ -886,7 +891,7 @@ void Client::finalDestGUI() {
     ImGui::SetCursorPosY(77 + image_width_hourglass*adjustment/2);
     auto windowWidth = ImGui::GetWindowSize().x;
     ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 2);
-    ImGui::Text("0:%02d", finalDestRotateTime);
+    ImGui::Text("0:%02d", time);
     ImGui::PopFont();
     ImGui::PopStyleColor();
     ImGui::End();
