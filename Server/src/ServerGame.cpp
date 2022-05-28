@@ -88,7 +88,7 @@ void ServerGame::assignSpawn(int client_id) {
     switch (client_id) {
     case 0:
         //player 1 starting location
-        moveGlobal(state.model, glm::vec3(75, 0, -5));
+        moveGlobal(state.model, glm::vec3(75, -2, -5));
         oldModels[0] = state.model;
         oldPlayerPositions[0] = state.model;
         break;

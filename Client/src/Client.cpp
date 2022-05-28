@@ -17,10 +17,10 @@ static Skybox* skybox;
 
 // objects
 static Cube* ground;
-static Model* teapot;
-static Model* bunny;
-static Model* tyra;
-static Model* tyra2;
+static Model* cat;
+static Model* mouse1;
+static Model* mouse2;
+static Model* mouse3;
 static Model* player;
 static Model* backpack;
 static Model* maze;
@@ -41,6 +41,9 @@ static Animation* demoAnimation;
 static Animator* animator;
 static Animation* demoAnimation2;
 static Animator* animator2;
+
+static Animation* catidleAnimation;
+static Animator* catanimator;
 
 //Particles
 static ParticleSystem* smokeparticles;
@@ -349,9 +352,9 @@ bool Client::initializeClient() {
         0.7f,   //Life
         glm::vec3(0, -2, 0), //Velocity
         glm::vec3(1, 2, 1), //useRandomVelocity
-        glm::vec3(1.5, 0, 1.5), //randomPositionRange
+        glm::vec3(1, 0, 1.5), //randomPositionRange
         1,      //randomColor
-        1.0f,   //colorFade
+        1.5f,   //colorFade
         0,      //blendMethod
     };
 
@@ -364,17 +367,17 @@ bool Client::initializeClient() {
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
     ground->moveGlobal(glm::vec3(0, -3, 0));
-    teapot = new Model("../../objects/teapot/teapot.obj");
-    teapot->scale(glm::vec3(2));
-    teapot->moveGlobal(glm::vec3(-5, -2, -5));
-    bunny = new Model("../../objects/bunny/bunny.obj");
-    bunny->scale(glm::vec3(2));
-    bunny->moveGlobal(glm::vec3(5, -2, -5));
-    tyra = new Model("../../objects/tyra/tyra.obj");
-    tyra->scale(glm::vec3(1.5));
-    tyra->moveGlobal(glm::vec3(0, -0.1, 0));
-    tyra2 = new Model("../../objects/tyra/tyra.obj");
-    tyra2->moveGlobal(glm::vec3(2, -0.1, 0));
+
+    cat = new Model("../../objects/cat/cat_idle.fbx");
+    catidleAnimation = new Animation("../../objects/cat/cat_idle.fbx", cat);
+    catanimator = new Animator(catidleAnimation);
+
+    mouse1 = new Model("../../objects/teapot/teapot.obj");
+
+    mouse2 = new Model("../../objects/bunny/bunny.obj");
+
+    mouse3 = new Model("../../objects/tyra/tyra.obj");
+
     backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/maze3D.obj");
     maze->moveGlobal(glm::vec3(0, -3, 0));
@@ -446,20 +449,18 @@ bool Client::initializeClient() {
     wall2->moveGlobal(glm::vec3(8, 0, 8));
     cDetector.insert(wall1->getOBB());
     cDetector.insert(wall2->getOBB());
-    cDetector.insert(tyra->getOBB());
+    cDetector.insert(cat->getOBB());
     // COLLITION DEBUG
 
     //Load the scene
     scene = new SceneLoader("../../scripts/scene.txt");
     sceneObjects = scene->load();
 
-
-
     //hard coded for now
-    players[0] = tyra;
-    players[1] = teapot;
-    players[2] = bunny;
-    players[3] = tyra2;
+    players[0] = cat;
+    players[1] = mouse1;
+    players[2] = mouse2;
+    players[3] = mouse3;
 
     skybox = new Skybox();
 
@@ -552,16 +553,17 @@ void Client::displayCallback() {
     case 1: {
         isThirdPersonCam = true;
         maze->draw(currCam->viewProjMat, identityMat, shader);
-        tyra->draw(currCam->viewProjMat, identityMat, shader);
         bear->draw(currCam->viewProjMat, identityMat, shader);
        
         geisel->draw(currCam->viewProjMat, identityMat, shader);
         sungod->draw(currCam->viewProjMat, identityMat, shader);
         fallenstar->draw(currCam->viewProjMat, identityMat, shader);
         
-        teapot->draw(currCam->viewProjMat, identityMat, shader);
-        bunny->draw(currCam->viewProjMat, identityMat, shader);
-        tyra2->draw(currCam->viewProjMat, identityMat, shader);
+        calcFinalBoneMatrix(catanimator);
+        cat->draw(currCam->viewProjMat, identityMat, shader);
+        mouse1->draw(currCam->viewProjMat, identityMat, shader);
+        mouse2->draw(currCam->viewProjMat, identityMat, shader);
+        mouse3->draw(currCam->viewProjMat, identityMat, shader);
         item->draw(currCam->viewProjMat, identityMat, shader);
         item2->draw(currCam->viewProjMat, identityMat, shader);
         item3->draw(currCam->viewProjMat, identityMat, shader);
@@ -603,17 +605,19 @@ void Client::idleCallback(float dt) {
         // COLLITION DEBUG
         wall2->update();
         cDetector.update(wall2->getOBB(), 1);
-        cDetector.update(tyra->getOBB(), 2);
+        cDetector.update(cat->getOBB(), 2);
         // COLLITION DEBUG
 
         animator->update(dt);
         animator2->update(dt);
 
+        catanimator->update(dt);
+
         smokeparticles->update(dt, 2, glm::vec3(x,y + 1,z));
         flameparticles->update(dt, 1, glm::vec3(x, y - 2, z));
         glintparticles->update(dt, 2, glm::vec3(-7, 4, 0));
 
-        glm::mat4 trailModel = tyra->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, -2, -2));
+        glm::mat4 trailModel = cat->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, -0.5, 0.5));
         glm::vec3 catpos = trailModel[3];
 
         if (keyHeld) {
@@ -653,9 +657,9 @@ void Client::cleanup() {
     glDeleteProgram(skyboxShader);
     delete camera;
     delete thirdPersonCamera;
-    delete teapot;
-    delete bunny;
-    delete tyra;
+    delete mouse1;
+    delete mouse2;
+    delete cat;
     delete ground;
     delete backpack;
     delete maze;
