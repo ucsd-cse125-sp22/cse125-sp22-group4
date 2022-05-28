@@ -623,6 +623,8 @@ void ServerGame::update()
         // check to rotate stationary items
         if (playTime == 60 && !firstTimer) {
             firstTimer = true;
+            respawnItem();
+            // make sure player isn't at stationary
             if (stationary->getProgress() == 0.0) 
                 respawnItem2();
             if (stationary2->getProgress() == 0.0)
@@ -630,6 +632,7 @@ void ServerGame::update()
         }
         else if (playTime == 120 && !secondTimer) {
             secondTimer = true;
+            respawnItem();
             if (stationary->getProgress() == 0.0)
                 respawnItem2();
             if (stationary2->getProgress() == 0.0)
