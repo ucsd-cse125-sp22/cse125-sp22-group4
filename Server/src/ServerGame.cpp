@@ -623,13 +623,17 @@ void ServerGame::update()
         // check to rotate stationary items
         if (playTime == 60 && !firstTimer) {
             firstTimer = true;
-            respawnItem2();
-            respawnItem3();
+            if (stationary->getProgress() == 0.0) 
+                respawnItem2();
+            if (stationary2->getProgress() == 0.0)
+                respawnItem3();
         }
         else if (playTime == 120 && !secondTimer) {
             secondTimer = true;
-            respawnItem2();
-            respawnItem3();
+            if (stationary->getProgress() == 0.0)
+                respawnItem2();
+            if (stationary2->getProgress() == 0.0)
+                respawnItem3();
         }
 
         // TODO: round length is fixed as 180 on client.
