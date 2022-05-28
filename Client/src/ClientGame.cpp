@@ -161,7 +161,7 @@ void ClientGame::update(MovementState s, RotationState r)
                 }
                 else{
                     glm::mat4 playerModel = players[packet->item_state.hold]->getModel();
-                    glm::mat4 newItemModel = playerModel * glm::translate(glm::vec3(0, 1, 0));
+                    glm::mat4 newItemModel = playerModel * glm::translate(glm::vec3(0, 2.0f, 0));
                     newItemModel = newItemModel * glm::rotate(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
                     newItemModel = newItemModel * glm::scale(glm::vec3(0.2f));
                     setItem(newItemModel);
