@@ -59,7 +59,7 @@ bool Maze::leftBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc,
     double modelHalfWidth; 
 
     if (playerID == 0 || playerID == 3) {
-        length = 0.08; // estimate dino length
+        length = 0.1; // estimate dino length
         modelHalfWidth = .23; // just approximating
     }
     else {
@@ -85,7 +85,7 @@ bool Maze::rightBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc
     double modelHalfWidth; 
 
     if (playerID == 0 || playerID == 3) {
-        length = 0.08; // estimate dino length
+        length = 0.1; // estimate dino length
         modelHalfWidth = .23; // just approximating
     }
     else {
