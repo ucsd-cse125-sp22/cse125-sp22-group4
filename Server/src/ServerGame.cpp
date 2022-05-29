@@ -965,6 +965,10 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         if (!obstacle) {
             netDirection += DIR_TO_VEC[i];
         }
+        else {
+            state.model = oldModels[client_id];
+            player_states[client_id] = state;
+        }
     }
 
     if (glm::length2(netDirection) < 0.1)
