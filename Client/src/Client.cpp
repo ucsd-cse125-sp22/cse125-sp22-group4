@@ -928,7 +928,7 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded == 1 || my_id == 0) // don't display on game over or if cat
+    if (gameEnded || my_id == 0) // don't display on game over or if cat
         return;
  
     ImGuiWindowFlags flags = 0;
@@ -939,7 +939,7 @@ void Client::stationaryItemGUI() {
 
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
-
+   
     if (timeLeftStationaryItem > 0 && holdIdStationary[my_id]) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
         ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
