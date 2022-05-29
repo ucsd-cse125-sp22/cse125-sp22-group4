@@ -637,7 +637,7 @@ void Client::idleCallback(float dt) {
         flameparticles->update(dt, 1, glm::vec3(x, y - 2, z));
         glintparticles->update(dt, 2, glm::vec3(-7, 4, 0));
 
-        glm::mat4 trailModel = cat->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, -0.5, 0.5));
+        glm::mat4 trailModel = cat->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.3, 0.5));
         glm::vec3 catpos = trailModel[3];
 
         if (keyHeld) {
