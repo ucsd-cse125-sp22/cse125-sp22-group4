@@ -570,7 +570,7 @@ void ServerGame::mouseDead(int client_id) {
     PlayerState& state = player_states[client_id];
     
     if (!state.alive)
-        return;
+        return;      
     
     if (flag->item_state.hold == client_id) {
         flag->item_state.hold = 5;
@@ -578,7 +578,7 @@ void ServerGame::mouseDead(int client_id) {
         flag_taken = false;
         finalDestTime = -1;
     }
-        
+      
     state.alive = false;
     state.model = banished;
     player_states[client_id] = state;

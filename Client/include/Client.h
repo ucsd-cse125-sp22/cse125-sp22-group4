@@ -42,6 +42,7 @@ namespace Client {
     void GameStartGUI();
     void finalDestGUI();
     void stationaryItemGUI();
+    void playerSelectGUI();
 
     MovementState getMovementState();
     RotationState getRotationState();
