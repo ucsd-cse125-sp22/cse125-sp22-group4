@@ -70,7 +70,7 @@ void CAudioEngine::UnLoadSound(const std::string& strSoundName)
 	sgpImplementation->mSounds.erase(tFoundIt);
 }
 
-int CAudioEngine::PlaySounds(const string& strSoundName, const Vector3& vPosition, float fVolumedB)
+int CAudioEngine::PlaySound(const string& strSoundName, const Vector3& vPosition, float fVolumedB)
 {
 	int nChannelId = sgpImplementation->mnNextChannelId++;
 	auto tFoundIt = sgpImplementation->mSounds.find(strSoundName);

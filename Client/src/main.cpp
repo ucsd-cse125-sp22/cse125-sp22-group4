@@ -146,6 +146,7 @@ int main(int argc, char** argv) {
         Client::stationaryItemGUI();
         Client::GameStartGUI();
         Client::GameOverGUI();
+        Client::audioUpdate();
 
         /////////////////////////////////IMGUI STUFF IGNORE//////////////////////////////////////////////////////////
         if (Client::checkGameStart()) {

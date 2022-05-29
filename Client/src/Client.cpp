@@ -2,6 +2,16 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+static CAudioEngine* audioEngine;
+static bool hasPlayedTimer = false;
+static bool hasPlayedTask1 = false;
+static bool hasPlayedStationary1 = false;
+static bool hasPlayedStationary2 = false;
+static bool hasPlayedMouseCatCollision = false;
+static bool hasPlayedMouse1CatCollision = false;
+static bool hasPlayedMouse2CatCollision = false;
+static bool hasPlayedMouse3CatCollision = false;
+
 // shader, camera and light
 static GLuint shader;
 static GLuint skyboxShader;
@@ -483,6 +493,13 @@ bool Client::initializeClient() {
     HUGEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 52.0f);
     MASSIVEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 70.0f);
 
+
+    //initialize audio
+    audioEngine->LoadBank("C:/Users/Ronan/Documents/FMOD Studio/cse125/Build/Desktop/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+    audioEngine->LoadBank("C:/Users/Ronan/Documents/FMOD Studio/cse125/Build/Desktop/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+
+    audioEngine->PlayEvent("event:/music1");
+
     return true;
 }
 
@@ -760,6 +777,11 @@ void Client::timeGUI() {
     int minute = (time % 3600) / 60;  // Minute component
     int seconds = time % 60;          // Second component 
 
+    if (!hasPlayedTimer && minute == 0) {
+        audioEngine->PlayEvent("event:/panic"); //TODO Audio, play timer
+        hasPlayedTimer = true;
+    }
+
     if (time < 0) {
         minute = 0;
         seconds = 0;
@@ -777,6 +799,83 @@ void Client::timeGUI() {
     ImGui::PopStyleColor();
 
     ImGui::End();
+}
+
+void Client::audioUpdate() {
+
+    // Mouse/Cat collision
+    if (hasPlayedMouse1CatCollision && my_id == 0 &&
+        players[1]->getModel()[3][1] <= 10) {
+        hasPlayedMouse1CatCollision = false;
+    }
+
+    if (hasPlayedMouse2CatCollision && my_id == 0 &&
+        players[2]->getModel()[3][1] <= 10) {
+        hasPlayedMouse2CatCollision = false;
+    }
+
+    if (hasPlayedMouse3CatCollision && my_id == 0 &&
+        players[3]->getModel()[3][1] <= 10) {
+        hasPlayedMouse3CatCollision = false;
+    }
+
+    if (!hasPlayedMouse1CatCollision && my_id == 0 &&
+        players[1]->getModel()[3][1] > 10) {
+        audioEngine->PlayEvent("event:/cat_screech_1");
+        hasPlayedMouse1CatCollision = true;
+    }
+
+    if (!hasPlayedMouse2CatCollision && my_id == 0 &&
+        players[2]->getModel()[3][1] > 10) {
+        audioEngine->PlayEvent("event:/cat_screech_1");
+        hasPlayedMouse2CatCollision = true;
+    }
+
+    if (!hasPlayedMouse3CatCollision && my_id == 0 &&
+        players[3]->getModel()[3][1] > 10) {
+        audioEngine->PlayEvent("event:/cat_screech_1");
+        hasPlayedMouse3CatCollision = true;
+    }
+
+    if (!hasPlayedMouseCatCollision && my_id != 0 && player->getModel()[3][1] > 10) {
+        audioEngine->PlayEvent("event:/mice_shriek_1");
+        hasPlayedMouseCatCollision = true;
+        hasPlayedTask1 = false; // task1 respawns on collision
+    }
+
+    if (!hasPlayedMouseCatCollision && my_id != 0 && player->getModel()[3][1] > 10) {
+        hasPlayedMouseCatCollision = false;
+    }
+
+
+
+    // Tasks 
+    if (hasPlayedTask1 && !task1 && my_id != 0) {
+        hasPlayedTask1 = false;
+    }
+
+    if (hasPlayedStationary1 && !stationary1 && my_id != 0) {
+        hasPlayedStationary1 = false;
+    }
+
+    if (hasPlayedStationary2 && !stationary2 && my_id != 0) {
+        hasPlayedStationary2 = false;
+    }
+
+    if (!hasPlayedTask1 && task1 && my_id != 0) {
+        audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play task1 pickup
+        hasPlayedTask1 = true;
+    }
+
+    if (!hasPlayedStationary1 && stationary1 && my_id != 0) {
+        audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play stationary1 pickup
+        hasPlayedStationary1 = true;
+    }
+
+    if (!hasPlayedStationary2 && stationary2 && my_id != 0) {
+        audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play stationary2 pickup
+        hasPlayedStationary2 = true;
+    }
 }
 
 void Client::ItemHoldGUI() {
@@ -821,9 +920,10 @@ void Client::ItemHoldGUI() {
 void displayLocation(glm::mat4 model, int id) {
     float locX = model[3][0] * 1.55 + 25;
     float locZ = abs(model[3][2]) * 1.55 + 25;
-    
-    if (model[3][1] > 10) // this is a hack, manually checking if banished height
+
+    if (model[3][1] > 10) { // this is a hack, manually checking if banished height
         return;
+    }
 
     float icon_size = 11.0f;
     
@@ -1029,6 +1129,8 @@ void Client::GameStartGUI() {
         if (ImGui::Button("Start Game"))
         {
             gameStartPressed = true;
+            audioEngine->StopEvent("event:/music1");
+            audioEngine->PlayEvent("event:/music_placeholder");
         }
     }
     else
