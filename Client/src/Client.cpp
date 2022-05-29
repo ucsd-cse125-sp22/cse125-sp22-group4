@@ -928,7 +928,7 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded || my_id == 0) // don't display on game over or if cat
+    if (gameEnded == 1 || my_id == 0) // don't display on game over or if cat
         return;
  
     ImGuiWindowFlags flags = 0;
