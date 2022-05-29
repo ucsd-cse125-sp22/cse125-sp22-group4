@@ -45,6 +45,13 @@ static Animator* animator2;
 static Animation* catidleAnimation;
 static Animator* catanimator;
 
+static Animation* mouseidleAnimation1;
+static Animator* mouseanimator1;
+static Animation* mouseidleAnimation2;
+static Animator* mouseanimator2;
+static Animation* mouseidleAnimation3;
+static Animator* mouseanimator3;
+
 //Particles
 static ParticleSystem* smokeparticles;
 static ParticleSystem* flameparticles;
@@ -372,11 +379,17 @@ bool Client::initializeClient() {
     catidleAnimation = new Animation("../../objects/cat/cat_idle.fbx", cat);
     catanimator = new Animator(catidleAnimation);
 
-    mouse1 = new Model("../../objects/teapot/teapot.obj");
+    mouse1 = new Model("../../objects/mouse/mouse_idle.fbx");
+    mouseidleAnimation1 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse1);
+    mouseanimator1 = new Animator(mouseidleAnimation1);
 
-    mouse2 = new Model("../../objects/bunny/bunny.obj");
+    mouse2 = new Model("../../objects/mouse/mouse_idle.fbx");
+    mouseidleAnimation2 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse2);
+    mouseanimator2 = new Animator(mouseidleAnimation2);
 
-    mouse3 = new Model("../../objects/tyra/tyra.obj");
+    mouse3 = new Model("../../objects/mouse/mouse_idle.fbx");
+    mouseidleAnimation3 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse3);
+    mouseanimator3 = new Animator(mouseidleAnimation3);
 
     backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/maze3D.obj");
@@ -561,8 +574,11 @@ void Client::displayCallback() {
         
         calcFinalBoneMatrix(catanimator);
         cat->draw(currCam->viewProjMat, identityMat, shader);
+        calcFinalBoneMatrix(mouseanimator1);
         mouse1->draw(currCam->viewProjMat, identityMat, shader);
+        calcFinalBoneMatrix(mouseanimator2);
         mouse2->draw(currCam->viewProjMat, identityMat, shader);
+        calcFinalBoneMatrix(mouseanimator3);
         mouse3->draw(currCam->viewProjMat, identityMat, shader);
         item->draw(currCam->viewProjMat, identityMat, shader);
         item2->draw(currCam->viewProjMat, identityMat, shader);
@@ -613,11 +629,15 @@ void Client::idleCallback(float dt) {
 
         catanimator->update(dt);
 
+        mouseanimator1->update(dt);
+        mouseanimator2->update(dt);
+        mouseanimator3->update(dt);
+
         smokeparticles->update(dt, 2, glm::vec3(x,y + 1,z));
         flameparticles->update(dt, 1, glm::vec3(x, y - 2, z));
         glintparticles->update(dt, 2, glm::vec3(-7, 4, 0));
 
-        glm::mat4 trailModel = cat->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, -0.5, 0.5));
+        glm::mat4 trailModel = cat->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.3, 0.5));
         glm::vec3 catpos = trailModel[3];
 
         if (keyHeld) {

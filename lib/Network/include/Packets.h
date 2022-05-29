@@ -39,6 +39,8 @@ enum PlayerModelTypes {
 	Dino,
 	Teapot,
 	Bunny,
+	Cat,
+	Mice,
 };
 
 

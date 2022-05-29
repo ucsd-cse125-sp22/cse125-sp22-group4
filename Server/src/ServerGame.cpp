@@ -78,6 +78,16 @@ ServerGame::ServerGame() :
             fakePlayerModels[i] = FakeModel("../../objects/bunny/bunny.obj");
             break;
         }
+        case PlayerModelTypes::Cat:
+        {
+            fakePlayerModels[i] = FakeModel("../../objects/cat/cat.obj");
+            break;
+        }
+        case PlayerModelTypes::Mice:
+        {
+            fakePlayerModels[i] = FakeModel("../../objects/mouse/mouse.obj");
+            break;
+        }
         }
     }
 }
@@ -88,27 +98,27 @@ void ServerGame::assignSpawn(int client_id) {
     switch (client_id) {
     case 0:
         //player 1 starting location
-        moveGlobal(state.model, glm::vec3(75, -2, -5));
+        moveGlobal(state.model, glm::vec3(75, -3, -5));
         oldModels[0] = state.model;
         oldPlayerPositions[0] = state.model;
         break;
     case 1:
         // player 2 starting location
-        moveGlobal(state.model, glm::vec3(145, 0, -75));
+        moveGlobal(state.model, glm::vec3(145, -3, -75));
         spin(state.model, 90);
         oldModels[1] = state.model;
         oldPlayerPositions[1] = state.model;
         break;
     case 2:
         // player 3 starting location
-        moveGlobal(state.model, glm::vec3(75, 0, -145));
+        moveGlobal(state.model, glm::vec3(75, -3, -145));
         spin(state.model, 180);
         oldModels[2] = state.model;
         oldPlayerPositions[2] = state.model;
         break;
     case 3:
         // player 4 starting location
-        moveGlobal(state.model, glm::vec3(5, 0, -75));
+        moveGlobal(state.model, glm::vec3(5, -3, -75));
         spin(state.model, 270);
         oldModels[3] = state.model;
         oldPlayerPositions[3] = state.model;
