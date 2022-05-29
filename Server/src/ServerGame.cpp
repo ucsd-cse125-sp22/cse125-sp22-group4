@@ -94,21 +94,21 @@ void ServerGame::assignSpawn(int client_id) {
         break;
     case 1:
         // player 2 starting location
-        moveGlobal(state.model, glm::vec3(145, 0, -75));
+        moveGlobal(state.model, glm::vec3(145, -3, -75));
         spin(state.model, 90);
         oldModels[1] = state.model;
         oldPlayerPositions[1] = state.model;
         break;
     case 2:
         // player 3 starting location
-        moveGlobal(state.model, glm::vec3(75, 0, -145));
+        moveGlobal(state.model, glm::vec3(75, -3, -145));
         spin(state.model, 180);
         oldModels[2] = state.model;
         oldPlayerPositions[2] = state.model;
         break;
     case 3:
         // player 4 starting location
-        moveGlobal(state.model, glm::vec3(5, 0, -75));
+        moveGlobal(state.model, glm::vec3(5, -3, -75));
         spin(state.model, 270);
         oldModels[3] = state.model;
         oldPlayerPositions[3] = state.model;
