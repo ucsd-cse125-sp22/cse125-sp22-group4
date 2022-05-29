@@ -204,32 +204,41 @@ void ServerGame::assignSpawnItem() {
     glm::mat4 originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(145, 1, -25));
     spin(originalLoc, 90);
+    originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[0] = originalLoc;
+
     // location 2
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(125, 1, -145));
     spin(originalLoc, 180);
+    originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[1] = originalLoc;
+
     // location 3
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(15, 1, -35));
     spin(originalLoc, 90);
+    originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[2] = originalLoc;
+
     // location 4
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(5, 1, -145));
     spin(originalLoc, 90);
+    originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[3] = originalLoc;
+
     //location 5
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(95, 1, -55));
+    originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[4] = originalLoc;
 
     flagInitLoc = oldItemPositions[random];
 
 
     flag = new Flag(flagInitLoc, glm::mat4(1));
-    flag->item_state.model = flag->item_state.model * glm::scale(glm::vec3(0.2f));
+    //flag->item_state.model = flag->item_state.model * glm::scale(glm::vec3(0.2f));
     flag->randomSpawn = random; // remember new location
 }
 
@@ -500,7 +509,7 @@ void ServerGame::collisionStep() {
         bool in_stationary = false;
         bool in_stationary2 = false;
         for (int hitId : collision_detector->check(i)) {
-            if (hitId == flagId) {
+            if (hitId == flagId) { // item 1
                 if (i == CAT_ID && !player0DevMode) break; // Cat can't hold item!
                 flag->item_state.hold = i;
                 if (!flag_taken) {
@@ -508,17 +517,17 @@ void ServerGame::collisionStep() {
                     start_finalDest = timer_finalDest.now();
                 }
             }
-            else if (hitId == stationaryId) {
+            else if (hitId == stationaryId) { // item 2
                 if (i == CAT_ID && !player0DevMode) break; // Cat can't hold objective!
                 stationary->interact(i, true);
                 in_stationary = true;
             }
-            else if (hitId == stationary2Id) {
+            else if (hitId == stationary2Id) { // item 3
                 if (i == CAT_ID && !player0DevMode) break; // Cat can't hold objective!
                 stationary2->interact(i, true);
                 in_stationary2 = true;
             }
-            else if (hitId == goalId) {
+            else if (hitId == goalId) { // item 1 is carried here
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
                 player_states[i].model = oldModels[i];
                 //printf("flag %d i %d\n", flag->item_state.hold, i);

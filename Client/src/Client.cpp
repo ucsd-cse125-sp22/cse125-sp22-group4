@@ -938,9 +938,9 @@ void Client::finalDestGUI() {
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 110 / 255.0f, 51 / 255.0f, 1.0f));
     ImGui::PushFont(cuteFont);
     //ImGui::SetCursorPos(ImVec2(window_width - 450 + (image_width_hourglass*adjustment)/2, 15 + (image_height_hourglass*adjustment) / 2));
-    ImGui::SetCursorPosY(77 + image_width_hourglass*adjustment/2);
+    ImGui::SetCursorPosY(80 + image_width_hourglass*adjustment/2);
     auto windowWidth = ImGui::GetWindowSize().x;
-    ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 2);
+    ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 5);
     ImGui::Text("0:%02d", time);
     ImGui::PopFont();
     ImGui::PopStyleColor();

@@ -138,7 +138,7 @@ int main(int argc, char** argv) {
         //        1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
         //    ImGui::End();
         //}
-        Client::GUI();
+        //Client::GUI();
         Client::timeGUI();
         Client::ItemHoldGUI();
         Client::miniMapGUI();
