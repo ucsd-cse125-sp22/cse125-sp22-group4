@@ -22,7 +22,7 @@ static Model* mouse1;
 static Model* mouse2;
 static Model* mouse3;
 static Model* player;
-static Model* backpack;
+//static Model* backpack;
 static Model* maze;
 static Model* players[PLAYER_NUM];
 static Model* bear;
@@ -33,16 +33,16 @@ static Model* stonehenge;
 static Model* fallenstar;
 static Model* item2;
 static Model* item3;
-static Model* demoChar;
-static Model* demoChar2;
+//static Model* demoChar;
+//static Model* demoChar2;
 
 static Model* fakecat;
 
 // Animations
-static Animation* demoAnimation;
-static Animator* animator;
-static Animation* demoAnimation2;
-static Animator* animator2;
+//static Animation* demoAnimation;
+//static Animator* animator;
+//static Animation* demoAnimation2;
+//static Animator* animator2;
 
 static Animation* catidleAnimation;
 static Animator* catanimator;
@@ -143,6 +143,14 @@ bool retFireplace;
 int image_width_fireplace = 0;
 int image_height_fireplace = 0;
 GLuint image_texture_fireplace = 0;
+bool retMouseIconPale;
+int image_width_mouse_icon_pale = 0;
+int image_height_mouse_icon_pale = 0;
+GLuint image_texture_mouse_icon_pale = 0;
+bool retCatIconPale;
+int image_width_cat_icon_pale = 0;
+int image_height_cat_icon_pale = 0;
+GLuint image_texture_cat_icon_pale = 0;
 
 
 std::vector<Model*> sceneObjects;
@@ -161,6 +169,10 @@ static bool gameEnded = 0;
 static bool gameStarted = 0;
 static bool playerSelect = false;
 static bool gameStartPressed = 0;
+static bool mouse1Clicked = false;
+static bool mouse2Clicked = false;
+static bool mouse3Clicked = false;
+static bool catClicked = false;
 static int finalDestRotateTime = -1;
 static int timeLeftStationaryItem = 0;
 static int timeLeftStationaryItem2 = 0;
@@ -414,7 +426,7 @@ bool Client::initializeClient() {
     mouseidleAnimation3 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse3);
     mouseanimator3 = new Animator(mouseidleAnimation3);
 
-    backpack = new Model("../../objects/backpack/backpack.obj");
+    //backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/maze3D.obj");
     maze->moveGlobal(glm::vec3(0, -3, 0));
     bear = new Model("../../objects/bear/bear.obj");
@@ -434,12 +446,12 @@ bool Client::initializeClient() {
     
     //item = new Model("../../objects/backpack/backpack.obj");
 
-    demoChar = new Model("../../objects/Kachujin/jog.fbx");
-    demoChar->scale(glm::vec3(0.3));
-    demoChar->moveGlobal(glm::vec3(9, -2, -2));
+    //demoChar = new Model("../../objects/Kachujin/jog.fbx");
+    //demoChar->scale(glm::vec3(0.3));
+    //demoChar->moveGlobal(glm::vec3(9, -2, -2));
 
-    demoAnimation = new Animation("../../objects/Kachujin/jog.fbx", demoChar);
-    animator = new Animator(demoAnimation);
+    //demoAnimation = new Animation("../../objects/Kachujin/jog.fbx", demoChar);
+    //animator = new Animator(demoAnimation);
 
     geisel = new Model("../../objects/Geisel/Geisel.fbx");
     
@@ -451,11 +463,11 @@ bool Client::initializeClient() {
     sungod->spin(90);
     //sungod->scale(glm::vec3(2));
 
-    demoChar2 = new Model("../../objects/morak/morak_samba_small.fbx");
-    demoAnimation2 = new Animation("../../objects/morak/morak_samba_small.fbx", demoChar2);
-    animator2 = new Animator(demoAnimation2);
-    demoChar2->scale(glm::vec3(0.6));
-    demoChar2->moveGlobal(glm::vec3(0, -2, 0));
+    //demoChar2 = new Model("../../objects/morak/morak_samba_small.fbx");
+    //demoAnimation2 = new Animation("../../objects/morak/morak_samba_small.fbx", demoChar2);
+    //animator2 = new Animator(demoAnimation2);
+    //demoChar2->scale(glm::vec3(0.6));
+    //demoChar2->moveGlobal(glm::vec3(0, -2, 0));
 
 
     ret = LoadTextureFromFile("../../objects/ImGui/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
@@ -477,6 +489,8 @@ bool Client::initializeClient() {
     retFireplace = LoadTextureFromFile("../../objects/ImGui/fireplace2.png", &image_texture_fireplace, &image_width_fireplace, &image_height_fireplace);
     retOneThird = LoadTextureFromFile("../../objects/ImGui/one_third.png", &image_texture_one_third, &image_width_one_third, &image_height_one_third);
     retTwoThirds = LoadTextureFromFile("../../objects/ImGui/two_thirds.png", &image_texture_two_thirds, &image_width_two_thirds, &image_height_two_thirds);
+    retMouseIconPale = LoadTextureFromFile("../../objects/ImGui/mouse_icon_pale.png", &image_texture_mouse_icon_pale, &image_width_mouse_icon_pale, &image_height_mouse_icon_pale);
+    retCatIconPale = LoadTextureFromFile("../../objects/ImGui/cat_icon_pale.png", &image_texture_cat_icon_pale, &image_width_cat_icon_pale, &image_height_cat_icon_pale);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -550,10 +564,10 @@ void Client::displayCallback() {
             character->draw(currCam->viewProjMat, identityMat, shader);
         }
 
-        calcFinalBoneMatrix(animator);
-        demoChar->draw(currCam->viewProjMat, identityMat, shader);
+        //calcFinalBoneMatrix(animator);
+        //demoChar->draw(currCam->viewProjMat, identityMat, shader);
 
-        calcFinalBoneMatrix(animator2);
+        //calcFinalBoneMatrix(animator2);
         //demoChar2->draw(currCam->viewProjMat, identityMat, shader);
        
         ground->draw(currCam->viewProjMat, identityMat, shader);
@@ -616,8 +630,8 @@ void Client::displayCallback() {
     }
 
     case 2: {
-        backpack->draw(currCam->viewProjMat, identityMat, shader);
-        drawOBB(backpack->getOBB(), currCam->viewProjMat, shader, false);
+        //backpack->draw(currCam->viewProjMat, identityMat, shader);
+        //drawOBB(backpack->getOBB(), currCam->viewProjMat, shader, false);
         break;
     }
     case 3: {
@@ -642,7 +656,7 @@ void Client::idleCallback(float dt) {
     }
 
     if (!pause) {
-        backpack->update();
+        //backpack->update();
 
         // COLLITION DEBUG
         wall2->update();
@@ -651,8 +665,8 @@ void Client::idleCallback(float dt) {
         // COLLITION DEBUG
 
         //animation update
-        animator->update(dt);
-        animator2->update(dt);
+        //animator->update(dt);
+        //animator2->update(dt);
 
         catanimator->update(dt);
 
@@ -737,7 +751,7 @@ void Client::cleanup() {
     delete mouse2;
     delete cat;
     delete ground;
-    delete backpack;
+    //delete backpack;
     delete maze;
     delete skybox;
     delete bear;
@@ -745,12 +759,12 @@ void Client::cleanup() {
     delete fallenstar;
     delete item;
     delete geisel;
-    delete demoChar;
-    delete demoChar2;
-    delete animator;
-    delete animator2;
-    delete demoAnimation;
-    delete demoAnimation2;
+    //delete demoChar;
+    //delete demoChar2;
+    //delete animator;
+    //delete animator2;
+    //delete demoAnimation;
+    //delete demoAnimation2;
 
     // COLLISION DEBUG
     delete wall1;
@@ -1058,18 +1072,65 @@ void Client::playerSelectGUI() {
     ImGui::Begin("PlayerSelect GUI", NULL, flags);
     float catLoc = (window_width - image_width_cat_icon * adjust_cat * width_resize) / 5 - 100;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
-    ImGui::Image((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize));
+    if (!catClicked) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            catClicked = true;
+
+        }
+    }
+    else {
+        ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
+        ImGui::Image((void*)(intptr_t)image_texture_cat_icon_pale, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize));
+    }
+
+    
+    //ImGui::Image((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize));
     
     float mouseLocX = (3 * window_width) / 4 - (image_width_mouse_icon * adjust_mouse * width_resize);
     float mouseLocY = (window_height / 3) - (image_height_mouse_icon * adjust_mouse * height_resize) / 2;
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-    if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize),ImVec2(0,0),ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0),ImVec4(1, 1, 1, 1)));
-        ImGui::Text("hi");
+    if (!mouse1Clicked) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            mouse1Clicked = true;
+            
+        }
+    }
+    else {
+        ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+        ImGui::Image((void*)(intptr_t)image_texture_mouse_icon_pale, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+    }
+       
+    mouseLocX = mouseLocX - (image_width_mouse_icon * adjust_mouse * width_resize) / 2;
+    mouseLocY = mouseLocY + (image_height_mouse_icon * adjust_mouse * height_resize);
+    ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+    
+    if (!mouse2Clicked) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            mouse2Clicked = true;
+
+        }
+    }
+    else {
+        ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+        ImGui::Image((void*)(intptr_t)image_texture_mouse_icon_pale, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+    }
+
     //ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
-    ImGui::SetCursorPos(ImVec2(mouseLocX - (image_width_mouse_icon * adjust_mouse * width_resize) / 2, mouseLocY + image_height_mouse_icon * adjust_mouse * height_resize));
-    ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
-    ImGui::SetCursorPos(ImVec2(mouseLocX + (image_width_mouse_icon * adjust_mouse * width_resize) / 2, mouseLocY + image_height_mouse_icon * adjust_mouse * height_resize));
-    ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+    mouseLocX = mouseLocX + (image_width_mouse_icon * adjust_mouse * width_resize);
+    //mouseLocY = mouseLocY + image_height_mouse_icon * adjust_mouse * height_resize;
+    ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+
+    if (!mouse3Clicked) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            mouse3Clicked = true;
+
+        }
+    }
+    else {
+        ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+        ImGui::Image((void*)(intptr_t)image_texture_mouse_icon_pale, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+    }
+    //ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
 
     ImGui::PopStyleColor();
     ImGui::End();
