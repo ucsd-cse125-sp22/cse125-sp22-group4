@@ -495,8 +495,8 @@ bool Client::initializeClient() {
 
 
     //initialize audio
-    audioEngine->LoadBank("C:/Users/Ronan/Documents/FMOD Studio/cse125/Build/Desktop/Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
-    audioEngine->LoadBank("C:/Users/Ronan/Documents/FMOD Studio/cse125/Build/Desktop/Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+    audioEngine->LoadBank("Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
+    audioEngine->LoadBank("Master.strings.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
 
     audioEngine->PlayEvent("event:/music1");
 
