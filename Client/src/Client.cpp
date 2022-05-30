@@ -183,6 +183,7 @@ static bool mouse1Clicked = false;
 static bool mouse2Clicked = false;
 static bool mouse3Clicked = false;
 static bool catClicked = false;
+static bool playerSelected = false;
 static int finalDestRotateTime = -1;
 static int timeLeftStationaryItem = 0;
 static int timeLeftStationaryItem2 = 0;
@@ -1172,15 +1173,21 @@ void Client::playerSelectGUI() {
     ImGui::Begin("PlayerSelect GUI", NULL, flags);
     float catLoc = (window_width - image_width_cat_icon * adjust_cat * width_resize) / 5 - 100;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
+    
     if (!catClicked) {
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
-            catClicked = true;
-
+            if (!playerSelected) {
+                playerSelected = true;
+                catClicked = true;
+            }          
         }
     }
     else {
-        ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
-        ImGui::Image((void*)(intptr_t)image_texture_cat_icon_pale, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize));
+        if (!playerSelected) {
+            ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
+            ImGui::Image((void*)(intptr_t)image_texture_cat_icon_pale, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize));
+        }
+       
     }
 
     
@@ -1232,6 +1239,8 @@ void Client::playerSelectGUI() {
     }
     //ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
 
+
+    
     ImGui::PopStyleColor();
     ImGui::End();
 }
