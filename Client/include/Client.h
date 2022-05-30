@@ -58,6 +58,8 @@ namespace Client {
     void updateItem3Location(glm::mat4 location);
     void setStationaryItemCountdown(float t, bool* holdId, bool s);
     void setStationaryItem2Countdown(float t, bool* holdId, bool s);
+    void setMovingState(PlayerState* playerstate);
+    void resetMovingState();
 
     bool checkGameStart();
     void setGameStart();

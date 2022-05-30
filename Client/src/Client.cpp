@@ -57,8 +57,10 @@ static ParticleSystem* smokeparticles;
 static ParticleSystem* flameparticles;
 static ParticleSystem* glintparticles;
 
-static ParticleSystem* trailparticles;
-
+static ParticleSystem* cattrailparticles;
+static ParticleSystem* micetrailparticles1;
+static ParticleSystem* micetrailparticles2;
+static ParticleSystem* micetrailparticles3;
 
 // for ImGui Image display
 int my_image_width = 0;
@@ -180,6 +182,7 @@ static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[4] = { "Animation Demo", "Maze", "Backpack", "Scene import Demo"};
+static bool movingState[PLAYER_NUM];
 
 //for particle demo
 float x = 0.0f;
@@ -366,11 +369,26 @@ bool Client::initializeClient() {
         0,      //blendMethod
     };
 
+    ParticleProperty micetrail = {
+        200,    //amount
+        0.6f,   //Life
+        glm::vec3(0, -2, 0), //Velocity
+        glm::vec3(1, 2, 1), //useRandomVelocity
+        glm::vec3(0.5, 0, 1), //randomPositionRange
+        1,      //randomColor
+        1.7f,   //colorFade
+        0,      //blendMethod
+    };
+
     //initialize particle system
     smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
     flameparticles = new ParticleSystem(particleShader, "../../particles/flame.png", flame);
     glintparticles = new ParticleSystem(particleShader, "../../particles/glint.png", glint);
-    trailparticles = new ParticleSystem(particleShader, "../../particles/dust.png", trail);
+    cattrailparticles = new ParticleSystem(particleShader, "../../particles/dust.png", trail);
+
+    micetrailparticles1 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
+    micetrailparticles2 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
+    micetrailparticles3 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
 
     // initialize objects
     ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
@@ -585,7 +603,10 @@ void Client::displayCallback() {
         item2->draw(currCam->viewProjMat, identityMat, shader);
         item3->draw(currCam->viewProjMat, identityMat, shader);
 
-        trailparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        cattrailparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        micetrailparticles1->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        micetrailparticles2->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        micetrailparticles3->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         
         break;
     }
@@ -625,6 +646,7 @@ void Client::idleCallback(float dt) {
         cDetector.update(cat->getOBB(), 2);
         // COLLITION DEBUG
 
+        //animation update
         animator->update(dt);
         animator2->update(dt);
 
@@ -634,18 +656,47 @@ void Client::idleCallback(float dt) {
         mouseanimator2->update(dt);
         mouseanimator3->update(dt);
 
+
+        //particles update
         smokeparticles->update(dt, 2, glm::vec3(x,y + 1,z));
         flameparticles->update(dt, 1, glm::vec3(x, y - 2, z));
         glintparticles->update(dt, 2, glm::vec3(-7, 4, 0));
 
         glm::mat4 trailModel = cat->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.3, 0.5));
         glm::vec3 catpos = trailModel[3];
+        trailModel = mouse1->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
+        glm::vec3 micepos1 = trailModel[3];
+        trailModel = mouse2->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
+        glm::vec3 micepos2 = trailModel[3];
+        trailModel = mouse3->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
+        glm::vec3 micepos3 = trailModel[3];
 
-        if (keyHeld) {
-            trailparticles->update(dt, 2, catpos);
+        if (movingState[0] == true) {
+            cattrailparticles->update(dt, 2, catpos);
         }
         else {
-            trailparticles->update(dt, 0, catpos);
+            cattrailparticles->update(dt, 0, catpos);
+        }
+
+        if (movingState[1] == true) {
+            micetrailparticles1->update(dt, 2, micepos1);
+        }
+        else {
+            micetrailparticles1->update(dt, 0, micepos1);
+        }
+
+        if (movingState[2] == true) {
+            micetrailparticles2->update(dt, 2, micepos2);
+        }
+        else {
+            micetrailparticles2->update(dt, 0, micepos2);
+        }
+
+        if (movingState[3] == true) {
+            micetrailparticles3->update(dt, 2, micepos3);
+        }
+        else {
+            micetrailparticles3->update(dt, 0, micepos3);
         }
     }
 
@@ -1222,6 +1273,19 @@ void Client::setGameOver(int g, int w) {
     catWon = w;
     finalTime = currTime;
     //printf("%d gameOver %d\n", g, w);
+}
+
+void Client::setMovingState(PlayerState* playerstate) {
+    for (int i = 0; i < PLAYER_NUM; i++) {
+        movingState[i] = playerstate[i].moving;
+        //printf("moving state %d is %d\n", i, movingState[i]);
+    }
+}
+
+void Client::resetMovingState() {
+    for (int i = 0; i < PLAYER_NUM; i++) {
+        movingState[i] = false;
+    }
 }
 
 void Client::calcFinalBoneMatrix(Animator* animator) {

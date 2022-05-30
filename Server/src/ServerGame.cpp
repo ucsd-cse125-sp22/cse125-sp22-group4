@@ -669,6 +669,10 @@ void ServerGame::update()
         checkFinalDestRotates();
         replicateGameState();
 
+        for (int i = 0; i < PLAYER_NUM; i++) {
+            player_states[i].moving = false;
+        }
+
         if (points == pointsToWin && gameAlive) {
             announceGameEnd(MOUSE_WIN);
             gameAlive = false;
@@ -806,7 +810,6 @@ void ServerGame::announceGameEnd(bool winner) {
 
 void ServerGame::receiveFromClients()
 {
-
     // go through all clients
     std::map<unsigned int, SOCKET>::iterator iter;
 
@@ -819,7 +822,6 @@ void ServerGame::receiveFromClients()
             continue;
 
         int i = 0;
-
         while (i < data_length) {
             ushort packet_class = get_packet_class(&(network_data[i]));
             switch (packet_class) {
@@ -971,8 +973,12 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         }
     }
 
-    if (glm::length2(netDirection) < 0.1)
+    if (glm::length2(netDirection) < 0.1) {
+        state.moving = false;
         return;
+    }
+
+    state.moving = true;
 
     netDirection = glm::normalize(netDirection);
     glm::vec3 delta = netDirection * (float) playerSpeed;
