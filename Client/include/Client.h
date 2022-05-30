@@ -14,6 +14,7 @@
 #include "Graphics/include/ParticleSystem.h"
 
 #include "Constants/include/constants.h"
+#include "Audio/include/AudioEngine.h"
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -43,6 +44,7 @@ namespace Client {
     void finalDestGUI();
     void stationaryItemGUI();
     void playerSelectGUI();
+    void audioUpdate();
 
     MovementState getMovementState();
     RotationState getRotationState();
