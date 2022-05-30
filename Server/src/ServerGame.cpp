@@ -54,10 +54,10 @@ ServerGame::ServerGame() :
     moveGlobal(banished, glm::vec3(75, 20, -75));
 
     // TODO: Should not be hard coded like this.
-    player_states[0].modelType = PlayerModelTypes::Dino;
-    player_states[1].modelType = PlayerModelTypes::Teapot;
-    player_states[2].modelType = PlayerModelTypes::Bunny;
-    player_states[3].modelType = PlayerModelTypes::Dino;
+    player_states[0].modelType = PlayerModelTypes::Cat;
+    player_states[1].modelType = PlayerModelTypes::Mice;
+    player_states[2].modelType = PlayerModelTypes::Mice;
+    player_states[3].modelType = PlayerModelTypes::Mice;
 
 
     // Load in fake models

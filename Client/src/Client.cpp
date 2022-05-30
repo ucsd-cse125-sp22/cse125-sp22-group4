@@ -36,6 +36,8 @@ static Model* item3;
 static Model* demoChar;
 static Model* demoChar2;
 
+static Model* fakecat;
+
 // Animations
 static Animation* demoAnimation;
 static Animator* animator;
@@ -397,6 +399,8 @@ bool Client::initializeClient() {
     cat = new Model("../../objects/cat/cat_idle.fbx");
     catidleAnimation = new Animation("../../objects/cat/cat_idle.fbx", cat);
     catanimator = new Animator(catidleAnimation);
+
+    fakecat = new Model("../../objects/mouse/mouse.obj");
 
     mouse1 = new Model("../../objects/mouse/mouse_idle.fbx");
     mouseidleAnimation1 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse1);
