@@ -22,6 +22,7 @@ struct PlayerState {
 	glm::mat4 model = glm::mat4(1);
 	bool alive = 1;
 	char modelType;
+	bool moving = 0;
 };
 
 struct ItemState {

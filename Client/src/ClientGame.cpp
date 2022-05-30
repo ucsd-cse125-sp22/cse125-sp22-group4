@@ -167,6 +167,7 @@ void ClientGame::update(MovementState s, RotationState r)
                     setItem(newItemModel);
                 }
 
+                Client::setMovingState(packet->player_states);
                 Client::setItemHold(packet->item_state.hold, packet->item_state.taskSuccess);
                 setNumPlayers(packet->game.numPlayers);
                 setFinalDest(packet->game.dest, packet->game.finalDestRotateTime);
