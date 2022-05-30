@@ -941,7 +941,7 @@ void Client::finalDestGUI() {
     //ImGui::SetCursorPos(ImVec2(window_width - 450 + (image_width_hourglass*adjustment)/2, 15 + (image_height_hourglass*adjustment) / 2));
     ImGui::SetCursorPosY(80 + image_width_hourglass*adjustment/2);
     auto windowWidth = ImGui::GetWindowSize().x;
-    ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 5);
+    ImGui::SetCursorPosX((windowWidth - image_width_hourglass*adjustment) * 0.5f + 6);
     ImGui::Text("0:%02d", time);
     ImGui::PopFont();
     ImGui::PopStyleColor();
@@ -1005,10 +1005,17 @@ void Client::playerSelectGUI() {
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
     ImGui::Image((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize));
     
-    float mouseLoc = window_width - 4 * (image_width_mouse_icon * adjust_mouse * width_resize) / 5;
-    ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_mouse_icon * adjust_mouse * height_resize) / 2 + 100));
+    float mouseLocX = (3 * window_width) / 4 - (image_width_mouse_icon * adjust_mouse * width_resize);
+    float mouseLocY = (window_height / 3) - (image_height_mouse_icon * adjust_mouse * height_resize) / 2;
+    ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+    if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize),ImVec2(0,0),ImVec2(1, 1), -1, ImVec4(0, 0, 0, 0),ImVec4(1, 1, 1, 1)));
+        ImGui::Text("hi");
+    //ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+    ImGui::SetCursorPos(ImVec2(mouseLocX - (image_width_mouse_icon * adjust_mouse * width_resize) / 2, mouseLocY + image_height_mouse_icon * adjust_mouse * height_resize));
     ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
-    
+    ImGui::SetCursorPos(ImVec2(mouseLocX + (image_width_mouse_icon * adjust_mouse * width_resize) / 2, mouseLocY + image_height_mouse_icon * adjust_mouse * height_resize));
+    ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+
     ImGui::PopStyleColor();
     ImGui::End();
 }
