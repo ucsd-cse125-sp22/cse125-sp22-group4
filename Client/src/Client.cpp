@@ -46,8 +46,6 @@ static Model* item3;
 //static Model* demoChar;
 //static Model* demoChar2;
 
-static Model* fakecat;
-
 // Animations
 //static Animation* demoAnimation;
 //static Animator* animator;
@@ -58,11 +56,19 @@ static Animation* catidleAnimation;
 static Animator* catanimator;
 
 static Animation* mouseidleAnimation1;
+static Animation* mousewalkingAnimation1;
 static Animator* mouseanimator1;
+static Animator* mousewalkinganimator1;
+
 static Animation* mouseidleAnimation2;
+static Animation* mousewalkingAnimation2;
 static Animator* mouseanimator2;
+static Animator* mousewalkinganimator2;
+
 static Animation* mouseidleAnimation3;
+static Animation* mousewalkingAnimation3;
 static Animator* mouseanimator3;
+static Animator* mousewalkinganimator3;
 
 //Particles
 static ParticleSystem* smokeparticles;
@@ -427,19 +433,23 @@ bool Client::initializeClient() {
     catidleAnimation = new Animation("../../objects/cat/cat_idle.fbx", cat);
     catanimator = new Animator(catidleAnimation);
 
-    fakecat = new Model("../../objects/mouse/mouse.obj");
-
     mouse1 = new Model("../../objects/mouse/mouse_idle.fbx");
     mouseidleAnimation1 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse1);
     mouseanimator1 = new Animator(mouseidleAnimation1);
+    mousewalkingAnimation1 = new Animation("../../objects/mouse/mouse_walk/mouse_walking.fbx", mouse1);
+    mousewalkinganimator1 = new Animator(mousewalkingAnimation1);
 
     mouse2 = new Model("../../objects/mouse/mouse_idle.fbx");
     mouseidleAnimation2 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse2);
     mouseanimator2 = new Animator(mouseidleAnimation2);
+    mousewalkingAnimation2 = new Animation("../../objects/mouse/mouse_walk/mouse_walking.fbx", mouse2);
+    mousewalkinganimator2 = new Animator(mousewalkingAnimation2);
 
     mouse3 = new Model("../../objects/mouse/mouse_idle.fbx");
     mouseidleAnimation3 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse3);
     mouseanimator3 = new Animator(mouseidleAnimation3);
+    mousewalkingAnimation3 = new Animation("../../objects/mouse/mouse_walk/mouse_walking.fbx", mouse3);
+    mousewalkinganimator3 = new Animator(mousewalkingAnimation3);
 
     //backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/maze3D.obj");
@@ -631,15 +641,40 @@ void Client::displayCallback() {
         geisel->draw(currCam->viewProjMat, identityMat, shader);
         sungod->draw(currCam->viewProjMat, identityMat, shader);
         fallenstar->draw(currCam->viewProjMat, identityMat, shader);
-        
-        calcFinalBoneMatrix(catanimator);
+
+
+        if (movingState[0] == true) {
+            calcFinalBoneMatrix(catanimator);
+        }
+        else {
+            calcFinalBoneMatrix(catanimator);
+        }
         cat->draw(currCam->viewProjMat, identityMat, shader);
-        calcFinalBoneMatrix(mouseanimator1);
+
+        if (movingState[1] == true) {
+            calcFinalBoneMatrix(mousewalkinganimator1);
+        }
+        else {
+            calcFinalBoneMatrix(mouseanimator1);
+        }
         mouse1->draw(currCam->viewProjMat, identityMat, shader);
-        calcFinalBoneMatrix(mouseanimator2);
+
+        if (movingState[2] == true) {
+            calcFinalBoneMatrix(mousewalkinganimator2);
+        }
+        else {
+            calcFinalBoneMatrix(mouseanimator2);
+        }
         mouse2->draw(currCam->viewProjMat, identityMat, shader);
-        calcFinalBoneMatrix(mouseanimator3);
+
+        if (movingState[3] == true) {
+            calcFinalBoneMatrix(mousewalkinganimator3);
+        }
+        else {
+            calcFinalBoneMatrix(mouseanimator3);
+        }
         mouse3->draw(currCam->viewProjMat, identityMat, shader);
+
         item->draw(currCam->viewProjMat, identityMat, shader);
         item2->draw(currCam->viewProjMat, identityMat, shader);
         item3->draw(currCam->viewProjMat, identityMat, shader);
@@ -693,11 +728,6 @@ void Client::idleCallback(float dt) {
 
         catanimator->update(dt);
 
-        mouseanimator1->update(dt);
-        mouseanimator2->update(dt);
-        mouseanimator3->update(dt);
-
-
         //particles update
         smokeparticles->update(dt, 2, glm::vec3(x,y + 1,z));
         flameparticles->update(dt, 1, glm::vec3(x, y - 2, z));
@@ -721,23 +751,29 @@ void Client::idleCallback(float dt) {
 
         if (movingState[1] == true) {
             micetrailparticles1->update(dt, 2, micepos1);
+            mousewalkinganimator1->update(2*dt);
         }
         else {
             micetrailparticles1->update(dt, 0, micepos1);
+            mouseanimator1->update(dt);
         }
 
         if (movingState[2] == true) {
             micetrailparticles2->update(dt, 2, micepos2);
+            mousewalkinganimator2->update(2*dt);
         }
         else {
             micetrailparticles2->update(dt, 0, micepos2);
+            mouseanimator2->update(dt);
         }
 
         if (movingState[3] == true) {
             micetrailparticles3->update(dt, 2, micepos3);
+            mousewalkinganimator3->update(2*dt);
         }
         else {
             micetrailparticles3->update(dt, 0, micepos3);
+            mouseanimator3->update(dt);
         }
     }
 
