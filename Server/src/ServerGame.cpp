@@ -141,46 +141,46 @@ void ServerGame::respawnPlayer(int client_id) {
     switch (client_id) {
     case 1:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(145, 0, -75));
+            moveGlobal(newModel, glm::vec3(145, -3, -75));
             spin(newModel, 90);
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(35, 0, -105));
+            moveGlobal(newModel, glm::vec3(35, -3, -105));
             spin(newModel, 90);
         }
         else {
-            moveGlobal(newModel, glm::vec3(115, 0, -45));
+            moveGlobal(newModel, glm::vec3(115, -3, -45));
             spin(newModel, 90);
         }
         break;
 
     case 2:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(75, 0, -145));
+            moveGlobal(newModel, glm::vec3(75, -3, -145));
             spin(newModel, 180);
             
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(115, 0, -85));
+            moveGlobal(newModel, glm::vec3(115, -3, -85));
             spin(newModel, 180);
         }
         else {
-            moveGlobal(newModel, glm::vec3(55, 0, -15));
+            moveGlobal(newModel, glm::vec3(55, -3, -15));
             spin(newModel, 180);
         }
         break;
         
     case 3:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(5, 0, -75));
+            moveGlobal(newModel, glm::vec3(5, -3, -75));
             spin(state.model, 270);
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(85, 0, -105));
+            moveGlobal(newModel, glm::vec3(85, -3, -105));
             spin(state.model, 270);
         }
         else {
-            moveGlobal(newModel, glm::vec3(145, 0, -105));
+            moveGlobal(newModel, glm::vec3(145, -3, -105));
             spin(state.model, 270);
         }
         break;
