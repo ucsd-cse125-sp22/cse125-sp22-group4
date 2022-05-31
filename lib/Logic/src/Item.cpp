@@ -94,6 +94,6 @@ bool SitAndHoldObjective::checkAward() {
 		taskSuccess = true;
 		return true;
 	}
-	printf("Stationary: Making progress! %3.3lf\n", getProgress());
+	//printf("Stationary: Making progress! %3.3lf\n", getProgress());
 	return false;
 }

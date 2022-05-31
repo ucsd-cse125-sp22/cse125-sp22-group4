@@ -171,6 +171,18 @@ bool retCardback;
 int image_width_cardback = 0;
 int image_height_cardback = 0;
 GLuint image_texture_cardback = 0;
+bool retCard1;
+int image_width_card1 = 0;
+int image_height_card1 = 0;
+GLuint image_texture_card1 = 0;
+bool retCard2;
+int image_width_card2 = 0;
+int image_height_card2 = 0;
+GLuint image_texture_card2 = 0;
+bool retCard3;
+int image_width_card3 = 0;
+int image_height_card3 = 0;
+GLuint image_texture_card3 = 0;
 
 
 std::vector<Model*> sceneObjects;
@@ -194,6 +206,13 @@ static bool mouse2Clicked = false;
 static bool mouse3Clicked = false;
 static bool catModel = false;
 static bool playerSelected = false;
+vector<int> cardChoices = { 1, 1, 2, 2, 3, 3 };
+vector<GLuint> cards;
+static int possiblePair = -1;
+static GLuint possibleImg = -1;
+static int pairs = 0;
+static int numSelected = 0;
+static bool cardsSelected[6] = { false, false, false, false, false, false };
 static int finalDestRotateTime = -1;
 static int timeLeftStationaryItem = 0;
 static int timeLeftStationaryItem2 = 0;
@@ -516,6 +535,18 @@ bool Client::initializeClient() {
     retMouseIconPale = LoadTextureFromFile("../../objects/ImGui/mouse_icon_pale.png", &image_texture_mouse_icon_pale, &image_width_mouse_icon_pale, &image_height_mouse_icon_pale);
     retCatIconPale = LoadTextureFromFile("../../objects/ImGui/cat_icon_pale.png", &image_texture_cat_icon_pale, &image_width_cat_icon_pale, &image_height_cat_icon_pale);
     retCardback = LoadTextureFromFile("../../objects/ImGui/cardback.png", &image_texture_cardback, &image_width_cardback, &image_height_cardback);
+    retCard1 = LoadTextureFromFile("../../objects/ImGui/card1.png", &image_texture_card1, &image_width_card1, &image_height_card1);
+    retCard2 = LoadTextureFromFile("../../objects/ImGui/card2.png", &image_texture_card2, &image_width_card2, &image_height_card2);
+    retCard3 = LoadTextureFromFile("../../objects/ImGui/card3.png", &image_texture_card3, &image_width_card3, &image_height_card3);
+    random_shuffle(cardChoices.begin(), cardChoices.end());
+    for (int i = 0; i < cardChoices.size(); i++) {
+        if (cardChoices[i] == 1)
+            cards.push_back(image_texture_card1);
+        else if (cardChoices[i] == 2)
+            cards.push_back(image_texture_card2);
+        else if (cardChoices[i] == 3)
+            cards.push_back(image_texture_card3);
+    }
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -1160,7 +1191,7 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded == 1 || my_id == 0) // don't display on game over or if cat
+    if (gameEnded == 1) // || my_id == 0) // don't display on game over or if cat
         return;
  
     ImGuiWindowFlags flags = 0;
@@ -1189,19 +1220,157 @@ void Client::stationaryItemGUI() {
 }
 
 void Client::displayCards() {
-    ImGui::SetCursorPos(ImVec2((window_width-image_width_cardback) * 2 / 6 - image_width_cardback/2, (window_height-image_height_cardback) / 4));
-    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
-    ImGui::SetCursorPos(ImVec2((window_width-image_width_cardback) * 3 / 6, (window_height - image_height_cardback) / 4));
-    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
-    ImGui::SetCursorPos(ImVec2((window_width-image_width_cardback) * 4 / 6 + image_width_cardback/2, (window_height - image_height_cardback) / 4));
-    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
+    float height_resize = window_height / static_cast<float>(1017);
+    float width_resize = window_width / static_cast<float>(1920);
 
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 2 / 6 - image_width_cardback/2, (window_height - image_height_cardback) * 3/ 4));
-    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 3 / 6, (window_height - image_height_cardback) * 3 / 4));
-    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 4 / 6 + image_width_cardback/2, (window_height - image_height_cardback) * 3 / 4));
-    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 4 - image_width_cardback / 2, (window_height - image_height_cardback) / 4 - image_height_cardback/4));
+
+    if (!cardsSelected[0] && possiblePair == -1) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            cardsSelected[0] = true;
+            possiblePair = 0;
+        }
+    }
+    else if (!cardsSelected[0]) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            if (cardChoices[possiblePair] == cardChoices[0]) {
+                pairs++;
+                cardsSelected[0] = true;
+            }
+            else {
+                cardsSelected[possiblePair] = false;
+                possiblePair = -1;
+            }
+
+        }
+    }
+    else {
+        ImGui::Image((void*)(intptr_t)cards[0], ImVec2(image_width_cardback, image_height_cardback));
+    }
+   
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 2 - image_width_cardback / 2, (window_height - image_height_cardback) / 4 - image_height_cardback / 4));
+
+    if (!cardsSelected[1] && possiblePair == -1) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            cardsSelected[1] = true;
+            possiblePair = 1;
+        }
+    }
+    else if (!cardsSelected[1]) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            if (cardChoices[possiblePair] == cardChoices[1]) {
+                pairs++;
+                cardsSelected[1] = true;
+            }
+            else {
+                cardsSelected[possiblePair] = false;
+                possiblePair = -1;
+            }
+            
+        }
+    }
+    else {
+        ImGui::Image((void*)(intptr_t)cards[1], ImVec2(image_width_cardback, image_height_cardback));
+    }
+    
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 3 / 4 - image_width_cardback / 2, (window_height - image_height_cardback) / 4 - image_height_cardback / 4));
+    
+    if (!cardsSelected[2] && possiblePair == -1) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            cardsSelected[2] = true;
+            possiblePair = 2;
+        }
+    }
+    else if (!cardsSelected[2]) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            if (cardChoices[possiblePair] == cardChoices[2]) {
+                pairs++;
+                cardsSelected[2] = true;
+            }
+            else {
+                cardsSelected[possiblePair] = false;
+                possiblePair = -1;
+            }
+
+        }
+    }
+    else {
+        ImGui::Image((void*)(intptr_t)cards[2], ImVec2(image_width_cardback, image_height_cardback));
+    }
+    
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 4 - image_width_cardback / 2, (window_height - image_height_cardback) * 3 / 4 + image_height_cardback / 4));
+    
+    if (!cardsSelected[3] && possiblePair == -1) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            cardsSelected[3] = true;
+            possiblePair = 3;
+        }
+    }
+    else if (!cardsSelected[3]) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            if (cardChoices[possiblePair] == cardChoices[3]) {
+                pairs++;
+                cardsSelected[3] = true;
+            }
+            else {
+                cardsSelected[possiblePair] = false;
+                possiblePair = -1;
+            }
+
+        }
+    }
+    else {
+        ImGui::Image((void*)(intptr_t)cards[3], ImVec2(image_width_cardback, image_height_cardback));
+    }
+    
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 2 - image_width_cardback / 2, (window_height - image_height_cardback) * 3 / 4 + image_height_cardback / 4));
+    
+    if (!cardsSelected[4] && possiblePair == -1) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            cardsSelected[4] = true;
+            possiblePair = 4;
+        }
+    }
+    else if (!cardsSelected[4]) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            if (cardChoices[possiblePair] == cardChoices[4]) {
+                pairs++;
+                cardsSelected[4] = true;
+            }
+            else {
+                cardsSelected[possiblePair] = false;
+                possiblePair = -1;
+            }
+
+        }
+    }
+    else {
+        ImGui::Image((void*)(intptr_t)cards[4], ImVec2(image_width_cardback, image_height_cardback));
+    }
+    
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 3 / 4 - image_width_cardback / 2, (window_height - image_height_cardback) * 3 / 4 + image_height_cardback / 4));
+    if (!cardsSelected[5] && possiblePair == -1) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            cardsSelected[5] = true;
+            possiblePair = 5;
+        }
+    }
+    else if (!cardsSelected[5]) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+            if (cardChoices[possiblePair] == cardChoices[5]) {
+                pairs++;
+                cardsSelected[5] = true;
+            }
+            else {
+                cardsSelected[possiblePair] = false;
+                possiblePair = -1;
+            }
+
+        }
+    }
+    else {
+        ImGui::Image((void*)(intptr_t)cards[5], ImVec2(image_width_cardback, image_height_cardback));
+    }
 }
 
 
