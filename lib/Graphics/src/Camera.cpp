@@ -43,7 +43,7 @@ void Camera::reset() {
  * Update view projection matrix based on current parameter values
 **/
 void Camera::update() {
-    projection = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(FOV), aspectRatio, 0.1f, 1000.0f);
     view = glm::lookAt(pos, lookAt, glm::normalize(upVec));
     viewProjMat = projection * view;
 }
