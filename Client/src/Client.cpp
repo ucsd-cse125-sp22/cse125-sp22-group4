@@ -462,9 +462,8 @@ bool Client::initializeClient() {
    
     item = new Model("../../objects/diploma/diploma.dae");
    
-    item2 = new Model("../../objects/computer/computer.obj");
+    item2 = new Model("../../objects/computer/computer.fbx");
     item2->moveGlobal(glm::vec3(70, 0, -5));
-    item2->scale(glm::vec3(5));
     item3 = new Model("../../objects/books/books.fbx");
     item3->moveGlobal(glm::vec3(65, -1, -10));
     item3->scale(glm::vec3(6));
