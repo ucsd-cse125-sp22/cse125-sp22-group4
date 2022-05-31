@@ -75,6 +75,9 @@ static ParticleSystem* smokeparticles;
 static ParticleSystem* flameparticles;
 static ParticleSystem* glintparticles;
 
+static ParticleSystem* glintparticlesitem2;
+static ParticleSystem* glintparticlesitem3;
+
 static ParticleSystem* cattrailparticles;
 static ParticleSystem* micetrailparticles1;
 static ParticleSystem* micetrailparticles2;
@@ -437,9 +440,12 @@ bool Client::initializeClient() {
     //initialize particle system
     smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
     flameparticles = new ParticleSystem(particleShader, "../../particles/flame.png", flame);
-    glintparticles = new ParticleSystem(particleShader, "../../particles/smallglint.png", glint);
-    cattrailparticles = new ParticleSystem(particleShader, "../../particles/dust.png", trail);
 
+    glintparticles = new ParticleSystem(particleShader, "../../particles/smallglint.png", glint);
+    glintparticlesitem2 = new ParticleSystem(particleShader, "../../particles/smallglint_red.png", glint);
+    glintparticlesitem3 = new ParticleSystem(particleShader, "../../particles/smallglint_blue.png", glint);
+
+    cattrailparticles = new ParticleSystem(particleShader, "../../particles/dust.png", trail);
     micetrailparticles1 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
     micetrailparticles2 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
     micetrailparticles3 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
@@ -715,6 +721,8 @@ void Client::displayCallback() {
         micetrailparticles3->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
 
         glintparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        glintparticlesitem2->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        glintparticlesitem3->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         
         break;
     }
@@ -767,6 +775,14 @@ void Client::idleCallback(float dt) {
         glm::mat4 itemModel = item->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0, 0));
         glm::vec3 itempos = itemModel[3];
         glintparticles->update(dt, 2, itempos);
+
+        itemModel = item2->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0, 0));
+        itempos = itemModel[3];
+        glintparticlesitem2->update(dt, 2, itempos);
+
+        itemModel = item3->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0, 0));
+        itempos = itemModel[3];
+        glintparticlesitem3->update(dt, 2, itempos);
 
         glm::mat4 trailModel = cat->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.3, 0.5));
         glm::vec3 catpos = trailModel[3];
