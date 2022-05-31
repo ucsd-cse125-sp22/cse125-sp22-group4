@@ -9,13 +9,14 @@ bool Maze::forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZL
     double modelHalfWidth;
     
 
-    if (playerID == 0 || playerID == 3) { 
+    if (playerID == 3) {
         length = 0.25; // estimate dino length
         modelHalfWidth = .1; // just approximating
     }
     else {
         length = .1; // estimate rabbit/teapot length
         modelHalfWidth = .25;
+        printf("mouse\n");
     }
 
     // cardinal directions

@@ -532,8 +532,8 @@ bool Client::initializeClient() {
     sceneObjects = scene->load();
 
     //hard coded for now
-    players[0] = cat;
-    players[1] = mouse1;
+    players[0] = mouse1;
+    players[1] = cat;
     players[2] = mouse2;
     players[3] = mouse3;
 

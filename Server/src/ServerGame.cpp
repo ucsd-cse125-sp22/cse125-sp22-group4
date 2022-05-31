@@ -959,7 +959,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
             }
             case FORWARD:
             {
-                obstacle = maze->forwardBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+                obstacle = maze->forwardBlock(4, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
                 break;
             }
         }
