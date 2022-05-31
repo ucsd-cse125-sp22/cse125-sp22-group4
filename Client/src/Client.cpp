@@ -192,7 +192,7 @@ static bool gameStartPressed = 0;
 static bool mouse1Clicked = false;
 static bool mouse2Clicked = false;
 static bool mouse3Clicked = false;
-static bool catClicked = false;
+static bool catModel = false;
 static bool playerSelected = false;
 static int finalDestRotateTime = -1;
 static int timeLeftStationaryItem = 0;
@@ -532,8 +532,8 @@ bool Client::initializeClient() {
     sceneObjects = scene->load();
 
     //hard coded for now
-    players[0] = mouse1;
-    players[1] = cat;
+    players[0] = cat;
+    players[1] = mouse1;
     players[2] = mouse2;
     players[3] = mouse3;
 
@@ -1235,11 +1235,11 @@ void Client::playerSelectGUI() {
     float catLoc = (window_width - image_width_cat_icon * adjust_cat * width_resize) / 5 - 100;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
     
-    if (!catClicked) {
+    if (!catModel) {
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
             if (!playerSelected) {
                 playerSelected = true;
-                catClicked = true;
+                catModel = true;
             }          
         }
     }
@@ -1259,7 +1259,10 @@ void Client::playerSelectGUI() {
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
     if (!mouse1Clicked) {
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
-            mouse1Clicked = true;
+            if (!playerSelected) {
+                playerSelected = true;
+                mouse1Clicked = true;
+            }
             
         }
     }
@@ -1274,8 +1277,10 @@ void Client::playerSelectGUI() {
     
     if (!mouse2Clicked) {
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
-            mouse2Clicked = true;
-
+            if (!playerSelected) {
+                mouse2Clicked = true;
+                playerSelected = true;
+            }
         }
     }
     else {
@@ -1290,7 +1295,10 @@ void Client::playerSelectGUI() {
 
     if (!mouse3Clicked) {
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
-            mouse3Clicked = true;
+            if (!playerSelected) {
+                mouse3Clicked = true;
+                playerSelected = true;
+            }
 
         }
     }

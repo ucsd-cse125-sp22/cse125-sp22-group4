@@ -7,7 +7,14 @@
 class Maze {
 private:
     double pi = 2 * acos(0.0);
- 
+    enum PlayerModelTypes {
+        Dino,
+        Teapot,
+        Bunny,
+        Cat,
+        Mice,
+    };
+
 
 	std::vector<std::vector<int>> mazeHorizontals{ {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                     {0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1},
@@ -51,11 +58,11 @@ public:
 	Maze();
 	~Maze() = default;
 	
-    bool forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
-    bool backwardsBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
-    bool leftBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
-    bool rightBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
-    bool rotateBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2, double dir);
+    bool forwardBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
+    bool backwardsBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
+    bool leftBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
+    bool rightBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2);
+    bool rotateBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2, double dir);
 
 };
 

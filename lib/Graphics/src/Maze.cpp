@@ -3,20 +3,20 @@
 
 Maze::Maze() {}
 
-bool Maze::forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
+bool Maze::forwardBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
     // model length and width
     double length;
     double modelHalfWidth;
     
 
-    if (playerID == 3) {
-        length = 0.25; // estimate dino length
+    if (playerType == Cat) {
+        length = 0.25; // estimate cat length
         modelHalfWidth = .1; // just approximating
     }
     else {
-        length = .1; // estimate rabbit/teapot length
+        length = .1; // estimate mouse length
         modelHalfWidth = .25;
-        printf("mouse\n");
+       
     }
 
     // cardinal directions
@@ -28,12 +28,12 @@ bool Maze::forwardBlock(int playerID, double currPlayerXLoc, double currPlayerZL
     return isObstacle(playerID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
 }
 
-bool Maze::backwardsBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
+bool Maze::backwardsBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
     // model length and width
     double length; 
     double modelHalfWidth; 
 
-    if (playerID == 0 || playerID == 3) {
+    if (playerType == Cat) {
         length = 0.25; // estimate dino length
         modelHalfWidth = .08; // just approximating
     }
@@ -54,12 +54,12 @@ bool Maze::backwardsBlock(int playerID, double currPlayerXLoc, double currPlayer
     return isObstacle(playerID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
 }
 
-bool Maze::leftBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
+bool Maze::leftBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
     // model length and width
     double length; 
     double modelHalfWidth; 
 
-    if (playerID == 0 || playerID == 3) {
+    if (playerType == Cat) {
         length = 0.1; // estimate dino length
         modelHalfWidth = .23; // just approximating
     }
@@ -80,12 +80,12 @@ bool Maze::leftBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc,
     return isObstacle(ID, currPlayerXLoc, currPlayerZLoc, mod1, mod2, length, modelHalfWidth, headingN, headingS, headingE, headingW);
 }
 
-bool Maze::rightBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
+bool Maze::rightBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2) {
     // model length and width
     double length; 
     double modelHalfWidth; 
 
-    if (playerID == 0 || playerID == 3) {
+    if (playerType == Cat) {
         length = 0.1; // estimate dino length
         modelHalfWidth = .23; // just approximating
     }
@@ -296,13 +296,13 @@ bool Maze::isObstacle(int playerID, double currPlayerXLoc, double currPlayerZLoc
     return obstacle;
 }
 
-bool Maze::rotateBlock(int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2, double dir) {
+bool Maze::rotateBlock(char playerType, int playerID, double currPlayerXLoc, double currPlayerZLoc, double mod1, double mod2, double dir) {
 
     // model length and width
     double length; 
     double modelHalfWidth; 
 
-    if (playerID == 0 || playerID == 3) {
+    if (playerType == Cat) {
         length = 0.16; // estimate dino length
         modelHalfWidth = .5; // just approximating
     }

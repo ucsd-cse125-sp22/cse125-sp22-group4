@@ -915,7 +915,7 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     }
 
     glm::mat4 rotationMatrix = glm::rotate(packet->state.delta, glm::vec3(0.0f, 1.0f, 0.0f));
-    bool obstacle = maze->rotateBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (rotationMatrix[2][0] / rotationMatrix[2][2]));
+    bool obstacle = maze->rotateBlock(state.modelType, client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (rotationMatrix[2][0] / rotationMatrix[2][2]));
   
     if (!obstacle) {
         state.model = state.model * rotationMatrix;
@@ -944,22 +944,22 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         switch (i) {
             case LEFT:
             {
-                obstacle = maze->leftBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+                obstacle = maze->leftBlock(state.modelType, client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
                 break;
             }
             case RIGHT:
             {
-                obstacle = maze->rightBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+                obstacle = maze->rightBlock(state.modelType, client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
                 break;
             }
             case BACK:
             {
-                obstacle = maze->backwardsBlock(client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+                obstacle = maze->backwardsBlock(state.modelType, client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
                 break;
             }
             case FORWARD:
             {
-                obstacle = maze->forwardBlock(4, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
+                obstacle = maze->forwardBlock(state.modelType, client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2]);
                 break;
             }
         }
