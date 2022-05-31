@@ -62,6 +62,7 @@ namespace Client {
     void setStationaryItem2Countdown(float t, bool* holdId, bool s);
     void setMovingState(PlayerState* playerstate);
     void resetMovingState();
+    void displayCards();
 
     bool checkGameStart();
     void setGameStart();

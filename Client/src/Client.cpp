@@ -161,6 +161,10 @@ bool retCatIconPale;
 int image_width_cat_icon_pale = 0;
 int image_height_cat_icon_pale = 0;
 GLuint image_texture_cat_icon_pale = 0;
+bool retCardback;
+int image_width_cardback = 0;
+int image_height_cardback = 0;
+GLuint image_texture_cardback = 0;
 
 
 std::vector<Model*> sceneObjects;
@@ -502,6 +506,7 @@ bool Client::initializeClient() {
     retTwoThirds = LoadTextureFromFile("../../objects/ImGui/two_thirds.png", &image_texture_two_thirds, &image_width_two_thirds, &image_height_two_thirds);
     retMouseIconPale = LoadTextureFromFile("../../objects/ImGui/mouse_icon_pale.png", &image_texture_mouse_icon_pale, &image_width_mouse_icon_pale, &image_height_mouse_icon_pale);
     retCatIconPale = LoadTextureFromFile("../../objects/ImGui/cat_icon_pale.png", &image_texture_cat_icon_pale, &image_width_cat_icon_pale, &image_height_cat_icon_pale);
+    retCardback = LoadTextureFromFile("../../objects/ImGui/cardback.png", &image_texture_cardback, &image_width_cardback, &image_height_cardback);
 
     // COLLISION DEBUG
     wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
@@ -790,6 +795,7 @@ void Client::cleanup() {
 
     delete scene;
 }
+
 
 /**
  * Client GUI
@@ -1130,19 +1136,39 @@ void Client::stationaryItemGUI() {
 
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
+    //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(24.0f /  255, 68.0f / 255, 62.0f / 255, 1.0f));
    
     if (timeLeftStationaryItem > 0 && holdIdStationary[my_id]) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
+        //displayCards();
         ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
         ImGui::End();
     }
     else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id]) { // for books stationary item
         ImGui::Begin("StationaryItem2 GUI", NULL, flags);
+        //displayCards();
         ImGui::Image((void*)(intptr_t)image_texture_fireplace, ImVec2(window_width, window_height));
         ImGui::End();
     }
-  
+    //ImGui::PopStyleColor();
 }
+
+void Client::displayCards() {
+    ImGui::SetCursorPos(ImVec2((window_width-image_width_cardback) * 2 / 6 - image_width_cardback/2, (window_height-image_height_cardback) / 4));
+    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
+    ImGui::SetCursorPos(ImVec2((window_width-image_width_cardback) * 3 / 6, (window_height - image_height_cardback) / 4));
+    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
+    ImGui::SetCursorPos(ImVec2((window_width-image_width_cardback) * 4 / 6 + image_width_cardback/2, (window_height - image_height_cardback) / 4));
+    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
+
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 2 / 6 - image_width_cardback/2, (window_height - image_height_cardback) * 3/ 4));
+    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 3 / 6, (window_height - image_height_cardback) * 3 / 4));
+    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 4 / 6 + image_width_cardback/2, (window_height - image_height_cardback) * 3 / 4));
+    ImGui::Image((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback));
+}
+
 
 void Client::restore() {
     gameStarted = 0;
@@ -1183,10 +1209,10 @@ void Client::playerSelectGUI() {
         }
     }
     else {
-        if (!playerSelected) {
+        //if (!playerSelected) {
             ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
             ImGui::Image((void*)(intptr_t)image_texture_cat_icon_pale, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize));
-        }
+        //}
        
     }
 
