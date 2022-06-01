@@ -893,6 +893,11 @@ void Client::audioUpdate() {
         hasPlayedMouse3CatCollision = false;
     }
 
+    if (hasPlayedMouseCatCollision && my_id != 0 && player->getModel()[3][1] <= 10) {
+        hasPlayedMouseCatCollision = false;
+    }
+
+
     if (!hasPlayedMouse1CatCollision && my_id == 0 &&
         players[1]->getModel()[3][1] > 10) {
         audioEngine->PlayEvent("event:/cat_screech_1");
@@ -916,11 +921,6 @@ void Client::audioUpdate() {
         hasPlayedMouseCatCollision = true;
         hasPlayedTask1 = false; // task1 respawns on collision
     }
-
-    if (!hasPlayedMouseCatCollision && my_id != 0 && player->getModel()[3][1] > 10) {
-        hasPlayedMouseCatCollision = false;
-    }
-
 
 
     // Tasks 
@@ -1533,8 +1533,8 @@ void Client::GameStartGUI() {
         {
             //playerSelect = true;
             gameStartPressed = true;
-            /*audioEngine->StopEvent("event:/music1");
-            audioEngine->PlayEvent("event:/music_placeholder");*/
+            audioEngine->StopEvent("event:/music1");
+            audioEngine->PlayEvent("event:/music_placeholder");
         }
     }
     else
