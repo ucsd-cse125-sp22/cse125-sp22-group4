@@ -202,7 +202,7 @@ static CollisionDetector cDetector;
 // state variables
 static bool gameEnded = 0;
 static bool gameStarted = 0;
-static bool playerSelect = true;
+static bool playerSelect = false;
 static bool gameStartPressed = 0;
 static bool mouse1Clicked = false;
 static bool mouse2Clicked = false;
