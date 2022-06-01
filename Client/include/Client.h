@@ -22,7 +22,7 @@
 #include "spdlog/spdlog.h"
 
 #include <string>
-#include <unordered_set>
+#include <math.h>
 
 namespace Client {
     GLFWwindow* createWindow(int width, int height, std::string windowTitle);
