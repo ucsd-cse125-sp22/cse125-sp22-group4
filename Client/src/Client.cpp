@@ -459,8 +459,8 @@ bool Client::initializeClient() {
     };
 
     // DEBUG COLLISION
-    scene = new SceneLoader("../../objects/collision/scene.txt");
-    sceneObjects = scene->load("../../objects/collision/");
+    scene = new SceneLoader("../../objects/new_maze_collision/scene.txt");
+    sceneObjects = scene->load("../../objects/new_maze_collision/");
 
     //initialize particle system
     smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
@@ -479,10 +479,10 @@ bool Client::initializeClient() {
     ground = new Cube(glm::vec3(-25, -1, -25), glm::vec3(25, 1, 25));
     ground->moveGlobal(glm::vec3(0, -3, 0));
 
-    fakecat = new Model("../../objects/cat/smallcat.obj");
+    fakecat = new Model("../../objects/cat/cat.obj");
 
-    cat = new Model("../../objects/cat/small_cat_idle.fbx");
-    catidleAnimation = new Animation("../../objects/cat/small_cat_idle.fbx", cat);
+    cat = new Model("../../objects/cat/cat_idle.fbx");
+    catidleAnimation = new Animation("../../objects/cat/cat_idle.fbx", cat);
     catanimator = new Animator(catidleAnimation);
 
     mouse1 = new Model("../../objects/mouse/mouse_idle.fbx");

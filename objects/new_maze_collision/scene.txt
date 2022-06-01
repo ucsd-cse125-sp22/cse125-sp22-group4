@@ -1,0 +1,598 @@
+Object: wall_obb.001
+
+Object: wall_obb.002
+
+Object: wall_obb.003
+
+Object: wall_obb.004
+
+Object: wall_obb.005
+
+Object: wall_obb.006
+
+Object: wall_obb.007
+
+Object: wall_obb.008
+
+Object: wall_obb.009
+
+Object: wall_obb.010
+
+Object: wall_obb.011
+
+Object: wall_obb.012
+
+Object: wall_obb.013
+
+Object: wall_obb.014
+
+Object: wall_obb.015
+
+Object: wall_obb.016
+
+Object: wall_obb.017
+
+Object: wall_obb.018
+
+Object: wall_obb.019
+
+Object: wall_obb.020
+
+Object: wall_obb.021
+
+Object: wall_obb.022
+
+Object: wall_obb.023
+
+Object: wall_obb.024
+
+Object: wall_obb.025
+
+Object: wall_obb.026
+
+Object: wall_obb.027
+
+Object: wall_obb.028
+
+Object: wall_obb.029
+
+Object: wall_obb.030
+
+Object: wall_obb.031
+
+Object: wall_obb.032
+
+Object: wall_obb.033
+
+Object: wall_obb.034
+
+Object: wall_obb.035
+
+Object: wall_obb.036
+
+Object: wall_obb.037
+
+Object: wall_obb.038
+
+Object: wall_obb.039
+
+Object: wall_obb.040
+
+Object: wall_obb.041
+
+Object: wall_obb.042
+
+Object: wall_obb.043
+
+Object: wall_obb.044
+
+Object: wall_obb.045
+
+Object: wall_obb.046
+
+Object: wall_obb.047
+
+Object: wall_obb.048
+
+Object: wall_obb.049
+
+Object: wall_obb.050
+
+Object: wall_obb.051
+
+Object: wall_obb.052
+
+Object: wall_obb.053
+
+Object: wall_obb.054
+
+Object: wall_obb.055
+
+Object: wall_obb.056
+
+Object: wall_obb.057
+
+Object: wall_obb.058
+
+Object: wall_obb.059
+
+Object: wall_obb.060
+
+Object: wall_obb.061
+
+Object: wall_obb.062
+
+Object: wall_obb.063
+
+Object: wall_obb.064
+
+Object: wall_obb.065
+
+Object: wall_obb.066
+
+Object: wall_obb.067
+
+Object: wall_obb.068
+
+Object: wall_obb.069
+
+Object: wall_obb.070
+
+Object: wall_obb.071
+
+Object: wall_obb.072
+
+Object: wall_obb.073
+
+Object: wall_obb.074
+
+Object: wall_obb.075
+
+Object: wall_obb.076
+
+Object: wall_obb.077
+
+Object: wall_obb.078
+
+Object: wall_obb.079
+
+Object: wall_obb.080
+
+Object: wall_obb.081
+
+Object: wall_obb.082
+
+Object: wall_obb.083
+
+Object: wall_obb.084
+
+Object: wall_obb.085
+
+Object: wall_obb.086
+
+Object: wall_obb.087
+
+Object: wall_obb.088
+
+Object: wall_obb.089
+
+Object: wall_obb.090
+
+Object: wall_obb.091
+
+Object: wall_obb.092
+
+Object: wall_obb.093
+
+Object: wall_obb.094
+
+Object: wall_obb.095
+
+Object: wall_obb.096
+
+Object: wall_obb.097
+
+Object: wall_obb.098
+
+Object: wall_obb.099
+
+Object: wall_obb.100
+
+Object: wall_obb.101
+
+Object: wall_obb.102
+
+Object: wall_obb.103
+
+Object: wall_obb.104
+
+Object: wall_obb.105
+
+Object: wall_obb.106
+
+Object: wall_obb.107
+
+Object: wall_obb.108
+
+Object: wall_obb.109
+
+Object: wall_obb.110
+
+Object: wall_obb.111
+
+Object: wall_obb.112
+
+Object: wall_obb.113
+
+Object: wall_obb.114
+
+Object: wall_obb.115
+
+Object: wall_obb.116
+
+Object: wall_obb.117
+
+Object: wall_obb.118
+
+Object: wall_obb.119
+
+Object: wall_obb.120
+
+Object: wall_obb.121
+
+Object: wall_obb.122
+
+Object: wall_obb.123
+
+Object: wall_obb.124
+
+Object: wall_obb.125
+
+Object: wall_obb.126
+
+Object: wall_obb.127
+
+Object: wall_obb.128
+
+Object: wall_obb.129
+
+Object: wall_obb.130
+
+Object: wall_obb.131
+
+Object: wall_obb.132
+
+Object: wall_obb.133
+
+Object: wall_obb.134
+
+Object: wall_obb.135
+
+Object: wall_obb.136
+
+Object: wall_obb.137
+
+Object: wall_obb.138
+
+Object: wall_obb.139
+
+Object: wall_obb.140
+
+Object: wall_obb.141
+
+Object: wall_obb.142
+
+Object: wall_obb.143
+
+Object: wall_obb.144
+
+Object: wall_obb.145
+
+Object: wall_obb.146
+
+Object: wall_obb.147
+
+Object: wall_obb.148
+
+Object: wall_obb.149
+
+Object: wall_obb.150
+
+Object: wall_obb.151
+
+Object: wall_obb.152
+
+Object: wall_obb.153
+
+Object: wall_obb.154
+
+Object: wall_obb.155
+
+Object: wall_obb.156
+
+Object: wall_obb.157
+
+Object: wall_obb.158
+
+Object: wall_obb.159
+
+Object: wall_obb.160
+
+Object: wall_obb.161
+
+Object: wall_obb.162
+
+Object: wall_obb.163
+
+Object: wall_obb.164
+
+Object: wall_obb.165
+
+Object: wall_obb.166
+
+Object: wall_obb.167
+
+Object: wall_obb.168
+
+Object: wall_obb.169
+
+Object: wall_obb.170
+
+Object: wall_obb.171
+
+Object: wall_obb.172
+
+Object: wall_obb.173
+
+Object: wall_obb.174
+
+Object: wall_obb.175
+
+Object: wall_obb.176
+
+Object: wall_obb.177
+
+Object: wall_obb.178
+
+Object: wall_obb.179
+
+Object: wall_obb.180
+
+Object: wall_obb.181
+
+Object: wall_obb.182
+
+Object: wall_obb.183
+
+Object: wall_obb.184
+
+Object: wall_obb.185
+
+Object: wall_obb.186
+
+Object: wall_obb.187
+
+Object: wall_obb.188
+
+Object: wall_obb.189
+
+Object: wall_obb.190
+
+Object: wall_obb.191
+
+Object: wall_obb.192
+
+Object: wall_obb.193
+
+Object: wall_obb.194
+
+Object: wall_obb.195
+
+Object: wall_obb.196
+
+Object: wall_obb.197
+
+Object: wall_obb.198
+
+Object: wall_obb.199
+
+Object: wall_obb.200
+
+Object: wall_obb.201
+
+Object: wall_obb.202
+
+Object: wall_obb.203
+
+Object: wall_obb.204
+
+Object: wall_obb.205
+
+Object: wall_obb.206
+
+Object: wall_obb.207
+
+Object: wall_obb.208
+
+Object: wall_obb.209
+
+Object: wall_obb.210
+
+Object: wall_obb.211
+
+Object: wall_obb.212
+
+Object: wall_obb.213
+
+Object: wall_obb.214
+
+Object: wall_obb.215
+
+Object: wall_obb.216
+
+Object: wall_obb.217
+
+Object: wall_obb.218
+
+Object: wall_obb.219
+
+Object: wall_obb.220
+
+Object: wall_obb.221
+
+Object: wall_obb.222
+
+Object: wall_obb.223
+
+Object: wall_obb.224
+
+Object: wall_obb.225
+
+Object: wall_obb.226
+
+Object: wall_obb.227
+
+Object: wall_obb.228
+
+Object: wall_obb.229
+
+Object: wall_obb.230
+
+Object: wall_obb.231
+
+Object: wall_obb.232
+
+Object: wall_obb.233
+
+Object: wall_obb.234
+
+Object: wall_obb.235
+
+Object: wall_obb.236
+
+Object: wall_obb.237
+
+Object: wall_obb.238
+
+Object: wall_obb.239
+
+Object: wall_obb.240
+
+Object: wall_obb.241
+
+Object: wall_obb.242
+
+Object: wall_obb.243
+
+Object: wall_obb.244
+
+Object: wall_obb.245
+
+Object: wall_obb.246
+
+Object: wall_obb.247
+
+Object: wall_obb.248
+
+Object: wall_obb.249
+
+Object: wall_obb.250
+
+Object: wall_obb.251
+
+Object: wall_obb.252
+
+Object: wall_obb.253
+
+Object: wall_obb.254
+
+Object: wall_obb.255
+
+Object: wall_obb.256
+
+Object: wall_obb.257
+
+Object: wall_obb.258
+
+Object: wall_obb.259
+
+Object: wall_obb.260
+
+Object: wall_obb.261
+
+Object: wall_obb.262
+
+Object: wall_obb.263
+
+Object: wall_obb.264
+
+Object: wall_obb.265
+
+Object: wall_obb.266
+
+Object: wall_obb.267
+
+Object: wall_obb.268
+
+Object: wall_obb.269
+
+Object: wall_obb.270
+
+Object: wall_obb.271
+
+Object: wall_obb.272
+
+Object: wall_obb.273
+
+Object: wall_obb.274
+
+Object: wall_obb.275
+
+Object: wall_obb.276
+
+Object: wall_obb.277
+
+Object: wall_obb.278
+
+Object: wall_obb.279
+
+Object: wall_obb.280
+
+Object: wall_obb.281
+
+Object: wall_obb.282
+
+Object: wall_obb.283
+
+Object: wall_obb.284
+
+Object: wall_obb.285
+
+Object: wall_obb.286
+
+Object: wall_obb.287
+
+Object: wall_obb.288
+
+Object: wall_obb.289
+
+Object: wall_obb.290
+
+Object: wall_obb.291
+
+Object: wall_obb.292
+
+Object: wall_obb.293
+
+Object: wall_obb.294
+
+Object: wall_obb.295
+
+Object: wall_obb.296
+
+Object: wall_obb.297
+
+Object: wall_obb.298
+
+Object: wall_obb.299
+
