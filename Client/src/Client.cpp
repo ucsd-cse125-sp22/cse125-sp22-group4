@@ -1344,9 +1344,10 @@ void Client::playerSelectGUI() {
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
     if (!catSelected) {
         // TODO: Change cat picture instead of background color
-        ImVec4 rgba = !catHover ? ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1) :
-            ImVec4(50.0f / 255, 232.0f / 255, 50.0f / 255, 1);
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, rgba, ImVec4(1, 1, 1, 1))) {
+        ImVec4 rgba = !catHover ? ImVec4(1, 1, 1, 1) :
+            ImVec4(128.0f/255, 128.0f/255, 128.0f/255, 0.5f);
+      
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1),rgba)) {
             if (!playerSelected) {
                 playerSelected = true;
                 playerType = CAT;
@@ -1376,11 +1377,10 @@ void Client::playerSelectGUI() {
 
     if (!mouse1Selected) {
         
-        // TODO: Change mouse picture instead of background color
-        ImVec4 rgba = !mouse1Hover ? ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1) :
-            ImVec4(50.0f / 255, 232.0f / 255, 50.0f / 255, 1);
+        ImVec4 rgba = !mouse1Hover ? ImVec4(1, 1, 1, 1) :
+            ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
 
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, rgba, ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), rgba)) {
             if (!playerSelected) {
                 playerSelected = true;
                 mouse1Selected = true;
@@ -1401,10 +1401,9 @@ void Client::playerSelectGUI() {
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
     
     if (!mouse2Selected) {
-        // TODO: Change mouse picture instead of background color
-        ImVec4 rgba = !mouse2Hover ? ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1) :
-            ImVec4(50.0f / 255, 232.0f / 255, 50.0f / 255, 1);
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, rgba, ImVec4(1, 1, 1, 1))) {
+        ImVec4 rgba = !mouse2Hover ? ImVec4(1, 1, 1, 1) :
+            ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), rgba)) {
             if (!playerSelected) {
                 mouse2Selected = true;
                 playerSelected = true;
@@ -1425,11 +1424,10 @@ void Client::playerSelectGUI() {
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
 
     if (!mouse3Selected) {
-        // TODO: Change mouse picture instead of background color
-        ImVec4 rgba = !mouse3Hover ? ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1) :
-            ImVec4(50.0f / 255, 232.0f / 255, 50.0f / 255, 1);
+        ImVec4 rgba = !mouse3Hover ? ImVec4(1, 1, 1, 1) :
+            ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
 
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, rgba, ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), rgba)) {
             if (!playerSelected) {
                 mouse3Selected = true;
                 playerSelected = true;
