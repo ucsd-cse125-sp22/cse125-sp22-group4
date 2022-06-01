@@ -38,8 +38,8 @@ void ThirdPersonCamera::updatePos() {
 	if (origPos[1] > 10) {
 		origPos[1] = 10;
 	}
-	if (origPos[1] < -3) {
-		origPos[1] = -3;
+	if (origPos[1] < -2.9) {
+		origPos[1] = -2.9;
 	}
 	pos[1] = origPos[1];
 	lookAt = glm::vec3(playerPos);
