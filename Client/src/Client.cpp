@@ -852,7 +852,7 @@ void Client::timeGUI() {
     int seconds = time % 60;          // Second component 
 
     if (!hasPlayedTimer && minute == 0) {
-        //audioEngine->PlayEvent("event:/panic"); //TODO Audio, play timer
+        audioEngine->PlayEvent("event:/panic");
         hasPlayedTimer = true;
     }
 
@@ -895,19 +895,19 @@ void Client::audioUpdate() {
 
     if (!hasPlayedMouse1CatCollision && my_id == 0 &&
         players[1]->getModel()[3][1] > 10) {
-        //audioEngine->PlayEvent("event:/cat_screech_1");
+        audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse1CatCollision = true;
     }
 
     if (!hasPlayedMouse2CatCollision && my_id == 0 &&
         players[2]->getModel()[3][1] > 10) {
-        //audioEngine->PlayEvent("event:/cat_screech_1");
+        audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse2CatCollision = true;
     }
 
     if (!hasPlayedMouse3CatCollision && my_id == 0 &&
         players[3]->getModel()[3][1] > 10) {
-        //audioEngine->PlayEvent("event:/cat_screech_1");
+        audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse3CatCollision = true;
     }
 
@@ -1533,8 +1533,8 @@ void Client::GameStartGUI() {
         {
             //playerSelect = true;
             gameStartPressed = true;
-            audioEngine->StopEvent("event:/music1");
-            audioEngine->PlayEvent("event:/music_placeholder");
+            /*audioEngine->StopEvent("event:/music1");
+            audioEngine->PlayEvent("event:/music_placeholder");*/
         }
     }
     else
