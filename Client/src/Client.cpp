@@ -43,6 +43,8 @@ static Model* fallenstar;
 static Model* item2;
 static Model* item3;
 
+static Model* fakecat;
+
 static Animation* catidleAnimation;
 static Animator* catanimator;
 
@@ -251,7 +253,7 @@ static int currTime = 0;
 static double prevXPos;
 static double prevYPos;
 // 0 for DEBUG COLLISION
-static int select = 1;
+static int select = 0;
 // 1 for ACTUAL GAME
 static bool pause = false;
 static bool showMouse = false;
@@ -457,8 +459,8 @@ bool Client::initializeClient() {
     };
 
     // DEBUG COLLISION
-    //scene = new SceneLoader("../../objects/collision/scene.txt");
-    //sceneObjects = scene->load("../../objects/collision/");
+    scene = new SceneLoader("../../objects/collision/scene.txt");
+    sceneObjects = scene->load("../../objects/collision/");
 
     //initialize particle system
     smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
@@ -477,8 +479,10 @@ bool Client::initializeClient() {
     ground = new Cube(glm::vec3(-25, -1, -25), glm::vec3(25, 1, 25));
     ground->moveGlobal(glm::vec3(0, -3, 0));
 
-    cat = new Model("../../objects/cat/cat_idle.fbx");
-    catidleAnimation = new Animation("../../objects/cat/cat_idle.fbx", cat);
+    fakecat = new Model("../../objects/cat/smallcat.obj");
+
+    cat = new Model("../../objects/cat/small_cat_idle.fbx");
+    catidleAnimation = new Animation("../../objects/cat/small_cat_idle.fbx", cat);
     catanimator = new Animator(catidleAnimation);
 
     mouse1 = new Model("../../objects/mouse/mouse_idle.fbx");
@@ -625,19 +629,30 @@ void Client::displayCallback() {
 
     switch (select) {
     // DEBUG COLLISION
-    /*
+    
     case 0: {
-        //scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
+        isThirdPersonCam = true;
+        scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
         ground->draw(currCam->viewProjMat, identityMat, shader);
         for (auto& wall : sceneObjects) {
             drawOBB(wall->getOBB(), currCam->viewProjMat, shader, false);
         }
 
+        if (movingState[0] == true) {
+            calcFinalBoneMatrix(catanimator);
+        }
+        else {
+            calcFinalBoneMatrix(catanimator);
+        }
+        cat->draw(currCam->viewProjMat, identityMat, shader);
+
+        drawOBB(CollisionDetector::computeOBB(fakecat->getOBB(), cat->getModel()), currCam->viewProjMat, shader, false);
+
         smokeparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         flameparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         break;
     }
-    */
+    
 
     case 1: {
         isThirdPersonCam = true;
@@ -648,7 +663,7 @@ void Client::displayCallback() {
         sungod->draw(currCam->viewProjMat, identityMat, shader);
         fallenstar->draw(currCam->viewProjMat, identityMat, shader);
 
-
+        /*
         if (movingState[0] == true) {
             calcFinalBoneMatrix(catanimator);
         }
@@ -656,6 +671,7 @@ void Client::displayCallback() {
             calcFinalBoneMatrix(catanimator);
         }
         cat->draw(currCam->viewProjMat, identityMat, shader);
+        */
 
         if (movingState[1] == true) {
             calcFinalBoneMatrix(mousewalkinganimator1);

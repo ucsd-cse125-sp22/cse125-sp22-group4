@@ -2,6 +2,7 @@
 
 #include "Tokenizer.h"
 #include "Model.h"
+#include "FakeModel.h"
 
 class SceneLoader{
 private:
@@ -11,6 +12,7 @@ public:
     ~SceneLoader();
 
     std::vector<Model*> load(const std::string& path);
+    std::vector<FakeModel*> fakeLoad(const std::string& path);
     void draw(const glm::mat4& viewProjMat,
         const glm::mat4& transform,
         GLuint shader,

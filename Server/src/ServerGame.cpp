@@ -6,6 +6,7 @@
 unsigned int ServerGame::client_id;
 bool ServerGame::game_started;
 
+
 void moveGlobal(glm::mat4& model, const glm::vec3& v) {
     model = glm::translate(glm::mat4(1), v) * model;
 }
@@ -81,7 +82,7 @@ ServerGame::ServerGame() :
         }
         case PlayerModelTypes::Cat:
         {
-            fakePlayerModels[i] = FakeModel("../../objects/cat/cat.obj");
+            fakePlayerModels[i] = FakeModel("../../objects/cat/smallcat.obj");
             break;
         }
         case PlayerModelTypes::Mice:
@@ -91,6 +92,12 @@ ServerGame::ServerGame() :
         }
         }
     }
+
+    //load maze collision
+    scene = new SceneLoader("../../objects/collision/scene.txt");
+    sceneObjects = scene->fakeLoad("../../objects/collision/");
+
+    spdlog::info("finished loading sceneObjects");
 }
 
 void ServerGame::assignSpawn(int client_id) {
@@ -99,7 +106,8 @@ void ServerGame::assignSpawn(int client_id) {
     switch (client_id) {
     case 0:
         //player 1 starting location
-        moveGlobal(state.model, glm::vec3(75, -3, -5));
+        moveGlobal(state.model, glm::vec3(0, 0, 0));
+        //moveGlobal(state.model, glm::vec3(75, -3, -5));
         oldModels[0] = state.model;
         oldPlayerPositions[0] = state.model;
         break;
@@ -436,6 +444,10 @@ void ServerGame::start() {
         OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
         goalId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
 
+        for (auto& wall : sceneObjects) {
+            wallOBBs.push_back(collision_detector->insert(wall->getOBB()));
+        }
+
         ServerGame::game_started = true;
     }
 
@@ -553,6 +565,15 @@ void ServerGame::collisionStep() {
                 mouseDead(hitId);
             }
 
+            
+            for (int wallnum : wallOBBs) {
+                if (hitId == wallnum) {
+                    player_states[i].model = oldModels[i];
+                    spdlog::info("player hit wall number: {}", wallnum);
+                    break;
+                }
+            }
+            
         }
 
         // Tell stationary that player is not in
@@ -639,9 +660,6 @@ void ServerGame::update()
         }
         return;
     }
-
-
-    collisionStep();
 
     // Calculate tick
     auto stop_time = timer.now();
@@ -838,6 +856,10 @@ void ServerGame::receiveFromClients()
 
         int i = 0;
         while (i < data_length) {
+
+            //check collision as fast as packets are received
+
+
             ushort packet_class = get_packet_class(&(network_data[i]));
             switch (packet_class) {
             case SIMPLE: {
@@ -854,6 +876,10 @@ void ServerGame::receiveFromClients()
                 memcpy(pack, &network_data[i], sizeof(MovePacket));
                 handleMovePacket(client_id, pack);
 
+                if (ServerGame::game_started) {
+                    collisionStep();
+                }
+
                 i += sizeof(MovePacket);
                 free(pack);
                 break;
@@ -863,6 +889,10 @@ void ServerGame::receiveFromClients()
                 RotatePacket* pack = (RotatePacket*)malloc(sizeof(RotatePacket));
                 memcpy(pack, &network_data[i], sizeof(RotatePacket));
                 handleRotatePacket(client_id, pack);
+
+                if (ServerGame::game_started) {
+                    collisionStep();
+                }
 
                 i += sizeof(RotatePacket);
                 free(pack);
@@ -970,9 +1000,10 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
     if (!state.alive) {
         return;
     }
+    bool obstacle = false;
 
     glm::mat4 rotationMatrix = glm::rotate(packet->state.delta, glm::vec3(0.0f, 1.0f, 0.0f));
-    bool obstacle = maze->rotateBlock(state.modelType, client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (rotationMatrix[2][0] / rotationMatrix[2][2]));
+   // bool obstacle = maze->rotateBlock(state.modelType, client_id, state.model[3][0], state.model[3][2], state.model[2][0], state.model[2][2], (rotationMatrix[2][0] / rotationMatrix[2][2]));
   
     if (!obstacle) {
         state.model = state.model * rotationMatrix;
@@ -998,6 +1029,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         if (!direction)
             continue;
 
+        /*
         switch (i) {
             case LEFT:
             {
@@ -1020,6 +1052,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
                 break;
             }
         }
+        */
 
         if (!obstacle) {
             netDirection += DIR_TO_VEC[i];

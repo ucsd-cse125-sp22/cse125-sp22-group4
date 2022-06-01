@@ -76,6 +76,39 @@ std::vector<Model*> SceneLoader::load(const std::string& path) {
 	return sceneObjects;
 }
 
+std::vector<FakeModel*> SceneLoader::fakeLoad(const std::string& path) {
+
+	std::vector<FakeModel*> sceneObjects;
+
+	Tokenizer* tok = new Tokenizer();
+	if (tok->Open(scenefilename.data())) {
+		spdlog::info("Reading scene file {}", scenefilename);
+	}
+	else {
+		spdlog::error("Cannot open scene file: {}!", scenefilename);
+	}
+
+	char buff[50];
+	tok->GetToken(buff);
+
+	FakeModel* tempModel;
+
+	while (!strcmp(buff, "Object:")) {
+		tok->GetToken(buff);
+		spdlog::info("Putting object {} in scene", buff);
+		std::string objName(buff);
+		std::string modelPath = path + objName + ".obj";
+		tempModel = new FakeModel(modelPath);
+
+		sceneObjects.push_back(tempModel);
+
+		tok->GetToken(buff);
+	}
+
+	tok->Close();
+	return sceneObjects;
+}
+
 void SceneLoader::draw(const glm::mat4& viewProjMat,
 	const glm::mat4& transform,
 	GLuint shader,
