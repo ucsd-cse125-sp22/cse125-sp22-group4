@@ -94,8 +94,8 @@ ServerGame::ServerGame() :
     }
 
     //load maze collision
-    scene = new SceneLoader("../../objects/collision/scene.txt");
-    sceneObjects = scene->fakeLoad("../../objects/collision/");
+    scene = new SceneLoader("../../objects/new_maze_collision/scene.txt");
+    sceneObjects = scene->fakeLoad("../../objects/new_maze_collision/");
 
     spdlog::info("finished loading sceneObjects");
 }
@@ -844,7 +844,9 @@ void ServerGame::receiveFromClients()
         while (i < data_length) {
 
             //check collision as fast as packets are received
-
+                if (ServerGame::game_started) {
+                    collisionStep();
+                }
 
             ushort packet_class = get_packet_class(&(network_data[i]));
             switch (packet_class) {
@@ -862,9 +864,7 @@ void ServerGame::receiveFromClients()
                 memcpy(pack, &network_data[i], sizeof(MovePacket));
                 handleMovePacket(client_id, pack);
 
-                if (ServerGame::game_started) {
-                    collisionStep();
-                }
+
 
                 i += sizeof(MovePacket);
                 free(pack);
@@ -876,9 +876,9 @@ void ServerGame::receiveFromClients()
                 memcpy(pack, &network_data[i], sizeof(RotatePacket));
                 handleRotatePacket(client_id, pack);
 
-                if (ServerGame::game_started) {
-                    collisionStep();
-                }
+                //if (ServerGame::game_started) {
+                //    collisionStep();
+               //}
 
                 i += sizeof(RotatePacket);
                 free(pack);
