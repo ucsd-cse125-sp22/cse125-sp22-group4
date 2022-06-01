@@ -25,6 +25,12 @@ static std::vector<glm::vec4> lightColorn;
 //skybox
 static Skybox* skybox;
 
+// COLLISION DEBUG
+static Model* wall1;
+static Model* wall2;
+static Model* wall3;
+static Model* wall4;
+
 // objects
 static Cube* ground;
 static Model* cat;
@@ -32,7 +38,6 @@ static Model* mouse1;
 static Model* mouse2;
 static Model* mouse3;
 static Model* player;
-//static Model* backpack;
 static Model* maze;
 static Model* players[PLAYER_NUM];
 static Model* bear;
@@ -43,14 +48,6 @@ static Model* stonehenge;
 static Model* fallenstar;
 static Model* item2;
 static Model* item3;
-//static Model* demoChar;
-//static Model* demoChar2;
-
-// Animations
-//static Animation* demoAnimation;
-//static Animator* animator;
-//static Animation* demoAnimation2;
-//static Animator* animator2;
 
 static Animation* catidleAnimation;
 static Animator* catanimator;
@@ -187,17 +184,9 @@ int image_width_card3 = 0;
 int image_height_card3 = 0;
 GLuint image_texture_card3 = 0;
 
-
-std::vector<Model*> sceneObjects;
-
 //Scene
+std::vector<Model*> sceneObjects;
 static SceneLoader* scene;
-
-// COLLISION DEBUG
-static Cube* wall1;
-static Cube* wall2;
-static CollisionDetector cDetector;
-// COLLITION DEBUG
 
 // state variables
 static bool gameEnded = 0;
@@ -250,12 +239,14 @@ unsigned int my_id;
 static int currTime = 0;
 static double prevXPos;
 static double prevYPos;
+// 0 for COLLISION DEBUG
 static int select = 1;
+// 1 for ACTUAL GAME
 static bool pause = false;
 static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
-static const char* scenes[4] = { "Animation Demo", "Maze", "Backpack", "Scene import Demo"};
+static const char* scenes[4] = { "Animation Demo", "Maze"};
 static bool movingState[PLAYER_NUM];
 
 //for particle demo
@@ -454,6 +445,10 @@ bool Client::initializeClient() {
         0,      //blendMethod
     };
 
+    // DEBUG COLLISION
+    //scene = new SceneLoader("../../objects/collision/scene.txt");
+    //sceneObjects = scene->load("../../objects/collision/");
+
     //initialize particle system
     smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
     flameparticles = new ParticleSystem(particleShader, "../../particles/flame.png", flame);
@@ -493,7 +488,6 @@ bool Client::initializeClient() {
     mousewalkingAnimation3 = new Animation("../../objects/mouse/mouse_walk/mouse_walking.fbx", mouse3);
     mousewalkinganimator3 = new Animator(mousewalkingAnimation3);
 
-    //backpack = new Model("../../objects/backpack/backpack.obj");
     maze = new Model("../../objects/maze_textured/maze3D.obj");
     maze->moveGlobal(glm::vec3(0, -3, 0));
     bear = new Model("../../objects/bear/bear.obj");
@@ -510,15 +504,6 @@ bool Client::initializeClient() {
     item3->moveGlobal(glm::vec3(65, -1, -10));
     item3->scale(glm::vec3(6));
     
-    //item = new Model("../../objects/backpack/backpack.obj");
-
-    //demoChar = new Model("../../objects/Kachujin/jog.fbx");
-    //demoChar->scale(glm::vec3(0.3));
-    //demoChar->moveGlobal(glm::vec3(9, -2, -2));
-
-    //demoAnimation = new Animation("../../objects/Kachujin/jog.fbx", demoChar);
-    //animator = new Animator(demoAnimation);
-
     geisel = new Model("../../objects/Geisel/Geisel.fbx");
     
     geisel->moveGlobal(glm::vec3(75, 5, -75));
@@ -527,14 +512,6 @@ bool Client::initializeClient() {
     sungod = new Model("../../objects/sungod/sungod.obj");
     sungod->moveGlobal(glm::vec3(105, 2, -135));
     sungod->spin(90);
-    //sungod->scale(glm::vec3(2));
-
-    //demoChar2 = new Model("../../objects/morak/morak_samba_small.fbx");
-    //demoAnimation2 = new Animation("../../objects/morak/morak_samba_small.fbx", demoChar2);
-    //animator2 = new Animator(demoAnimation2);
-    //demoChar2->scale(glm::vec3(0.6));
-    //demoChar2->moveGlobal(glm::vec3(0, -2, 0));
-
 
     ret = LoadTextureFromFile("../../objects/ImGui/cute_cat.png", &my_image_texture, &my_image_width, &my_image_height);
     retGameOver = LoadTextureFromFile("../../objects/ImGui/explosion.png", &image_texture_game_over, &image_width_game_over, &image_height_game_over);
@@ -571,20 +548,6 @@ bool Client::initializeClient() {
             cards.push_back(image_texture_card3);
     }
 
-    // COLLISION DEBUG
-    wall1 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
-    wall1->moveGlobal(glm::vec3(8, 0, -8));
-    wall2 = new Cube(glm::vec3(-2, -5, -1), glm::vec3(2, 5, 1));
-    wall2->moveGlobal(glm::vec3(8, 0, 8));
-    cDetector.insert(wall1->getOBB());
-    cDetector.insert(wall2->getOBB());
-    cDetector.insert(cat->getOBB());
-    // COLLITION DEBUG
-
-    //Load the scene
-    scene = new SceneLoader("../../scripts/scene.txt");
-    sceneObjects = scene->load();
-
     //hard coded for now
     players[0] = cat;
     players[1] = mouse1;
@@ -598,7 +561,6 @@ bool Client::initializeClient() {
     cuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 32.0f);
     HUGEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 52.0f);
     MASSIVEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 70.0f);
-
 
     //initialize audio
     audioEngine->LoadBank("Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
@@ -645,44 +607,11 @@ void Client::displayCallback() {
 
     switch (select) {
     case 0: {
-
-        for (auto character : players) {
-            character->draw(currCam->viewProjMat, identityMat, shader);
-        }
-
-        //calcFinalBoneMatrix(animator);
-        //demoChar->draw(currCam->viewProjMat, identityMat, shader);
-
-        //calcFinalBoneMatrix(animator2);
-        //demoChar2->draw(currCam->viewProjMat, identityMat, shader);
-       
+        //scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
         smokeparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         flameparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
- 
-
-        // COLLITION DEBUG
-        /*
-        wall1->draw(currCam->viewProjMat, identityMat, shader);
-        wall2->draw(currCam->viewProjMat, identityMat, shader);
-        drawOBB(wall1->getOBB(), currCam->viewProjMat, shader, false);
-        drawOBB(wall2->getOBB(), currCam->viewProjMat, shader, false);
-
-
-        int collideID = cDetector.check(2);
-        if (collideID != -1) {
-            spdlog::info("Collide with wall {}", collideID + 1);
-            drawOBB(tyra->getOBB(), currCam->viewProjMat, shader, true);
-        }
-        else {
-            drawOBB(tyra->getOBB(), currCam->viewProjMat, shader, false);
-        }
-        */
-        // COLLITION DEBUG
-
-        //item->draw(currCam->viewProjMat, identityMat, shader);
-
         break;
     }
 
@@ -743,19 +672,7 @@ void Client::displayCallback() {
         
         break;
     }
-
-    case 2: {
-        //backpack->draw(currCam->viewProjMat, identityMat, shader);
-        //drawOBB(backpack->getOBB(), currCam->viewProjMat, shader, false);
-        break;
     }
-    case 3: {
-        scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
-        break;
-    }
-    }
-
-
 }
 
 /**
@@ -771,18 +688,6 @@ void Client::idleCallback(float dt) {
     }
 
     if (!pause) {
-        //backpack->update();
-
-        // COLLITION DEBUG
-        wall2->update();
-        cDetector.update(wall2->getOBB(), 1);
-        cDetector.update(cat->getOBB(), 2);
-        // COLLITION DEBUG
-
-        //animation update
-        //animator->update(dt);
-        //animator2->update(dt);
-
         catanimator->update(dt);
 
         //particles update
@@ -878,7 +783,6 @@ void Client::cleanup() {
     delete mouse2;
     delete cat;
     delete ground;
-    //delete backpack;
     delete maze;
     delete skybox;
     delete bear;
@@ -886,18 +790,6 @@ void Client::cleanup() {
     delete fallenstar;
     delete item;
     delete geisel;
-    //delete demoChar;
-    //delete demoChar2;
-    //delete animator;
-    //delete animator2;
-    //delete demoAnimation;
-    //delete demoAnimation2;
-
-    // COLLISION DEBUG
-    delete wall1;
-    delete wall2;
-
-    delete scene;
 }
 
 
