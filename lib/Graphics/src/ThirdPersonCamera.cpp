@@ -35,6 +35,12 @@ void ThirdPersonCamera::updatePos() {
 	glm::vec3 origPos = pos;
 	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 6, 6)) * glm::inverse(playerModel) * playerPos);
 	//moveable Y position
+	if (origPos[1] > 10) {
+		origPos[1] = 10;
+	}
+	if (origPos[1] < -3) {
+		origPos[1] = -3;
+	}
 	pos[1] = origPos[1];
 	lookAt = glm::vec3(playerPos);
 	lookAt.y += 2;

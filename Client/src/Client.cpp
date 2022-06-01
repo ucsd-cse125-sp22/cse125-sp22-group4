@@ -435,8 +435,8 @@ bool Client::initializeClient() {
     };
 
     // DEBUG COLLISION
-    scene = new SceneLoader("../../objects/collision/scene.txt");
-    sceneObjects = scene->load("../../objects/collision/");
+    //scene = new SceneLoader("../../objects/collision/scene.txt");
+    //sceneObjects = scene->load("../../objects/collision/");
 
     //initialize particle system
     smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
@@ -596,7 +596,7 @@ void Client::displayCallback() {
 
     switch (select) {
     case 0: {
-        scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
+        //scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
         ground->draw(currCam->viewProjMat, identityMat, shader);
 
         smokeparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
