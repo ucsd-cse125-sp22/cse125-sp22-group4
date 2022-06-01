@@ -22,7 +22,6 @@
 #include "spdlog/spdlog.h"
 
 #include <string>
-#include <time.h>
 #include <math.h>
 
 namespace Client {
