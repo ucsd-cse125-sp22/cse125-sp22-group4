@@ -6,6 +6,7 @@
 #include "Graphics/include/Maze.h"
 #include "Graphics/include/CollisionDetector.h"
 #include "Graphics/include/Model.h"
+#include "Graphics/include/SceneLoader.h"
 #include "Logic/include/Item.h"
 #include "Graphics/include/FakeModel.h"
 #include <time.h>
@@ -98,6 +99,11 @@ private:
     Flag* flag;
     SitAndHoldObjective* stationary;
     SitAndHoldObjective* stationary2;
+
+    std::vector<FakeModel*> sceneObjects;
+    SceneLoader* scene;
+    
+    std::vector<int> wallOBBs;
 
     // The ServerNetwork object 
     ServerNetwork* network;
