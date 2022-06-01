@@ -33,6 +33,7 @@ ServerGame::ServerGame() :
     gameAlive = false; // Will be toggled on/off depending on the round
     game_started = false; // Will only be false once.
     this->ticksSinceConfigCheck = 0;
+    memset(playerSelection, -1, sizeof(playerSelection));
 
     // Update settings from config file!
     updateFromConfigFile();
@@ -900,6 +901,24 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
 
         char* packet_bytes = packet_to_bytes(packet, sizeof(SimplePacket));
         size_t packet_size = sizeof(SimplePacket);
+        network->sendToAll(packet_bytes, packet_size);
+        break;
+    }
+    case PLAYER_SELECT:
+    {
+        printf("receiving player select packet!\n");
+
+        int index = (int)packet->data;
+        if (playerSelection[index] == -1)
+            playerSelection[index] = client_id;
+
+        // availableSelection
+        size_t packet_size = sizeof(SelectionPacket);
+        SelectionPacket* selectPacket = (SelectionPacket*) malloc(packet_size);
+        selectPacket->packet_class = SELECTION_PACKET;
+        memcpy(selectPacket->player_choices, playerSelection, sizeof(playerSelection));
+
+        char* packet_bytes = packet_to_bytes(selectPacket, packet_size);
         network->sendToAll(packet_bytes, packet_size);
         break;
     }

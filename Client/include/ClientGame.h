@@ -3,6 +3,7 @@
 #include <winsock2.h>
 #include <Windows.h>
 #include <chrono>
+#include <array>
 #include "ClientNetwork.h"
 #include "Client.h"
 //#include "Network/include/NetworkData.h"
@@ -22,6 +23,9 @@ public:
     ClientNetwork* network;
 
     void sendGameStart();
+    void sendPlayerSelect(int choice);
+    std::array<int, PLAYER_NUM> getPlayerSelection();
+
     void sendActionPackets(MovementState s);
     void sendRotationPackets(RotationState s);
     void handleSimplePacket(SimplePacket s);
@@ -51,6 +55,8 @@ private:
     std::string packet_stream;
 
     std::chrono::steady_clock::time_point time_ended;
+
+    int playerSelection[PLAYER_NUM];
 
     Model** players;
     unsigned int player_id;

@@ -8,6 +8,8 @@
 
 enum Directions { FORWARD, BACK, LEFT, RIGHT };
 
+enum PlayerChoice { CAT, M1, M2, M3};
+
 struct MovementState {
 	bool dir[4];
 	bool held;

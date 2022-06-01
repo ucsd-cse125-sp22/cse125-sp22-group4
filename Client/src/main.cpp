@@ -155,6 +155,16 @@ int main(int argc, char** argv) {
             client->sendGameStart();
             printf("Sending start game!\n");
         }
+
+        // Replicate player selection changes to client
+        Client::updatePlayerSelection(client->getPlayerSelection());
+
+        // Send out-bound network requests for player selection
+        int playerChoice = Client::checkPlayerSelect();
+        if (playerChoice >= 0) {
+            printf("Sending player choice update %d\n", playerChoice);
+            client->sendPlayerSelect(playerChoice);
+        }
         client->update(Client::getMovementState(), Client::getRotationState());
 
         // Rendering

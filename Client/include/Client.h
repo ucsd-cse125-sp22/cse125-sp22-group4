@@ -23,6 +23,7 @@
 
 #include <string>
 #include <math.h>
+#include <array>
 
 namespace Client {
     GLFWwindow* createWindow(int width, int height, std::string windowTitle);
@@ -43,6 +44,8 @@ namespace Client {
     void GameStartGUI();
     void finalDestGUI();
     void stationaryItemGUI();
+
+    void updatePlayerSelection(std::array<int, PLAYER_NUM> selection);
     void playerSelectGUI();
     void audioUpdate();
 
@@ -64,6 +67,7 @@ namespace Client {
     void resetMovingState();
     void displayCards();
 
+    int checkPlayerSelect();
     bool checkGameStart();
     void setGameStart();
     void setGameOver(int g, int w);

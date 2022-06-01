@@ -6,6 +6,7 @@ ClientGame::ClientGame(void)
 {
     network = new ClientNetwork();
     start_time = timer.now();
+    memset(playerSelection, -1, sizeof(playerSelection));
     game_ended = false;
 
     // send init packet
@@ -15,6 +16,15 @@ ClientGame::ClientGame(void)
     packet.packet_type = INIT_CONNECTION;
 
     NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
+}
+
+std::array<int, PLAYER_NUM> ClientGame::getPlayerSelection() {
+    // Because we can't pass around normal arrays w/o pointers ):
+    std::array<int, PLAYER_NUM> selectionArr;
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        selectionArr[i] = playerSelection[i];
+    }
+    return selectionArr;
 }
 
 void ClientGame::sendActionPackets(MovementState s)
@@ -52,6 +62,17 @@ void ClientGame::sendGameStart() {
     const unsigned int packet_size = sizeof(SimplePacket);
     SimplePacket packet;
     packet.packet_type = GAME_START;
+
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+    NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
+    free(packet_bytes);
+}
+
+void ClientGame::sendPlayerSelect(int choice) {
+    const unsigned int packet_size = sizeof(SimplePacket);
+    SimplePacket packet;
+    packet.packet_type = PLAYER_SELECT;
+    packet.data = (char)choice; // It's ok >:)
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
     NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
@@ -113,7 +134,6 @@ void ClientGame::update(MovementState s, RotationState r)
 
     if (game_ended) {
         auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(stop_time - time_ended).count();
-        printf("%d elapsed\n", elapsed);
         if (elapsed >= END_SCREEN_TIME) {
             game_ended = false;
             Client::restore();
@@ -185,9 +205,26 @@ void ClientGame::update(MovementState s, RotationState r)
                 free(packet);
                 break;
             }
-            default:
-                printf("error in packet types\n");
+        case SELECTION_PACKET:
+            {
+                printf("selection pcket coming!\n");
+                SelectionPacket* packet = (SelectionPacket*)malloc(sizeof(SelectionPacket));
+                memcpy(packet, &network_data[i], sizeof(SelectionPacket));
+                memcpy(playerSelection, packet->player_choices, sizeof(playerSelection));
+
+                for (int i = 0; i < PLAYER_NUM; ++i) {
+                    printf("this is state[%d]: %d\n", i, playerSelection[i]);
+                }
+
+                i += sizeof(SelectionPacket);
+                free(packet);
                 break;
+            }
+        default: 
+            {
+                printf("error in packet types %d\n", packet_class);
+                break;
+            }
         }
     }
 }

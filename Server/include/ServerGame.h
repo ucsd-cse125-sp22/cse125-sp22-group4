@@ -107,6 +107,9 @@ private:
     char network_data[MAX_PACKET_SIZE];
     PlayerState player_states[PLAYER_NUM];
 
+    // Keep track of which player has which
+    // 0 (cat): player_id, 1 (m1): player2_id, etc.
+    int playerSelection[PLAYER_NUM];
     //fake models to load in correct OBB
     FakeModel fakePlayerModels[PLAYER_NUM];
 

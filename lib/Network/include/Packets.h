@@ -13,6 +13,7 @@ enum PacketClasses {
 	MOVE,
 	GAME_STATE,
 	ROTATE,
+	SELECTION_PACKET,
 };
 
 enum PacketTypes {
@@ -22,6 +23,7 @@ enum PacketTypes {
 	KEYSTROKE,
 	GAME_START,
 	GAME_END,
+	PLAYER_SELECT,
 	/* Keystroke Packet Types */
 
 	/* State Packet Types*/
@@ -82,6 +84,11 @@ struct GameStatePacket {
 	Item2State item2_state;
 	Item3State item3_state;
 	GameState game;
+};
+
+struct SelectionPacket {
+	ushort packet_class = SELECTION_PACKET;
+	int player_choices[PLAYER_NUM];
 };
 
 ushort get_packet_class(char* data);
