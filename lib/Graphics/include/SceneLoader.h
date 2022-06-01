@@ -10,7 +10,7 @@ public:
     SceneLoader(std::string filename);
     ~SceneLoader();
 
-    std::vector<Model*> load();
+    std::vector<Model*> load(const std::string& path);
     void draw(const glm::mat4& viewProjMat,
         const glm::mat4& transform,
         GLuint shader,

@@ -7,7 +7,7 @@ SceneLoader::SceneLoader(std::string filename) {
 SceneLoader::~SceneLoader() {
 }
 
-std::vector<Model*> SceneLoader::load() {
+std::vector<Model*> SceneLoader::load(const std::string& path) {
 
 	std::vector<Model*> sceneObjects;
 
@@ -33,9 +33,10 @@ std::vector<Model*> SceneLoader::load() {
 		tok->GetToken(buff);
 		spdlog::info("Putting object {} in scene", buff);
 		std::string objName(buff);
-		std::string modelPath = "../../objects/" + objName + "/" + objName + ".obj";
+		std::string modelPath = path + objName + ".obj";
 		tempModel = new Model(modelPath);
 
+		/*
 		//set translation
 		t = tok->GetFloat();
 		translation.x = t;
@@ -64,6 +65,7 @@ std::vector<Model*> SceneLoader::load() {
 		rotation.y = r;
 
 		tempModel->rotate(rotation);
+		*/
 
 		sceneObjects.push_back(tempModel);
 
