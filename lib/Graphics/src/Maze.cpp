@@ -64,7 +64,7 @@ bool Maze::leftBlock(char playerType, int playerID, double currPlayerXLoc, doubl
         modelHalfWidth = .23; // just approximating
     }
     else {
-        length = .05; // estimate mouse length
+        length = .1; // estimate mouse length
         modelHalfWidth = .15;
     }
     
@@ -90,7 +90,7 @@ bool Maze::rightBlock(char playerType, int playerID, double currPlayerXLoc, doub
         modelHalfWidth = .23; // just approximating
     }
     else {
-        length = .05; // estimate rabbit/teapot length
+        length = .1; // estimate rabbit/teapot length
         modelHalfWidth = .15;
     }
 
@@ -308,7 +308,7 @@ bool Maze::rotateBlock(char playerType, int playerID, double currPlayerXLoc, dou
     }
     else {
         length = .15; // estimate rabbit/teapot length
-        modelHalfWidth = .05;
+        modelHalfWidth = .1;
     }
 
 
