@@ -25,12 +25,6 @@ static std::vector<glm::vec4> lightColorn;
 //skybox
 static Skybox* skybox;
 
-// COLLISION DEBUG
-static Model* wall1;
-static Model* wall2;
-static Model* wall3;
-static Model* wall4;
-
 // objects
 static Cube* ground;
 static Model* cat;
@@ -184,6 +178,7 @@ int image_width_card3 = 0;
 int image_height_card3 = 0;
 GLuint image_texture_card3 = 0;
 
+// DEBUG COLLISION
 //Scene
 std::vector<Model*> sceneObjects;
 static SceneLoader* scene;
@@ -239,14 +234,14 @@ unsigned int my_id;
 static int currTime = 0;
 static double prevXPos;
 static double prevYPos;
-// 0 for COLLISION DEBUG
+// 0 for DEBUG COLLISION
 static int select = 1;
 // 1 for ACTUAL GAME
 static bool pause = false;
 static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
-static const char* scenes[4] = { "Animation Demo", "Maze"};
+static const char* scenes[2] = { "Animation Demo", "Maze"};
 static bool movingState[PLAYER_NUM];
 
 //for particle demo
@@ -463,7 +458,7 @@ bool Client::initializeClient() {
     micetrailparticles3 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
 
     // initialize objects
-    ground = new Cube(glm::vec3(-10, -1, -10), glm::vec3(10, 1, 10));
+    ground = new Cube(glm::vec3(-25, -1, -25), glm::vec3(25, 1, 25));
     ground->moveGlobal(glm::vec3(0, -3, 0));
 
     cat = new Model("../../objects/cat/cat_idle.fbx");
@@ -606,14 +601,20 @@ void Client::displayCallback() {
     skybox->draw(currCam->projection * viewNoTranslate, skyboxShader);
 
     switch (select) {
+    // DEBUG COLLISION
+    /*
     case 0: {
         //scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
         ground->draw(currCam->viewProjMat, identityMat, shader);
+        for (auto& wall : sceneObjects) {
+            drawOBB(wall->getOBB(), currCam->viewProjMat, shader, false);
+        }
 
         smokeparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         flameparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         break;
     }
+    */
 
     case 1: {
         isThirdPersonCam = true;
