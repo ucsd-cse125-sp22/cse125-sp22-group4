@@ -202,11 +202,17 @@ static CollisionDetector cDetector;
 // state variables
 static bool gameEnded = 0;
 static bool gameStarted = 0;
-static bool playerSelect = false;
+static bool playerSelect = true;
 static bool gameStartPressed = 0;
 static bool mouse1Clicked = false;
 static bool mouse2Clicked = false;
 static bool mouse3Clicked = false;
+
+static bool catHover = false;
+static bool mouse1Hover = false;
+static bool mouse2Hover = false;
+static bool mouse3Hover = false;
+
 static bool catModel = false;
 static bool playerSelected = false;
 vector<int> cardChoices = { 1, 1, 2, 2, 3, 3 };
@@ -1418,20 +1424,30 @@ void Client::playerSelectGUI() {
     float width_resize = window_width / static_cast<float>(1920);
     //printf("height %d width %d\n", (window_height / 1017), (window_width / 1920));
 
+    if (prevXPos >= window_width / 2.0) {
+        printf("mouse mode\n");
+    }
+    else {
+        printf("cat mode\n");
+    }
+
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
     ImGui::Begin("PlayerSelect GUI", NULL, flags);
     float catLoc = (window_width - image_width_cat_icon * adjust_cat * width_resize) / 5 - 100;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
-    
     if (!catModel) {
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+        // TODO: Change cat picture instead of background color
+        ImVec4 rgba = !catHover ? ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1) :
+            ImVec4(50.0f / 255, 232.0f / 255, 50.0f / 255, 1);
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, rgba, ImVec4(1, 1, 1, 1))) {
             if (!playerSelected) {
                 playerSelected = true;
                 catModel = true;
             }          
         }
+        catHover = ImGui::IsItemHovered() && ImGui::IsWindowHovered();
     }
     else {
         //if (!playerSelected) {
@@ -1446,15 +1462,25 @@ void Client::playerSelectGUI() {
     
     float mouseLocX = (3 * window_width) / 4 - (image_width_mouse_icon * adjust_mouse * width_resize);
     float mouseLocY = (window_height / 3) - (image_height_mouse_icon * adjust_mouse * height_resize) / 2;
+
+
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+
+
     if (!mouse1Clicked) {
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+        
+        // TODO: Change mouse picture instead of background color
+        ImVec4 rgba = !mouse1Hover ? ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1) :
+            ImVec4(50.0f / 255, 232.0f / 255, 50.0f / 255, 1);
+
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, rgba, ImVec4(1, 1, 1, 1))) {
             if (!playerSelected) {
                 playerSelected = true;
                 mouse1Clicked = true;
             }
-            
         }
+        mouse1Hover = ImGui::IsItemHovered() && ImGui::IsWindowHovered();
+
     }
     else {
         ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
@@ -1466,12 +1492,16 @@ void Client::playerSelectGUI() {
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
     
     if (!mouse2Clicked) {
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+        // TODO: Change mouse picture instead of background color
+        ImVec4 rgba = !mouse2Hover ? ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1) :
+            ImVec4(50.0f / 255, 232.0f / 255, 50.0f / 255, 1);
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, rgba, ImVec4(1, 1, 1, 1))) {
             if (!playerSelected) {
                 mouse2Clicked = true;
                 playerSelected = true;
             }
         }
+        mouse2Hover = ImGui::IsItemHovered() && ImGui::IsWindowHovered();
     }
     else {
         ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
@@ -1484,13 +1514,17 @@ void Client::playerSelectGUI() {
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
 
     if (!mouse3Clicked) {
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
+        // TODO: Change mouse picture instead of background color
+        ImVec4 rgba = !mouse3Hover ? ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1) :
+            ImVec4(50.0f / 255, 232.0f / 255, 50.0f / 255, 1);
+
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, rgba, ImVec4(1, 1, 1, 1))) {
             if (!playerSelected) {
                 mouse3Clicked = true;
                 playerSelected = true;
             }
-
         }
+        mouse3Hover = ImGui::IsItemHovered() && ImGui::IsWindowHovered();
     }
     else {
         ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
