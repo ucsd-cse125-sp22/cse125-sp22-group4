@@ -569,8 +569,8 @@ bool Client::initializeClient() {
     sceneObjects = scene->load();
 
     //hard coded for now
-    players[1] = cat;
-    players[0] = mouse1;
+    players[0] = cat;
+    players[1] = mouse1;
     players[2] = mouse2;
     players[3] = mouse3;
 
@@ -942,7 +942,7 @@ void Client::timeGUI() {
     int seconds = time % 60;          // Second component 
 
     if (!hasPlayedTimer && minute == 0) {
-        audioEngine->PlayEvent("event:/panic"); //TODO Audio, play timer
+        //audioEngine->PlayEvent("event:/panic"); //TODO Audio, play timer
         hasPlayedTimer = true;
     }
 
@@ -985,19 +985,19 @@ void Client::audioUpdate() {
 
     if (!hasPlayedMouse1CatCollision && my_id == 0 &&
         players[1]->getModel()[3][1] > 10) {
-        audioEngine->PlayEvent("event:/cat_screech_1");
+        //audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse1CatCollision = true;
     }
 
     if (!hasPlayedMouse2CatCollision && my_id == 0 &&
         players[2]->getModel()[3][1] > 10) {
-        audioEngine->PlayEvent("event:/cat_screech_1");
+        //audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse2CatCollision = true;
     }
 
     if (!hasPlayedMouse3CatCollision && my_id == 0 &&
         players[3]->getModel()[3][1] > 10) {
-        audioEngine->PlayEvent("event:/cat_screech_1");
+        //audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse3CatCollision = true;
     }
 
