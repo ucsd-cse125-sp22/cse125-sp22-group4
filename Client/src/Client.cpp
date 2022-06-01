@@ -177,6 +177,10 @@ bool retCard3;
 int image_width_card3 = 0;
 int image_height_card3 = 0;
 GLuint image_texture_card3 = 0;
+bool retBackground;
+int image_width_background = 0;
+int image_height_background = 0;
+GLuint image_texture_background = 0;
 
 // DEBUG COLLISION
 //Scene
@@ -533,6 +537,8 @@ bool Client::initializeClient() {
     retCard1 = LoadTextureFromFile("../../objects/ImGui/card1.png", &image_texture_card1, &image_width_card1, &image_height_card1);
     retCard2 = LoadTextureFromFile("../../objects/ImGui/card2.png", &image_texture_card2, &image_width_card2, &image_height_card2);
     retCard3 = LoadTextureFromFile("../../objects/ImGui/card3.png", &image_texture_card3, &image_width_card3, &image_height_card3);
+    retBackground = LoadTextureFromFile("../../objects/ImGui/background.png", &image_texture_background, &image_width_background, &image_height_background);
+    
     random_shuffle(cardChoices.begin(), cardChoices.end());
     for (int i = 0; i < cardChoices.size(); i++) {
         if (cardChoices[i] == 1)
@@ -1372,8 +1378,14 @@ void Client::playerSelectGUI() {
 
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
+    
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
     ImGui::Begin("PlayerSelect GUI", NULL, flags);
+    ImGui::SetCursorPosY(10);
+    ImGui::PushFont(MASSIVEcuteFont);
+    TextCentered("Select a Player");
+    ImGui::PopFont();
+    //ImGui::Image((void*)(intptr_t)image_texture_background, ImVec2(window_width, window_height));
     float catLoc = (window_width - image_width_cat_icon * adjust_cat * width_resize) / 5 - 100;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
     if (!catSelected) {
@@ -1381,7 +1393,7 @@ void Client::playerSelectGUI() {
         ImVec4 rgba = !catHover ? ImVec4(1, 1, 1, 1) :
             ImVec4(128.0f/255, 128.0f/255, 128.0f/255, 0.5f);
         ImGui::PushID("cat icon");
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1),rgba)) {
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), rgba)) {
             if (!playerSelected) {
                 playerSelected = true;
                 playerType = CAT;
@@ -1531,7 +1543,7 @@ void Client::GameStartGUI() {
     ImGui::PushFont(MASSIVEcuteFont);
     
     if (my_id == 0) {
-        if (ImGui::Button("Start Game"))
+        if (ImGui::Button("Join Game"))
         {
             //playerSelect = true;
             gameStartPressed = true;
@@ -1539,8 +1551,8 @@ void Client::GameStartGUI() {
             audioEngine->PlayEvent("event:/music_placeholder");*/
         }
     }
-    else
-        ImGui::Button("Join Party"); // this actually doesn't do anything right now
+    /*else
+        ImGui::Button("Join Party"); */// this actually doesn't do anything right now
    
     ImGui::PopFont();
     ImGui::PushFont(cuteFont);
