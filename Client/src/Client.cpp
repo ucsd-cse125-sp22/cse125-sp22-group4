@@ -286,6 +286,7 @@ static char itemhold = PLAYER_NUM + 1;
 // fonts
 static ImFont* plainFont;
 static ImFont* cuteFont;
+static ImFont* BIGcuteFont;
 static ImFont* HUGEcuteFont;
 static ImFont* MASSIVEcuteFont;
 
@@ -309,6 +310,8 @@ static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader,
 **/
 GLFWwindow* Client::createWindow(int width, int height, std::string windowTitle) {
     glfwWindowHint(GLFW_SAMPLES, 4);
+
+    //GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
     GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
     prevXPos = (double) width / 2;
     prevYPos = (double) height / 2;
@@ -592,6 +595,7 @@ bool Client::initializeClient() {
     ImGuiIO& io = ImGui::GetIO();
     plainFont = io.Fonts->AddFontDefault();
     cuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 32.0f);
+    BIGcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 34.0f);
     HUGEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 52.0f);
     MASSIVEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 70.0f);
 
@@ -643,7 +647,7 @@ void Client::displayCallback() {
     
     case 0: {
         isThirdPersonCam = true;
-        scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
+        //scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
         //ground->draw(currCam->viewProjMat, identityMat, shader);
         mazescene->draw(currCam->viewProjMat, identityMat, shader);
         for (auto& wall : sceneObjects) {
@@ -883,7 +887,7 @@ void Client::timeGUI() {
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
-    double adjustment = 0.27;
+    double adjustment = 0.32;
     ImGui::SetNextWindowSize(ImVec2(my_image_width * adjustment + 30, my_image_height * adjustment + 50));
     //ImGui::SetNextWindowPos(ImVec2(window_width - (my_image_width / 2) + 170, 0), 0, ImVec2(0, 0));
     ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width*adjustment)-30, 10), 0, ImVec2(0, 0));
@@ -913,9 +917,9 @@ void Client::timeGUI() {
     ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(my_image_width * adjustment, my_image_height * adjustment));
 
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.5f, 1.0f, 1.0f));
-    ImGui::PushFont(cuteFont);
+    ImGui::PushFont(HUGEcuteFont);
     ImGui::SetCursorPosY((my_image_width * adjustment)/2);
-    ImGui::SetCursorPosX((my_image_height * adjustment) / 2 + 32);
+    ImGui::SetCursorPosX((my_image_height * adjustment) / 2 + 28);
     ImGui::Text("%d:%02d", minute, seconds);
     ImGui::PopFont();
     ImGui::PopStyleColor();
@@ -1008,7 +1012,7 @@ void Client::audioUpdate() {
 }
 
 void Client::ItemHoldGUI() {
-    double adjustment = 0.18;
+    double adjustment = 0.28;
     
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
@@ -1025,7 +1029,7 @@ void Client::ItemHoldGUI() {
         tasks++;
 
     ImGui::SetNextWindowSize(ImVec2(image_width_mouse_flag * adjustment+10, image_height_mouse_flag*adjustment+10));
-    ImGui::SetNextWindowPos(ImVec2(280, 15), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(530, 15), 0, ImVec2(0, 0));
    
     ImGui::Begin("ItemHold GUI", NULL, flags);
 
@@ -1047,8 +1051,8 @@ void Client::ItemHoldGUI() {
 }
 
 void displayLocation(glm::mat4 model, int id) {
-    float locX = model[3][0] * 1.55 + 25;
-    float locZ = abs(model[3][2]) * 1.55 + 25;
+    float locX = model[3][0] * .85 + 260;
+    float locZ = model[3][2] * .85 + 260;
 
     if (model[3][1] > 10) { // this is a hack, manually checking if banished height
         return;
@@ -1058,10 +1062,10 @@ void displayLocation(glm::mat4 model, int id) {
     
 
     if (id == 0) { // display cat
-        ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_cat_icon, ImVec2(locZ-icon_size, locX-icon_size), ImVec2(locZ+icon_size, locX+icon_size), ImVec2(0, 0), ImVec2(1, 1));
+        ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_cat_icon, ImVec2(locX-icon_size, locZ-icon_size), ImVec2(locX+icon_size, locZ+icon_size), ImVec2(0, 0), ImVec2(1, 1));
     }
     else if (id < 4) { // display mice
-        ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_icon, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+        ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_icon, ImVec2(locX - icon_size, locZ - icon_size), ImVec2(locX + icon_size, locZ + icon_size), ImVec2(0, 0), ImVec2(1, 1));
     }
     else {
       /*  if (currTime % 2 == 0)
@@ -1099,7 +1103,7 @@ void Client::miniMapGUI() {
     if (gameStarted == 0)
         return;
 
-    double adjustment = 0.4;
+    double adjustment = 0.5;
     float height_resize = window_height / static_cast<float>(1017);
     float width_resize = window_width / static_cast<float>(1920);
     ImGuiWindowFlags flags = 0;
@@ -1109,11 +1113,11 @@ void Client::miniMapGUI() {
     flags |= ImGuiWindowFlags_NoResize;
 
     ImGui::SetNextWindowSize(ImVec2(image_width_map * adjustment+10, image_height_map * adjustment+10));
-    ImGui::SetNextWindowPos(ImVec2(15, 15), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
     ImGui::Begin("MiniMap GUI", NULL, flags);
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
     
-    if (players[0] && my_id == playerSelection[CAT]) {
+    if (players[0]) { //&& my_id == playerSelection[CAT]) {
         displayLocation(players[0]->getModel(), 0);
     }
     if (players[1]) {

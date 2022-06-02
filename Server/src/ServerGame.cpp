@@ -109,14 +109,14 @@ void ServerGame::assignSpawn(int client_id) {
     case 0:
         //player 1 starting location house
         moveGlobal(state.model, glm::vec3(188.3f, 0, 5.83f));
-        //moveGlobal(state.model, glm::vec3(75, -3, -5));
+        spin(state.model, 90);
         oldModels[0] = state.model;
         oldPlayerPositions[0] = state.model;
         break;
     case 1:
         // player 2 starting location well
         moveGlobal(state.model, glm::vec3(-187.0f, 0, -3.3f));
-        spin(state.model, 90);
+        spin(state.model, 270);
         oldModels[1] = state.model;
         oldPlayerPositions[1] = state.model;
         break;

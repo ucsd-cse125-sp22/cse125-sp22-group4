@@ -36,8 +36,10 @@ int main(int argc, char** argv) {
     //glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
 #endif
 
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
     // Create window with graphics context
-    GLFWwindow* window = Client::createWindow(1280, 720, "Client");
+    GLFWwindow* window = Client::createWindow(mode->width, mode->height, "Client");
     if (window == nullptr) {
         exit(EXIT_FAILURE);
     }
