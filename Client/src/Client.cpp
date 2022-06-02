@@ -695,6 +695,15 @@ void Client::displayCallback() {
 
         smokeparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         flameparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+
+        item->draw(currCam->viewProjMat, identityMat, shader);
+        item2->draw(currCam->viewProjMat, identityMat, shader);
+        item3->draw(currCam->viewProjMat, identityMat, shader);
+
+        glintparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        glintparticlesitem2->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        glintparticlesitem3->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+
         break;
     }
     
@@ -708,17 +717,6 @@ void Client::displayCallback() {
         sungod->draw(currCam->viewProjMat, identityMat, shader);
         fallenstar->draw(currCam->viewProjMat, identityMat, shader);
 
-
-
-        item->draw(currCam->viewProjMat, identityMat, shader);
-        item2->draw(currCam->viewProjMat, identityMat, shader);
-        item3->draw(currCam->viewProjMat, identityMat, shader);
-
-
-
-        glintparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
-        glintparticlesitem2->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
-        glintparticlesitem3->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         
         break;
     }
