@@ -1040,8 +1040,8 @@ void Client::ItemHoldGUI() {
 }
 
 void displayLocation(glm::mat4 model, int id) {
-    float locX = model[3][0] * .75 + 225;
-    float locZ = model[3][2] * .75 + 225;
+    float locX = model[3][0] * .7 + 220;
+    float locZ = model[3][2] * .7 + 220;
 
     if (model[3][1] > 10) { // this is a hack, manually checking if banished height
         return;
