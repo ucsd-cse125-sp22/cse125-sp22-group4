@@ -188,6 +188,10 @@ bool retCard3;
 int image_width_card3 = 0;
 int image_height_card3 = 0;
 GLuint image_texture_card3 = 0;
+bool retBackground;
+int image_width_background = 0;
+int image_height_background = 0;
+GLuint image_texture_background = 0;
 
 // DEBUG COLLISION
 //Scene
@@ -549,6 +553,8 @@ bool Client::initializeClient() {
     retCard1 = LoadTextureFromFile("../../objects/ImGui/card1.png", &image_texture_card1, &image_width_card1, &image_height_card1);
     retCard2 = LoadTextureFromFile("../../objects/ImGui/card2.png", &image_texture_card2, &image_width_card2, &image_height_card2);
     retCard3 = LoadTextureFromFile("../../objects/ImGui/card3.png", &image_texture_card3, &image_width_card3, &image_height_card3);
+    retBackground = LoadTextureFromFile("../../objects/ImGui/background.png", &image_texture_background, &image_width_background, &image_height_background);
+    
     random_shuffle(cardChoices.begin(), cardChoices.end());
     for (int i = 0; i < cardChoices.size(); i++) {
         if (cardChoices[i] == 1)
@@ -633,7 +639,7 @@ void Client::displayCallback() {
     */
 
     case 1: {
-        isThirdPersonCam = false;
+        isThirdPersonCam = true;
         maze->draw(currCam->viewProjMat, identityMat, shader);
         bear->draw(currCam->viewProjMat, identityMat, shader);
        
@@ -868,7 +874,7 @@ void Client::timeGUI() {
     int seconds = time % 60;          // Second component 
 
     if (!hasPlayedTimer && minute == 0) {
-        //audioEngine->PlayEvent("event:/panic"); //TODO Audio, play timer
+        audioEngine->PlayEvent("event:/panic");
         hasPlayedTimer = true;
     }
 
@@ -892,77 +898,84 @@ void Client::timeGUI() {
 }
 
 void Client::audioUpdate() {
+    if (!gameStarted)
+        return;
 
     // Mouse/Cat collision
-    if (hasPlayedMouse1CatCollision && my_id == 0 &&
+    if (hasPlayedMouse1CatCollision && my_id == playerSelection[CAT] &&
         players[1]->getModel()[3][1] <= 10) {
         hasPlayedMouse1CatCollision = false;
     }
 
-    if (hasPlayedMouse2CatCollision && my_id == 0 &&
+    if (hasPlayedMouse2CatCollision && my_id == playerSelection[CAT] &&
         players[2]->getModel()[3][1] <= 10) {
         hasPlayedMouse2CatCollision = false;
     }
 
-    if (hasPlayedMouse3CatCollision && my_id == 0 &&
+    if (hasPlayedMouse3CatCollision && my_id == playerSelection[CAT] &&
         players[3]->getModel()[3][1] <= 10) {
         hasPlayedMouse3CatCollision = false;
     }
 
-    if (!hasPlayedMouse1CatCollision && my_id == 0 &&
+    if (hasPlayedMouseCatCollision && my_id == playerSelection[CAT] != 0 && 
+        player->getModel()[3][1] <= 10) {
+        hasPlayedMouseCatCollision = false;
+    }
+
+    if (!hasPlayedMouse1CatCollision && my_id == playerSelection[CAT] &&
         players[1]->getModel()[3][1] > 10) {
-        //audioEngine->PlayEvent("event:/cat_screech_1");
+        audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse1CatCollision = true;
     }
 
-    if (!hasPlayedMouse2CatCollision && my_id == 0 &&
+    if (!hasPlayedMouse2CatCollision && my_id == playerSelection[CAT] &&
         players[2]->getModel()[3][1] > 10) {
-        //audioEngine->PlayEvent("event:/cat_screech_1");
+        audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse2CatCollision = true;
     }
 
-    if (!hasPlayedMouse3CatCollision && my_id == 0 &&
+    if (!hasPlayedMouse3CatCollision && my_id == playerSelection[CAT] &&
         players[3]->getModel()[3][1] > 10) {
-        //audioEngine->PlayEvent("event:/cat_screech_1");
+        audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse3CatCollision = true;
     }
 
-    if (!hasPlayedMouseCatCollision && my_id != 0 && player->getModel()[3][1] > 10) {
+    if (!hasPlayedMouseCatCollision && my_id != playerSelection[CAT] && 
+        player->getModel()[3][1] > 10) {
         audioEngine->PlayEvent("event:/mice_shriek_1");
         hasPlayedMouseCatCollision = true;
         hasPlayedTask1 = false; // task1 respawns on collision
     }
 
-    if (!hasPlayedMouseCatCollision && my_id != 0 && player->getModel()[3][1] > 10) {
+    if (!hasPlayedMouseCatCollision && my_id != playerSelection[CAT] && 
+        player->getModel()[3][1] > 10) {
         hasPlayedMouseCatCollision = false;
     }
 
-
-
     // Tasks 
-    if (hasPlayedTask1 && !task1 && my_id != 0) {
+    if (hasPlayedTask1 && !task1 && my_id != playerSelection[CAT]) {
         hasPlayedTask1 = false;
     }
 
-    if (hasPlayedStationary1 && !stationary1 && my_id != 0) {
+    if (hasPlayedStationary1 && !stationary1 && my_id != playerSelection[CAT]) {
         hasPlayedStationary1 = false;
     }
 
-    if (hasPlayedStationary2 && !stationary2 && my_id != 0) {
+    if (hasPlayedStationary2 && !stationary2 && my_id != playerSelection[CAT]) {
         hasPlayedStationary2 = false;
     }
 
-    if (!hasPlayedTask1 && task1 && my_id != 0) {
+    if (!hasPlayedTask1 && task1 && my_id != playerSelection[CAT]) {
         audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play task1 pickup
         hasPlayedTask1 = true;
     }
 
-    if (!hasPlayedStationary1 && stationary1 && my_id != 0) {
+    if (!hasPlayedStationary1 && stationary1 && my_id != playerSelection[CAT]) {
         audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play stationary1 pickup
         hasPlayedStationary1 = true;
     }
 
-    if (!hasPlayedStationary2 && stationary2 && my_id != 0) {
+    if (!hasPlayedStationary2 && stationary2 && my_id != playerSelection[CAT]) {
         audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play stationary2 pickup
         hasPlayedStationary2 = true;
     }
@@ -1074,7 +1087,7 @@ void Client::miniMapGUI() {
     ImGui::Begin("MiniMap GUI", NULL, flags);
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
     
-    if (players[0] && my_id == 0) {
+    if (players[0] && my_id == playerSelection[CAT]) {
         displayLocation(players[0]->getModel(), 0);
     }
     if (players[1]) {
@@ -1090,15 +1103,15 @@ void Client::miniMapGUI() {
     }
 
     
-    if (item && (my_id != 0 || catSeesItem)) {
+    if (item && (my_id != playerSelection[CAT] || catSeesItem)) {
         displayLocation(item->getModel(), 4);
     }
 
-    if (item2 && (my_id != 0 || catSeesItem)) {
+    if (item2 && (my_id != playerSelection[CAT] || catSeesItem)) {
         displayLocation(item2->getModel(), 5);
     }
 
-    if (item3 && (my_id != 0 || catSeesItem)) {
+    if (item3 && (my_id != playerSelection[CAT] || catSeesItem)) {
         displayLocation(item3->getModel(), 6);
     }
 
@@ -1138,7 +1151,7 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded == 1 || my_id == 0) // don't display on game over or if cat
+    if (gameEnded == 1 || my_id != playerSelection[CAT]) // don't display on game over or if cat
         return;
  
     ImGuiWindowFlags flags = 0;
@@ -1386,8 +1399,14 @@ void Client::playerSelectGUI() {
 
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
+    
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
     ImGui::Begin("PlayerSelect GUI", NULL, flags);
+    ImGui::SetCursorPosY(10);
+    ImGui::PushFont(MASSIVEcuteFont);
+    TextCentered("Select a Player");
+    ImGui::PopFont();
+    //ImGui::Image((void*)(intptr_t)image_texture_background, ImVec2(window_width, window_height));
     float catLoc = (window_width - image_width_cat_icon * adjust_cat * width_resize) / 5 - 100;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
     
@@ -1660,16 +1679,16 @@ void Client::GameStartGUI() {
     ImGui::PushFont(MASSIVEcuteFont);
     
     if (my_id == 0) {
-        if (ImGui::Button("Start Game"))
+        if (ImGui::Button("Join Game"))
         {
             //playerSelect = true;
             gameStartPressed = true;
-            audioEngine->StopEvent("event:/music1");
-            audioEngine->PlayEvent("event:/music_placeholder");
+            /*audioEngine->StopEvent("event:/music1");
+            audioEngine->PlayEvent("event:/music_placeholder");*/
         }
     }
-    else
-        ImGui::Button("Join Party"); // this actually doesn't do anything right now
+    /*else
+        ImGui::Button("Join Party"); */// this actually doesn't do anything right now
    
     ImGui::PopFont();
     ImGui::PushFont(cuteFont);
@@ -1821,6 +1840,10 @@ int Client::checkPlayerSelect() {
         return playerType;
     }
     return -1;
+}
+
+int Client::checkPairCount() {
+    return pairs;
 }
 
 void Client::setGameOver(int g, int w) {

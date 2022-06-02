@@ -938,6 +938,14 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
         network->sendToAll(packet_bytes, packet_size);
         break;
     }
+    case PAIR_COUNT:
+    {
+        printf("receiving pair count packet!\n");
+
+        int index = (int)packet->data;
+        printf("index %d\n", index);
+        break;
+    }
     }
 }
 
