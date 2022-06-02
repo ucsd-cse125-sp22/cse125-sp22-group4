@@ -261,7 +261,7 @@ static bool pause = false;
 static bool showMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
-static const char* scenes[2] = { "Animation Demo", "Maze"};
+static const char* scenes[2] = { "new maze", "Maze"};
 static bool movingState[PLAYER_NUM];
 
 //for particle demo
@@ -651,33 +651,6 @@ void Client::displayCallback() {
         }
         cat->draw(currCam->viewProjMat, identityMat, shader);
 
-        drawOBB(CollisionDetector::computeOBB(fakecat->getOBB(), cat->getModel()), currCam->viewProjMat, shader, false);
-
-        smokeparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
-        flameparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
-        break;
-    }
-    
-
-    case 1: {
-        isThirdPersonCam = true;
-        maze->draw(currCam->viewProjMat, identityMat, shader);
-        bear->draw(currCam->viewProjMat, identityMat, shader);
-       
-        geisel->draw(currCam->viewProjMat, identityMat, shader);
-        sungod->draw(currCam->viewProjMat, identityMat, shader);
-        fallenstar->draw(currCam->viewProjMat, identityMat, shader);
-
-        /*
-        if (movingState[0] == true) {
-            calcFinalBoneMatrix(catanimator);
-        }
-        else {
-            calcFinalBoneMatrix(catanimator);
-        }
-        cat->draw(currCam->viewProjMat, identityMat, shader);
-        */
-
         if (movingState[1] == true) {
             calcFinalBoneMatrix(mousewalkinganimator1);
         }
@@ -702,14 +675,35 @@ void Client::displayCallback() {
         }
         mouse3->draw(currCam->viewProjMat, identityMat, shader);
 
-        item->draw(currCam->viewProjMat, identityMat, shader);
-        item2->draw(currCam->viewProjMat, identityMat, shader);
-        item3->draw(currCam->viewProjMat, identityMat, shader);
+        drawOBB(CollisionDetector::computeOBB(fakecat->getOBB(), cat->getModel()), currCam->viewProjMat, shader, false);
 
         cattrailparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         micetrailparticles1->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         micetrailparticles2->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         micetrailparticles3->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+
+        smokeparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        flameparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        break;
+    }
+    
+
+    case 1: {
+        isThirdPersonCam = true;
+        maze->draw(currCam->viewProjMat, identityMat, shader);
+        bear->draw(currCam->viewProjMat, identityMat, shader);
+       
+        geisel->draw(currCam->viewProjMat, identityMat, shader);
+        sungod->draw(currCam->viewProjMat, identityMat, shader);
+        fallenstar->draw(currCam->viewProjMat, identityMat, shader);
+
+
+
+        item->draw(currCam->viewProjMat, identityMat, shader);
+        item2->draw(currCam->viewProjMat, identityMat, shader);
+        item3->draw(currCam->viewProjMat, identityMat, shader);
+
+
 
         glintparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         glintparticlesitem2->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
@@ -794,6 +788,9 @@ void Client::idleCallback(float dt) {
             mouseanimator3->update(dt);
         }
     }
+
+    //spdlog::info("pos = {}", cat->getModel()[3]);
+    //printf("x = %f, y = %f, z = %f\n", cat->getModel()[3][0], cat->getModel()[3][1], cat->getModel()[3][2]);
 
     if (!isThirdPersonCam && keyHeld) {
         switch (direction) {

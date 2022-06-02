@@ -105,29 +105,29 @@ void ServerGame::assignSpawn(int client_id) {
     state.model = glm::mat4(1);
     switch (client_id) {
     case 0:
-        //player 1 starting location
-        moveGlobal(state.model, glm::vec3(0, 0, 0));
+        //player 1 starting location house
+        moveGlobal(state.model, glm::vec3(188.3f, 0, 5.83f));
         //moveGlobal(state.model, glm::vec3(75, -3, -5));
         oldModels[0] = state.model;
         oldPlayerPositions[0] = state.model;
         break;
     case 1:
-        // player 2 starting location
-        moveGlobal(state.model, glm::vec3(145, -3, -75));
+        // player 2 starting location well
+        moveGlobal(state.model, glm::vec3(-187.0f, 0, -3.3f));
         spin(state.model, 90);
         oldModels[1] = state.model;
         oldPlayerPositions[1] = state.model;
         break;
     case 2:
-        // player 3 starting location
-        moveGlobal(state.model, glm::vec3(75, -3, -145));
+        // player 3 starting location stone
+        moveGlobal(state.model, glm::vec3(23.16f, 0, 186.4f));
         spin(state.model, 180);
         oldModels[2] = state.model;
         oldPlayerPositions[2] = state.model;
         break;
     case 3:
-        // player 4 starting location
-        moveGlobal(state.model, glm::vec3(5, -3, -75));
+        // player 4 starting location flower
+        moveGlobal(state.model, glm::vec3(-37.88f, 0, -175.0f));
         spin(state.model, 270);
         oldModels[3] = state.model;
         oldPlayerPositions[3] = state.model;
