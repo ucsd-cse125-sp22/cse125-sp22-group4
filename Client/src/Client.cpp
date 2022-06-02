@@ -1106,7 +1106,7 @@ void Client::miniMapGUI() {
     ImGui::Begin("MiniMap GUI", NULL, flags);
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
     
-    if (players[0]) && my_id == playerSelection[CAT]) {
+    if (players[0] && my_id == playerSelection[CAT]) {
         displayLocation(players[0]->getModel(), 0);
     }
     if (players[1]) {
