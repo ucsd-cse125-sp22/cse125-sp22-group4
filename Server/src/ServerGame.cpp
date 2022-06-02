@@ -679,23 +679,23 @@ void ServerGame::update()
         playTime = test.count();
 
         // check to rotate stationary items
-        if (playTime == 60 && !firstTimer) {
-            firstTimer = true;
-            respawnItem();
-            // make sure player isn't at stationary
-            if (stationary->getProgress() == 0.0) 
-                respawnItem2();
-            if (stationary2->getProgress() == 0.0)
-                respawnItem3();
-        }
-        else if (playTime == 120 && !secondTimer) {
-            secondTimer = true;
-            respawnItem();
-            if (stationary->getProgress() == 0.0)
-                respawnItem2();
-            if (stationary2->getProgress() == 0.0)
-                respawnItem3();
-        }
+        //if (playTime == 60 && !firstTimer) {
+        //    firstTimer = true;
+        //    respawnItem();
+        //    // make sure player isn't at stationary
+        //    if (stationary->getProgress() == 0.0) 
+        //        respawnItem2();
+        //    if (stationary2->getProgress() == 0.0)
+        //        respawnItem3();
+        //}
+        //else if (playTime == 120 && !secondTimer) {
+        //    secondTimer = true;
+        //    respawnItem();
+        //    if (stationary->getProgress() == 0.0)
+        //        respawnItem2();
+        //    if (stationary2->getProgress() == 0.0)
+        //        respawnItem3();
+        //}
 
         // TODO: round length is fixed as 180 on client.
         if (this->roundLengthSec - playTime <= 0 && gameAlive) {

@@ -1071,11 +1071,11 @@ void displayLocation(glm::mat4 model, int id) {
     
         if (itemhold == my_id) { // final Dest location revealed only to player with item
             if (currTime % 2 == 0) {
-                float locX1 = finalDest[3][0] * 1.55 + 25;
-                float locZ1 = abs(finalDest[3][2]) * 1.55 + 25;
+                float locX1 = finalDest[3][0] * .85 + 260;
+                float locZ1 = finalDest[3][2] * .85 + 260;
                 //ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_diploma, ImVec2(locZ1 - icon_size, locX1 - icon_size), ImVec2(locZ1 + icon_size, locX1 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
                 icon_size = 12.0f;
-                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_party_icon, ImVec2(locZ1 - icon_size, locX1 - icon_size), ImVec2(locZ1 + icon_size, locX1 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_party_icon, ImVec2(locX1 - icon_size, locZ1 - icon_size), ImVec2(locX1 + icon_size, locZ1 + icon_size), ImVec2(0, 0), ImVec2(1, 1));
             
             }
               
@@ -1084,12 +1084,12 @@ void displayLocation(glm::mat4 model, int id) {
         else if (id == 4 && itemhold == PLAYER_NUM + 1) { // if no player holding flag, show location of flag
             icon_size = 9.0f;
             if (currTime % 2 == 0)
-                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locX - icon_size, locZ - icon_size), ImVec2(locX + icon_size, locZ + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         }
         else if (id >= 5) {
             icon_size = 9.0f;
             if (currTime % 2 == 0)
-                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+                ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_flag, ImVec2(locX - icon_size, locZ - icon_size), ImVec2(locX + icon_size, locZ + icon_size), ImVec2(0, 0), ImVec2(1, 1));
         }
     }
     
