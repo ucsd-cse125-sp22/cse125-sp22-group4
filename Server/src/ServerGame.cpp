@@ -55,7 +55,7 @@ ServerGame::ServerGame() :
 
     // inaccessible player location for dead mice
     banished = glm::mat4(1);
-    moveGlobal(banished, glm::vec3(75, 20, -75));
+    moveGlobal(banished, glm::vec3(0, 20, 0));
 
     // TODO: Should not be hard coded like this.
     player_states[0].modelType = PlayerModelTypes::Cat;
