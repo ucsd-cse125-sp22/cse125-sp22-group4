@@ -906,11 +906,27 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
     }
     case PLAYER_SELECT:
     {
-        printf("receiving player select packet!\n");
+        printf("receiving player select packet AAAAAA!\n");
 
         int index = (int)packet->data;
-        if (playerSelection[index] == -1)
-            playerSelection[index] = client_id;
+
+        // Deselect packet
+        if (index == NONE) {
+            printf("None packet!\n");
+            for (int i = 0; i < PLAYER_NUM; ++i) {
+                if (playerSelection[i] == client_id) {
+                    playerSelection[i] = -1;
+                    break;
+                }
+            }
+        }
+        else {
+            // Normal packet
+            printf("Normal packet %d!\n", index);
+            if (playerSelection[index] == -1)
+                playerSelection[index] = client_id;
+        }
+
 
         // availableSelection
         size_t packet_size = sizeof(SelectionPacket);

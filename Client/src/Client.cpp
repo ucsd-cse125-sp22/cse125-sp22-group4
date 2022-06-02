@@ -125,14 +125,25 @@ bool retStartCatuate;
 int image_width_start_catuate = 0;
 int image_height_start_catuate = 0;
 GLuint image_texture_start_catuate = 0;
+
 bool retCatIcon;
 int image_width_cat_icon = 0;
 int image_height_cat_icon = 0;
 GLuint image_texture_cat_icon = 0;
+
+bool retCatHoverIcon;
+GLuint image_texture_cat_hover_icon = 0;
+
 bool retMouseIcon;
 int image_width_mouse_icon = 0;
 int image_height_mouse_icon = 0;
 GLuint image_texture_mouse_icon = 0;
+
+bool retMouseHoverIcon;
+GLuint image_texture_mouse_hover_icon = 0;
+
+
+
 bool retDiploma;
 int image_width_diploma = 0;
 int image_height_diploma = 0;
@@ -190,7 +201,7 @@ static bool gameStartPressed = 0;
 
 static bool playerSelect = false;
 static bool playerSelected = false;
-static bool playerType = -1;
+static int playerType = NONE;
 // Debounce for sending network packets
 static bool playerTypeSent = false;
 
@@ -518,8 +529,13 @@ bool Client::initializeClient() {
     retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
     retStartMouse = LoadTextureFromFile("../../objects/ImGui/mao_mouse.png", &image_texture_start_mouse, &image_width_start_mouse, &image_height_start_mouse);
     retStartCatuate = LoadTextureFromFile("../../objects/ImGui/catuate2.png", &image_texture_start_catuate, &image_width_start_catuate, &image_height_start_catuate);
+    
+    retCatHoverIcon = LoadTextureFromFile("../../objects/ImGui/cat_icon_onhover.png", &image_texture_cat_hover_icon, &image_width_cat_icon, &image_height_cat_icon);
     retCatIcon = LoadTextureFromFile("../../objects/ImGui/cat_icon.png", &image_texture_cat_icon, &image_width_cat_icon, &image_height_cat_icon);
+    
+    retMouseHoverIcon = LoadTextureFromFile("../../objects/ImGui/mouse_icon_onhover.png", &image_texture_mouse_hover_icon, &image_width_mouse_icon, &image_height_mouse_icon);
     retMouseIcon = LoadTextureFromFile("../../objects/ImGui/mouse_icon.png", &image_texture_mouse_icon, &image_width_mouse_icon, &image_height_mouse_icon);
+    
     retDiploma = LoadTextureFromFile("../../objects/ImGui/diploma.png", &image_texture_diploma, &image_width_diploma, &image_height_diploma);
     retHourglass = LoadTextureFromFile("../../objects/ImGui/hourglass.png", &image_texture_hourglass, &image_width_hourglass, &image_height_hourglass);
     retPartyIcon = LoadTextureFromFile("../../objects/ImGui/party_icon.png", &image_texture_party_icon, &image_width_party_icon, &image_height_party_icon);
@@ -617,7 +633,7 @@ void Client::displayCallback() {
     */
 
     case 1: {
-        isThirdPersonCam = true;
+        isThirdPersonCam = false;
         maze->draw(currCam->viewProjMat, identityMat, shader);
         bear->draw(currCam->viewProjMat, identityMat, shader);
        
@@ -1374,111 +1390,226 @@ void Client::playerSelectGUI() {
     ImGui::Begin("PlayerSelect GUI", NULL, flags);
     float catLoc = (window_width - image_width_cat_icon * adjust_cat * width_resize) / 5 - 100;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
-    if (!catSelected) {
-        // TODO: Change cat picture instead of background color
-        ImVec4 rgba = !catHover ? ImVec4(1, 1, 1, 1) :
-            ImVec4(128.0f/255, 128.0f/255, 128.0f/255, 0.5f);
-        ImGui::PushID("cat icon");
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1),rgba)) {
-            if (!playerSelected) {
+    
+    int catSelected = playerSelection[0];
+    int mouse1Selected = playerSelection[1];
+    int mouse2Selected = playerSelection[2];
+    int mouse3Selected = playerSelection[3];
+
+
+    if (catSelected >= 0) {
+        // If cat is already selected.
+        ImVec4 selectedRgba = ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
+        if (catSelected == my_id) {
+            // Player has cat selected.
+            ImGui::PushID("cat icon");
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+                // Player is deselecting!
                 playerSelected = true;
-                playerType = CAT;
-                catSelected = true;
                 playerTypeSent = false;
-            }          
+                playerType = NONE;
+            }
+            ImGui::PushFont(cuteFont);
+            ImGui::Text("-->[P%d]<--", catSelected);
+            ImGui::PopFont();
+            ImGui::PopID();
         }
-        ImGui::PopID();
-        catHover = ImGui::IsItemHovered() && ImGui::IsWindowHovered();
-    }
-    else {
-        //if (!playerSelected) {
+        else {
+            // Someone else has cat selected.
             ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
             ImGui::Image((void*)(intptr_t)image_texture_cat_icon_pale, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize));
-        //}
-       
+            
+            // TODO: Make font pop out more
+            ImGui::PushFont(cuteFont);
+            ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
+            ImGui::Text("[P%d]", catSelected);
+            ImGui::PopFont();
+        }
+    } else {
+        // No one has selected cat
+        GLuint icon = image_texture_cat_icon; 
+        if (catHover)
+            icon = image_texture_cat_hover_icon;
+
+        ImGui::PushID("cat icon");
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+            if (playerType != NONE) {
+                return;
+            }
+            
+            // Player is selecting cat!
+            playerSelected = true;
+            playerTypeSent = false;
+            playerType = CAT;
+        }
+        catHover = ImGui::IsItemHovered();
+        ImGui::PopID();
     }
 
-    
-    //ImGui::Image((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize));
-    
     float mouseLocX = (3 * window_width) / 4 - (image_width_mouse_icon * adjust_mouse * width_resize);
     float mouseLocY = (window_height / 3) - (image_height_mouse_icon * adjust_mouse * height_resize) / 2;
 
-
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
 
-
-    if (!mouse1Selected) {
-        
-        ImVec4 rgba = !mouse1Hover ? ImVec4(1, 1, 1, 1) :
-            ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
-        ImGui::PushID("mouse 1");
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), rgba)) {
-            if (!playerSelected) {
+    if (mouse1Selected >= 0) {
+        // If cat is already selected.
+        ImVec4 selectedRgba = ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
+        if (mouse1Selected == my_id) {
+            // Player has cat selected.
+            ImGui::PushID("mouse 1");
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+                // Player is deselecting!
                 playerSelected = true;
-                mouse1Selected = true;
-                playerType = M1;
                 playerTypeSent = false;
+                playerType = NONE;
             }
+            ImGui::PushFont(cuteFont);
+            ImGui::Text("-->[P%d]<--", mouse1Selected);
+            ImGui::PopFont();
+            ImGui::PopID();
         }
-        ImGui::PopID();
-        mouse1Hover = ImGui::IsItemHovered() && ImGui::IsWindowHovered();
+        else {
+            // Someone else has cat selected.
+            ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+            ImGui::Image((void*)(intptr_t)image_texture_mouse_icon_pale, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
 
+            // TODO: Make font pop out more
+            ImGui::PushFont(cuteFont);
+            ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+            ImGui::Text("[P%d]", mouse1Selected);
+            ImGui::PopFont();
+        }
     }
     else {
-        ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-        ImGui::Image((void*)(intptr_t)image_texture_mouse_icon_pale, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+        // No one has selected cat
+        GLuint icon = image_texture_mouse_icon;
+        if (mouse1Hover)
+            icon = image_texture_mouse_hover_icon;
+
+        ImGui::PushID("mouse 1");
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+            if (playerType != NONE) {
+                return;
+            }
+
+            // Player is selecting mouse!
+            playerSelected = true;
+            playerTypeSent = false;
+            playerType = M1;
+        }
+        mouse1Hover = ImGui::IsItemHovered();
+        ImGui::PopID();
     }
-       
+
     mouseLocX = mouseLocX - (image_width_mouse_icon * adjust_mouse * width_resize) / 2;
     mouseLocY = mouseLocY + (image_height_mouse_icon * adjust_mouse * height_resize);
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-    
-    if (!mouse2Selected) {
-        ImVec4 rgba = !mouse2Hover ? ImVec4(1, 1, 1, 1) :
-            ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
-        ImGui::PushID("mouse 2");
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), rgba)) {
-            if (!playerSelected) {
-                mouse2Selected = true;
+
+    if (mouse2Selected >= 0) {
+        // If cat is already selected.
+        ImVec4 selectedRgba = ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
+        if (mouse2Selected == my_id) {
+            // Player has cat selected.
+            ImGui::PushID("mouse 2");
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+                // Player is deselecting!
                 playerSelected = true;
-                playerType = M2;
                 playerTypeSent = false;
+                playerType = NONE;
             }
+            ImGui::PushFont(cuteFont);
+            ImGui::Text("-->[P%d]<--", mouse2Selected);
+            ImGui::PopFont();
+            ImGui::PopID();
         }
-        ImGui::PopID();
-        mouse2Hover = ImGui::IsItemHovered() && ImGui::IsWindowHovered();
+        else {
+            // Someone else has cat selected.
+            ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+            ImGui::Image((void*)(intptr_t)image_texture_mouse_icon_pale, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+
+            // TODO: Make font pop out more
+            ImGui::PushFont(cuteFont);
+            ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+            ImGui::Text("[P%d]", mouse2Selected);
+            ImGui::PopFont();
+        }
     }
     else {
-        ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-        ImGui::Image((void*)(intptr_t)image_texture_mouse_icon_pale, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+        // No one has selected cat
+        GLuint icon = image_texture_mouse_icon;
+        if (mouse2Hover)
+            icon = image_texture_mouse_hover_icon;
+
+        ImGui::PushID("mouse 1");
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+            if (playerType != NONE) {
+                return;
+            }
+
+            // Player is selecting mouse!
+            playerSelected = true;
+            playerTypeSent = false;
+            playerType = M2;
+        }
+        mouse2Hover = ImGui::IsItemHovered();
+        ImGui::PopID();
     }
+    
 
     //ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
     mouseLocX = mouseLocX + (image_width_mouse_icon * adjust_mouse * width_resize);
     //mouseLocY = mouseLocY + image_height_mouse_icon * adjust_mouse * height_resize;
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
 
-    if (!mouse3Selected) {
-        ImVec4 rgba = !mouse3Hover ? ImVec4(1, 1, 1, 1) :
-            ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
-        ImGui::PushID("mouse 3");
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), rgba)) {
-            if (!playerSelected) {
-                mouse3Selected = true;
+    if (mouse3Selected >= 0) {
+        // If cat is already selected.
+        ImVec4 selectedRgba = ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
+        if (mouse3Selected == my_id) {
+            // Player has cat selected.
+            ImGui::PushID("mouse 3");
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+                // Player is deselecting!
                 playerSelected = true;
-                playerType = M3;
+                playerTypeSent = false;
+                playerType = NONE;
             }
+            ImGui::PushFont(cuteFont);
+            ImGui::Text("-->[P%d]<--", mouse3Selected);
+            ImGui::PopFont();
+            ImGui::PopID();
         }
-        ImGui::PopID();
-        mouse3Hover = ImGui::IsItemHovered() && ImGui::IsWindowHovered();
+        else {
+            // Someone else has cat selected.
+            ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+            ImGui::Image((void*)(intptr_t)image_texture_mouse_icon_pale, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+
+            // TODO: Make font pop out more
+            ImGui::PushFont(cuteFont);
+            ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
+            ImGui::Text("[P%d]", mouse3Selected);
+            ImGui::PopFont();
+        }
     }
     else {
-        ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-        ImGui::Image((void*)(intptr_t)image_texture_mouse_icon_pale, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
-    }
-    //ImGui::Image((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize));
+        // No one has selected cat
+        GLuint icon = image_texture_mouse_icon;
+        if (mouse3Hover)
+            icon = image_texture_mouse_hover_icon;
 
+        ImGui::PushID("mouse 3");
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+            if (playerType != NONE) {
+                return;
+            }
+
+            // Player is selecting mouse!
+            playerSelected = true;
+            playerTypeSent = false;
+            playerType = M3;
+        }
+        mouse3Hover = ImGui::IsItemHovered();
+        ImGui::PopID();
+    }
 
     
     ImGui::PopStyleColor();
