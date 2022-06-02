@@ -229,7 +229,8 @@ vector<int> cardChoices = { 1, 1, 2, 2, 3, 3 };
 vector<GLuint> cards;
 static int possiblePair = -1;
 static GLuint possibleImg = -1;
-static int pairs = 0;
+static int pairs1 = 0;
+static int pairs2 = 0;
 static int numSelected = 0;
 static bool cardsSelected[6] = { false, false, false, false, false, false };
 static int finalDestRotateTime = -1;
@@ -1164,24 +1165,25 @@ void Client::stationaryItemGUI() {
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(24.0f /  255, 68.0f / 255, 62.0f / 255, 1.0f));
    
-    if (timeLeftStationaryItem > 0 && holdIdStationary[my_id]) { // for computer stationary item
+    if (timeLeftStationaryItem > 0 && holdIdStationary[my_id] && pairs1 != -1) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
-        displayCards();
+        displayCards(1);
         //ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
         ImGui::End();
     }
-    else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id]) { // for books stationary item
+    else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id] && pairs2 != -1) { // for books stationary item
         ImGui::Begin("StationaryItem2 GUI", NULL, flags);
-        displayCards();
+        displayCards(2);
         //ImGui::Image((void*)(intptr_t)image_texture_fireplace, ImVec2(window_width, window_height));
         ImGui::End();
     }
     ImGui::PopStyleColor();
 }
 
-void Client::displayCards() {
+void Client::displayCards(int item) {
     float height_resize = window_height / static_cast<float>(1017);
     float width_resize = window_width / static_cast<float>(1920);
+   
     //printf("card 1 %d card2 %d\n", cardsSelected[0], cardsSelected[1]);
 
     ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 4 - image_width_cardback / 2, (window_height - image_height_cardback) / 4 - image_height_cardback/4));
@@ -1198,7 +1200,10 @@ void Client::displayCards() {
         ImGui::PushID("possible 1 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
             if (cardChoices[possiblePair] == cardChoices[0]) {
-                pairs++;
+                if (item == 1)
+                    pairs1++;
+                else
+                    pairs2++;
                 cardsSelected[0] = true;
                 possiblePair = -1;
             }
@@ -1229,7 +1234,10 @@ void Client::displayCards() {
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
             //printf("card choices %d %d\n", cardChoices[possiblePair], cardChoices[1]);
             if (cardChoices[possiblePair] == cardChoices[1]) {
-                pairs++;
+                if (item == 1)
+                    pairs1++;
+                else
+                    pairs2++;
                 cardsSelected[1] = true;
                 possiblePair = -1;
             }
@@ -1259,7 +1267,10 @@ void Client::displayCards() {
         ImGui::PushID("possible 3 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
             if (cardChoices[possiblePair] == cardChoices[2]) {
-                pairs++;
+                if (item == 1)
+                    pairs1++;
+                else
+                    pairs2++;
                 cardsSelected[2] = true;
                 possiblePair = -1;
             }
@@ -1289,7 +1300,10 @@ void Client::displayCards() {
         ImGui::PushID("possible 4 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
             if (cardChoices[possiblePair] == cardChoices[3]) {
-                pairs++;
+                if (item == 1)
+                    pairs1++;
+                else
+                    pairs2++;
                 cardsSelected[3] = true;
                 possiblePair = -1;
             }
@@ -1319,7 +1333,10 @@ void Client::displayCards() {
         ImGui::PushID("possible 5 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
             if (cardChoices[possiblePair] == cardChoices[4]) {
-                pairs++;
+                if (item == 1)
+                    pairs1++;
+                else
+                    pairs2++;
                 cardsSelected[4] = true;
                 possiblePair = -1;
             }
@@ -1348,7 +1365,10 @@ void Client::displayCards() {
         ImGui::PushID("possible 6 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
             if (cardChoices[possiblePair] == cardChoices[5]) {
-                pairs++;
+                if (item == 1)
+                    pairs1++;
+                else
+                    pairs2++;
                 cardsSelected[5] = true;
                 possiblePair = -1;
             }
@@ -1811,6 +1831,14 @@ void Client::updateTime(int t) {
     currTime = t;
 }
 
+void Client::resetPair1() {
+    pairs1 = -1;
+}
+
+void Client::resetPair2() {
+    pairs2 = -1;
+}
+
 void Client::setItemHold(char h, bool s) {
     itemhold = h;
     task1 = s;
@@ -1842,8 +1870,12 @@ int Client::checkPlayerSelect() {
     return -1;
 }
 
-int Client::checkPairCount() {
-    return pairs;
+int Client::checkPair1Count() {
+    return pairs1;
+}
+
+int Client::checkPair2Count() {
+    return pairs2;
 }
 
 void Client::setGameOver(int g, int w) {

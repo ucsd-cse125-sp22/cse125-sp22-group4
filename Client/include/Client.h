@@ -65,10 +65,13 @@ namespace Client {
     void setStationaryItem2Countdown(float t, bool* holdId, bool s);
     void setMovingState(PlayerState* playerstate);
     void resetMovingState();
-    void displayCards();
+    void displayCards(int item);
 
     int checkPlayerSelect();
-    int checkPairCount();
+    int checkPair1Count();
+    int checkPair2Count();
+    void resetPair1();
+    void resetPair2();
     bool checkGameStart();
     void setGameStart();
     void setGameOver(int g, int w);

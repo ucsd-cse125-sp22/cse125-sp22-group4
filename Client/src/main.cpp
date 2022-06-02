@@ -165,9 +165,16 @@ int main(int argc, char** argv) {
             printf("Sending player choice update %d\n", playerChoice);
             client->sendPlayerSelect(playerChoice);
         }
-        int pairs = Client::checkPairCount();
-        if (pairs == 3)
-            client->sendPairCount(pairs);
+        int pair1 = Client::checkPair1Count();
+        int pair2 = Client::checkPair2Count();
+        if (pair1 == 3 || pair2 == 3) {
+            client->sendPairCount(pair1, pair2);
+        }
+        if (pair1 == 3)
+            Client::resetPair1();
+        if (pair2 == 3)
+            Client::resetPair2();
+            
         client->update(Client::getMovementState(), Client::getRotationState());
 
         // Rendering

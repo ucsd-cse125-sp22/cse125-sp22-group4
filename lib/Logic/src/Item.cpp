@@ -88,12 +88,12 @@ bool SitAndHoldObjective::checkAward() {
 	// If objective is disabled or not being worked on, disable
 	if (disabled || !toggled) return false;
 
-	if (getProgress() >= seconds) {
+	//if (getProgress() >= seconds) {
 		// Reward! Then disable yourself
 		disabled = true;
 		taskSuccess = true;
 		return true;
-	}
+	//}
 	//printf("Stationary: Making progress! %3.3lf\n", getProgress());
 	return false;
 }

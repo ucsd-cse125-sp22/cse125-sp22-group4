@@ -590,7 +590,21 @@ void ServerGame::mouseDead(int client_id) {
 }
 
 void ServerGame::checkStationaryObjectives() {
-    if (stationary->checkAward()) {
+    if (pair1 == 3) {
+        moveGlobal(stationary->model, glm::vec3(0, 100, 0));
+        printf("Stationary: Completed!\n");
+        stationary->checkAward();
+        pair1 = -1;
+        ++points;
+    }
+    if (pair2 == 3) {
+        moveGlobal(stationary2->model, glm::vec3(0, 100, 0));
+        printf("Stationary2: Completed!\n");
+        stationary->checkAward();
+        pair2 = -1;
+        ++points;
+    }
+ /*   if (stationary->checkAward()) {
         moveGlobal(stationary->model, glm::vec3(0, 100, 0));
         printf("Stationary: Completed!\n");
         ++points;
@@ -600,7 +614,7 @@ void ServerGame::checkStationaryObjectives() {
         moveGlobal(stationary2->model, glm::vec3(0, 100, 0));
         printf("Stationary2: Completed!\n");
         ++points;
-    }
+    }*/
 }
 
 void ServerGame::update()
@@ -942,8 +956,8 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
     {
         printf("receiving pair count packet!\n");
 
-        int index = (int)packet->data;
-        printf("index %d\n", index);
+        pair1 = (int)packet->data;
+        pair2 = (int)packet->data2;
         break;
     }
     }

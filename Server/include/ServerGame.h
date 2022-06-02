@@ -93,6 +93,9 @@ private:
 
     int points;
     const int pointsToWin;
+    
+    int pair1 = 0;
+    int pair2 = 0;
 
     Maze* maze;
     Flag* flag;
