@@ -1552,8 +1552,8 @@ void Client::GameStartGUI() {
         {
             //playerSelect = true;
             gameStartPressed = true;
-            audioEngine->StopEvent("event:/music1");
-            audioEngine->PlayEvent("event:/music_placeholder");
+            /*audioEngine->StopEvent("event:/music1");
+            audioEngine->PlayEvent("event:/music_placeholder");*/
         }
     }
     /*else
