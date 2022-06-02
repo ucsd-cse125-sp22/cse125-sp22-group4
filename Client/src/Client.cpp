@@ -205,7 +205,9 @@ static SceneLoader* scene;
 // state variables
 static bool gameEnded = 0;
 static bool gameStarted = 0;
+static bool displayStart = 1;
 static bool gameStartPressed = 0;
+static bool displayStartPressed = 0;
 
 static bool playerSelect = false;
 static bool playerSelected = false;
@@ -378,6 +380,11 @@ bool Client::LoadTextureFromFile(const char* filename, GLuint* out_texture, int*
  * @return  True if success, False otherwise
 **/
 bool Client::initializeClient() {
+    for (int i = 0; i < PLAYER_NUM; ++i)
+        playerSelection[i] = NONE;
+
+
+
     // initialize shader
     shader = Shader::loadShaders("../../shaders/shader.vert", "../../shaders/shader.frag");
     skyboxShader = Shader::loadShaders("../../shaders/skyboxShader.vert", "../../shaders/skyboxShader.frag");
@@ -1187,7 +1194,6 @@ void Client::stationaryItemGUI() {
         pairs1 = 0;
         pairs2 = 0;
     }
-       
    
     if (timeLeftStationaryItem > 0 && holdIdStationary[my_id] && pairs1 != -1) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
@@ -1411,6 +1417,10 @@ void Client::displayCards(int item) {
 
 
 void Client::restore() {
+    for (int i = 0; i < PLAYER_NUM; ++i)
+        playerSelection[i] = NONE;
+
+    displayStart = 1;
     gameStarted = 0;
     gameEnded = 0;
     catWon = 0;
@@ -1428,7 +1438,8 @@ void Client::updatePlayerSelection(std::array<int, PLAYER_NUM> selection)
 
 void Client::playerSelectGUI() {
     
-    if (!playerSelect)
+    // If game started, clear this screen
+    if (!playerSelect || gameStarted)
         return;
 
     double adjust_cat = 0.6f;
@@ -1459,10 +1470,12 @@ void Client::playerSelectGUI() {
     int mouse2Selected = playerSelection[2];
     int mouse3Selected = playerSelection[3];
 
+    auto selectedTextColor = IM_COL32(245, 25, 25, 255);
+    ImVec4 selectedRgba = ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
 
-    if (catSelected >= 0) {
+
+    if (catSelected != NONE) {
         // If cat is already selected.
-        ImVec4 selectedRgba = ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
         if (catSelected == my_id) {
             // Player has cat selected.
             ImGui::PushID("cat icon");
@@ -1473,7 +1486,10 @@ void Client::playerSelectGUI() {
                 playerType = NONE;
             }
             ImGui::PushFont(cuteFont);
+            ImGui::PushStyleColor(ImGuiCol_Text, selectedTextColor);
+            ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
             ImGui::Text("-->[P%d]<--", catSelected);
+            ImGui::PopStyleColor();
             ImGui::PopFont();
             ImGui::PopID();
         }
@@ -1514,9 +1530,8 @@ void Client::playerSelectGUI() {
 
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
 
-    if (mouse1Selected >= 0) {
+    if (mouse1Selected != NONE) {
         // If cat is already selected.
-        ImVec4 selectedRgba = ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
         if (mouse1Selected == my_id) {
             // Player has cat selected.
             ImGui::PushID("mouse 1");
@@ -1527,7 +1542,10 @@ void Client::playerSelectGUI() {
                 playerType = NONE;
             }
             ImGui::PushFont(cuteFont);
+            ImGui::PushStyleColor(ImGuiCol_Text, selectedTextColor);
+            ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
             ImGui::Text("-->[P%d]<--", mouse1Selected);
+            ImGui::PopStyleColor();
             ImGui::PopFont();
             ImGui::PopID();
         }
@@ -1568,9 +1586,8 @@ void Client::playerSelectGUI() {
     mouseLocY = mouseLocY + (image_height_mouse_icon * adjust_mouse * height_resize);
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
 
-    if (mouse2Selected >= 0) {
+    if (mouse2Selected != NONE) {
         // If cat is already selected.
-        ImVec4 selectedRgba = ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
         if (mouse2Selected == my_id) {
             // Player has cat selected.
             ImGui::PushID("mouse 2");
@@ -1581,7 +1598,10 @@ void Client::playerSelectGUI() {
                 playerType = NONE;
             }
             ImGui::PushFont(cuteFont);
+            ImGui::PushStyleColor(ImGuiCol_Text, selectedTextColor);
+            ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
             ImGui::Text("-->[P%d]<--", mouse2Selected);
+            ImGui::PopStyleColor();
             ImGui::PopFont();
             ImGui::PopID();
         }
@@ -1624,9 +1644,8 @@ void Client::playerSelectGUI() {
     //mouseLocY = mouseLocY + image_height_mouse_icon * adjust_mouse * height_resize;
     ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
 
-    if (mouse3Selected >= 0) {
+    if (mouse3Selected != NONE) {
         // If cat is already selected.
-        ImVec4 selectedRgba = ImVec4(128.0f / 255, 128.0f / 255, 128.0f / 255, 0.5f);
         if (mouse3Selected == my_id) {
             // Player has cat selected.
             ImGui::PushID("mouse 3");
@@ -1637,7 +1656,10 @@ void Client::playerSelectGUI() {
                 playerType = NONE;
             }
             ImGui::PushFont(cuteFont);
+            ImGui::PushStyleColor(ImGuiCol_Text, selectedTextColor);
+            ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
             ImGui::Text("-->[P%d]<--", mouse3Selected);
+            ImGui::PopStyleColor();
             ImGui::PopFont();
             ImGui::PopID();
         }
@@ -1681,7 +1703,7 @@ void Client::playerSelectGUI() {
 
 void Client::GameStartGUI() {
 
-    if (gameStarted)
+    if (!displayStart)
         return;
 
     double adjustment = 3.5f;
@@ -1726,7 +1748,10 @@ void Client::GameStartGUI() {
         if (ImGui::Button("Join Game"))
         {
             //playerSelect = true;
-            gameStartPressed = true;
+            //gameStartPressed = true;
+            displayStartPressed = true;
+            if (!playerSelect)
+                gameStartPressed = true;
             /*audioEngine->StopEvent("event:/music1");
             audioEngine->PlayEvent("event:/music_placeholder");*/
         }
@@ -1874,7 +1899,28 @@ void Client::setFinalDest(glm::mat4 location, int f) {
     //printf("%d finalDest \n", finalDestRotateTime);
 }
 
+void Client::hideStartScreen() {
+    displayStart = 0;
+
+    // If player select is disabled, mark game as started.
+    if (!playerSelect)
+        gameStarted = 1;
+}
+
+
+bool Client::checkHideStartScreen() {
+    if (displayStartPressed) {
+        displayStartPressed = false;
+        return true;
+    }
+    return false;
+}
+
 void Client::setGameStart() {
+    for (int i = 0; i < PLAYER_NUM; ++i)
+        playerSelection[i] = NONE;
+
+    displayStart = 0;
     gameStarted = 1;
 }
 

@@ -23,6 +23,7 @@ enum PacketTypes {
 	KEYSTROKE,
 	GAME_START,
 	GAME_END,
+	HIDE_START,
 	PLAYER_SELECT,
 	PAIR_COUNT,
 	/* Keystroke Packet Types */

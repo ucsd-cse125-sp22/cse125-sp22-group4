@@ -34,7 +34,9 @@ ServerGame::ServerGame() :
     gameAlive = false; // Will be toggled on/off depending on the round
     game_started = false; // Will only be false once.
     this->ticksSinceConfigCheck = 0;
-    memset(playerSelection, -1, sizeof(playerSelection));
+
+    for (int i = 0; i < PLAYER_NUM; ++i)
+        playerSelection[i] = NONE;
 
     // Update settings from config file!
     updateFromConfigFile();
@@ -412,6 +414,10 @@ void ServerGame::start() {
     gameAlive = true;
     playTime = 0; // Reset play time
     points = 0; // Reset points
+
+    // Reset player selections for next run
+    for (int i = 0; i < PLAYER_NUM; ++i)
+        playerSelection[i] = NONE;
 
     // Announce game start
     const unsigned int packet_size = sizeof(SimplePacket);
@@ -943,6 +949,7 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
         printf("Game start!\n");
         start();
 
+        // Bounce packet to other clients
         char* packet_bytes = packet_to_bytes(packet, sizeof(SimplePacket));
         size_t packet_size = sizeof(SimplePacket);
         network->sendToAll(packet_bytes, packet_size);
@@ -950,35 +957,63 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
     }
     case PLAYER_SELECT:
     {
-        printf("receiving player select packet AAAAAA!\n");
+        if (gameAlive) {
+            break;
+        }
 
         int index = (int)packet->data;
 
         // Deselect packet
         if (index == NONE) {
-            printf("None packet!\n");
+            // Unselect for player
             for (int i = 0; i < PLAYER_NUM; ++i) {
                 if (playerSelection[i] == client_id) {
-                    playerSelection[i] = -1;
+                    playerSelection[i] = NONE;
                     break;
                 }
             }
         }
         else {
-            // Normal packet
-            printf("Normal packet %d!\n", index);
-            if (playerSelection[index] == -1)
+            // Select for player
+            if (playerSelection[index] == NONE)
                 playerSelection[index] = client_id;
         }
 
+        bool allSelected = true;
+        for (int id : playerSelection) {
+            if (id == NONE) {
+                allSelected = false;
+                break;
+            }
+        }
 
-        // availableSelection
+        if (allSelected) {
+            printf("All players have selected, game can start!\n");
+            start();
+
+            // Bounce packet to other clients
+            char* packet_bytes = packet_to_bytes(packet, sizeof(SimplePacket));
+            size_t packet_size = sizeof(SimplePacket);
+            network->sendToAll(packet_bytes, packet_size);
+            break;
+        }
+
+
+        // Not everyone has selected, just replicate selection changes.
         size_t packet_size = sizeof(SelectionPacket);
         SelectionPacket* selectPacket = (SelectionPacket*) malloc(packet_size);
         selectPacket->packet_class = SELECTION_PACKET;
         memcpy(selectPacket->player_choices, playerSelection, sizeof(playerSelection));
 
         char* packet_bytes = packet_to_bytes(selectPacket, packet_size);
+        network->sendToAll(packet_bytes, packet_size);
+        break;
+    }
+    case HIDE_START:
+    {
+        // Bounce packet to other clients
+        char* packet_bytes = packet_to_bytes(packet, sizeof(SimplePacket));
+        size_t packet_size = sizeof(SimplePacket);
         network->sendToAll(packet_bytes, packet_size);
         break;
     }

@@ -6,8 +6,10 @@ ClientGame::ClientGame(void)
 {
     network = new ClientNetwork();
     start_time = timer.now();
-    memset(playerSelection, -1, sizeof(playerSelection));
     game_ended = false;
+
+    for (int i = 0; i < PLAYER_NUM; ++i)
+        playerSelection[i] = NONE;
 
     // send init packet
     const unsigned int packet_size = sizeof(SimplePacket);
@@ -56,6 +58,16 @@ void ClientGame::sendRotationPackets(RotationState s) {
     free(packet_bytes);
 
     Client::resetRotUpdate();
+}
+
+void ClientGame::sendHideStart() {
+    const unsigned int packet_size = sizeof(SimplePacket);
+    SimplePacket packet;
+    packet.packet_type = HIDE_START;
+
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+    NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
+    free(packet_bytes);
 }
 
 void ClientGame::sendGameStart() {
@@ -114,7 +126,8 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
         Client::setGameStart();
         break;
     }
-    case GAME_END: {
+    case GAME_END: 
+    {
         printf("THE GAME HAS ENDED\n");
         if (game_ended) {
             printf("The game has already ended\n");
@@ -134,6 +147,10 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
             gameEnd(1, MOUSE_WIN);
         }
         break;
+    }
+    case HIDE_START:
+    {
+        Client::hideStartScreen();
     }
     }
 }

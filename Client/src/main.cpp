@@ -155,6 +155,9 @@ int main(int argc, char** argv) {
             client->sendGameStart();
             printf("Sending start game!\n");
         }
+        if (Client::checkHideStartScreen()) {
+            client->sendHideStart();
+        }
 
         // Replicate player selection changes to client
         Client::updatePlayerSelection(client->getPlayerSelection());

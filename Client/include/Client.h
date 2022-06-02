@@ -72,6 +72,10 @@ namespace Client {
     int checkPair2Count();
     void resetPair1();
     void resetPair2();
+
+    bool checkHideStartScreen();
+    void hideStartScreen();
+
     bool checkGameStart();
     void setGameStart();
     void setGameOver(int g, int w);

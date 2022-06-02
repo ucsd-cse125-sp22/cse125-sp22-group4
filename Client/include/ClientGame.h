@@ -22,6 +22,8 @@ public:
 
     ClientNetwork* network;
 
+    void sendHideStart();
+
     void sendGameStart();
     void sendPlayerSelect(int choice);
     void sendPairCount(int pair1, int pair2);
