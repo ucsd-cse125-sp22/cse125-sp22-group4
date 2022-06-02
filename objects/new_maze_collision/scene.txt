@@ -596,3 +596,95 @@ Object: wall_obb.298
 
 Object: wall_obb.299
 
+Object: Bear
+
+Object: Fallen_Star_Mesh.004
+
+Object: Sungod_sungod_sungod-mesh
+
+Object: Tree.001_Icosphere.008
+
+Object: Raccoon_Plane.002
+
+Object: Tree.002_Icosphere.010
+
+Object: Tree.003_Icosphere.011
+
+Object: Tree.004_Icosphere.012
+
+Object: Circle
+
+Object: Sakura_Plane.001
+
+Object: Sakura.001_Plane.003
+
+Object: Sakura.002_Plane.004
+
+Object: Tree.005_Icosphere.001
+
+Object: Tree.006_Icosphere.002
+
+Object: Tree.007_Icosphere.003
+
+Object: Tree.009_Icosphere.023
+
+Object: Tree.010_Icosphere.024
+
+Object: Tree.011_Icosphere.025
+
+Object: Well_Cube.001
+
+Object: Well_Cube.002
+
+Object: Well_Cube.003
+
+Object: Sungod_sungod_sungod-mesh.001
+
+Object: Stonehenge_Stonehenge_East2.001
+
+Object: Stonehenge_Stonehenge_East2.002
+
+Object: Stonehenge_Stonehenge_East2.003
+
+Object: Stonehenge_Stonehenge_East2.004
+
+Object: Stonehenge_Stonehenge_East2.005
+
+Object: Stonehenge_Stonehenge_East2.006
+
+Object: Stonehenge_Stonehenge_East2.007
+
+Object: Stonehenge_Stonehenge_East2.008
+
+Object: Stonehenge_Stonehenge_East2.009
+
+Object: Stonehenge_Stonehenge_East2.010
+
+Object: Stonehenge_Stonehenge_East2.011
+
+Object: Bear.001
+
+Object: Bear.002
+
+Object: Hut_Cylinder.001
+
+Object: Hut_Cylinder.002
+
+Object: Hut_Cylinder.003
+
+Object: Hut_Cylinder.004
+
+Object: Hut_Cylinder.005
+
+Object: Hut_Cylinder.007
+
+Object: Hut_Cylinder.008
+
+Object: Hut_Cylinder.009
+
+Object: Hut_Cylinder.010
+
+Object: Hut_Cylinder.011
+
+Object: Stonehenge_Stonehenge_East2.012
+
