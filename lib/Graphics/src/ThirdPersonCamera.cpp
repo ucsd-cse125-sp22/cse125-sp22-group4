@@ -18,7 +18,7 @@ void ThirdPersonCamera::reset() {
 	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 6, 6)) * glm::inverse(playerModel) * playerPos);
 	//pos = glm::vec3(playerPos) + glm::vec3(0, 8, 2);
 	lookAt = glm::vec3(playerPos);
-	lookAt.y += 2;
+	lookAt.y += 4;
 	upVec = glm::vec3(0, 1, 0);
 	FOV = 100.0f;
 	aspectRatio = 16.0f / 9.0f;
@@ -35,15 +35,15 @@ void ThirdPersonCamera::updatePos() {
 	glm::vec3 origPos = pos;
 	pos = glm::vec3(playerModel * glm::translate(glm::vec3(0, 6, 6)) * glm::inverse(playerModel) * playerPos);
 	//moveable Y position
-	if (origPos[1] > 100) {
-		origPos[1] = 100;
+	if (origPos[1] > 10) {
+		origPos[1] = 10;
 	}
-	if (origPos[1] < -2.9) {
-		origPos[1] = -2.9;
+	if (origPos[1] < 5) {
+		origPos[1] = 5;
 	}
 	pos[1] = origPos[1];
 	lookAt = glm::vec3(playerPos);
-	lookAt.y += 2;
+	lookAt.y += 4;
 	upVec = glm::vec3(0, 1, 0);
 }
 
