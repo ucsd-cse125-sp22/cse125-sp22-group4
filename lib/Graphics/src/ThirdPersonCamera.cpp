@@ -8,7 +8,7 @@ ThirdPersonCamera::ThirdPersonCamera(GraphicObject* _player) {
 	lookAt = glm::vec3(playerPos);
 	lookAt.y += 2;
 	upVec = glm::vec3(0, 1, 0);
-	FOV = 500.0f;
+	FOV = 100.0f;
 	aspectRatio = 16.0f / 9.0f;
 }
 
@@ -20,7 +20,7 @@ void ThirdPersonCamera::reset() {
 	lookAt = glm::vec3(playerPos);
 	lookAt.y += 2;
 	upVec = glm::vec3(0, 1, 0);
-	FOV = 500.0f;
+	FOV = 100.0f;
 	aspectRatio = 16.0f / 9.0f;
 }
 

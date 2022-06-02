@@ -45,6 +45,8 @@ static Model* item3;
 
 static Model* fakecat;
 
+static Model* mazescene;
+
 static Animation* catidleAnimation;
 static Animator* catanimator;
 
@@ -446,6 +448,8 @@ bool Client::initializeClient() {
     scene = new SceneLoader("../../objects/new_maze_collision/scene.txt");
     sceneObjects = scene->load("../../objects/new_maze_collision/");
 
+    mazescene = new Model("../../objects/new_maze_collision/maze_ver2@10x.obj");
+
     //initialize particle system
     smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
     flameparticles = new ParticleSystem(particleShader, "../../particles/flame.png", flame);
@@ -610,7 +614,8 @@ void Client::displayCallback() {
     case 0: {
         isThirdPersonCam = true;
         scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
-        ground->draw(currCam->viewProjMat, identityMat, shader);
+        //ground->draw(currCam->viewProjMat, identityMat, shader);
+        mazescene->draw(currCam->viewProjMat, identityMat, shader);
         for (auto& wall : sceneObjects) {
             drawOBB(wall->getOBB(), currCam->viewProjMat, shader, false);
         }
