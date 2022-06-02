@@ -284,6 +284,7 @@ static char itemhold = PLAYER_NUM + 1;
 // fonts
 static ImFont* plainFont;
 static ImFont* cuteFont;
+static ImFont* BIGcuteFont;
 static ImFont* HUGEcuteFont;
 static ImFont* MASSIVEcuteFont;
 
@@ -587,6 +588,7 @@ bool Client::initializeClient() {
     ImGuiIO& io = ImGui::GetIO();
     plainFont = io.Fonts->AddFontDefault();
     cuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 32.0f);
+    BIGcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 34.0f);
     HUGEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 52.0f);
     MASSIVEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 70.0f);
 
@@ -878,7 +880,7 @@ void Client::timeGUI() {
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
-    double adjustment = 0.27;
+    double adjustment = 0.32;
     ImGui::SetNextWindowSize(ImVec2(my_image_width * adjustment + 30, my_image_height * adjustment + 50));
     //ImGui::SetNextWindowPos(ImVec2(window_width - (my_image_width / 2) + 170, 0), 0, ImVec2(0, 0));
     ImGui::SetNextWindowPos(ImVec2(window_width-(my_image_width*adjustment)-30, 10), 0, ImVec2(0, 0));
@@ -908,9 +910,9 @@ void Client::timeGUI() {
     ImGui::Image((void*)(intptr_t)my_image_texture, ImVec2(my_image_width * adjustment, my_image_height * adjustment));
 
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.5f, 1.0f, 1.0f));
-    ImGui::PushFont(cuteFont);
+    ImGui::PushFont(HUGEcuteFont);
     ImGui::SetCursorPosY((my_image_width * adjustment)/2);
-    ImGui::SetCursorPosX((my_image_height * adjustment) / 2 + 32);
+    ImGui::SetCursorPosX((my_image_height * adjustment) / 2 + 28);
     ImGui::Text("%d:%02d", minute, seconds);
     ImGui::PopFont();
     ImGui::PopStyleColor();
@@ -1003,7 +1005,7 @@ void Client::audioUpdate() {
 }
 
 void Client::ItemHoldGUI() {
-    double adjustment = 0.18;
+    double adjustment = 0.28;
     
     ImGuiWindowFlags flags = 0;
     flags |= ImGuiWindowFlags_NoBackground;
@@ -1020,7 +1022,7 @@ void Client::ItemHoldGUI() {
         tasks++;
 
     ImGui::SetNextWindowSize(ImVec2(image_width_mouse_flag * adjustment+10, image_height_mouse_flag*adjustment+10));
-    ImGui::SetNextWindowPos(ImVec2(280, 15), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(530, 15), 0, ImVec2(0, 0));
    
     ImGui::Begin("ItemHold GUI", NULL, flags);
 
