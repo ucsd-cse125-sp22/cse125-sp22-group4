@@ -1040,8 +1040,8 @@ void Client::ItemHoldGUI() {
 }
 
 void displayLocation(glm::mat4 model, int id) {
-    float locX = model[3][0] * .7 + 220;
-    float locZ = model[3][2] * .7 + 220;
+    float locX = model[3][0] * .85 + 260;
+    float locZ = model[3][2] * .85 + 260;
 
     if (model[3][1] > 10) { // this is a hack, manually checking if banished height
         return;
@@ -1051,11 +1051,10 @@ void displayLocation(glm::mat4 model, int id) {
     
 
     if (id == 0) { // display cat
-        printf("x %lf z %lf\n", locX, locZ);
         ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_cat_icon, ImVec2(locX-icon_size, locZ-icon_size), ImVec2(locX+icon_size, locZ+icon_size), ImVec2(0, 0), ImVec2(1, 1));
     }
     else if (id < 4) { // display mice
-        ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_icon, ImVec2(locZ - icon_size, locX - icon_size), ImVec2(locZ + icon_size, locX + icon_size), ImVec2(0, 0), ImVec2(1, 1));
+        ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_icon, ImVec2(locX - icon_size, locZ - icon_size), ImVec2(locX + icon_size, locZ + icon_size), ImVec2(0, 0), ImVec2(1, 1));
     }
     else {
       /*  if (currTime % 2 == 0)
@@ -1093,7 +1092,7 @@ void Client::miniMapGUI() {
     if (gameStarted == 0)
         return;
 
-    double adjustment = 0.4;
+    double adjustment = 0.5;
     float height_resize = window_height / static_cast<float>(1017);
     float width_resize = window_width / static_cast<float>(1920);
     ImGuiWindowFlags flags = 0;
@@ -1103,7 +1102,7 @@ void Client::miniMapGUI() {
     flags |= ImGuiWindowFlags_NoResize;
 
     ImGui::SetNextWindowSize(ImVec2(image_width_map * adjustment+10, image_height_map * adjustment+10));
-    ImGui::SetNextWindowPos(ImVec2(5, 5), 0, ImVec2(0, 0));
+    ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
     ImGui::Begin("MiniMap GUI", NULL, flags);
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
     
