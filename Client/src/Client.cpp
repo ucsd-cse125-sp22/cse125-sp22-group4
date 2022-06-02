@@ -945,14 +945,6 @@ void Client::LoadingGUI() {
 
     ImGui::Image((void*)(intptr_t)loading, ImVec2(w, h));
 
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.5f, 1.0f, 1.0f));
-    ImGui::PushFont(HUGEcuteFont);
-    ImGui::SetCursorPosY((w) / 2);
-    ImGui::SetCursorPosX((h) / 2);
-    ImGui::Text("%d:%d", w, h);
-    ImGui::PopFont();
-    ImGui::PopStyleColor();
-
     ImGui::End();
 }
 
