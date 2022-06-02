@@ -241,7 +241,7 @@ void ServerGame::assignSpawnItem() {
 
     //location 5
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(67.5, 1, 217.5));
+    moveGlobal(originalLoc, glm::vec3(217.5, 1, 67.5));
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[4] = originalLoc;
     //random = 0;
@@ -484,15 +484,15 @@ bool ServerGame::isAtFinalDest(int hitId) {
             return true;
         break;
     case 1:
-        if (hitId == 311) // racoon
+        if (hitId == 310) // racoon
             return true;
         break;
     case 2: // bearl
-        if (hitId == 340 || hitId == 341)
+        if (hitId == 339 || hitId == 340)
             return true;
         break;
     case 3: // sungod
-        if (hitId == 309 || hitId == 328)
+        if (hitId == 308 || hitId == 327)
             return true;
         break;
 
