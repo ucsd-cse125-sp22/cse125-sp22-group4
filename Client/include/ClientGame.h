@@ -24,6 +24,7 @@ public:
 
     void sendGameStart();
     void sendPlayerSelect(int choice);
+    void sendPairCount(int pairs);
     std::array<int, PLAYER_NUM> getPlayerSelection();
 
     void sendActionPackets(MovementState s);

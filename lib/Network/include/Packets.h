@@ -24,6 +24,7 @@ enum PacketTypes {
 	GAME_START,
 	GAME_END,
 	PLAYER_SELECT,
+	PAIR_COUNT,
 	/* Keystroke Packet Types */
 
 	/* State Packet Types*/
@@ -90,6 +91,7 @@ struct SelectionPacket {
 	ushort packet_class = SELECTION_PACKET;
 	int player_choices[PLAYER_NUM];
 };
+
 
 ushort get_packet_class(char* data);
 char* packet_to_bytes(void* packet, size_t original_size);

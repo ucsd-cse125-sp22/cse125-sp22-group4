@@ -79,6 +79,17 @@ void ClientGame::sendPlayerSelect(int choice) {
     free(packet_bytes);
 }
 
+void ClientGame::sendPairCount(int pair) {
+    const unsigned int packet_size = sizeof(SimplePacket);
+    SimplePacket packet;
+    packet.packet_type = PAIR_COUNT;
+    packet.data = (char)pair; 
+
+    char* packet_bytes = packet_to_bytes(&packet, packet_size);
+    NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);
+    free(packet_bytes);
+}
+
 void ClientGame::handleSimplePacket(SimplePacket s) {
     switch (s.packet_type) {
     case INIT_CONNECTION:

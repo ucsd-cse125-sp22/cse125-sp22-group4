@@ -68,6 +68,7 @@ namespace Client {
     void displayCards();
 
     int checkPlayerSelect();
+    int checkPairCount();
     bool checkGameStart();
     void setGameStart();
     void setGameOver(int g, int w);

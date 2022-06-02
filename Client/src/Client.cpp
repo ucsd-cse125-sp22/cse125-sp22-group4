@@ -1711,6 +1711,10 @@ int Client::checkPlayerSelect() {
     return -1;
 }
 
+int Client::checkPairCount() {
+    return pairs;
+}
+
 void Client::setGameOver(int g, int w) {
     gameEnded = g;
     catWon = w;
