@@ -307,6 +307,8 @@ static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader,
 **/
 GLFWwindow* Client::createWindow(int width, int height, std::string windowTitle) {
     glfwWindowHint(GLFW_SAMPLES, 4);
+
+    //GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
     GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
     prevXPos = (double) width / 2;
     prevYPos = (double) height / 2;
@@ -636,7 +638,7 @@ void Client::displayCallback() {
     
     case 0: {
         isThirdPersonCam = true;
-        scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
+        //scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
         //ground->draw(currCam->viewProjMat, identityMat, shader);
         mazescene->draw(currCam->viewProjMat, identityMat, shader);
         for (auto& wall : sceneObjects) {
