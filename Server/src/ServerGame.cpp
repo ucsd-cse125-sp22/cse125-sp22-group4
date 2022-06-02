@@ -82,7 +82,7 @@ ServerGame::ServerGame() :
         }
         case PlayerModelTypes::Cat:
         {
-            fakePlayerModels[i] = FakeModel("../../objects/cat/smallcat.obj");
+            fakePlayerModels[i] = FakeModel("../../objects/cat/cat.obj");
             break;
         }
         case PlayerModelTypes::Mice:
