@@ -150,7 +150,7 @@ void ServerGame::respawnPlayer(int client_id) {
     switch (client_id) {
     case 1:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(145, -3, -75));
+            moveGlobal(newModel, glm::vec3(145, 0, -75));
             spin(newModel, 90);
         }
         else if (random == 1) {
@@ -211,7 +211,7 @@ void ServerGame::assignSpawnItem() {
     
     // location 1
     glm::mat4 originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(145, 1, -25));
+    moveGlobal(originalLoc, glm::vec3(200, 1, -25));
     spin(originalLoc, 90);
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[0] = originalLoc;
@@ -242,7 +242,7 @@ void ServerGame::assignSpawnItem() {
     moveGlobal(originalLoc, glm::vec3(95, 1, -55));
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[4] = originalLoc;
-
+    //random = 0;
     flagInitLoc = oldItemPositions[random];
 
 
