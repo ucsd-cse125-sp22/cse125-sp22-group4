@@ -448,7 +448,7 @@ bool Client::initializeClient() {
     scene = new SceneLoader("../../objects/new_maze_collision/scene.txt");
     sceneObjects = scene->load("../../objects/new_maze_collision/");
 
-    mazescene = new Model("../../objects/new_maze_collision/maze_ver2@10x.obj");
+    mazescene = new Model("../../objects/new_maze_collision/new_maze.obj");
 
     //initialize particle system
     smokeparticles = new ParticleSystem(particleShader, "../../particles/smoke.png", smoke);
