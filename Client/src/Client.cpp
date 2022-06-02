@@ -1115,7 +1115,7 @@ void Client::miniMapGUI() {
     ImGui::Begin("MiniMap GUI", NULL, flags);
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
     
-    if (players[0]) { //&& my_id == playerSelection[CAT]) {
+    if (players[0] && my_id == CAT) { //&& my_id == playerSelection[CAT]) {
         displayLocation(players[0]->getModel(), 0);
     }
     if (players[1]) {
@@ -1131,15 +1131,15 @@ void Client::miniMapGUI() {
     }
 
     
-    if (item && (my_id != playerSelection[CAT] || catSeesItem)) {
+    if (item && (my_id != CAT || catSeesItem)) {
         displayLocation(item->getModel(), 4);
     }
 
-    if (item2 && (my_id != playerSelection[CAT] || catSeesItem)) {
+    if (item2 && (my_id != CAT || catSeesItem)) {
         displayLocation(item2->getModel(), 5);
     }
 
-    if (item3 && (my_id != playerSelection[CAT] || catSeesItem)) {
+    if (item3 && (my_id != CAT || catSeesItem)) {
         displayLocation(item3->getModel(), 6);
     }
 
@@ -1179,9 +1179,9 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded == 1 || my_id != playerSelection[CAT]) // don't display on game over or if cat
+    if (gameEnded == 1 || my_id != CAT) { // don't display on game over or if cat
         return;
- 
+    }
     ImGuiWindowFlags flags = 0;
 
     flags |= ImGuiWindowFlags_NoTitleBar;
@@ -1197,13 +1197,13 @@ void Client::stationaryItemGUI() {
         pairs2 = 0;
     }
    
-    if (timeLeftStationaryItem > 0 && holdIdStationary[my_id] && pairs1 != -1) { // for computer stationary item
+    if (timeLeftStationaryItem > 0 && holdIdStationary[my_id]) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
         displayCards(1);
         //ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
         ImGui::End();
     }
-    else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id] && pairs2 != -1) { // for books stationary item
+    else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id]) { // for books stationary item
         ImGui::Begin("StationaryItem2 GUI", NULL, flags);
         displayCards(2);
         //ImGui::Image((void*)(intptr_t)image_texture_fireplace, ImVec2(window_width, window_height));
