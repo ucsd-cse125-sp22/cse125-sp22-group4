@@ -1164,6 +1164,12 @@ void Client::stationaryItemGUI() {
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(24.0f /  255, 68.0f / 255, 62.0f / 255, 1.0f));
+
+    if (player && player->getModel()[3][1] > 10) {
+        pairs1 = 0;
+        pairs2 = 0;
+    }
+       
    
     if (timeLeftStationaryItem > 0 && holdIdStationary[my_id] && pairs1 != -1) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
