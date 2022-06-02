@@ -467,12 +467,12 @@ void ServerGame::spawnFinalDestination() {
     srand((unsigned)time(&t));
     int random = rand() % 4;
     printf("spawn final dest %d\n", random);
-    //oldFinalDestinations[0] = glm::translate(glm::mat4(1), glm::vec3(95, 0, -35)); // fallenstar
-    //oldFinalDestinations[1] = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75)); // geisel
-    //oldFinalDestinations[2] = glm::translate(glm::mat4(1), glm::vec3(55, -3, -135)); // bearl
-    //oldFinalDestinations[3] = glm::translate(glm::mat4(1), glm::vec3(105, -1, -135)); // sungod
+    oldFinalDestinations[0] = glm::translate(glm::mat4(1), glm::vec3(220, 0, -220)); // fallenstar
+    oldFinalDestinations[1] = glm::translate(glm::mat4(1), glm::vec3(-220, 0, -220)); // raccoon
+    oldFinalDestinations[2] = glm::translate(glm::mat4(1), glm::vec3(220, 0, 220)); // bearl
+    oldFinalDestinations[3] = glm::translate(glm::mat4(1), glm::vec3(-220, 0, 220)); // sungod
 
-    //destModel = oldFinalDestinations[random];
+    destModel = oldFinalDestinations[random];
     finalDestLoc = random;
 }
 
@@ -480,18 +480,18 @@ bool ServerGame::isAtFinalDest(int hitId) {
 
     switch (finalDestLoc) {
     case 0: // fallen star
-        if (hitId == 308)
+        if (hitId == 307)
             return true;
         break;
     case 1:
         if (hitId == 311) // racoon
             return true;
         break;
-    case 2:
+    case 2: // bearl
         if (hitId == 340 || hitId == 341)
             return true;
         break;
-    case 3:
+    case 3: // sungod
         if (hitId == 309 || hitId == 328)
             return true;
         break;

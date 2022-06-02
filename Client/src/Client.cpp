@@ -1197,13 +1197,13 @@ void Client::stationaryItemGUI() {
         pairs2 = 0;
     }
    
-    if (timeLeftStationaryItem > 0 && holdIdStationary[my_id]) { // for computer stationary item
+    if (timeLeftStationaryItem > 0 && holdIdStationary[my_id] && pairs1 == -1) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
         displayCards(1);
         //ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
         ImGui::End();
     }
-    else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id]) { // for books stationary item
+    else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id] && pairs2 == -1) { // for books stationary item
         ImGui::Begin("StationaryItem2 GUI", NULL, flags);
         displayCards(2);
         //ImGui::Image((void*)(intptr_t)image_texture_fireplace, ImVec2(window_width, window_height));
