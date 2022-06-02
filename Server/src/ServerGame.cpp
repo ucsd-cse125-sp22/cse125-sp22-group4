@@ -213,35 +213,35 @@ void ServerGame::assignSpawnItem() {
     
     // location 1
     glm::mat4 originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(200, 1, -25));
+    moveGlobal(originalLoc, glm::vec3(-127.5, 1, -202.5));
     spin(originalLoc, 90);
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[0] = originalLoc;
 
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(125, 1, -145));
+    moveGlobal(originalLoc, glm::vec3(-217.5, 1, -157.5));
     spin(originalLoc, 180);
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[1] = originalLoc;
 
     // location 3
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(15, 1, -35));
+    moveGlobal(originalLoc, glm::vec3(157.5, 1, -97.5));
     spin(originalLoc, 90);
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[2] = originalLoc;
 
     // location 4
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(5, 1, -145));
+    moveGlobal(originalLoc, glm::vec3(-67.5, 1, -67.5));
     spin(originalLoc, 90);
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[3] = originalLoc;
 
     //location 5
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(95, 1, -55));
+    moveGlobal(originalLoc, glm::vec3(67.5, 1, 217.5));
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[4] = originalLoc;
     //random = 0;
