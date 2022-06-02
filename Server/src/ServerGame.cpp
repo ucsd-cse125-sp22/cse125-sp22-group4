@@ -315,7 +315,7 @@ void ServerGame::assignSpawnItem3() {
     oldItem3Positions[0] = originalLoc;
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(7.5, 1, -112.5));
+    moveGlobal(originalLoc, glm::vec3(-112.5, 1, 7.5));
     scale(originalLoc, glm::vec3(5));
     spin(originalLoc, 90);
     oldItem3Positions[1] = originalLoc;
@@ -446,9 +446,6 @@ void ServerGame::start() {
         stationaryId = collision_detector->insert(stationary->getOBB());
         stationary2Id = collision_detector->insert(stationary2->getOBB());
 
-        // TODO: Fix OBB of goal
-        OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
-        goalId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
 
         for (auto& wall : sceneObjects) {
             wallOBBs.push_back(collision_detector->insert(wall->getOBB()));
@@ -470,16 +467,41 @@ void ServerGame::spawnFinalDestination() {
     srand((unsigned)time(&t));
     int random = rand() % 4;
     printf("spawn final dest %d\n", random);
-    oldFinalDestinations[0] = glm::translate(glm::mat4(1), glm::vec3(95, 0, -35)); // fallenstar
-    oldFinalDestinations[1] = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75)); // geisel
-    oldFinalDestinations[2] = glm::translate(glm::mat4(1), glm::vec3(55, -3, -135)); // bearl
-    oldFinalDestinations[3] = glm::translate(glm::mat4(1), glm::vec3(105, -1, -135)); // sungod
+    //oldFinalDestinations[0] = glm::translate(glm::mat4(1), glm::vec3(95, 0, -35)); // fallenstar
+    //oldFinalDestinations[1] = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75)); // geisel
+    //oldFinalDestinations[2] = glm::translate(glm::mat4(1), glm::vec3(55, -3, -135)); // bearl
+    //oldFinalDestinations[3] = glm::translate(glm::mat4(1), glm::vec3(105, -1, -135)); // sungod
 
-    destModel = oldFinalDestinations[random];
+    //destModel = oldFinalDestinations[random];
     finalDestLoc = random;
 }
 
+bool ServerGame::isAtFinalDest(int hitId) {
+
+    switch (finalDestLoc) {
+    case 0: // fallen star
+        if (hitId == 308)
+            return true;
+        break;
+    case 1:
+        if (hitId == 311) // racoon
+            return true;
+        break;
+    case 2:
+        if (hitId == 340 || hitId == 341)
+            return true;
+        break;
+    case 3:
+        if (hitId == 309 || hitId == 328)
+            return true;
+        break;
+
+    }
+    return false;
+}
+
 void ServerGame::respawnFinalDest() {
+    // this is broken!!!! must be fixed if going to be used
     time_t t;
     srand((unsigned)time(&t));
     int random = finalDestLoc;
@@ -492,16 +514,16 @@ void ServerGame::respawnFinalDest() {
     // TODO: adjust OBB accordingly
     switch (random) {
     case 0: // fallenstar
-        destModel = oldFinalDestinations[0];
+        //destModel = oldFinalDestinations[0];
         break;
     case 1: // geisel
-        destModel = oldFinalDestinations[1];
+        //destModel = oldFinalDestinations[1];
         break;
     case 2: // bearl
-        destModel = oldFinalDestinations[2];
+        //destModel = oldFinalDestinations[2];
         break;
     case 3: // sungod
-        destModel = oldFinalDestinations[3];
+        //destModel = oldFinalDestinations[3];
         break;
     }
      
@@ -546,7 +568,7 @@ void ServerGame::collisionStep() {
                 stationary2->interact(i, true);
                 in_stationary2 = true;
             }
-            else if (hitId == goalId) { // item 1 is carried here
+            else if (isAtFinalDest(hitId)) { // item 1 is carried here
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
                 player_states[i].model = oldModels[i];
                 //printf("flag %d i %d\n", flag->item_state.hold, i);
@@ -705,7 +727,7 @@ void ServerGame::update()
        
         checkStationaryObjectives();
         checkCooldownOver();
-        checkFinalDestRotates();
+        //checkFinalDestRotates();
         replicateGameState();
 
         for (int i = 0; i < PLAYER_NUM; i++) {
