@@ -97,7 +97,7 @@ ServerGame::ServerGame() :
     scene = new SceneLoader("../../objects/new_maze_collision/scene.txt");
     sceneObjects = scene->fakeLoad("../../objects/new_maze_collision/");
 
-    spdlog::info("finished loading sceneObjects");
+    spdlog::info("finished loading sceneObjects, count: {}", sceneObjects.size());
 }
 
 void ServerGame::assignSpawn(int client_id) {
@@ -556,7 +556,7 @@ void ServerGame::collisionStep() {
                     finalDestTime = -1;
                 }
             }
-            else if (hitId > 0 && i > 0 ) {
+            else if (hitId > 0 && i > 0 && hitId < PLAYER_NUM) {
                 printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i + 1, hitId + 1);
                 player_states[i].model = oldModels[i];
             }

@@ -1,6 +1,5 @@
-# Blender v3.1.2 OBJ File: 'maze_ver2_obb@10x.blend'
+# Blender v3.1.2 OBJ File: 'new_maze_obb.blend'
 # www.blender.org
-mtllib wall_obb.240.mtl
 o wall_obb.240_Mesh.245
 v -165.752167 4.508093 215.404968
 v -162.350891 4.508093 215.404968
@@ -27,6 +26,5 @@ vt 367.817627 75.467972
 vt 368.522339 75.467972
 vt 369.227722 75.467972
 vn 0.0000 1.0000 -0.0000
-usemtl Material.012
 s off
 f 8/1/1 7/2/1 5/3/1 1/4/1 2/5/1 3/6/1 4/7/1 6/8/1 12/9/1 11/10/1 10/11/1 9/12/1
