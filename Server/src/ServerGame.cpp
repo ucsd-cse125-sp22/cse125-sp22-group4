@@ -220,7 +220,7 @@ void ServerGame::assignSpawnItem() {
 
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(-217.5, 1, -157.5));
+    moveGlobal(originalLoc, glm::vec3(-142.5, 1, -127.5));
     spin(originalLoc, 180);
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[1] = originalLoc;
@@ -264,31 +264,31 @@ void ServerGame::assignSpawnItem2() {
 
     // location 1
     glm::mat4 originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(-67.5, 1, 157.5));
+    moveGlobal(originalLoc, glm::vec3(-67.5, 2, 157.5));
     scale(originalLoc, glm::vec3(5));
     //spin(originalLoc, 90);
     oldItem2Positions[0] = originalLoc;
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(-187.5, 1, 142.5));
+    moveGlobal(originalLoc, glm::vec3(-187.5, 2, 142.5));
     scale(originalLoc, glm::vec3(5));
     //spin(originalLoc, 180);
     oldItem2Positions[1] = originalLoc;
     // location 3
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(172.5, 1, -217.5));
+    moveGlobal(originalLoc, glm::vec3(172.5, 2, -217.5));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem2Positions[2] = originalLoc;
     // location 4
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(67.5, 1, 67.5));
-    spin(originalLoc, 90);
+    moveGlobal(originalLoc, glm::vec3(67.5, 2, 67.5));
+    spin(originalLoc, 180);
     scale(originalLoc, glm::vec3(5));
     oldItem2Positions[3] = originalLoc;
     //location 5
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(157.5, 1, 112.5));
+    moveGlobal(originalLoc, glm::vec3(157.5, 2, 112.5));
     scale(originalLoc, glm::vec3(5));
     oldItem2Positions[4] = originalLoc;
 
@@ -309,31 +309,31 @@ void ServerGame::assignSpawnItem3() {
 
     // location 1
     glm::mat4 originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(5, 0, -5));
+    moveGlobal(originalLoc, glm::vec3(-142.5, 1, 127.5));
     scale(originalLoc, glm::vec3(5));
     spin(originalLoc, 90);
     oldItem3Positions[0] = originalLoc;
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(15, 0, -55));
+    moveGlobal(originalLoc, glm::vec3(7.5, 1, -112.5));
     scale(originalLoc, glm::vec3(5));
     spin(originalLoc, 90);
     oldItem3Positions[1] = originalLoc;
     // location 3
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(95, 0, -95));
+    moveGlobal(originalLoc, glm::vec3(37.5, 1, -202.5));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[2] = originalLoc;
     // location 4
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(105, 0, -125));
+    moveGlobal(originalLoc, glm::vec3(187.5, 1, -67.5));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[3] = originalLoc;
     //location 5
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(135, 0, -95));
+    moveGlobal(originalLoc, glm::vec3(127.5, 1, 157.5));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[4] = originalLoc;
