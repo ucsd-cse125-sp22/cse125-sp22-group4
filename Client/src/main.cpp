@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    //ImGuiIO& io = ImGui::GetIO(); (void)io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -89,6 +89,25 @@ int main(int argc, char** argv) {
 
     Client::setupGLSettings();
     Client::setupCallbacks(window);
+
+    Client::loadGUIFonts();
+
+    
+    //////////////////////load gui//////////////////////
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    Client::LoadingGUI(); 
+
+    ImGui::Render();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+    glfwSwapBuffers(window);
+    //////////////////////load gui//////////////////////
+    
 
     if (!Client::initializeClient()) {
         spdlog::error("Client initialization failed!");
@@ -126,9 +145,9 @@ int main(int argc, char** argv) {
         ImGui::NewFrame();
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        if (show_demo_window) {
-            ImGui::ShowDemoWindow(&show_demo_window);
-        }
+        //if (show_demo_window) {
+        //    ImGui::ShowDemoWindow(&show_demo_window);
+        //}
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         //{

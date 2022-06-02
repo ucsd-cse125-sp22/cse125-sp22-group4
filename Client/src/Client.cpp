@@ -377,6 +377,15 @@ bool Client::LoadTextureFromFile(const char* filename, GLuint* out_texture, int*
     return true;
 }
 
+void Client::loadGUIFonts() {
+    ImGuiIO& io = ImGui::GetIO();
+    plainFont = io.Fonts->AddFontDefault();
+    cuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 32.0f);
+    BIGcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 34.0f);
+    HUGEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 52.0f);
+    MASSIVEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 70.0f);
+}
+
 /**
  * Initialize shader program
  *
@@ -385,8 +394,6 @@ bool Client::LoadTextureFromFile(const char* filename, GLuint* out_texture, int*
 bool Client::initializeClient() {
     for (int i = 0; i < PLAYER_NUM; ++i)
         playerSelection[i] = NONE;
-
-
 
     // initialize shader
     shader = Shader::loadShaders("../../shaders/shader.vert", "../../shaders/shader.frag");
@@ -591,13 +598,6 @@ bool Client::initializeClient() {
     players[3] = mouse3;
 
     skybox = new Skybox();
-
-    ImGuiIO& io = ImGui::GetIO();
-    plainFont = io.Fonts->AddFontDefault();
-    cuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 32.0f);
-    BIGcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 34.0f);
-    HUGEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 52.0f);
-    MASSIVEcuteFont = io.Fonts->AddFontFromFileTTF("../../fonts/Gidole/Gidolinya-Regular.otf", 70.0f);
 
     //initialize audio
     audioEngine->LoadBank("Master.bank", FMOD_STUDIO_LOAD_BANK_NORMAL);
@@ -892,7 +892,6 @@ void Client::timeGUI() {
     //printf(" % d image height %d image width\n", my_image_height, my_image_width);
     
     ImGui::Begin("Time GUI", NULL, flags);
-
     if (gameEnded)
         currTime = finalTime;
 
@@ -919,6 +918,38 @@ void Client::timeGUI() {
     ImGui::SetCursorPosY((my_image_width * adjustment)/2);
     ImGui::SetCursorPosX((my_image_height * adjustment) / 2 + 28);
     ImGui::Text("%d:%02d", minute, seconds);
+    ImGui::PopFont();
+    ImGui::PopStyleColor();
+
+    ImGui::End();
+}
+
+void Client::LoadingGUI() {
+    ImGuiWindowFlags flags = 0;
+
+    flags |= ImGuiWindowFlags_NoBackground;
+    flags |= ImGuiWindowFlags_NoTitleBar;
+    flags |= ImGuiWindowFlags_NoScrollbar;
+    flags |= ImGuiWindowFlags_NoResize;
+
+    int w;
+    int h;
+    GLuint loading;
+    int retLoad = LoadTextureFromFile("../../objects/ImGui/loading.png", &loading, &w, &h);
+
+
+    ImGui::SetNextWindowSize(ImVec2(w, h));
+    ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
+
+    ImGui::Begin("Load GUI", NULL, flags);
+
+    ImGui::Image((void*)(intptr_t)loading, ImVec2(w, h));
+
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0, 0.5f, 1.0f, 1.0f));
+    ImGui::PushFont(HUGEcuteFont);
+    ImGui::SetCursorPosY((w) / 2);
+    ImGui::SetCursorPosX((h) / 2);
+    ImGui::Text("%d:%d", w, h);
     ImGui::PopFont();
     ImGui::PopStyleColor();
 

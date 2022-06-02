@@ -44,6 +44,9 @@ namespace Client {
     void GameStartGUI();
     void finalDestGUI();
     void stationaryItemGUI();
+    void LoadingGUI();
+
+    void loadGUIFonts();
 
     void updatePlayerSelection(std::array<int, PLAYER_NUM> selection);
     void playerSelectGUI();
