@@ -63,6 +63,7 @@ public:
     void respawnItem3();
     void respawnPlayer(int client_id);
     void spawnFinalDestination();
+    bool isAtFinalDest(int hitId);
     void respawnFinalDest();
     void start();
     void handleMovePacket(int client_id, MovePacket* s);

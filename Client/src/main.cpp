@@ -163,7 +163,7 @@ int main(int argc, char** argv) {
         Client::timeGUI();
         Client::ItemHoldGUI();
         Client::miniMapGUI();
-        Client::finalDestGUI();
+        //Client::finalDestGUI();
         Client::stationaryItemGUI();
         Client::playerSelectGUI();
         Client::GameStartGUI();

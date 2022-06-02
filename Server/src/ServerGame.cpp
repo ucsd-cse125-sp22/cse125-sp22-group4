@@ -55,7 +55,7 @@ ServerGame::ServerGame() :
 
     // inaccessible player location for dead mice
     banished = glm::mat4(1);
-    moveGlobal(banished, glm::vec3(75, 20, -75));
+    moveGlobal(banished, glm::vec3(0, 20, 0));
 
     // TODO: Should not be hard coded like this.
     player_states[0].modelType = PlayerModelTypes::Cat;
@@ -220,7 +220,7 @@ void ServerGame::assignSpawnItem() {
 
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(-217.5, 1, -157.5));
+    moveGlobal(originalLoc, glm::vec3(-142.5, 1, -127.5));
     spin(originalLoc, 180);
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[1] = originalLoc;
@@ -241,7 +241,7 @@ void ServerGame::assignSpawnItem() {
 
     //location 5
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(67.5, 1, 217.5));
+    moveGlobal(originalLoc, glm::vec3(217.5, 1, 67.5));
     originalLoc = originalLoc * glm::scale(glm::vec3(0.2f));
     oldItemPositions[4] = originalLoc;
     //random = 0;
@@ -264,31 +264,31 @@ void ServerGame::assignSpawnItem2() {
 
     // location 1
     glm::mat4 originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(-67.5, 1, 157.5));
+    moveGlobal(originalLoc, glm::vec3(-67.5, 2, 157.5));
     scale(originalLoc, glm::vec3(5));
     //spin(originalLoc, 90);
     oldItem2Positions[0] = originalLoc;
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(-187.5, 1, 142.5));
+    moveGlobal(originalLoc, glm::vec3(-187.5, 2, 142.5));
     scale(originalLoc, glm::vec3(5));
     //spin(originalLoc, 180);
     oldItem2Positions[1] = originalLoc;
     // location 3
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(172.5, 1, -217.5));
+    moveGlobal(originalLoc, glm::vec3(172.5, 2, -217.5));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem2Positions[2] = originalLoc;
     // location 4
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(67.5, 1, 67.5));
-    spin(originalLoc, 90);
+    moveGlobal(originalLoc, glm::vec3(67.5, 2, 67.5));
+    spin(originalLoc, 180);
     scale(originalLoc, glm::vec3(5));
     oldItem2Positions[3] = originalLoc;
     //location 5
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(157.5, 1, 112.5));
+    moveGlobal(originalLoc, glm::vec3(157.5, 2, 112.5));
     scale(originalLoc, glm::vec3(5));
     oldItem2Positions[4] = originalLoc;
 
@@ -309,31 +309,31 @@ void ServerGame::assignSpawnItem3() {
 
     // location 1
     glm::mat4 originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(5, 0, -5));
+    moveGlobal(originalLoc, glm::vec3(-142.5, 1, 127.5));
     scale(originalLoc, glm::vec3(5));
     spin(originalLoc, 90);
     oldItem3Positions[0] = originalLoc;
     // location 2
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(15, 0, -55));
+    moveGlobal(originalLoc, glm::vec3(-112.5, 1, 7.5));
     scale(originalLoc, glm::vec3(5));
     spin(originalLoc, 90);
     oldItem3Positions[1] = originalLoc;
     // location 3
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(95, 0, -95));
+    moveGlobal(originalLoc, glm::vec3(37.5, 1, -202.5));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[2] = originalLoc;
     // location 4
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(105, 0, -125));
+    moveGlobal(originalLoc, glm::vec3(187.5, 1, -67.5));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[3] = originalLoc;
     //location 5
     originalLoc = glm::mat4(1);
-    moveGlobal(originalLoc, glm::vec3(135, 0, -95));
+    moveGlobal(originalLoc, glm::vec3(127.5, 1, 157.5));
     spin(originalLoc, 90);
     scale(originalLoc, glm::vec3(5));
     oldItem3Positions[4] = originalLoc;
@@ -446,9 +446,6 @@ void ServerGame::start() {
         stationaryId = collision_detector->insert(stationary->getOBB());
         stationary2Id = collision_detector->insert(stationary2->getOBB());
 
-        // TODO: Fix OBB of goal
-        OBB bearOBB = FakeModel("../../objects/bunny/bunny.obj").getOBB();
-        goalId = collision_detector->insert(CollisionDetector::computeOBB(bearOBB, destModel));
 
         for (auto& wall : sceneObjects) {
             wallOBBs.push_back(collision_detector->insert(wall->getOBB()));
@@ -470,16 +467,41 @@ void ServerGame::spawnFinalDestination() {
     srand((unsigned)time(&t));
     int random = rand() % 4;
     printf("spawn final dest %d\n", random);
-    oldFinalDestinations[0] = glm::translate(glm::mat4(1), glm::vec3(95, 0, -35)); // fallenstar
-    oldFinalDestinations[1] = glm::translate(glm::mat4(1), glm::vec3(75, -3, -75)); // geisel
-    oldFinalDestinations[2] = glm::translate(glm::mat4(1), glm::vec3(55, -3, -135)); // bearl
-    oldFinalDestinations[3] = glm::translate(glm::mat4(1), glm::vec3(105, -1, -135)); // sungod
+    oldFinalDestinations[0] = glm::translate(glm::mat4(1), glm::vec3(220, 0, -220)); // fallenstar
+    oldFinalDestinations[1] = glm::translate(glm::mat4(1), glm::vec3(-220, 0, -220)); // raccoon
+    oldFinalDestinations[2] = glm::translate(glm::mat4(1), glm::vec3(220, 0, 220)); // bearl
+    oldFinalDestinations[3] = glm::translate(glm::mat4(1), glm::vec3(-220, 0, 220)); // sungod
 
     destModel = oldFinalDestinations[random];
     finalDestLoc = random;
 }
 
+bool ServerGame::isAtFinalDest(int hitId) {
+
+    switch (finalDestLoc) {
+    case 0: // fallen star
+        if (hitId == 307)
+            return true;
+        break;
+    case 1:
+        if (hitId == 310) // racoon
+            return true;
+        break;
+    case 2: // bearl
+        if (hitId == 339 || hitId == 340)
+            return true;
+        break;
+    case 3: // sungod
+        if (hitId == 308 || hitId == 327)
+            return true;
+        break;
+
+    }
+    return false;
+}
+
 void ServerGame::respawnFinalDest() {
+    // this is broken!!!! must be fixed if going to be used
     time_t t;
     srand((unsigned)time(&t));
     int random = finalDestLoc;
@@ -492,16 +514,16 @@ void ServerGame::respawnFinalDest() {
     // TODO: adjust OBB accordingly
     switch (random) {
     case 0: // fallenstar
-        destModel = oldFinalDestinations[0];
+        //destModel = oldFinalDestinations[0];
         break;
     case 1: // geisel
-        destModel = oldFinalDestinations[1];
+        //destModel = oldFinalDestinations[1];
         break;
     case 2: // bearl
-        destModel = oldFinalDestinations[2];
+        //destModel = oldFinalDestinations[2];
         break;
     case 3: // sungod
-        destModel = oldFinalDestinations[3];
+        //destModel = oldFinalDestinations[3];
         break;
     }
      
@@ -546,7 +568,7 @@ void ServerGame::collisionStep() {
                 stationary2->interact(i, true);
                 in_stationary2 = true;
             }
-            else if (hitId == goalId) { // item 1 is carried here
+            else if (isAtFinalDest(hitId)) { // item 1 is carried here
                 printf("[ServerGame::collisionStep] Player %d hit bear!\n", i + 1);
                 player_states[i].model = oldModels[i];
                 //printf("flag %d i %d\n", flag->item_state.hold, i);
@@ -679,23 +701,23 @@ void ServerGame::update()
         playTime = test.count();
 
         // check to rotate stationary items
-        if (playTime == 60 && !firstTimer) {
-            firstTimer = true;
-            respawnItem();
-            // make sure player isn't at stationary
-            if (stationary->getProgress() == 0.0) 
-                respawnItem2();
-            if (stationary2->getProgress() == 0.0)
-                respawnItem3();
-        }
-        else if (playTime == 120 && !secondTimer) {
-            secondTimer = true;
-            respawnItem();
-            if (stationary->getProgress() == 0.0)
-                respawnItem2();
-            if (stationary2->getProgress() == 0.0)
-                respawnItem3();
-        }
+        //if (playTime == 60 && !firstTimer) {
+        //    firstTimer = true;
+        //    respawnItem();
+        //    // make sure player isn't at stationary
+        //    if (stationary->getProgress() == 0.0) 
+        //        respawnItem2();
+        //    if (stationary2->getProgress() == 0.0)
+        //        respawnItem3();
+        //}
+        //else if (playTime == 120 && !secondTimer) {
+        //    secondTimer = true;
+        //    respawnItem();
+        //    if (stationary->getProgress() == 0.0)
+        //        respawnItem2();
+        //    if (stationary2->getProgress() == 0.0)
+        //        respawnItem3();
+        //}
 
         // TODO: round length is fixed as 180 on client.
         if (this->roundLengthSec - playTime <= 0 && gameAlive) {
@@ -705,7 +727,7 @@ void ServerGame::update()
        
         checkStationaryObjectives();
         checkCooldownOver();
-        checkFinalDestRotates();
+        //checkFinalDestRotates();
         replicateGameState();
 
         for (int i = 0; i < PLAYER_NUM; i++) {
