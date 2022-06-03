@@ -1292,9 +1292,7 @@ void Client::miniMapGUI() {
     for (int i = 0; i < PLAYER_NUM; i++) {
         // If cat, see myself
         if (my_id == playerSelection[CAT]) {
-            printf("Hey i'm supposed to be the cat D:\n");
             if (i == my_id) {
-                printf("render cat\n");
                 displayLocation(players[i]->getModel(), CAT);
             } else {
                 displayLocation(players[i]->getModel(), M1);
