@@ -1446,6 +1446,8 @@ void Client::restore() {
         playerSelection[i] = NONE;
 
     displayStart = 1;
+    pair1 = 0;
+    pair2 = 0;
     gameStarted = 0;
     gameEnded = 0;
     catWon = 0;
