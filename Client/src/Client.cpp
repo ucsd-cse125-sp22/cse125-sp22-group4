@@ -218,6 +218,7 @@ static bool gameStarted = 0;
 static bool displayStart = 1;
 static bool gameStartPressed = 0;
 static bool displayStartPressed = 0;
+static bool inMiniGame = false;
 
 static bool playerSelect = true;
 static bool playerSelected = false;
@@ -274,7 +275,9 @@ static double prevYPos;
 static int select = 0;
 // 1 for ACTUAL GAME
 static bool pause = false;
+static bool cursorNormal = false;
 static bool showMouse = false;
+static bool disableMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[2] = { "new maze", "Maze"};
@@ -697,7 +700,20 @@ void Client::displayCallback() {
         //   drawOBB(wall->getOBB(), currCam->viewProjMat, shader, false);
         //}
 
-        if (movingState[0] == true) {
+        int cat_id = playerSelection[CAT];
+        int m1_id = playerSelection[M1];
+        int m2_id = playerSelection[M2];
+        int m3_id = playerSelection[M3];
+
+        if (!playerSelected) {
+            m1_id = 1;
+            m2_id = 2;
+            m3_id = 3;
+        }
+
+        int ids[3] = { m1_id, m2_id, m3_id };
+
+        if (movingState[cat_id] == true) {
             calcFinalBoneMatrix(catwalkinganimator);
         }
         else {
@@ -705,7 +721,7 @@ void Client::displayCallback() {
         }
         cat->draw(currCam->viewProjMat, identityMat, shader);
 
-        if (movingState[1] == true) {
+        if (movingState[m1_id] == true) {
             calcFinalBoneMatrix(mousewalkinganimator1);
         }
         else {
@@ -713,7 +729,7 @@ void Client::displayCallback() {
         }
         mouse1->draw(currCam->viewProjMat, identityMat, shader);
 
-        if (movingState[2] == true) {
+        if (movingState[m2_id] == true) {
             calcFinalBoneMatrix(mousewalkinganimator2);
         }
         else {
@@ -721,7 +737,7 @@ void Client::displayCallback() {
         }
         mouse2->draw(currCam->viewProjMat, identityMat, shader);
 
-        if (movingState[3] == true) {
+        if (movingState[m3_id] == true) {
             calcFinalBoneMatrix(mousewalkinganimator3);
         }
         else {
@@ -1026,7 +1042,7 @@ void Client::timeGUI() {
     int minute = (time % 3600) / 60;  // Minute component
     int seconds = time % 60;          // Second component 
 
-    if (!hasPlayedTimer && minute == 0 && gameStarted) {
+    if (!hasPlayedTimer && minute == 1) {
         audioEngine->PlayEvent("event:/panic");
         hasPlayedTimer = true;
     }
@@ -1353,16 +1369,19 @@ void Client::stationaryItemGUI() {
         pairs1 = 0;
         pairs2 = 0;
         resetCardArray();
+        inMiniGame = false;
     }
    
     if (timeLeftStationaryItem > 0 && holdIdStationary[my_id] && pairs1 != -1) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
+        inMiniGame = true;
         displayCards(1);
         //ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
         ImGui::End();
     }
     else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id] && pairs2 != -1) { // for books stationary item
         ImGui::Begin("StationaryItem2 GUI", NULL, flags);
+        inMiniGame = true;
         displayCards(2);
         //ImGui::Image((void*)(intptr_t)image_texture_fireplace, ImVec2(window_width, window_height));
         ImGui::End();
@@ -1583,6 +1602,7 @@ void Client::restore() {
     pairs1 = 0;
     pairs2 = 0;
     resetCardArray();
+    disableMouse = false;
     gameStarted = 0;
     gameEnded = 0;
     catWon = 0;
@@ -2078,6 +2098,7 @@ void Client::resetPair2() {
 void Client::resetCardArray() {
     for (int i = 0; i < 6; i++)
         cardsSelected[i] = false;
+    inMiniGame = false;
     possiblePair = -1;
     cards.clear();
     random_shuffle(cardChoices.begin(), cardChoices.end());
@@ -2273,6 +2294,18 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
             prevYPos = yPos;
         }
     }
+
+    if (!disableMouse) {
+        if (inMiniGame || !gameStarted) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            cursorNormal = true;
+        }
+        else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            cursorNormal = false;
+        }
+    }
+
 }
 
 /**
@@ -2360,12 +2393,16 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_F:
-            showMouse = !showMouse;
-            if (showMouse) {
+            //showMouse = !showMouse;
+            disableMouse = true;
+            
+            if (cursorNormal) {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                cursorNormal = false;
             }
             else {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                cursorNormal = true;
             }
             break;
 
