@@ -218,6 +218,7 @@ static bool gameStarted = 0;
 static bool displayStart = 1;
 static bool gameStartPressed = 0;
 static bool displayStartPressed = 0;
+static bool inMiniGame = false;
 
 static bool playerSelect = true;
 static bool playerSelected = false;
@@ -274,7 +275,9 @@ static double prevYPos;
 static int select = 0;
 // 1 for ACTUAL GAME
 static bool pause = false;
+static bool cursorNormal = false;
 static bool showMouse = false;
+static bool disableMouse = false;
 static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[2] = { "new maze", "Maze"};
@@ -1015,6 +1018,9 @@ void TextYCentered(std::string text) {
 }
 
 void Client::timeGUI() {
+    if (!gameStarted)
+        return;
+
     ImGuiWindowFlags flags = 0;
    
     flags |= ImGuiWindowFlags_NoBackground;
@@ -1036,7 +1042,7 @@ void Client::timeGUI() {
     int minute = (time % 3600) / 60;  // Minute component
     int seconds = time % 60;          // Second component 
 
-    if (!hasPlayedTimer && minute == 0 && gameStarted) {
+    if (!hasPlayedTimer && minute == 1) {
         audioEngine->PlayEvent("event:/panic");
         hasPlayedTimer = true;
     }
@@ -1169,6 +1175,9 @@ void Client::audioUpdate() {
 }
 
 void Client::ItemHoldGUI() {
+    if (!gameStarted)
+        return;
+
     double adjustment = 0.28;
     
     ImGuiWindowFlags flags = 0;
@@ -1362,7 +1371,7 @@ void Client::finalDestGUI() {
 
 void Client::stationaryItemGUI() {
     //if (gameEnded == 1 || my_id == CAT) { // don't display on game over or if cat
-    if (gameEnded || my_id == playerSelection[CAT]) {
+    if (!gameStarted || gameEnded || my_id == playerSelection[CAT]) {
         return;
     }
     ImGuiWindowFlags flags = 0;
@@ -1379,16 +1388,19 @@ void Client::stationaryItemGUI() {
         pairs1 = 0;
         pairs2 = 0;
         resetCardArray();
+        inMiniGame = false;
     }
    
     if (timeLeftStationaryItem > 0 && holdIdStationary[my_id] && pairs1 != -1) { // for computer stationary item
         ImGui::Begin("StationaryItem GUI", NULL, flags);
+        inMiniGame = true;
         displayCards(1);
         //ImGui::Image((void*)(intptr_t)image_texture_zeroes_ones, ImVec2(window_width, window_height));
         ImGui::End();
     }
     else if (timeLeftStationaryItem2 > 0 && holdIdStationary2[my_id] && pairs2 != -1) { // for books stationary item
         ImGui::Begin("StationaryItem2 GUI", NULL, flags);
+        inMiniGame = true;
         displayCards(2);
         //ImGui::Image((void*)(intptr_t)image_texture_fireplace, ImVec2(window_width, window_height));
         ImGui::End();
@@ -1609,6 +1621,7 @@ void Client::restore() {
     pairs1 = 0;
     pairs2 = 0;
     resetCardArray();
+    disableMouse = false;
     gameStarted = 0;
     gameEnded = 0;
     catWon = 0;
@@ -1665,13 +1678,17 @@ void Client::playerSelectGUI() {
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
+
     ImGui::Begin("PlayerSelect GUI", NULL, flags);
     ImGui::SetCursorPosY(10);
     ImGui::PushFont(MASSIVEcuteFont);
     TextCentered("Select a Player");
     ImGui::PopFont();
-    //ImGui::Image((void*)(intptr_t)image_texture_background, ImVec2(window_width, window_height));
+    ImGui::Image((void*)(intptr_t)image_texture_background, ImVec2(window_width, window_height));
     float catLoc = (window_width - image_width_cat_icon * adjust_cat * width_resize) / 5 - 100;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
     
@@ -1689,7 +1706,7 @@ void Client::playerSelectGUI() {
         if (catSelected == my_id) {
             // Player has cat selected.
             ImGui::PushID("cat icon");
-            if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), selectedRgba)) {
                 // Player is deselecting!
                 playerSelected = true;
                 playerTypeSent = false;
@@ -1721,7 +1738,7 @@ void Client::playerSelectGUI() {
             icon = image_texture_cat_hover_icon;
 
         ImGui::PushID("cat icon");
-        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1))) {
             if (playerType != NONE) {
                 return;
             }
@@ -1745,7 +1762,7 @@ void Client::playerSelectGUI() {
         if (mouse1Selected == my_id) {
             // Player has cat selected.
             ImGui::PushID("mouse 1");
-            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), selectedRgba)) {
                 // Player is deselecting!
                 playerSelected = true;
                 playerTypeSent = false;
@@ -1778,7 +1795,7 @@ void Client::playerSelectGUI() {
             icon = image_texture_mouse_hover_icon;
 
         ImGui::PushID("mouse 1");
-        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1))) {
             if (playerType != NONE) {
                 return;
             }
@@ -1801,7 +1818,7 @@ void Client::playerSelectGUI() {
         if (mouse2Selected == my_id) {
             // Player has cat selected.
             ImGui::PushID("mouse 2");
-            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), selectedRgba)) {
                 // Player is deselecting!
                 playerSelected = true;
                 playerTypeSent = false;
@@ -1834,7 +1851,7 @@ void Client::playerSelectGUI() {
             icon = image_texture_mouse_hover_icon;
 
         ImGui::PushID("mouse 1");
-        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1))) {
             if (playerType != NONE) {
                 return;
             }
@@ -1859,7 +1876,7 @@ void Client::playerSelectGUI() {
         if (mouse3Selected == my_id) {
             // Player has cat selected.
             ImGui::PushID("mouse 3");
-            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), selectedRgba)) {
                 // Player is deselecting!
                 playerSelected = true;
                 playerTypeSent = false;
@@ -1892,7 +1909,7 @@ void Client::playerSelectGUI() {
             icon = image_texture_mouse_hover_icon;
 
         ImGui::PushID("mouse 3");
-        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1))) {
             if (playerType != NONE) {
                 return;
             }
@@ -1908,6 +1925,7 @@ void Client::playerSelectGUI() {
 
     
     ImGui::PopStyleColor();
+    ImGui::PopStyleColor(3);
     ImGui::End();
 }
 
@@ -2099,6 +2117,7 @@ void Client::resetPair2() {
 void Client::resetCardArray() {
     for (int i = 0; i < 6; i++)
         cardsSelected[i] = false;
+    inMiniGame = false;
     possiblePair = -1;
     cards.clear();
     random_shuffle(cardChoices.begin(), cardChoices.end());
@@ -2294,6 +2313,18 @@ static void cursorCallback(GLFWwindow* window, double xPos, double yPos) {
             prevYPos = yPos;
         }
     }
+
+    if (!disableMouse) {
+        if (inMiniGame || !gameStarted) {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            cursorNormal = true;
+        }
+        else {
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            cursorNormal = false;
+        }
+    }
+
 }
 
 /**
@@ -2381,12 +2412,16 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
 
         case GLFW_KEY_F:
-            showMouse = !showMouse;
-            if (showMouse) {
+            //showMouse = !showMouse;
+            disableMouse = true;
+            
+            if (cursorNormal) {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                cursorNormal = false;
             }
             else {
                 glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                cursorNormal = true;
             }
             break;
 
