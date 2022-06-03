@@ -1364,6 +1364,7 @@ void Client::stationaryItemGUI() {
     if (player && player->getModel()[3][1] > 10) {
         pairs1 = 0;
         pairs2 = 0;
+        resetCardArray();
     }
    
     if (timeLeftStationaryItem > 0 && holdIdStationary[my_id] && pairs1 != -1) { // for computer stationary item
