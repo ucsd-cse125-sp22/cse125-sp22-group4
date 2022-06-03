@@ -148,7 +148,6 @@ void ServerGame::respawnPlayer(int client_id) {
 
     srand((unsigned)time(&t));
     int random = rand() % 3;
-    random = 0;
 
     switch (client_id) {
     case 1:
@@ -161,7 +160,7 @@ void ServerGame::respawnPlayer(int client_id) {
             spin(newModel, 90);
         }
         else {
-            moveGlobal(newModel, glm::vec3(115, 0, -45));
+            moveGlobal(newModel, glm::vec3(82.5f, 0, -52.5f));
             spin(newModel, 90);
         }
         break;
@@ -173,11 +172,11 @@ void ServerGame::respawnPlayer(int client_id) {
             
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(142.5, 0, 202.5));
+            moveGlobal(newModel, glm::vec3(142.5f, 0, 202.5f));
             spin(newModel, 180);
         }
         else {
-            moveGlobal(newModel, glm::vec3(55, 0, -15));
+            moveGlobal(newModel, glm::vec3(-112.5f, 0, -82.5f));
             spin(newModel, 180);
         }
         break;
@@ -188,11 +187,11 @@ void ServerGame::respawnPlayer(int client_id) {
             spin(state.model, 270);
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(-97.5, 0, -137.5));
+            moveGlobal(newModel, glm::vec3(-97.5f, 0, -137.5f));
             spin(state.model, 270);
         }
         else {
-            moveGlobal(newModel, glm::vec3(145, 0, -105));
+            moveGlobal(newModel, glm::vec3(-127.5f, 0, 67.5f));
             spin(state.model, 270);
         }
         break;
