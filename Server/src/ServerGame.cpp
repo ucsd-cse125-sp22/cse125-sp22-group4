@@ -184,7 +184,7 @@ void ServerGame::respawnPlayer(int client_id) {
         
     case 3:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(23.16f, 0, 186.4f));
+            moveGlobal(newModel, glm::vec3(23.16f, 0, 185.0f));
             spin(state.model, 270);
         }
         else if (random == 1) {
