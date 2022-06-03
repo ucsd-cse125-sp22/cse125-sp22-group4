@@ -219,7 +219,7 @@ static bool displayStart = 1;
 static bool gameStartPressed = 0;
 static bool displayStartPressed = 0;
 
-static bool playerSelect = true;
+static bool playerSelect = false;
 static bool playerSelected = false;
 static int playerType = NONE;
 
