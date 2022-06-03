@@ -47,7 +47,7 @@ class StationaryObjective {
 public:
 	virtual OBB getOBB() = 0;
 	virtual float getProgress() = 0;
-	virtual bool checkAward() = 0;
+	virtual bool complete() = 0;
 	virtual void interact(int client_id, bool on) = 0;
 	void setPosition(glm::mat4 pos) {
 		model = pos;
@@ -73,7 +73,7 @@ public:
 	SitAndHoldObjective(float s) : StationaryObjective(false, false), seconds(s) {};
 	OBB getOBB() override;
 	float getProgress() override;
-	bool checkAward() override;
+	bool complete() override;
 	void interact(int client_id, bool on) override;
 	std::unordered_set<int> players_in_zone;
 

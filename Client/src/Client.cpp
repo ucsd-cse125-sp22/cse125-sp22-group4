@@ -1287,7 +1287,7 @@ void Client::finalDestGUI() {
 void Client::stationaryItemGUI() {
     if (gameEnded == 1 || my_id == CAT) { // don't display on game over or if cat
         return;
-    }
+
     ImGuiWindowFlags flags = 0;
 
     flags |= ImGuiWindowFlags_NoTitleBar;
@@ -1529,6 +1529,8 @@ void Client::restore() {
         playerSelection[i] = NONE;
 
     displayStart = 1;
+    pairs1 = 0;
+    pairs2 = 0;
     gameStarted = 0;
     gameEnded = 0;
     catWon = 0;

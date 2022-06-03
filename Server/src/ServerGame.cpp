@@ -148,51 +148,50 @@ void ServerGame::respawnPlayer(int client_id) {
 
     srand((unsigned)time(&t));
     int random = rand() % 3;
-    random = 0;
 
     switch (client_id) {
     case 1:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(188.3f, 0, 5.83f));
+            moveGlobal(newModel, glm::vec3(-187.0f, 0, -3.3f));
             spin(newModel, 90);
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(-37.88f, 0, -175.0f));
+            moveGlobal(newModel, glm::vec3(-217.5f, 0, -112.5f));
             spin(newModel, 90);
         }
         else {
-            moveGlobal(newModel, glm::vec3(115, 0, -45));
+            moveGlobal(newModel, glm::vec3(82.5f, 0, -52.5f));
             spin(newModel, 90);
         }
         break;
 
     case 2:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(-37.88f, 0, -175.0f));
+            moveGlobal(newModel, glm::vec3(23.16f, 0, 186.4f));
             spin(newModel, 180);
             
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(115, -3, -85));
+            moveGlobal(newModel, glm::vec3(142.5f, 0, 202.5f));
             spin(newModel, 180);
         }
         else {
-            moveGlobal(newModel, glm::vec3(55, -3, -15));
+            moveGlobal(newModel, glm::vec3(-112.5f, 0, -82.5f));
             spin(newModel, 180);
         }
         break;
         
     case 3:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(23.16f, 0, 185.0f));
+            moveGlobal(newModel, glm::vec3(-37.88f, 0, -175.0f));
             spin(state.model, 270);
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(85, -3, -105));
+            moveGlobal(newModel, glm::vec3(-97.5f, 0, -137.5f));
             spin(state.model, 270);
         }
         else {
-            moveGlobal(newModel, glm::vec3(145, -3, -105));
+            moveGlobal(newModel, glm::vec3(-127.5f, 0, 67.5f));
             spin(state.model, 270);
         }
         break;
@@ -643,24 +642,24 @@ void ServerGame::checkStationaryObjectives() {
     if (pair1 == 3) {
         moveGlobal(stationary->model, glm::vec3(0, 100, 0));
         printf("Stationary: Completed!\n");
-        stationary->checkAward();
+        stationary->complete();
         pair1 = -1;
         ++points;
     }
     if (pair2 == 3) {
         moveGlobal(stationary2->model, glm::vec3(0, 100, 0));
         printf("Stationary2: Completed!\n");
-        stationary->checkAward();
+        stationary2->complete();
         pair2 = -1;
         ++points;
     }
- /*   if (stationary->checkAward()) {
+ /*   if (stationary->complete()) {
         moveGlobal(stationary->model, glm::vec3(0, 100, 0));
         printf("Stationary: Completed!\n");
         ++points;
         
     }
-    if (stationary2->checkAward()) {
+    if (stationary2->complete()) {
         moveGlobal(stationary2->model, glm::vec3(0, 100, 0));
         printf("Stationary2: Completed!\n");
         ++points;
@@ -841,6 +840,7 @@ void ServerGame::replicateGameState() {
     packet.item3_state.model = stationary2->model;
     packet.item3_state.timeLeftHolding = stationary2->getProgress();
     packet.item3_state.taskSuccess = stationary2->taskSuccess;
+    //printf("task2 %d\n", stationary2->taskSuccess);
     for (int i = 0; i < 4; i++)
         packet.item3_state.holdId[i] = stationary2->holdId[i];
     // ==========================
