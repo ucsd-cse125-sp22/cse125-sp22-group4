@@ -551,18 +551,21 @@ bool Client::initializeClient() {
     catwalkinganimator = new Animator(catwalkingAnimation);
 
     mouse1 = new Model("../../objects/mouse/mouse_idle.fbx");
+    mouse1->moveGlobal(glm::vec3(80, 0, -5));
     mouseidleAnimation1 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse1);
     mouseanimator1 = new Animator(mouseidleAnimation1);
     mousewalkingAnimation1 = new Animation("../../objects/mouse/mouse_walk/mouse_walking.fbx", mouse1);
     mousewalkinganimator1 = new Animator(mousewalkingAnimation1);
 
     mouse2 = new Model("../../objects/mouse/mouse_idle.fbx");
+    mouse2->moveGlobal(glm::vec3(70, 0, -5));
     mouseidleAnimation2 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse2);
     mouseanimator2 = new Animator(mouseidleAnimation2);
     mousewalkingAnimation2 = new Animation("../../objects/mouse/mouse_walk/mouse_walking.fbx", mouse2);
     mousewalkinganimator2 = new Animator(mousewalkingAnimation2);
 
     mouse3 = new Model("../../objects/mouse/mouse_idle.fbx");
+    mouse3->moveGlobal(glm::vec3(60, 0, -5));
     mouseidleAnimation3 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse3);
     mouseanimator3 = new Animator(mouseidleAnimation3);
     mousewalkingAnimation3 = new Animation("../../objects/mouse/mouse_walk/mouse_walking.fbx", mouse3);
