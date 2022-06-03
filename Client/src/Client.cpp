@@ -219,7 +219,7 @@ static bool displayStart = 1;
 static bool gameStartPressed = 0;
 static bool displayStartPressed = 0;
 
-static bool playerSelect = false;
+static bool playerSelect = true;
 static bool playerSelected = false;
 static int playerType = NONE;
 
@@ -1684,7 +1684,7 @@ void Client::playerSelectGUI() {
             ImGui::PushFont(cuteFont);
             ImGui::PushStyleColor(ImGuiCol_Text, selectedTextColor);
             ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
-            ImGui::Text("-->[P%d]<--", catSelected);
+            //ImGui::Text("-->[P%d]<--", catSelected);
             ImGui::PopStyleColor();
             ImGui::PopFont();
             ImGui::PopID();
@@ -1697,13 +1697,13 @@ void Client::playerSelectGUI() {
             // TODO: Make font pop out more
             ImGui::PushFont(cuteFont);
             ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
-            ImGui::Text("[P%d]", catSelected);
+            //ImGui::Text("[P%d]", catSelected);
             ImGui::PopFont();
         }
     } else {
         // No one has selected cat
         GLuint icon = image_texture_cat_icon; 
-        if (catHover)
+        if (!catHover)
             icon = image_texture_cat_hover_icon;
 
         ImGui::PushID("cat icon");
@@ -1740,7 +1740,7 @@ void Client::playerSelectGUI() {
             ImGui::PushFont(cuteFont);
             ImGui::PushStyleColor(ImGuiCol_Text, selectedTextColor);
             ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-            ImGui::Text("-->[P%d]<--", mouse1Selected);
+            //ImGui::Text("-->[P%d]<--", mouse1Selected);
             ImGui::PopStyleColor();
             ImGui::PopFont();
             ImGui::PopID();
@@ -1753,14 +1753,14 @@ void Client::playerSelectGUI() {
             // TODO: Make font pop out more
             ImGui::PushFont(cuteFont);
             ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-            ImGui::Text("[P%d]", mouse1Selected);
+            //ImGui::Text("[P%d]", mouse1Selected);
             ImGui::PopFont();
         }
     }
     else {
         // No one has selected cat
         GLuint icon = image_texture_mouse_icon;
-        if (mouse1Hover)
+        if (!mouse1Hover)
             icon = image_texture_mouse_hover_icon;
 
         ImGui::PushID("mouse 1");
@@ -1796,7 +1796,7 @@ void Client::playerSelectGUI() {
             ImGui::PushFont(cuteFont);
             ImGui::PushStyleColor(ImGuiCol_Text, selectedTextColor);
             ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-            ImGui::Text("-->[P%d]<--", mouse2Selected);
+            //ImGui::Text("-->[P%d]<--", mouse2Selected);
             ImGui::PopStyleColor();
             ImGui::PopFont();
             ImGui::PopID();
@@ -1809,14 +1809,14 @@ void Client::playerSelectGUI() {
             // TODO: Make font pop out more
             ImGui::PushFont(cuteFont);
             ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-            ImGui::Text("[P%d]", mouse2Selected);
+            //ImGui::Text("[P%d]", mouse2Selected);
             ImGui::PopFont();
         }
     }
     else {
         // No one has selected cat
         GLuint icon = image_texture_mouse_icon;
-        if (mouse2Hover)
+        if (!mouse2Hover)
             icon = image_texture_mouse_hover_icon;
 
         ImGui::PushID("mouse 1");
@@ -1854,7 +1854,7 @@ void Client::playerSelectGUI() {
             ImGui::PushFont(cuteFont);
             ImGui::PushStyleColor(ImGuiCol_Text, selectedTextColor);
             ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-            ImGui::Text("-->[P%d]<--", mouse3Selected);
+            //ImGui::Text("-->[P%d]<--", mouse3Selected);
             ImGui::PopStyleColor();
             ImGui::PopFont();
             ImGui::PopID();
@@ -1867,14 +1867,14 @@ void Client::playerSelectGUI() {
             // TODO: Make font pop out more
             ImGui::PushFont(cuteFont);
             ImGui::SetCursorPos(ImVec2(mouseLocX, mouseLocY));
-            ImGui::Text("[P%d]", mouse3Selected);
+            //ImGui::Text("[P%d]", mouse3Selected);
             ImGui::PopFont();
         }
     }
     else {
         // No one has selected cat
         GLuint icon = image_texture_mouse_icon;
-        if (mouse3Hover)
+        if (!mouse3Hover)
             icon = image_texture_mouse_hover_icon;
 
         ImGui::PushID("mouse 3");
