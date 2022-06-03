@@ -219,7 +219,7 @@ static bool displayStart = 1;
 static bool gameStartPressed = 0;
 static bool displayStartPressed = 0;
 
-static bool playerSelect = false;
+static bool playerSelect = true;
 static bool playerSelected = false;
 static int playerType = NONE;
 
@@ -1002,6 +1002,9 @@ void TextYCentered(std::string text) {
 }
 
 void Client::timeGUI() {
+    if (!gameStarted)
+        return;
+
     ImGuiWindowFlags flags = 0;
    
     flags |= ImGuiWindowFlags_NoBackground;
@@ -1156,6 +1159,9 @@ void Client::audioUpdate() {
 }
 
 void Client::ItemHoldGUI() {
+    if (!gameStarted)
+        return;
+
     double adjustment = 0.28;
     
     ImGuiWindowFlags flags = 0;
@@ -1349,7 +1355,7 @@ void Client::finalDestGUI() {
 
 void Client::stationaryItemGUI() {
     //if (gameEnded == 1 || my_id == CAT) { // don't display on game over or if cat
-    if (gameEnded || my_id == playerSelection[CAT]) {
+    if (!gameStarted || gameEnded || my_id == playerSelection[CAT]) {
         return;
     }
     ImGuiWindowFlags flags = 0;
@@ -1652,13 +1658,17 @@ void Client::playerSelectGUI() {
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
+    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 0.f, 0.f, 0.f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.f, 0.f, 0.f, 0.f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 0.f, 0.f));
+
     ImGui::Begin("PlayerSelect GUI", NULL, flags);
     ImGui::SetCursorPosY(10);
     ImGui::PushFont(MASSIVEcuteFont);
     TextCentered("Select a Player");
     ImGui::PopFont();
-    //ImGui::Image((void*)(intptr_t)image_texture_background, ImVec2(window_width, window_height));
+    ImGui::Image((void*)(intptr_t)image_texture_background, ImVec2(window_width, window_height));
     float catLoc = (window_width - image_width_cat_icon * adjust_cat * width_resize) / 5 - 100;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2 + 100));
     
@@ -1676,7 +1686,7 @@ void Client::playerSelectGUI() {
         if (catSelected == my_id) {
             // Player has cat selected.
             ImGui::PushID("cat icon");
-            if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_cat_icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), selectedRgba)) {
                 // Player is deselecting!
                 playerSelected = true;
                 playerTypeSent = false;
@@ -1708,7 +1718,7 @@ void Client::playerSelectGUI() {
             icon = image_texture_cat_hover_icon;
 
         ImGui::PushID("cat icon");
-        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_cat_icon * adjust_cat * width_resize, image_height_cat_icon * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1))) {
             if (playerType != NONE) {
                 return;
             }
@@ -1732,7 +1742,7 @@ void Client::playerSelectGUI() {
         if (mouse1Selected == my_id) {
             // Player has cat selected.
             ImGui::PushID("mouse 1");
-            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), selectedRgba)) {
                 // Player is deselecting!
                 playerSelected = true;
                 playerTypeSent = false;
@@ -1765,7 +1775,7 @@ void Client::playerSelectGUI() {
             icon = image_texture_mouse_hover_icon;
 
         ImGui::PushID("mouse 1");
-        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1))) {
             if (playerType != NONE) {
                 return;
             }
@@ -1788,7 +1798,7 @@ void Client::playerSelectGUI() {
         if (mouse2Selected == my_id) {
             // Player has cat selected.
             ImGui::PushID("mouse 2");
-            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), selectedRgba)) {
                 // Player is deselecting!
                 playerSelected = true;
                 playerTypeSent = false;
@@ -1821,7 +1831,7 @@ void Client::playerSelectGUI() {
             icon = image_texture_mouse_hover_icon;
 
         ImGui::PushID("mouse 1");
-        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1))) {
             if (playerType != NONE) {
                 return;
             }
@@ -1846,7 +1856,7 @@ void Client::playerSelectGUI() {
         if (mouse3Selected == my_id) {
             // Player has cat selected.
             ImGui::PushID("mouse 3");
-            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), selectedRgba)) {
+            if (ImGui::ImageButton((void*)(intptr_t)image_texture_mouse_icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), selectedRgba)) {
                 // Player is deselecting!
                 playerSelected = true;
                 playerTypeSent = false;
@@ -1879,7 +1889,7 @@ void Client::playerSelectGUI() {
             icon = image_texture_mouse_hover_icon;
 
         ImGui::PushID("mouse 3");
-        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1), ImVec4(1, 1, 1, 1))) {
+        if (ImGui::ImageButton((void*)(intptr_t)icon, ImVec2(image_width_mouse_icon * adjust_mouse * width_resize, image_height_mouse_icon * adjust_mouse * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1))) {
             if (playerType != NONE) {
                 return;
             }
@@ -1895,6 +1905,7 @@ void Client::playerSelectGUI() {
 
     
     ImGui::PopStyleColor();
+    ImGui::PopStyleColor(3);
     ImGui::End();
 }
 
