@@ -96,7 +96,7 @@ void ClientGame::sendPairCount(int pair1, int pair2) {
     SimplePacket packet;
     packet.packet_type = PAIR_COUNT;
     packet.data = (char)pair1;
-    packet.data = (char)pair2;
+    packet.data2 = (char)pair2;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
     NetworkServices::sendMessage(network->ConnectSocket, packet_bytes, packet_size);

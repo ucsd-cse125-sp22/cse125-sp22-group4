@@ -86,7 +86,7 @@ float SitAndHoldObjective::getProgress() {
 
 bool SitAndHoldObjective::complete() {
 	// If objective is disabled or not being worked on, disable
-	if (disabled || !toggled) return false;
+	//if (disabled || !toggled) return false;
 
 	disabled = true;
 	taskSuccess = true;

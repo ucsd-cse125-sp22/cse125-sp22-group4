@@ -193,6 +193,7 @@ int main(int argc, char** argv) {
         int pair1 = Client::checkPair1Count();
         int pair2 = Client::checkPair2Count();
         if (pair1 == 3 || pair2 == 3) {
+            printf("task success yay!\n");
             client->sendPairCount(pair1, pair2);
         }
         if (pair1 == 3)

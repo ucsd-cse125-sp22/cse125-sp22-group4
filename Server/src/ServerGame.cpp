@@ -153,11 +153,11 @@ void ServerGame::respawnPlayer(int client_id) {
     switch (client_id) {
     case 1:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(188.3f, 0, 5.83f));
+            moveGlobal(newModel, glm::vec3(-187.0f, 0, -3.3f));
             spin(newModel, 90);
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(-37.88f, 0, -175.0f));
+            moveGlobal(newModel, glm::vec3(-217.5f, 0, -112.5f));
             spin(newModel, 90);
         }
         else {
@@ -168,31 +168,31 @@ void ServerGame::respawnPlayer(int client_id) {
 
     case 2:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(-37.88f, 0, -175.0f));
+            moveGlobal(newModel, glm::vec3(23.16f, 0, 186.4f));
             spin(newModel, 180);
             
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(115, -3, -85));
+            moveGlobal(newModel, glm::vec3(142.5, 0, 202.5));
             spin(newModel, 180);
         }
         else {
-            moveGlobal(newModel, glm::vec3(55, -3, -15));
+            moveGlobal(newModel, glm::vec3(55, 0, -15));
             spin(newModel, 180);
         }
         break;
         
     case 3:
         if (random == 0) {
-            moveGlobal(newModel, glm::vec3(23.16f, 0, 185.0f));
+            moveGlobal(newModel, glm::vec3(-37.88f, 0, -175.0f));
             spin(state.model, 270);
         }
         else if (random == 1) {
-            moveGlobal(newModel, glm::vec3(85, -3, -105));
+            moveGlobal(newModel, glm::vec3(-97.5, 0, -137.5));
             spin(state.model, 270);
         }
         else {
-            moveGlobal(newModel, glm::vec3(145, -3, -105));
+            moveGlobal(newModel, glm::vec3(145, 0, -105));
             spin(state.model, 270);
         }
         break;
@@ -841,6 +841,7 @@ void ServerGame::replicateGameState() {
     packet.item3_state.model = stationary2->model;
     packet.item3_state.timeLeftHolding = stationary2->getProgress();
     packet.item3_state.taskSuccess = stationary2->taskSuccess;
+    //printf("task2 %d\n", stationary2->taskSuccess);
     for (int i = 0; i < 4; i++)
         packet.item3_state.holdId[i] = stationary2->holdId[i];
     // ==========================
