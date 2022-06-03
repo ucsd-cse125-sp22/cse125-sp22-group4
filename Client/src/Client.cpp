@@ -2457,7 +2457,8 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
                 break;
         }
     }
-    keyHeld = keys[0] || keys[1] || keys[2] || keys[3];
+    //keyHeld = keys[0] || keys[1] || keys[2] || keys[3];
+    keyHeld = true;
 }
 
 static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader, bool fill) {

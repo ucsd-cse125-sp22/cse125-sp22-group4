@@ -717,9 +717,9 @@ void ServerGame::update()
         //checkFinalDestRotates();
         replicateGameState();
 
-        for (int i = 0; i < PLAYER_NUM; i++) {
-            player_states[i].moving = false;
-        }
+        //for (int i = 0; i < PLAYER_NUM; i++) {
+        //    player_states[i].moving = false;
+        //}
 
         if (points == pointsToWin && gameAlive) {
             announceGameEnd(MOUSE_WIN);
@@ -1068,9 +1068,9 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     oldModels[client_id] = player_states[client_id].model;
     double playerSpeed = client_id == CAT_ID ? catSpeed : mouseSpeed;
 
-    if (!state.alive || !packet->state.held) {
+    //if (!state.alive || !packet->state.held) {
+    if (!state.alive)
         return;
-    }
     
     glm::vec3 netDirection = glm::vec3(0);
     for (int i = 0; i < 4; ++i) {
@@ -1113,10 +1113,15 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         }
     }
 
-    if (glm::length2(netDirection) < 0.1) {
+
+    if (glm::length2(netDirection) <= 0.1) {
+        //printf("no movement\n");
         state.moving = false;
+        player_states[client_id] = state;
         return;
     }
+
+    printf("We are moving!\n");
 
     state.moving = true;
 
