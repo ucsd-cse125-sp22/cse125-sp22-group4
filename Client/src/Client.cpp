@@ -1303,25 +1303,6 @@ void Client::miniMapGUI() {
             displayLocation(players[i]->getModel(), M1);
     }
     
-    /*
-    //if (players[0] && my_id == CAT) { 
-    if (players[0] && my_id == playerSelection[CAT]) {
-        displayLocation(players[0]->getModel(), 0);
-    }
-
-    if (players[1]) {
-        displayLocation(players[1]->getModel(), 1);
-    }
-
-    if (players[2]) {
-        displayLocation(players[2]->getModel(), 2);
-    }
-
-    if (players[3]) {
-        displayLocation(players[3]->getModel(), 3);
-    }*/
-
-    
     if (item && (my_id != playerSelection[CAT] || catSeesItem)) {
         displayLocation(item->getModel(), 4);
     }
