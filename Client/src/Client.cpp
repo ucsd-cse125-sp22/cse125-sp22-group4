@@ -335,8 +335,8 @@ static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader,
 GLFWwindow* Client::createWindow(int width, int height, std::string windowTitle) {
     glfwWindowHint(GLFW_SAMPLES, 4);
 
-    //GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
-    GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), glfwGetPrimaryMonitor(), NULL);
+    //GLFWwindow* window = glfwCreateWindow(width, height, windowTitle.c_str(), NULL, NULL);
     prevXPos = (double) width / 2;
     prevYPos = (double) height / 2;
     window_height = height;
