@@ -268,6 +268,7 @@ void ServerGame::assignSpawnItem2() {
     //location 5
     originalLoc = glm::mat4(1);
     moveGlobal(originalLoc, glm::vec3(157.5, 2, 112.5));
+    spin(originalLoc, 180);
     scale(originalLoc, glm::vec3(5));
     oldItem2Positions[4] = originalLoc;
 
