@@ -802,51 +802,7 @@ void Client::idleCallback(float dt) {
         itempos = itemModel[3];
         glintparticlesitem3->update(dt, 2, itempos);
 
-        glm::mat4 trailModel = cat->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.3, 0.5));
-        glm::vec3 catpos = trailModel[3];
-        trailModel = mouse1->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
-        glm::vec3 micepos1 = trailModel[3];
-        trailModel = mouse2->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
-        glm::vec3 micepos2 = trailModel[3];
-        trailModel = mouse3->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
-        glm::vec3 micepos3 = trailModel[3];
-
-        if (movingState[0] == true) {
-            cattrailparticles->update(dt, 2, catpos);
-            catwalkinganimator->update(dt);
-        }
-        else {
-            cattrailparticles->update(dt, 0, catpos);
-            catanimator->update(dt);
-        }
-
-        if (movingState[1] == true) {
-            micetrailparticles1->update(dt, 2, micepos1);
-            mousewalkinganimator1->update(3*dt);
-        }
-        else {
-            micetrailparticles1->update(dt, 0, micepos1);
-            mouseanimator1->update(dt);
-        }
-
-        if (movingState[2] == true) {
-            micetrailparticles2->update(dt, 2, micepos2);
-            mousewalkinganimator2->update(3*dt);
-        }
-        else {
-            micetrailparticles2->update(dt, 0, micepos2);
-            mouseanimator2->update(dt);
-        }
-
-        if (movingState[3] == true) {
-            micetrailparticles3->update(dt, 2, micepos3);
-            mousewalkinganimator3->update(3*dt);
-        }
-        else {
-            micetrailparticles3->update(dt, 0, micepos3);
-            mouseanimator3->update(dt);
-        }
-
+        int cat_id = playerSelection[CAT];
         int m1_id = playerSelection[M1];
         int m2_id = playerSelection[M2];
         int m3_id = playerSelection[M3];
@@ -859,6 +815,52 @@ void Client::idleCallback(float dt) {
 
         int ids[3] = { m1_id, m2_id, m3_id };
 
+        glm::mat4 trailModel = cat->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.3, 0.5));
+        glm::vec3 catpos = trailModel[3];
+        trailModel = mouse1->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
+        glm::vec3 micepos1 = trailModel[3];
+        trailModel = mouse2->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
+        glm::vec3 micepos2 = trailModel[3];
+        trailModel = mouse3->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
+        glm::vec3 micepos3 = trailModel[3];
+
+        if (movingState[cat_id] == true) {
+            cattrailparticles->update(dt, 2, catpos);
+            catwalkinganimator->update(dt);
+        }
+        else {
+            cattrailparticles->update(dt, 0, catpos);
+            catanimator->update(dt);
+        }    
+        
+        if (movingState[m1_id] == true) {
+            micetrailparticles1->update(dt, 2, micepos1);
+            mousewalkinganimator1->update(3*dt);
+        }
+        else {
+            micetrailparticles1->update(dt, 0, micepos1);
+            mouseanimator1->update(dt);
+        }
+    
+        if (movingState[m2_id] == true) {
+            micetrailparticles2->update(dt, 2, micepos2);
+            mousewalkinganimator2->update(3*dt);
+        }
+        else {
+            micetrailparticles2->update(dt, 0, micepos2);
+            mouseanimator2->update(dt);
+        }
+
+        if (movingState[m3_id] == true) {
+            micetrailparticles3->update(dt, 2, micepos3);
+            mousewalkinganimator3->update(3*dt);
+        }
+        else {
+            micetrailparticles3->update(dt, 0, micepos3);
+            mouseanimator3->update(dt);
+        }
+
+       
         //blood logic
         if (aliveState[m1_id] == false) {
             startBloodCountdown[m1_id] = 1;
@@ -869,7 +871,6 @@ void Client::idleCallback(float dt) {
         if (aliveState[m3_id] == false) {
             startBloodCountdown[m3_id] = 1;
         }
-
 
 
         //for (int i = 1; i < PLAYER_NUM; i ++) {
