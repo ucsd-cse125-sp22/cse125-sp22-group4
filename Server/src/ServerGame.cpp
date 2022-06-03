@@ -570,20 +570,23 @@ void ServerGame::collisionStep() {
                     finalDestTime = -1;
                 }
             }
-            else if (i == cat_id && hitId > 0 && hitId < PLAYER_NUM) {
+            else if (i == cat_id && hitId < PLAYER_NUM) {
                 printf("[ServerGame::collisionStep] Player %d killed player %d!\ncatId %d", i + 1, hitId + 1, cat_id);
                 mouseDead(hitId);
             }
-            else if (hitId > 0 && i > 0 && hitId < PLAYER_NUM) {
+            else if (hitId < PLAYER_NUM) {
                 printf("[ServerGame::collisionStep] Player %d hit player %d!\ncatId %d", i + 1, hitId + 1, cat_id);
                 player_states[i].model = oldModels[i];
+            }
+            else {
+                printf("player %d hit %d this is cat id %d", i + 1, hitId + 1, cat_id);
             }
 
 
             
             for (int wallnum : wallOBBs) {
                 if (hitId == wallnum) {
-                    player_states[i].model = oldModels[i];
+                    //player_states[i].model = oldModels[i];
                     spdlog::info("player hit wall number: {}", wallnum);
                     break;
                 }
@@ -617,7 +620,7 @@ void ServerGame::mouseDead(int client_id) {
     }
       
     state.alive = false;
-    state.model = banished;
+    //state.model = banished;
     player_states[client_id] = state;
     catViewItem = true;
 
@@ -1121,7 +1124,7 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         return;
     }
 
-    printf("We are moving!\n");
+    //printf("We are moving!\n");
 
     state.moving = true;
 
