@@ -1202,7 +1202,7 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded == 1 || my_id == CAT) { // don't display on game over or if cat
+    if (gameEnded == 1 || my_id == CAT)  // don't display on game over or if cat
         return;
 
     ImGuiWindowFlags flags = 0;
