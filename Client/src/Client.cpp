@@ -11,6 +11,8 @@ static bool hasPlayedMouseCatCollision = false;
 static bool hasPlayedMouse1CatCollision = false;
 static bool hasPlayedMouse2CatCollision = false;
 static bool hasPlayedMouse3CatCollision = false;
+static bool hasPlayedFootstepCat = false;
+
 
 // shader, camera and light
 static GLuint shader;
@@ -1164,18 +1166,28 @@ void Client::audioUpdate() {
     }
 
     if (!hasPlayedTask1 && task1 && my_id != playerSelection[CAT]) {
-        audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play task1 pickup
+        audioEngine->PlayEvent("event:/powerup_1");
         hasPlayedTask1 = true;
     }
 
     if (!hasPlayedStationary1 && stationary1 && my_id != playerSelection[CAT]) {
-        audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play stationary1 pickup
+        audioEngine->PlayEvent("event:/powerup_1");
         hasPlayedStationary1 = true;
     }
 
     if (!hasPlayedStationary2 && stationary2 && my_id != playerSelection[CAT]) {
-        audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play stationary2 pickup
+        audioEngine->PlayEvent("event:/powerup_1");
         hasPlayedStationary2 = true;
+    }
+
+    // Footsteps
+    if (hasPlayedFootstepCat && my_id == playerSelection[CAT] && currTime % 5 != 0) {
+        hasPlayedFootstepCat = false;
+    }
+
+    if (!hasPlayedFootstepCat && my_id == playerSelection[CAT] && currTime % 5 == 0) {
+        audioEngine->PlayEvent("event:/footsteps");
+        hasPlayedFootstepCat = true;
     }
 }
 
