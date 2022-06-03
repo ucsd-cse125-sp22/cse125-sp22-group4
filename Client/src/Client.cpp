@@ -219,7 +219,7 @@ static bool displayStart = 1;
 static bool gameStartPressed = 0;
 static bool displayStartPressed = 0;
 
-static bool playerSelect = false;
+static bool playerSelect = true;
 static bool playerSelected = false;
 static int playerType = NONE;
 
@@ -697,7 +697,20 @@ void Client::displayCallback() {
         //   drawOBB(wall->getOBB(), currCam->viewProjMat, shader, false);
         //}
 
-        if (movingState[0] == true) {
+        int cat_id = playerSelection[CAT];
+        int m1_id = playerSelection[M1];
+        int m2_id = playerSelection[M2];
+        int m3_id = playerSelection[M3];
+
+        if (!playerSelected) {
+            m1_id = 1;
+            m2_id = 2;
+            m3_id = 3;
+        }
+
+        int ids[3] = { m1_id, m2_id, m3_id };
+
+        if (movingState[cat_id] == true) {
             calcFinalBoneMatrix(catwalkinganimator);
         }
         else {
@@ -705,7 +718,7 @@ void Client::displayCallback() {
         }
         cat->draw(currCam->viewProjMat, identityMat, shader);
 
-        if (movingState[1] == true) {
+        if (movingState[m1_id] == true) {
             calcFinalBoneMatrix(mousewalkinganimator1);
         }
         else {
@@ -713,7 +726,7 @@ void Client::displayCallback() {
         }
         mouse1->draw(currCam->viewProjMat, identityMat, shader);
 
-        if (movingState[2] == true) {
+        if (movingState[m2_id] == true) {
             calcFinalBoneMatrix(mousewalkinganimator2);
         }
         else {
@@ -721,7 +734,7 @@ void Client::displayCallback() {
         }
         mouse2->draw(currCam->viewProjMat, identityMat, shader);
 
-        if (movingState[3] == true) {
+        if (movingState[m3_id] == true) {
             calcFinalBoneMatrix(mousewalkinganimator3);
         }
         else {

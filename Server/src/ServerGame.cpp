@@ -397,10 +397,6 @@ void ServerGame::start() {
 
     setupModels();
 
-    // Reset player selections for next run
-    for (int i = 0; i < PLAYER_NUM; ++i)
-        playerSelection[i] = NONE;
-
     // Announce game start
     const unsigned int packet_size = sizeof(SimplePacket);
     SimplePacket packet;
@@ -529,8 +525,12 @@ void ServerGame::collisionStep() {
     collision_detector->update(flag->getOBB(), flagId);
 
     int cat_id = 0;
-    if (playerSelection[CAT] != -1 && playerSelection[CAT] != NONE)
+    if (playerSelection[CAT] != -1 && playerSelection[CAT] != NONE) {
         cat_id = playerSelection[CAT];
+    } else {
+        printf("cat id is not set...\n");
+    }
+
 
     for (int i = 0; i < PLAYER_NUM; ++i) {
         bool in_stationary = false;
@@ -570,14 +570,15 @@ void ServerGame::collisionStep() {
                     finalDestTime = -1;
                 }
             }
-            else if (hitId > 0 && i > 0 && hitId < PLAYER_NUM) {
-                printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i + 1, hitId + 1);
-                player_states[i].model = oldModels[i];
-            }
             else if (i == cat_id && hitId > 0 && hitId < PLAYER_NUM) {
-                printf("[ServerGame::collisionStep] Player %d killed player %d!\n", i + 1, hitId + 1);
+                printf("[ServerGame::collisionStep] Player %d killed player %d!\ncatId %d", i + 1, hitId + 1, cat_id);
                 mouseDead(hitId);
             }
+            else if (hitId > 0 && i > 0 && hitId < PLAYER_NUM) {
+                printf("[ServerGame::collisionStep] Player %d hit player %d!\ncatId %d", i + 1, hitId + 1, cat_id);
+                player_states[i].model = oldModels[i];
+            }
+
 
             
             for (int wallnum : wallOBBs) {
@@ -845,6 +846,11 @@ void ServerGame::replicateGameState() {
 
 // broadcast game end
 void ServerGame::announceGameEnd(bool winner) {
+
+    // Reset player selections for next run
+    for (int i = 0; i < PLAYER_NUM; ++i)
+        playerSelection[i] = NONE;
+
     const unsigned int packet_size = sizeof(SimplePacket);
     SimplePacket packet;
     packet.packet_type = GAME_END;
