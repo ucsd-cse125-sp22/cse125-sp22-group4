@@ -20,6 +20,14 @@ ClientGame::ClientGame(void)
     NetworkServices::sendMessage(network->ConnectSocket, packet_to_bytes(&packet, packet_size), packet_size);
 }
 
+bool ClientGame::checkPlayerSelection() {
+    if (playerSelectionUpdated) {
+        playerSelectionUpdated = false;
+        return true;
+    }
+    return false;
+}
+
 std::array<int, PLAYER_NUM> ClientGame::getPlayerSelection() {
     // Because we can't pass around normal arrays w/o pointers ):
     std::array<int, PLAYER_NUM> selectionArr;
@@ -152,6 +160,10 @@ void ClientGame::handleSimplePacket(SimplePacket s) {
     {
         Client::hideStartScreen();
     }
+    case PLAYER_COUNT:
+    {
+        setNumPlayers((int) s.data);
+    }
     }
 }
 
@@ -218,7 +230,6 @@ void ClientGame::update(MovementState s, RotationState r)
 
                 Client::setMovingState(packet->player_states);
                 Client::setItemHold(packet->item_state.hold, packet->item_state.taskSuccess);
-                setNumPlayers(packet->game.numPlayers);
                 setFinalDest(packet->game.dest, packet->game.finalDestRotateTime);
                 Client::updateItem2Location(packet->item2_state.model);
                 Client::updateItem3Location(packet->item3_state.model);
@@ -241,8 +252,9 @@ void ClientGame::update(MovementState s, RotationState r)
                 memcpy(packet, &network_data[i], sizeof(SelectionPacket));
                 memcpy(playerSelection, packet->player_choices, sizeof(playerSelection));
 
+                playerSelectionUpdated = true;
                 for (int i = 0; i < PLAYER_NUM; ++i) {
-                    printf("this is state[%d]: %d\n", i, playerSelection[i]);
+                    printf("this is playerSelection[%d]: %d\n", i, playerSelection[i]);
                 }
 
                 i += sizeof(SelectionPacket);

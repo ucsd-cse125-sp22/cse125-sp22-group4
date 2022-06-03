@@ -6,7 +6,6 @@
 unsigned int ServerGame::client_id;
 bool ServerGame::game_started;
 
-
 void moveGlobal(glm::mat4& model, const glm::vec3& v) {
     model = glm::translate(glm::mat4(1), v) * model;
 }
@@ -57,49 +56,29 @@ ServerGame::ServerGame() :
     banished = glm::mat4(1);
     moveGlobal(banished, glm::vec3(0, 20, 0));
 
-    // TODO: Should not be hard coded like this.
-    player_states[0].modelType = PlayerModelTypes::Cat;
-    player_states[1].modelType = PlayerModelTypes::Mice;
-    player_states[2].modelType = PlayerModelTypes::Mice;
-    player_states[3].modelType = PlayerModelTypes::Mice;
-
-
-    // Load in fake models
-    for (int i = 0; i < PLAYER_NUM; ++i) {
-        switch (player_states[i].modelType) {
-        case PlayerModelTypes::Teapot:
-        {
-            fakePlayerModels[i] = FakeModel("../../objects/teapot/teapot.obj");
-            break;
-        }
-        case PlayerModelTypes::Dino:
-        {
-            fakePlayerModels[i] = FakeModel("../../objects/tyra/tyra.obj");
-            break;
-        }
-        case PlayerModelTypes::Bunny:
-        {
-            fakePlayerModels[i] = FakeModel("../../objects/bunny/bunny.obj");
-            break;
-        }
-        case PlayerModelTypes::Cat:
-        {
-            fakePlayerModels[i] = FakeModel("../../objects/cat/cat.obj");
-            break;
-        }
-        case PlayerModelTypes::Mice:
-        {
-            fakePlayerModels[i] = FakeModel("../../objects/mouse/mouse.obj");
-            break;
-        }
-        }
-    }
-
     //load maze collision
     scene = new SceneLoader("../../objects/new_maze_collision/scene.txt");
     sceneObjects = scene->fakeLoad("../../objects/new_maze_collision/");
 
     spdlog::info("finished loading sceneObjects, count: {}", sceneObjects.size());
+}
+
+void ServerGame::setupModels() {
+    if (client_id == 1) {
+        fakePlayerModels[0] = FakeModel("../../objects/cat/cat.obj");
+        fakePlayerModels[1] = FakeModel("../../objects/mouse/mouse.obj");
+        fakePlayerModels[2] = FakeModel("../../objects/mouse/mouse.obj");
+        fakePlayerModels[3] = FakeModel("../../objects/mouse/mouse.obj");
+        return;
+    }
+
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        int player_id = playerSelection[i];
+        fakePlayerModels[player_id] = FakeModel("../../objects/mouse/mouse.obj");
+        if (i == CAT) {
+            fakePlayerModels[player_id] = FakeModel("../../objects/cat/cat.obj");
+        }
+    }
 }
 
 void ServerGame::assignSpawn(int client_id) {
@@ -416,6 +395,8 @@ void ServerGame::start() {
     playTime = 0; // Reset play time
     points = 0; // Reset points
 
+    setupModels();
+
     // Reset player selections for next run
     for (int i = 0; i < PLAYER_NUM; ++i)
         playerSelection[i] = NONE;
@@ -547,12 +528,16 @@ void ServerGame::collisionStep() {
     collision_detector->update(stationary2->getOBB(), stationary2Id);
     collision_detector->update(flag->getOBB(), flagId);
 
+    int cat_id = 0;
+    if (playerSelection[CAT] != -1 && playerSelection[CAT] != NONE)
+        cat_id = playerSelection[CAT];
+
     for (int i = 0; i < PLAYER_NUM; ++i) {
         bool in_stationary = false;
         bool in_stationary2 = false;
         for (int hitId : collision_detector->check(i)) {
             if (hitId == flagId) { // item 1
-                if (i == CAT_ID && !player0DevMode) break; // Cat can't hold item!
+                if (i == cat_id && !player0DevMode) break; // Cat can't hold item!
                 flag->item_state.hold = i;
                 if (!flag_taken) {
                     flag_taken = true;
@@ -560,12 +545,12 @@ void ServerGame::collisionStep() {
                 }
             }
             else if (hitId == stationaryId) { // item 2
-                if (i == CAT_ID && !player0DevMode) break; // Cat can't hold objective!
+                if (i == cat_id && !player0DevMode) break; // Cat can't hold objective!
                 stationary->interact(i, true);
                 in_stationary = true;
             }
             else if (hitId == stationary2Id) { // item 3
-                if (i == CAT_ID && !player0DevMode) break; // Cat can't hold objective!
+                if (i == cat_id && !player0DevMode) break; // Cat can't hold objective!
                 stationary2->interact(i, true);
                 in_stationary2 = true;
             }
@@ -589,7 +574,7 @@ void ServerGame::collisionStep() {
                 printf("[ServerGame::collisionStep] Player %d hit player %d!\n", i + 1, hitId + 1);
                 player_states[i].model = oldModels[i];
             }
-            else if (i == 0 && hitId > 0 && hitId < PLAYER_NUM) {
+            else if (i == cat_id && hitId > 0 && hitId < PLAYER_NUM) {
                 printf("[ServerGame::collisionStep] Player %d killed player %d!\n", i + 1, hitId + 1);
                 mouseDead(hitId);
             }
@@ -812,10 +797,10 @@ void ServerGame::checkCooldownOver() {
 }
 
 void ServerGame::updatePlayerCount() {
-    const unsigned int packet_size = sizeof(GameStatePacket);
-    GameStatePacket packet;
-    memcpy(packet.player_states, player_states, sizeof(player_states));
-    packet.game.numPlayers = client_id;
+    const unsigned int packet_size = sizeof(SimplePacket);
+    SimplePacket packet;
+    packet.packet_type = PLAYER_COUNT;
+    packet.data = (char) client_id;
 
     char* packet_bytes = packet_to_bytes(&packet, packet_size);
     network->sendToAll(packet_bytes, packet_size);
@@ -1000,7 +985,21 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
             // Select for player
             if (playerSelection[index] == NONE)
                 playerSelection[index] = client_id;
+
+            for (int i = 0; i < PLAYER_NUM; ++i) {
+                printf("playerSelection[%d]=%d\n", i, playerSelection[i]);
+            }
         }
+
+
+        // Just replicate selection changes.
+        size_t packet_size = sizeof(SelectionPacket);
+        SelectionPacket* selectPacket = (SelectionPacket*)malloc(packet_size);
+        selectPacket->packet_class = SELECTION_PACKET;
+        memcpy(selectPacket->player_choices, playerSelection, sizeof(playerSelection));
+
+        char* packet_bytes = packet_to_bytes(selectPacket, packet_size);
+        network->sendToAll(packet_bytes, packet_size);
 
         bool allSelected = true;
         for (int id : playerSelection) {
@@ -1010,26 +1009,12 @@ void ServerGame::handleSimplePacket(int client_id, SimplePacket* packet) {
             }
         }
 
-        if (allSelected) {
-            printf("All players have selected, game can start!\n");
-            start();
-
-            // Bounce packet to other clients
-            char* packet_bytes = packet_to_bytes(packet, sizeof(SimplePacket));
-            size_t packet_size = sizeof(SimplePacket);
-            network->sendToAll(packet_bytes, packet_size);
+        // Don't start game if not all selected
+        if (!allSelected)
             break;
-        }
 
-
-        // Not everyone has selected, just replicate selection changes.
-        size_t packet_size = sizeof(SelectionPacket);
-        SelectionPacket* selectPacket = (SelectionPacket*) malloc(packet_size);
-        selectPacket->packet_class = SELECTION_PACKET;
-        memcpy(selectPacket->player_choices, playerSelection, sizeof(playerSelection));
-
-        char* packet_bytes = packet_to_bytes(selectPacket, packet_size);
-        network->sendToAll(packet_bytes, packet_size);
+        printf("All players have selected, game can start!\n");
+        start();
         break;
     }
     case HIDE_START:

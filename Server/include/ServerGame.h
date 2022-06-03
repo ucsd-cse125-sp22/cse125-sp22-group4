@@ -65,6 +65,8 @@ public:
     void spawnFinalDestination();
     bool isAtFinalDest(int hitId);
     void respawnFinalDest();
+
+    void setupModels();
     void start();
     void handleMovePacket(int client_id, MovePacket* s);
     void handleSimplePacket(int client_id, SimplePacket* s);
