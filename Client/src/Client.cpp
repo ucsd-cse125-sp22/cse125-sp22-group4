@@ -1018,11 +1018,11 @@ void Client::timeGUI() {
         currTime = finalTime;
 
     // get game countdown time
-    int time = 180 - currTime;
+    int time = currTime;
     int minute = (time % 3600) / 60;  // Minute component
     int seconds = time % 60;          // Second component 
 
-    if (!hasPlayedTimer && minute == 0) {
+    if (!hasPlayedTimer && minute == 0 && gameStarted) {
         audioEngine->PlayEvent("event:/panic");
         hasPlayedTimer = true;
     }
@@ -1260,7 +1260,7 @@ void Client::miniMapGUI() {
     ImGui::Begin("MiniMap GUI", NULL, flags);
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
 
-    printf("%d %d\n", my_id, playerSelection[CAT]);
+    //printf("%d %d\n", my_id, playerSelection[CAT]);
 
 
     //if (catSelected == my_id)
@@ -1388,7 +1388,7 @@ void Client::displayCards(int item) {
    
     //printf("card 1 %d card2 %d\n", cardsSelected[0], cardsSelected[1]);
 
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 4 - image_width_cardback / 2, (window_height - image_height_cardback) / 4 - image_height_cardback/4));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 4 - image_width_cardback / 2, (window_height / 2) - image_height_cardback));
 
     if (!cardsSelected[0] && possiblePair == -1) {
         ImGui::PushID("possible 1");
@@ -1421,7 +1421,7 @@ void Client::displayCards(int item) {
         ImGui::Image((void*)(intptr_t)cards[0], ImVec2(image_width_cardback, image_height_cardback));
     }
    
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 2 - image_width_cardback / 2, (window_height - image_height_cardback) / 4 - image_height_cardback / 4));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 2 - image_width_cardback / 2, (window_height / 2) - image_height_cardback));
 
     if (!cardsSelected[1] && possiblePair == -1) {
         ImGui::PushID("possible 2");
@@ -1455,8 +1455,7 @@ void Client::displayCards(int item) {
         ImGui::Image((void*)(intptr_t)cards[1], ImVec2(image_width_cardback, image_height_cardback));
     }
     
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 3 / 4 - image_width_cardback / 2, (window_height - image_height_cardback) / 4 - image_height_cardback / 4));
-    
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 3 / 4 - image_width_cardback / 2, (window_height / 2) - image_height_cardback));
     if (!cardsSelected[2] && possiblePair == -1) {
         ImGui::PushID("possible 3");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
@@ -1488,7 +1487,7 @@ void Client::displayCards(int item) {
         ImGui::Image((void*)(intptr_t)cards[2], ImVec2(image_width_cardback, image_height_cardback));
     }
     
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 4 - image_width_cardback / 2, (window_height - image_height_cardback) * 3 / 4 + image_height_cardback / 4));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 4 - image_width_cardback / 2, (window_height / 2) + image_height_cardback/2));
     
     if (!cardsSelected[3] && possiblePair == -1) {
         ImGui::PushID("possible 4");
@@ -1521,7 +1520,7 @@ void Client::displayCards(int item) {
         ImGui::Image((void*)(intptr_t)cards[3], ImVec2(image_width_cardback, image_height_cardback));
     }
     
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 2 - image_width_cardback / 2, (window_height - image_height_cardback) * 3 / 4 + image_height_cardback / 4));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 1 / 2 - image_width_cardback / 2, (window_height / 2) + image_height_cardback/2));
     
     if (!cardsSelected[4] && possiblePair == -1) {
         ImGui::PushID("possible 5");
@@ -1554,7 +1553,7 @@ void Client::displayCards(int item) {
         ImGui::Image((void*)(intptr_t)cards[4], ImVec2(image_width_cardback, image_height_cardback));
     }
     
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 3 / 4 - image_width_cardback / 2, (window_height - image_height_cardback) * 3 / 4 + image_height_cardback / 4));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_cardback) * 3 / 4 - image_width_cardback / 2, (window_height / 2) + image_height_cardback/2));
     if (!cardsSelected[5] && possiblePair == -1) {
         ImGui::PushID("possible 6");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {

@@ -830,7 +830,7 @@ void ServerGame::replicateGameState() {
         packet.item3_state.holdId[i] = stationary2->holdId[i];
     // ==========================
 
-    packet.game.gameTime = playTime;
+    packet.game.gameTime = roundLengthSec - playTime;
     packet.game.numPlayers = client_id;
     packet.game.dest = destModel;
     packet.game.finalDestRotateTime = finalDestTime;
