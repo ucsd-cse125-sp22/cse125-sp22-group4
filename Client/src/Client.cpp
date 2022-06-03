@@ -680,9 +680,9 @@ void Client::displayCallback() {
         //scene->draw(currCam->viewProjMat, identityMat, shader, sceneObjects);
         //ground->draw(currCam->viewProjMat, identityMat, shader);
         mazescene->draw(currCam->viewProjMat, identityMat, shader);
-        for (auto& wall : sceneObjects) {
-            drawOBB(wall->getOBB(), currCam->viewProjMat, shader, false);
-        }
+        //for (auto& wall : sceneObjects) {
+        //   drawOBB(wall->getOBB(), currCam->viewProjMat, shader, false);
+        //}
 
         if (movingState[0] == true) {
             calcFinalBoneMatrix(catwalkinganimator);
