@@ -565,7 +565,7 @@ void ServerGame::collisionStep() {
                     // TODO: This respawns the item, we need to take it out of the map!
 					flag->item_state.hold = 5;
                     flag->item_state.taskSuccess = true;
-                    moveGlobal(flag->item_state.model, glm::vec3(0, 100.0f, 0)); // just making it go away..
+                    moveGlobal(flag->item_state.model, glm::vec3(0, -10.0f, 0)); // just making it go away..
                     flag_taken = false;
                     finalDestTime = -1;
                 }
