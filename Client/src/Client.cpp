@@ -219,7 +219,7 @@ static bool displayStart = 1;
 static bool gameStartPressed = 0;
 static bool displayStartPressed = 0;
 
-static bool playerSelect = false;
+static bool playerSelect = true;
 static bool playerSelected = false;
 static int playerType = NONE;
 
@@ -628,10 +628,13 @@ bool Client::initializeClient() {
     }
 
     //hard coded for now
+   
     players[0] = cat;
     players[1] = mouse1;
     players[2] = mouse2;
     players[3] = mouse3;
+   
+
 
     skybox = new Skybox();
 
@@ -648,6 +651,8 @@ bool Client::initializeClient() {
  * Display objects
 **/
 void Client::displayCallback() {
+    if (!gameStarted)
+        return;
 
     Camera* currCam = isThirdPersonCam ? thirdPersonCamera : camera;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -767,6 +772,9 @@ void Client::displayCallback() {
  * Update objects when idle
 **/
 void Client::idleCallback(float dt) {
+    if (!gameStarted)
+        return;
+
     Camera* currCamera = isThirdPersonCam ? thirdPersonCamera : camera;
     currCamera->update();
     mouseMoving = false;
@@ -1176,10 +1184,10 @@ void displayLocation(glm::mat4 model, int id) {
     float icon_size = 11.0f;
     
 
-    if (id == 0) { // display cat
+    if (id == CAT) { // display cat
         ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_cat_icon, ImVec2(locX-icon_size, locZ-icon_size), ImVec2(locX+icon_size, locZ+icon_size), ImVec2(0, 0), ImVec2(1, 1));
     }
-    else if (id < 4) { // display mice
+    else if (id == M1) { // display mice
         ImGui::GetWindowDrawList()->AddImage((void*)(intptr_t)image_texture_mouse_icon, ImVec2(locX - icon_size, locZ - icon_size), ImVec2(locX + icon_size, locZ + icon_size), ImVec2(0, 0), ImVec2(1, 1));
     }
     else {
@@ -1231,10 +1239,33 @@ void Client::miniMapGUI() {
     ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
     ImGui::Begin("MiniMap GUI", NULL, flags);
     ImGui::Image((void*)(intptr_t)image_texture_map, ImVec2(image_width_map * adjustment, image_height_map * adjustment));
+
+    printf("%d %d\n", my_id, playerSelection[CAT]);
+
+
+    //if (catSelected == my_id)
+    for (int i = 0; i < PLAYER_NUM; i++) {
+        // If cat, see myself
+        if (my_id == playerSelection[CAT]) {
+            printf("Hey i'm supposed to be the cat D:\n");
+            if (i == my_id) {
+                printf("render cat\n");
+                displayLocation(players[i]->getModel(), CAT);
+            } else {
+                displayLocation(players[i]->getModel(), M1);
+            }
+            continue;
+        }
+        if (i != playerSelection[CAT])
+            displayLocation(players[i]->getModel(), M1);
+    }
     
-    if (players[0] && my_id == CAT) { //&& my_id == playerSelection[CAT]) {
+    /*
+    //if (players[0] && my_id == CAT) { 
+    if (players[0] && my_id == playerSelection[CAT]) {
         displayLocation(players[0]->getModel(), 0);
     }
+
     if (players[1]) {
         displayLocation(players[1]->getModel(), 1);
     }
@@ -1245,18 +1276,18 @@ void Client::miniMapGUI() {
 
     if (players[3]) {
         displayLocation(players[3]->getModel(), 3);
-    }
+    }*/
 
     
-    if (item && (my_id != CAT || catSeesItem)) {
+    if (item && (my_id != playerSelection[CAT] || catSeesItem)) {
         displayLocation(item->getModel(), 4);
     }
 
-    if (item2 && (my_id != CAT || catSeesItem)) {
+    if (item2 && (my_id != playerSelection[CAT] || catSeesItem)) {
         displayLocation(item2->getModel(), 5);
     }
 
-    if (item3 && (my_id != CAT || catSeesItem)) {
+    if (item3 && (my_id != playerSelection[CAT] || catSeesItem)) {
         displayLocation(item3->getModel(), 6);
     }
 
@@ -1296,9 +1327,10 @@ void Client::finalDestGUI() {
 }
 
 void Client::stationaryItemGUI() {
-    if (gameEnded == 1 || my_id == CAT)  // don't display on game over or if cat
+    //if (gameEnded == 1 || my_id == CAT) { // don't display on game over or if cat
+    if (gameEnded || my_id == playerSelection[CAT]) {
         return;
-
+    }
     ImGuiWindowFlags flags = 0;
 
     flags |= ImGuiWindowFlags_NoTitleBar;
@@ -1547,13 +1579,35 @@ void Client::restore() {
     catWon = 0;
     currTime = 0;
     pause = 0;
+    playerType = NONE;
 }
 
 // Used to pass data from clientGame --> main --> here
 void Client::updatePlayerSelection(std::array<int, PLAYER_NUM> selection)
 {
+    //if (gameStarted)
+    //    return;
+
     for (int i = 0; i < PLAYER_NUM; ++i) {
         playerSelection[i] = selection[i];
+        int playerIndex = playerSelection[i];
+        if (i == CAT) {
+            players[playerIndex] = cat;
+        } else if (i == M1) {
+            players[playerIndex] = mouse1;
+        } else if (i == M2) {
+            players[playerIndex] = mouse2;
+        } else if (i == M3) {
+            players[playerIndex] = mouse3;
+        }
+
+        if (playerIndex == my_id) {
+            player = players[playerIndex];
+            printf("I FOUND MYSELF %d\n", i);
+            if (playerIndex == playerSelection[CAT])
+                printf("IM THE cat\n");
+        }
+            
     }
 }
 
@@ -1963,8 +2017,7 @@ void Client::resetRotUpdate() {
 
 void Client::setPlayerfromID(unsigned int id) {
     my_id = id;
-    player = players[my_id];
-    thirdPersonCamera = new ThirdPersonCamera(player);
+    //player = players[my_id];
 }
 
 void Client::updateItemLocation(glm::mat4 location) {
@@ -2056,9 +2109,21 @@ bool Client::checkHideStartScreen() {
 }
 
 void Client::setGameStart() {
-    for (int i = 0; i < PLAYER_NUM; ++i)
-        playerSelection[i] = NONE;
 
+
+    // Figure out what which player client belongs to 
+    for (int i = 0; i < PLAYER_NUM; ++i) {
+        int playerIndex = playerSelection[i];
+        if (playerIndex == my_id)
+            player = players[playerIndex];
+    }
+
+    // If no player select, just go by id
+    if (!playerSelect)
+        player = players[my_id];
+
+
+    thirdPersonCamera = new ThirdPersonCamera(player);
     displayStart = 0;
     gameStarted = 1;
 }
@@ -2091,6 +2156,10 @@ void Client::setGameOver(int g, int w) {
     gameEnded = g;
     catWon = w;
     finalTime = currTime;
+
+    for (int i = 0; i < PLAYER_NUM; ++i)
+        playerSelection[i] = NONE;
+
     //printf("%d gameOver %d\n", g, w);
 }
 
@@ -2150,7 +2219,8 @@ static void resizeCallback(GLFWwindow* window, int width, int height) {
 #endif
     glViewport(0, 0, width, height);
     camera->aspectRatio = float(width) / float(height);
-    thirdPersonCamera->aspectRatio = float(width) / float(height);
+    if (thirdPersonCamera != NULL)
+        thirdPersonCamera->aspectRatio = float(width) / float(height);
     window_height = height;
     window_width = width;
 }

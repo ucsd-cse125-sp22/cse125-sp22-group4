@@ -24,6 +24,7 @@ enum PacketTypes {
 	GAME_START,
 	GAME_END,
 	HIDE_START,
+	PLAYER_COUNT,
 	PLAYER_SELECT,
 	PAIR_COUNT,
 	/* Keystroke Packet Types */
@@ -39,13 +40,6 @@ enum WIN_STATE {
 	CAT_WIN,
 };
 
-enum PlayerModelTypes {
-	Dino,
-	Teapot,
-	Bunny,
-	Cat,
-	Mice,
-};
 
 
 // For first connections, pinging, etc.

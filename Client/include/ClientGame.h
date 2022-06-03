@@ -27,6 +27,8 @@ public:
     void sendGameStart();
     void sendPlayerSelect(int choice);
     void sendPairCount(int pair1, int pair2);
+
+    bool checkPlayerSelection();
     std::array<int, PLAYER_NUM> getPlayerSelection();
 
     void sendActionPackets(MovementState s);
@@ -59,6 +61,7 @@ private:
 
     std::chrono::steady_clock::time_point time_ended;
 
+    bool playerSelectionUpdated;
     int playerSelection[PLAYER_NUM];
 
     Model** players;

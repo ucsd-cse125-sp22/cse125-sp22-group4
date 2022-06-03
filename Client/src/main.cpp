@@ -182,7 +182,8 @@ int main(int argc, char** argv) {
         }
 
         // Replicate player selection changes to client
-        Client::updatePlayerSelection(client->getPlayerSelection());
+        if (client->checkPlayerSelection())
+            Client::updatePlayerSelection(client->getPlayerSelection());
 
         // Send out-bound network requests for player selection
         int playerChoice = Client::checkPlayerSelect();
