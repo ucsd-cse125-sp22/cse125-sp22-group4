@@ -591,7 +591,9 @@ bool Client::initializeClient() {
     retMouseFlagPale = LoadTextureFromFile("../../objects/ImGui/cheese_paler2.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
     retMap = LoadTextureFromFile("../../objects/ImGui/minimap.png", &image_texture_map, &image_width_map, &image_height_map);
     retGameStart = LoadTextureFromFile("../../objects/ImGui/game_start_maze2.jpg", &image_texture_game_start, &image_width_game_start, &image_height_game_start);
-    retStartCat = LoadTextureFromFile("../../objects/ImGui/gamelogo.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
+    //retStartCat = LoadTextureFromFile("../../objects/ImGui/gamelogo.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
+    retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
+
     retStartMouse = LoadTextureFromFile("../../objects/ImGui/mao_mouse.png", &image_texture_start_mouse, &image_width_start_mouse, &image_height_start_mouse);
     retStartCatuate = LoadTextureFromFile("../../objects/ImGui/catuate2.png", &image_texture_start_catuate, &image_width_start_catuate, &image_height_start_catuate);
     
@@ -615,7 +617,7 @@ bool Client::initializeClient() {
     retCard2 = LoadTextureFromFile("../../objects/ImGui/card2.png", &image_texture_card2, &image_width_card2, &image_height_card2);
     retCard3 = LoadTextureFromFile("../../objects/ImGui/card3.png", &image_texture_card3, &image_width_card3, &image_height_card3);
     retBackground = LoadTextureFromFile("../../objects/ImGui/background.png", &image_texture_background, &image_width_background, &image_height_background);
-    retStartbtn = LoadTextureFromFile("../../objects/ImGui/startbtn.png", &image_texture_startbtn, &image_width_startbtn, &image_height_startbtn);
+    //retStartbtn = LoadTextureFromFile("../../objects/ImGui/startbtn.png", &image_texture_startbtn, &image_width_startbtn, &image_height_startbtn);
 
     random_shuffle(cardChoices.begin(), cardChoices.end());
     for (int i = 0; i < cardChoices.size(); i++) {
@@ -845,18 +847,33 @@ void Client::idleCallback(float dt) {
             mouseanimator3->update(dt);
         }
 
-        //blood logic
-        if (aliveState[1] == false) {
-            startBloodCountdown[1] = 1;
-        }
-        if (aliveState[2] == false) {
-            startBloodCountdown[2] = 1;
-        }
-        if (aliveState[3] == false) {
-            startBloodCountdown[3] = 1;
+        int m1_id = playerSelection[M1];
+        int m2_id = playerSelection[M2];
+        int m3_id = playerSelection[M3];
+
+        if (!playerSelected) {
+            m1_id = 1;
+            m2_id = 2;
+            m3_id = 3;
         }
 
-        for (int i = 1; i < PLAYER_NUM; i ++) {
+        int ids[3] = { m1_id, m2_id, m3_id };
+
+        //blood logic
+        if (aliveState[m1_id] == false) {
+            startBloodCountdown[m1_id] = 1;
+        }
+        if (aliveState[m2_id] == false) {
+            startBloodCountdown[m2_id] = 1;
+        }
+        if (aliveState[m3_id] == false) {
+            startBloodCountdown[m3_id] = 1;
+        }
+
+
+
+        //for (int i = 1; i < PLAYER_NUM; i ++) {
+        for (int i: ids) {
             if (bloodTime[i] <= 0) {
                 bloodTime[i] = 1.0f;
                 startBloodCountdown[i] = false;
@@ -868,33 +885,36 @@ void Client::idleCallback(float dt) {
 
         //printf("i is %d = %f\n", 2, bloodTime[2]);
 
-        if (startBloodCountdown[1] == true) {
-            bloodparticles1->update(dt, 2, deathpos[1]);
+        if (startBloodCountdown[m1_id] == true) {
+            printf("KILL 1!!\n");
+            bloodparticles1->update(dt, 2, deathpos[m1_id]);
         }
         else {
-            bloodparticles1->update(dt, 0, deathpos[1]);
+            bloodparticles1->update(dt, 0, deathpos[m1_id]);
         }
-        if (startBloodCountdown[2] == true) {
-            bloodparticles2->update(dt, 2, deathpos[2]);
-        }
-        else {
-            bloodparticles2->update(dt, 0, deathpos[2]);
-        }
-        if (startBloodCountdown[3] == true) {
-            bloodparticles3->update(dt, 2, deathpos[3]);
+        if (startBloodCountdown[m2_id] == true) {
+            printf("KILL 2!!\n");
+            bloodparticles2->update(dt, 2, deathpos[m2_id]);
         }
         else {
-            bloodparticles3->update(dt, 0, deathpos[3]);
+            bloodparticles2->update(dt, 0, deathpos[m2_id]);
+        }
+        if (startBloodCountdown[m3_id] == true) {
+            printf("KILL 3!!\n");
+            bloodparticles3->update(dt, 2, deathpos[m3_id]);
+        }
+        else {
+            bloodparticles3->update(dt, 0, deathpos[m3_id]);
         }
 
-        if (aliveState[1] == true) {
-            deathpos[1] = micepos1;
+        if (aliveState[m1_id] == true) {
+            deathpos[m1_id] = micepos1;
         }
-        if (aliveState[2] == true) {
-            deathpos[2] = micepos2;
+        if (aliveState[m2_id] == true) {
+            deathpos[m2_id] = micepos2;
         }
-        if (aliveState[3] == true) {
-            deathpos[3] = micepos3;
+        if (aliveState[m3_id] == true) {
+            deathpos[m3_id] = micepos3;
         }
 
         //bloodparticles1->update(dt, 2, micepos1);
@@ -1614,7 +1634,7 @@ void Client::updatePlayerSelection(std::array<int, PLAYER_NUM> selection)
 void Client::playerSelectGUI() {
     
     // If game started, clear this screen
-    if (!playerSelect || gameStarted)
+    if (displayStart || !playerSelect || gameStarted)
         return;
 
     double adjust_cat = 0.6f;
@@ -1623,7 +1643,7 @@ void Client::playerSelectGUI() {
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
-    float height_resize = window_height / static_cast<float>(1017);
+    float height_resize = window_height / static_cast<float>(1080);
     float width_resize = window_width / static_cast<float>(1920);
     //printf("height %d width %d\n", (window_height / 1017), (window_width / 1920));
 
@@ -1877,7 +1897,6 @@ void Client::playerSelectGUI() {
 }
 
 void Client::GameStartGUI() {
-
     if (!displayStart)
         return;
 
@@ -1886,43 +1905,41 @@ void Client::GameStartGUI() {
     double adjust_mouse = 0.4f;
     double adjust_catuate = 2.0f;
     ImGuiWindowFlags flags = 0;
-    float height_resize = window_height / static_cast<float>(1080);
+    float height_resize = window_height / static_cast<float>(1017);
     float width_resize = window_width / static_cast<float>(1920);
-    flags |= ImGuiWindowFlags_NoBackground;
+    //flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
-
     //printf("height %d width %d\n", (window_height / 1017), (window_width / 1920));
 
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.0f, 1.0f));
-    //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
     ImGui::Begin("GameStart GUI", NULL, flags);
-    //ImGui::PopStyleColor();
+    ImGui::PopStyleColor();
     //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1.0, 1.0f, 1.0f, 1.0f));
-    //ImGui::SetCursorPos(ImVec2((window_width-image_width_game_start*adjustment*width_resize)/2,(window_height-image_height_game_start*adjustment*height_resize)/2));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_game_start * adjustment * width_resize) / 2, (window_height - image_height_game_start * adjustment * height_resize) / 2));
     //ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment, image_height_game_start * adjustment));
-    //ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment * width_resize, image_height_game_start * adjustment * height_resize));
-    float catLoc = ((window_width - image_width_game_start * adjustment * width_resize) / 2 - image_width_start_cat * adjust_cat*width_resize) / 2;
-    ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat *height_resize) / 2));
-    
-    ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * width_resize, image_height_start_cat * height_resize));
-    //ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * adjust_cat*width_resize, image_height_start_cat * adjust_cat*height_resize));
-    //float mouseLoc = (window_width - image_width_game_start * adjustment*width_resize) / 2 + ((window_width - image_width_game_start * adjustment*width_resize) / 2 - image_width_start_mouse * adjust_mouse*width_resize) / 2;
-    //ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse*height_resize) / 2 + 20));
-    //ImGui::Image((void*)(intptr_t)image_texture_start_mouse, ImVec2(image_width_start_mouse * adjust_mouse*width_resize, image_height_start_mouse * adjust_mouse*height_resize));
-    //ImGui::SetCursorPos(ImVec2((window_width - image_width_start_catuate* adjust_catuate*width_resize) / 2, 40));
-    //ImGui::Image((void*)(intptr_t)image_texture_start_catuate, ImVec2(image_width_start_catuate*adjust_catuate*width_resize, image_height_start_catuate*adjust_catuate*height_resize));
+    ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment * width_resize, image_height_game_start * adjustment * height_resize));
+    float catLoc = ((window_width - image_width_game_start * adjustment * width_resize) / 2 - image_width_start_cat * adjust_cat * width_resize) / 2;
+    ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat * height_resize) / 2));
+
+    ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * adjust_cat * width_resize, image_height_start_cat * adjust_cat * height_resize));
+    float mouseLoc = (window_width - image_width_game_start * adjustment * width_resize) / 2 + ((window_width - image_width_game_start * adjustment * width_resize) / 2 - image_width_start_mouse * adjust_mouse * width_resize) / 2;
+    ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse * height_resize) / 2 + 20));
+    ImGui::Image((void*)(intptr_t)image_texture_start_mouse, ImVec2(image_width_start_mouse * adjust_mouse * width_resize, image_height_start_mouse * adjust_mouse * height_resize));
+    ImGui::SetCursorPos(ImVec2((window_width - image_width_start_catuate * adjust_catuate * width_resize) / 2, 40));
+    ImGui::Image((void*)(intptr_t)image_texture_start_catuate, ImVec2(image_width_start_catuate * adjust_catuate * width_resize, image_height_start_catuate * adjust_catuate * height_resize));
     //ImGui::PopStyleColor();
     float buttonLoc = 3 * window_width / 4;
     ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 2));
-    //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.0f, 0.0f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.0f, 0.0f, 1.0f));
     ImGui::PushFont(MASSIVEcuteFont);
-    
+
     if (my_id == 0) {
-        if (ImGui::ImageButton((void*)(intptr_t)image_texture_startbtn, ImVec2(image_width_startbtn * adjust_cat * width_resize, image_height_startbtn * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1)))
+        if (ImGui::Button("Join Game"))
         {
             //playerSelect = true;
             //gameStartPressed = true;
@@ -1935,7 +1952,7 @@ void Client::GameStartGUI() {
     }
     /*else
         ImGui::Button("Join Party"); */// this actually doesn't do anything right now
-   
+
     ImGui::PopFont();
     ImGui::PushFont(cuteFont);
     ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 3));
@@ -1943,7 +1960,7 @@ void Client::GameStartGUI() {
         ImGui::Text("%d player has joined", numPlayers);
     else
         ImGui::Text("%d players have joined", numPlayers);
-    //ImGui::PopStyleColor();
+    ImGui::PopStyleColor();
     ImGui::PopFont();
     ImGui::End();
 }

@@ -581,7 +581,7 @@ void ServerGame::collisionStep() {
             
             for (int wallnum : wallOBBs) {
                 if (hitId == wallnum) {
-                    player_states[i].model = oldModels[i];
+                    //player_states[i].model = oldModels[i];
                     spdlog::info("player hit wall number: {}", wallnum);
                     break;
                 }
