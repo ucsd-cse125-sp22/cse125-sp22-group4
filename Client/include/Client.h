@@ -69,6 +69,7 @@ namespace Client {
     void setMovingState(PlayerState* playerstate);
     void resetMovingState();
     void displayCards(int item);
+    void resetCardArray();
     void setAliveStatus(PlayerState* playerstate);
 
     int checkPlayerSelect();

@@ -195,8 +195,9 @@ int main(int argc, char** argv) {
         if (pair1 == 3 || pair2 == 3) {
             printf("task success yay!\n");
             client->sendPairCount(pair1, pair2);
+            Client::resetCardArray();
         }
-        if (pair1 == 3)
+        if (pair1 == 3) 
             Client::resetPair1();
         if (pair2 == 3)
             Client::resetPair2();

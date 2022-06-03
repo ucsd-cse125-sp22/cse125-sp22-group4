@@ -1342,7 +1342,7 @@ void Client::displayCards(int item) {
     else if (!cardsSelected[0]) {
         ImGui::PushID("possible 1 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
-            if (cardChoices[possiblePair] == cardChoices[0]) {
+            if (cards[possiblePair] == cards[0]) {
                 if (item == 1)
                     pairs1++;
                 else
@@ -1376,7 +1376,7 @@ void Client::displayCards(int item) {
         ImGui::PushID("possible 2 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
             //printf("card choices %d %d\n", cardChoices[possiblePair], cardChoices[1]);
-            if (cardChoices[possiblePair] == cardChoices[1]) {
+            if (cards[possiblePair] == cards[1]) {
                 if (item == 1)
                     pairs1++;
                 else
@@ -1409,7 +1409,7 @@ void Client::displayCards(int item) {
     else if (!cardsSelected[2]) {
         ImGui::PushID("possible 3 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
-            if (cardChoices[possiblePair] == cardChoices[2]) {
+            if (cards[possiblePair] == cards[2]) {
                 if (item == 1)
                     pairs1++;
                 else
@@ -1442,7 +1442,7 @@ void Client::displayCards(int item) {
     else if (!cardsSelected[3]) {
         ImGui::PushID("possible 4 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
-            if (cardChoices[possiblePair] == cardChoices[3]) {
+            if (cards[possiblePair] == cards[3]) {
                 if (item == 1)
                     pairs1++;
                 else
@@ -1475,7 +1475,7 @@ void Client::displayCards(int item) {
     else if (!cardsSelected[4]) {
         ImGui::PushID("possible 5 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
-            if (cardChoices[possiblePair] == cardChoices[4]) {
+            if (cards[possiblePair] == cards[4]) {
                 if (item == 1)
                     pairs1++;
                 else
@@ -1507,7 +1507,7 @@ void Client::displayCards(int item) {
     else if (!cardsSelected[5]) {
         ImGui::PushID("possible 6 again");
         if (ImGui::ImageButton((void*)(intptr_t)image_texture_cardback, ImVec2(image_width_cardback, image_height_cardback), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(24.0f / 255, 68.0f / 255, 62.0f / 255, 1.0f), ImVec4(1, 1, 1, 1))) {
-            if (cardChoices[possiblePair] == cardChoices[5]) {
+            if (cards[possiblePair] == cards[5]) {
                 if (item == 1)
                     pairs1++;
                 else
@@ -2001,6 +2001,22 @@ void Client::resetPair1() {
 
 void Client::resetPair2() {
     pairs2 = -1;
+}
+
+void Client::resetCardArray() {
+    for (int i = 0; i < 6; i++)
+        cardsSelected[i] = false;
+    possiblePair = -1;
+    cards.clear();
+    random_shuffle(cardChoices.begin(), cardChoices.end());
+    for (int i = 0; i < cardChoices.size(); i++) {
+        if (cardChoices[i] == 1)
+            cards.push_back(image_texture_card1);
+        else if (cardChoices[i] == 2)
+            cards.push_back(image_texture_card2);
+        else if (cardChoices[i] == 3)
+            cards.push_back(image_texture_card3);
+    }
 }
 
 void Client::setItemHold(char h, bool s) {
