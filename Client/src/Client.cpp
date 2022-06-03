@@ -49,6 +49,8 @@ static Model* mazescene;
 
 static Animation* catidleAnimation;
 static Animator* catanimator;
+static Animation* catwalkingAnimation;
+static Animator* catwalkinganimator;
 
 static Animation* mouseidleAnimation1;
 static Animation* mousewalkingAnimation1;
@@ -527,9 +529,12 @@ bool Client::initializeClient() {
 
     fakecat = new Model("../../objects/cat/cat.obj");
 
-    cat = new Model("../../objects/cat/cat_idle.fbx");
-    catidleAnimation = new Animation("../../objects/cat/cat_idle.fbx", cat);
+    cat = new Model("../../objects/cat/new_cat_idle.fbx");
+    catidleAnimation = new Animation("../../objects/cat/new_cat_idle.fbx", cat);
     catanimator = new Animator(catidleAnimation);
+
+    catwalkingAnimation = new Animation("../../objects/cat/cat_walk/cat_walking.fbx", cat); 
+    catwalkinganimator = new Animator(catwalkingAnimation);
 
     mouse1 = new Model("../../objects/mouse/mouse_idle.fbx");
     mouseidleAnimation1 = new Animation("../../objects/mouse/mouse_idle.fbx", mouse1);
@@ -680,7 +685,7 @@ void Client::displayCallback() {
         }
 
         if (movingState[0] == true) {
-            calcFinalBoneMatrix(catanimator);
+            calcFinalBoneMatrix(catwalkinganimator);
         }
         else {
             calcFinalBoneMatrix(catanimator);
@@ -765,8 +770,6 @@ void Client::idleCallback(float dt) {
     }
 
     if (!pause) {
-        catanimator->update(dt);
-
         //particles update
         smokeparticles->update(dt, 2, glm::vec3(x,y + 1,z));
         flameparticles->update(dt, 1, glm::vec3(x, y - 2, z));
@@ -794,14 +797,16 @@ void Client::idleCallback(float dt) {
 
         if (movingState[0] == true) {
             cattrailparticles->update(dt, 2, catpos);
+            catwalkinganimator->update(dt);
         }
         else {
             cattrailparticles->update(dt, 0, catpos);
+            catanimator->update(dt);
         }
 
         if (movingState[1] == true) {
             micetrailparticles1->update(dt, 2, micepos1);
-            mousewalkinganimator1->update(2*dt);
+            mousewalkinganimator1->update(3*dt);
         }
         else {
             micetrailparticles1->update(dt, 0, micepos1);
@@ -810,7 +815,7 @@ void Client::idleCallback(float dt) {
 
         if (movingState[2] == true) {
             micetrailparticles2->update(dt, 2, micepos2);
-            mousewalkinganimator2->update(2*dt);
+            mousewalkinganimator2->update(3*dt);
         }
         else {
             micetrailparticles2->update(dt, 0, micepos2);
@@ -819,7 +824,7 @@ void Client::idleCallback(float dt) {
 
         if (movingState[3] == true) {
             micetrailparticles3->update(dt, 2, micepos3);
-            mousewalkinganimator3->update(2*dt);
+            mousewalkinganimator3->update(3*dt);
         }
         else {
             micetrailparticles3->update(dt, 0, micepos3);
