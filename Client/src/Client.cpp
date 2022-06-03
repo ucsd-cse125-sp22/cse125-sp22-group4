@@ -1211,7 +1211,7 @@ void Client::ItemHoldGUI() {
     flags |= ImGuiWindowFlags_NoResize;
     int tasks = 0;
 
-    if (itemhold != PLAYER_NUM + 1 || task1) 
+    if (task1) 
         tasks++;
     if (stationary1)
         tasks++;
