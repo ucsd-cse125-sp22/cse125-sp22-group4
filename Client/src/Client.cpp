@@ -756,7 +756,7 @@ void Client::displayCallback() {
         }
         mouse3->draw(currCam->viewProjMat, identityMat, shader);
 
-        drawOBB(CollisionDetector::computeOBB(fakecat->getOBB(), cat->getModel()), currCam->viewProjMat, shader, false);
+        //drawOBB(CollisionDetector::computeOBB(fakecat->getOBB(), cat->getModel()), currCam->viewProjMat, shader, false);
 
         cattrailparticles->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         micetrailparticles1->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
