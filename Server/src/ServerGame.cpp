@@ -30,6 +30,7 @@ ServerGame::ServerGame() :
     player0DevMode(DEFAULT_PLAYER0DEVMODE), catViewItemSec(DEFAULT_CATVIEWITEMSEC),
     pointsToWin(DEFAULT_POINTSTOWIN)
 {
+    wallCollision = true; // too lazy to add default value
     gameAlive = false; // Will be toggled on/off depending on the round
     game_started = false; // Will only be false once.
     this->ticksSinceConfigCheck = 0;
@@ -584,7 +585,7 @@ void ServerGame::collisionStep() {
             
             for (int wallnum : wallOBBs) {
                 if (hitId == wallnum) {
-                    player_states[i].model = oldModels[i];
+                    if (wallCollision) player_states[i].model = oldModels[i];
                     spdlog::info("player hit wall number: {}", wallnum);
                     break;
                 }
@@ -768,6 +769,7 @@ void ServerGame::updateFromConfigFile() {
         if (serverConf["cooldownTimeSec"]) this->cooldownTimeSec = serverConf["cooldownTimeSec"].as<double>();
         if (serverConf["catViewItemSec"]) this->catViewItemSec = serverConf["catViewItemSec"].as<double>();
 		if (serverConf["player0DevMode"]) this->player0DevMode = serverConf["player0DevMode"].as<bool>();
+        if (serverConf["wallCollision"]) this->wallCollision = serverConf["wallCollision"].as<bool>();
 	}
 }
 
