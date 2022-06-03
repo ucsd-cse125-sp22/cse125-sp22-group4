@@ -1069,7 +1069,7 @@ void ServerGame::handleRotatePacket(int client_id, RotatePacket* packet) {
 void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     PlayerState state = player_states[client_id];
     oldModels[client_id] = player_states[client_id].model;
-    double playerSpeed = client_id == CAT_ID ? catSpeed : mouseSpeed;
+    double playerSpeed = client_id == playerSelection[CAT] ? catSpeed : mouseSpeed;
 
     //if (!state.alive || !packet->state.held) {
     if (!state.alive)
