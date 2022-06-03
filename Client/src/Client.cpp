@@ -224,7 +224,7 @@ static bool gameStartPressed = 0;
 static bool displayStartPressed = 0;
 static bool inMiniGame = false;
 
-static bool playerSelect = false;
+static bool playerSelect = true;
 static bool playerSelected = false;
 static int playerType = NONE;
 
@@ -439,8 +439,8 @@ bool Client::initializeClient() {
     camera = new Camera();
 
     // initialize light sources
-    lightPosn = { {0, 5, -10, 1}, {0, 5, 10, 1}, {1, 1, 1, 0} };
-    lightColorn = { {0.9, 0.6, 0.5, 1}, {0.5, 0.6, 0.9, 1}, {0.8, 0.8, 0.8, 1} };
+    lightPosn = { {-1, 1, -1, 0}, {1, 1, 1, 0} ,  {-100, 100, -100, 1}, {1, 1, 0, 0}, {0, 1, 1, 0} };
+    lightColorn = { {0.85, 0.8, 0.8, 1}, {0.1, 0.1, 0.1, 1}, {0.5, 0.5, 0.5, 1}, {0.1, 0.1, 0.1, 1}, {0.1, 0.1, 0.1, 1} };
     lightCount = lightPosn.size();
 
     // particle properties
