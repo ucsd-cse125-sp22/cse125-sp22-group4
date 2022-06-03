@@ -1595,6 +1595,7 @@ void Client::restore() {
     displayStart = 1;
     pairs1 = 0;
     pairs2 = 0;
+    resetCardArray();
     gameStarted = 0;
     gameEnded = 0;
     catWon = 0;
