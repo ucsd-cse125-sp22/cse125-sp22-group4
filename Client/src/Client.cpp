@@ -1608,6 +1608,7 @@ void Client::restore() {
     pairs1 = 0;
     pairs2 = 0;
     resetCardArray();
+    disableMouse = false;
     gameStarted = 0;
     gameEnded = 0;
     catWon = 0;
