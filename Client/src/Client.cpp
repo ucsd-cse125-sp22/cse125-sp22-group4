@@ -1099,54 +1099,59 @@ void Client::audioUpdate() {
     if (!gameStarted)
         return;
 
+    int cat_id = playerSelection[CAT];
+    int m1_id = playerSelection[M1];
+    int m2_id = playerSelection[M2];
+    int m3_id = playerSelection[M3];
+
     // Mouse/Cat collision
     if (hasPlayedMouse1CatCollision && my_id == playerSelection[CAT] &&
-        players[1]->getModel()[3][1] < 0) {
+        aliveState[m1_id]) {
         hasPlayedMouse1CatCollision = false;
     }
 
     if (hasPlayedMouse2CatCollision && my_id == playerSelection[CAT] &&
-        players[2]->getModel()[3][1] < 0) {
+        aliveState[m2_id]) {
         hasPlayedMouse2CatCollision = false;
     }
 
     if (hasPlayedMouse3CatCollision && my_id == playerSelection[CAT] &&
-        players[3]->getModel()[3][1] < 0) {
+        aliveState[m3_id]) {
         hasPlayedMouse3CatCollision = false;
     }
 
     if (hasPlayedMouseCatCollision && my_id == playerSelection[CAT] != 0 && 
-        player->getModel()[3][1] < 0) {
+        aliveState[my_id]) {
         hasPlayedMouseCatCollision = false;
     }
 
     if (!hasPlayedMouse1CatCollision && my_id == playerSelection[CAT] &&
-        players[1]->getModel()[3][1] < 0) {
+        aliveState[m1_id]) {
         audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse1CatCollision = true;
     }
 
     if (!hasPlayedMouse2CatCollision && my_id == playerSelection[CAT] &&
-        players[2]->getModel()[3][1] < 0) {
+        aliveState[m2_id]) {
         audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse2CatCollision = true;
     }
 
     if (!hasPlayedMouse3CatCollision && my_id == playerSelection[CAT] &&
-        players[3]->getModel()[3][1] < 0) {
+        aliveState[m3_id]) {
         audioEngine->PlayEvent("event:/cat_screech_1");
         hasPlayedMouse3CatCollision = true;
     }
 
     if (!hasPlayedMouseCatCollision && my_id != playerSelection[CAT] && 
-        player->getModel()[3][1] < 0) {
+        aliveState[my_id]) {
         audioEngine->PlayEvent("event:/mice_shriek_1");
         hasPlayedMouseCatCollision = true;
         hasPlayedTask1 = false; // task1 respawns on collision
     }
 
     if (!hasPlayedMouseCatCollision && my_id != playerSelection[CAT] && 
-        player->getModel()[3][1] < 0) {
+        aliveState[my_id]) {
         hasPlayedMouseCatCollision = false;
     }
 
@@ -1370,7 +1375,7 @@ void Client::stationaryItemGUI() {
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(24.0f /  255, 68.0f / 255, 62.0f / 255, 1.0f));
 
-    if (player && player->getModel()[3][1] < 0) {
+    if (player && aliveState[my_id]) {
         pairs1 = 0;
         pairs2 = 0;
         resetCardArray();
