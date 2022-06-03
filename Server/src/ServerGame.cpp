@@ -54,7 +54,7 @@ ServerGame::ServerGame() :
 
     // inaccessible player location for dead mice
     banished = glm::mat4(1);
-    moveGlobal(banished, glm::vec3(0, 20, 0));
+    moveGlobal(banished, glm::vec3(0, -20, 0));
 
     //load maze collision
     scene = new SceneLoader("../../objects/new_maze_collision/scene.txt");
@@ -331,7 +331,7 @@ void ServerGame::respawnItem2() {
     time_t t;
     srand((unsigned)time(&t));
 
-    if (stationary->model[3][1] > 10)
+    if (stationary->model[3][1] < 0)
         return;
 
     // get new respawn location
@@ -351,7 +351,7 @@ void ServerGame::respawnItem3() {
     time_t t;
     srand((unsigned)time(&t));
 
-    if (stationary2->model[3][1] > 10)
+    if (stationary2->model[3][1] < 0)
         return;
 
     // get new respawn location
@@ -565,7 +565,7 @@ void ServerGame::collisionStep() {
                     // TODO: This respawns the item, we need to take it out of the map!
 					flag->item_state.hold = 5;
                     flag->item_state.taskSuccess = true;
-                    moveGlobal(flag->item_state.model, glm::vec3(0, 100.0f, 0)); // just making it go away..
+                    moveGlobal(flag->item_state.model, glm::vec3(0, -10.0f, 0)); // just making it go away..
                     flag_taken = false;
                     finalDestTime = -1;
                 }
@@ -626,14 +626,14 @@ void ServerGame::mouseDead(int client_id) {
 
 void ServerGame::checkStationaryObjectives() {
     if (pair1 == 3) {
-        moveGlobal(stationary->model, glm::vec3(0, 100, 0));
+        moveGlobal(stationary->model, glm::vec3(0, -100, 0));
         printf("Stationary: Completed!\n");
         stationary->complete();
         pair1 = -1;
         ++points;
     }
     if (pair2 == 3) {
-        moveGlobal(stationary2->model, glm::vec3(0, 100, 0));
+        moveGlobal(stationary2->model, glm::vec3(0, -100, 0));
         printf("Stationary2: Completed!\n");
         stationary2->complete();
         pair2 = -1;
