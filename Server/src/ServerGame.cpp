@@ -643,24 +643,24 @@ void ServerGame::checkStationaryObjectives() {
     if (pair1 == 3) {
         moveGlobal(stationary->model, glm::vec3(0, 100, 0));
         printf("Stationary: Completed!\n");
-        stationary->checkAward();
+        stationary->complete();
         pair1 = -1;
         ++points;
     }
     if (pair2 == 3) {
         moveGlobal(stationary2->model, glm::vec3(0, 100, 0));
         printf("Stationary2: Completed!\n");
-        stationary->checkAward();
+        stationary2->complete();
         pair2 = -1;
         ++points;
     }
- /*   if (stationary->checkAward()) {
+ /*   if (stationary->complete()) {
         moveGlobal(stationary->model, glm::vec3(0, 100, 0));
         printf("Stationary: Completed!\n");
         ++points;
         
     }
-    if (stationary2->checkAward()) {
+    if (stationary2->complete()) {
         moveGlobal(stationary2->model, glm::vec3(0, 100, 0));
         printf("Stationary2: Completed!\n");
         ++points;
