@@ -1047,7 +1047,7 @@ void Client::timeGUI() {
     int minute = (time % 3600) / 60;  // Minute component
     int seconds = time % 60;          // Second component 
 
-    if (!hasPlayedTimer && minute == 1) {
+    if (!hasPlayedTimer && currTime == 60) {
         audioEngine->PlayEvent("event:/panic");
         hasPlayedTimer = true;
     }
