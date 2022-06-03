@@ -140,6 +140,11 @@ int image_width_cat_icon = 0;
 int image_height_cat_icon = 0;
 GLuint image_texture_cat_icon = 0;
 
+bool retStartbtn;
+int image_width_startbtn = 0;
+int image_height_startbtn = 0;
+GLuint image_texture_startbtn = 0;
+
 bool retCatHoverIcon;
 GLuint image_texture_cat_hover_icon = 0;
 
@@ -586,7 +591,7 @@ bool Client::initializeClient() {
     retMouseFlagPale = LoadTextureFromFile("../../objects/ImGui/cheese_paler2.png", &image_texture_mouse_flag_pale, &image_width_mouse_flag_pale, &image_height_mouse_flag_pale);
     retMap = LoadTextureFromFile("../../objects/ImGui/minimap.png", &image_texture_map, &image_width_map, &image_height_map);
     retGameStart = LoadTextureFromFile("../../objects/ImGui/game_start_maze2.jpg", &image_texture_game_start, &image_width_game_start, &image_height_game_start);
-    retStartCat = LoadTextureFromFile("../../objects/ImGui/mao_cat.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
+    retStartCat = LoadTextureFromFile("../../objects/ImGui/gamelogo.png", &image_texture_start_cat, &image_width_start_cat, &image_height_start_cat);
     retStartMouse = LoadTextureFromFile("../../objects/ImGui/mao_mouse.png", &image_texture_start_mouse, &image_width_start_mouse, &image_height_start_mouse);
     retStartCatuate = LoadTextureFromFile("../../objects/ImGui/catuate2.png", &image_texture_start_catuate, &image_width_start_catuate, &image_height_start_catuate);
     
@@ -610,7 +615,8 @@ bool Client::initializeClient() {
     retCard2 = LoadTextureFromFile("../../objects/ImGui/card2.png", &image_texture_card2, &image_width_card2, &image_height_card2);
     retCard3 = LoadTextureFromFile("../../objects/ImGui/card3.png", &image_texture_card3, &image_width_card3, &image_height_card3);
     retBackground = LoadTextureFromFile("../../objects/ImGui/background.png", &image_texture_background, &image_width_background, &image_height_background);
-    
+    retStartbtn = LoadTextureFromFile("../../objects/ImGui/startbtn.png", &image_texture_startbtn, &image_width_startbtn, &image_height_startbtn);
+
     random_shuffle(cardChoices.begin(), cardChoices.end());
     for (int i = 0; i < cardChoices.size(); i++) {
         if (cardChoices[i] == 1)
@@ -1826,41 +1832,43 @@ void Client::GameStartGUI() {
     double adjust_mouse = 0.4f;
     double adjust_catuate = 2.0f;
     ImGuiWindowFlags flags = 0;
-    float height_resize = window_height / static_cast<float>(1017);
+    float height_resize = window_height / static_cast<float>(1080);
     float width_resize = window_width / static_cast<float>(1920);
-    //flags |= ImGuiWindowFlags_NoBackground;
+    flags |= ImGuiWindowFlags_NoBackground;
     flags |= ImGuiWindowFlags_NoTitleBar;
     flags |= ImGuiWindowFlags_NoScrollbar;
     flags |= ImGuiWindowFlags_NoResize;
+
     //printf("height %d width %d\n", (window_height / 1017), (window_width / 1920));
 
     ImGui::SetNextWindowSize(ImVec2(window_width, window_height), 0);
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.8f, 0.8f, 0.0f, 1.0f));
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
+    //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(214.0f / 255, 232.0f / 255, 101.0f / 255, 1.0f));
     ImGui::Begin("GameStart GUI", NULL, flags);
-    ImGui::PopStyleColor();
+    //ImGui::PopStyleColor();
     //ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(1.0, 1.0f, 1.0f, 1.0f));
-    ImGui::SetCursorPos(ImVec2((window_width-image_width_game_start*adjustment*width_resize)/2,(window_height-image_height_game_start*adjustment*height_resize)/2));
+    //ImGui::SetCursorPos(ImVec2((window_width-image_width_game_start*adjustment*width_resize)/2,(window_height-image_height_game_start*adjustment*height_resize)/2));
     //ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment, image_height_game_start * adjustment));
-    ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment * width_resize, image_height_game_start * adjustment * height_resize));
+    //ImGui::Image((void*)(intptr_t)image_texture_game_start, ImVec2(image_width_game_start * adjustment * width_resize, image_height_game_start * adjustment * height_resize));
     float catLoc = ((window_width - image_width_game_start * adjustment * width_resize) / 2 - image_width_start_cat * adjust_cat*width_resize) / 2;
     ImGui::SetCursorPos(ImVec2(catLoc, (window_height - image_height_start_cat * adjust_cat *height_resize) / 2));
     
-    ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * adjust_cat*width_resize, image_height_start_cat * adjust_cat*height_resize));
-    float mouseLoc = (window_width - image_width_game_start * adjustment*width_resize) / 2 + ((window_width - image_width_game_start * adjustment*width_resize) / 2 - image_width_start_mouse * adjust_mouse*width_resize) / 2;
-    ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse*height_resize) / 2 + 20));
-    ImGui::Image((void*)(intptr_t)image_texture_start_mouse, ImVec2(image_width_start_mouse * adjust_mouse*width_resize, image_height_start_mouse * adjust_mouse*height_resize));
-    ImGui::SetCursorPos(ImVec2((window_width - image_width_start_catuate* adjust_catuate*width_resize) / 2, 40));
-    ImGui::Image((void*)(intptr_t)image_texture_start_catuate, ImVec2(image_width_start_catuate*adjust_catuate*width_resize, image_height_start_catuate*adjust_catuate*height_resize));
+    ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * width_resize, image_height_start_cat * height_resize));
+    //ImGui::Image((void*)(intptr_t)image_texture_start_cat, ImVec2(image_width_start_cat * adjust_cat*width_resize, image_height_start_cat * adjust_cat*height_resize));
+    //float mouseLoc = (window_width - image_width_game_start * adjustment*width_resize) / 2 + ((window_width - image_width_game_start * adjustment*width_resize) / 2 - image_width_start_mouse * adjust_mouse*width_resize) / 2;
+    //ImGui::SetCursorPos(ImVec2(mouseLoc, (window_height - image_height_start_mouse * adjust_mouse*height_resize) / 2 + 20));
+    //ImGui::Image((void*)(intptr_t)image_texture_start_mouse, ImVec2(image_width_start_mouse * adjust_mouse*width_resize, image_height_start_mouse * adjust_mouse*height_resize));
+    //ImGui::SetCursorPos(ImVec2((window_width - image_width_start_catuate* adjust_catuate*width_resize) / 2, 40));
+    //ImGui::Image((void*)(intptr_t)image_texture_start_catuate, ImVec2(image_width_start_catuate*adjust_catuate*width_resize, image_height_start_catuate*adjust_catuate*height_resize));
     //ImGui::PopStyleColor();
     float buttonLoc = 3 * window_width / 4;
     ImGui::SetCursorPos(ImVec2(buttonLoc, window_height / 2));
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.0f, 0.0f, 1.0f));
+    //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.0f, 0.0f, 1.0f));
     ImGui::PushFont(MASSIVEcuteFont);
     
     if (my_id == 0) {
-        if (ImGui::Button("Join Game"))
+        if (ImGui::ImageButton((void*)(intptr_t)image_texture_startbtn, ImVec2(image_width_startbtn * adjust_cat * width_resize, image_height_startbtn * adjust_cat * height_resize), ImVec2(0, 0), ImVec2(1, 1), 0, ImVec4(0, 0, 0, 0), ImVec4(1, 1, 1, 1)))
         {
             //playerSelect = true;
             //gameStartPressed = true;
@@ -1881,7 +1889,7 @@ void Client::GameStartGUI() {
         ImGui::Text("%d player has joined", numPlayers);
     else
         ImGui::Text("%d players have joined", numPlayers);
-    ImGui::PopStyleColor();
+    //ImGui::PopStyleColor();
     ImGui::PopFont();
     ImGui::End();
 }
