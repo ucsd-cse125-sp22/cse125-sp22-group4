@@ -120,16 +120,13 @@ void ServerGame::assignSpawn(int client_id) {
 void ServerGame::respawnPlayer(int client_id) {
     PlayerState& state = player_states[client_id];
     glm::mat4 newModel = glm::mat4(1);
-    if (client_id == 0)
-        return;
     //state.model = oldPlayerPositions[client_id];
     time_t t;
 
     srand((unsigned)time(&t));
     int random = rand() % 3;
 
-    switch (client_id) {
-    case 1:
+    if (client_id == playerSelection[M1]) {
         if (random == 0) {
             moveGlobal(newModel, glm::vec3(-187.0f, 0, -3.3f));
             spin(newModel, 90);
@@ -142,13 +139,12 @@ void ServerGame::respawnPlayer(int client_id) {
             moveGlobal(newModel, glm::vec3(82.5f, 0, -52.5f));
             spin(newModel, 90);
         }
-        break;
-
-    case 2:
+    }
+    else if (client_id == playerSelection[M2]) {
         if (random == 0) {
             moveGlobal(newModel, glm::vec3(23.16f, 0, 186.4f));
             spin(newModel, 180);
-            
+
         }
         else if (random == 1) {
             moveGlobal(newModel, glm::vec3(142.5f, 0, 202.5f));
@@ -158,9 +154,8 @@ void ServerGame::respawnPlayer(int client_id) {
             moveGlobal(newModel, glm::vec3(-112.5f, 0, -82.5f));
             spin(newModel, 180);
         }
-        break;
-        
-    case 3:
+    }
+    else if (client_id == playerSelection[M3]) {
         if (random == 0) {
             moveGlobal(newModel, glm::vec3(-37.88f, 0, -175.0f));
             spin(state.model, 270);
@@ -173,9 +168,12 @@ void ServerGame::respawnPlayer(int client_id) {
             moveGlobal(newModel, glm::vec3(-127.5f, 0, 67.5f));
             spin(state.model, 270);
         }
-        break;
+    }
+    else {
+        printf("YAAAAAAAAAAAA\n");
     }
 
+    oldModels[client_id] = newModel;
     state.model = newModel;
     state.alive = true;
     player_states[client_id] = state;
@@ -570,13 +568,16 @@ void ServerGame::collisionStep() {
                     finalDestTime = -1;
                 }
             }
-            else if (i == cat_id && hitId > 0 && hitId < PLAYER_NUM) {
+            else if (i == cat_id && hitId < PLAYER_NUM) {
                 printf("[ServerGame::collisionStep] Player %d killed player %d!\ncatId %d", i + 1, hitId + 1, cat_id);
                 mouseDead(hitId);
             }
-            else if (hitId > 0 && i > 0 && hitId < PLAYER_NUM) {
+            else if (hitId < PLAYER_NUM) {
                 printf("[ServerGame::collisionStep] Player %d hit player %d!\ncatId %d", i + 1, hitId + 1, cat_id);
                 player_states[i].model = oldModels[i];
+            }
+            else {
+                printf("player %d hit %d this is cat id %d", i + 1, hitId + 1, cat_id);
             }
 
 
@@ -615,9 +616,11 @@ void ServerGame::mouseDead(int client_id) {
         flag_taken = false;
         finalDestTime = -1;
     }
+
+    printf("I AM DIE %d\n", client_id);
       
     state.alive = false;
-    state.model = banished;
+    //state.model = banished;
     player_states[client_id] = state;
     catViewItem = true;
 
@@ -717,9 +720,9 @@ void ServerGame::update()
         //checkFinalDestRotates();
         replicateGameState();
 
-        for (int i = 0; i < PLAYER_NUM; i++) {
-            player_states[i].moving = false;
-        }
+        //for (int i = 0; i < PLAYER_NUM; i++) {
+        //    player_states[i].moving = false;
+        //}
 
         if (points == pointsToWin && gameAlive) {
             announceGameEnd(MOUSE_WIN);
@@ -781,6 +784,7 @@ void ServerGame::checkCooldownOver() {
             int newTime = this->cooldownTimeSec - diff.count(); // time left in cooldown
             
             if (newTime <= 0) { // cooldown is over, mouse can be reborn
+                printf("Please respawn me! %d \n", id);
                 respawnPlayer(id);
                 cooldown.pop();
             }
@@ -1068,9 +1072,9 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
     oldModels[client_id] = player_states[client_id].model;
     double playerSpeed = client_id == playerSelection[CAT] ? catSpeed : mouseSpeed;
 
-    if (!state.alive || !packet->state.held) {
+    //if (!state.alive || !packet->state.held) {
+    if (!state.alive)
         return;
-    }
     
     glm::vec3 netDirection = glm::vec3(0);
     for (int i = 0; i < 4; ++i) {
@@ -1113,10 +1117,15 @@ void ServerGame::handleMovePacket(int client_id, MovePacket* packet) {
         }
     }
 
-    if (glm::length2(netDirection) < 0.1) {
+
+    if (glm::length2(netDirection) <= 0.1) {
+        //printf("no movement\n");
         state.moving = false;
+        player_states[client_id] = state;
         return;
     }
+
+    //printf("We are moving!\n");
 
     state.moving = true;
 
