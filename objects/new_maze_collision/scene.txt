@@ -674,8 +674,6 @@ Object: Hut_Cylinder.003
 
 Object: Hut_Cylinder.004
 
-Object: Hut_Cylinder.005
-
 Object: Hut_Cylinder.007
 
 Object: Hut_Cylinder.008
@@ -687,4 +685,70 @@ Object: Hut_Cylinder.010
 Object: Hut_Cylinder.011
 
 Object: Stonehenge_Stonehenge_East2.012
+
+Object: geisel.001
+
+Object: geisel.002
+
+Object: geisel.003
+
+Object: geisel.004
+
+Object: geisel.005
+
+Object: geisel.006
+
+Object: geisel.007
+
+Object: geisel.008
+
+Object: geisel.009
+
+Object: geisel.010
+
+Object: geisel.011
+
+Object: geisel.012
+
+Object: geisel.013
+
+Object: geisel.014
+
+Object: geisel.015
+
+Object: geisel.016
+
+Object: geisel.017
+
+Object: geisel.018
+
+Object: geisel.019
+
+Object: geisel.020
+
+Object: geisel.021
+
+Object: Stonehenge_Stonehenge_East2.013
+
+Object: Stonehenge_Stonehenge_East2.014
+
+Object: Stonehenge_Stonehenge_East2.015
+
+Object: Stonehenge_Stonehenge_East2.016
+
+Object: Hut_Cylinder.006
+
+Object: Hut_Cylinder.012
+
+Object: Hut_Cylinder.013
+
+Object: Hut_Cylinder.014
+
+Object: Hut_Cylinder.015
+
+Object: Hut_Cylinder.016
+
+Object: Hut_Cylinder.017
+
+Object: Hut_Cylinder.018
 
