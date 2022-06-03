@@ -81,6 +81,7 @@ void ParticleSystem::update(float dt, unsigned int newParticles, glm::vec3 offse
         if (p.Life > 0.0f)
         {	// particle is alive, thus update
             p.Position -= p.Velocity * dt;
+
             p.Color.a -= dt * colorFade;
             float random_x = -useRandomVelocity.x + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2* useRandomVelocity.x)));
             float random_y = -useRandomVelocity.y + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (2 * useRandomVelocity.y)));

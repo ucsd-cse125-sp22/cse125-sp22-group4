@@ -69,6 +69,9 @@ static Animator* mousewalkinganimator3;
 static ParticleSystem* smokeparticles;
 static ParticleSystem* flameparticles;
 static ParticleSystem* glintparticles;
+static ParticleSystem* bloodparticles1;
+static ParticleSystem* bloodparticles2;
+static ParticleSystem* bloodparticles3;
 
 static ParticleSystem* glintparticlesitem2;
 static ParticleSystem* glintparticlesitem3;
@@ -212,6 +215,10 @@ static bool displayStartPressed = 0;
 static bool playerSelect = false;
 static bool playerSelected = false;
 static int playerType = NONE;
+
+float bloodTime[PLAYER_NUM] = {1.0f, 1.0f, 1.0f, 1.0f};
+bool startBloodCountdown[PLAYER_NUM] = { 0, 0, 0, 0 };
+glm::vec3 deathpos[PLAYER_NUM] = {glm::vec3(1), glm::vec3(1), glm::vec3(1), glm::vec3(1) };
 // Debounce for sending network packets
 static bool playerTypeSent = false;
 
@@ -265,6 +272,7 @@ static bool middlePressed = false;
 static bool isThirdPersonCam = false;
 static const char* scenes[2] = { "new maze", "Maze"};
 static bool movingState[PLAYER_NUM];
+static bool aliveState[PLAYER_NUM];
 
 //for particle demo
 float x = 0.0f;
@@ -477,6 +485,19 @@ bool Client::initializeClient() {
         0,      //blendMethod
     };
 
+    ParticleProperty blood = {
+        500,    //amount
+        1.0f,   //Life
+        glm::vec3(0, 0, 0), //Velocity
+        glm::vec3(10, 10, 10), //useRandomVelocity
+        glm::vec3(0.3, 0.3, 0.3), //randomPositionRange
+        1,      //randomColor
+        1.0f,   //colorFade
+        0,      //blendMethod
+    };
+
+
+
     // DEBUG COLLISION
     scene = new SceneLoader("../../objects/new_maze_collision/scene.txt");
     sceneObjects = scene->load("../../objects/new_maze_collision/");
@@ -495,6 +516,10 @@ bool Client::initializeClient() {
     micetrailparticles1 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
     micetrailparticles2 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
     micetrailparticles3 = new ParticleSystem(particleShader, "../../particles/dust.png", micetrail);
+
+    bloodparticles1 = new ParticleSystem(particleShader, "../../particles/bloodfume.png", blood);
+    bloodparticles2 = new ParticleSystem(particleShader, "../../particles/bloodfume.png", blood);
+    bloodparticles3 = new ParticleSystem(particleShader, "../../particles/bloodfume.png", blood);
 
     // initialize objects
     ground = new Cube(glm::vec3(-25, -1, -25), glm::vec3(25, 1, 25));
@@ -704,6 +729,10 @@ void Client::displayCallback() {
         glintparticlesitem2->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
         glintparticlesitem3->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
 
+        bloodparticles1->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        bloodparticles2->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+        bloodparticles3->draw(currCam->viewProjMat, Camera_Right, Camera_Up);
+
         break;
     }
     
@@ -796,6 +825,60 @@ void Client::idleCallback(float dt) {
             micetrailparticles3->update(dt, 0, micepos3);
             mouseanimator3->update(dt);
         }
+
+        //blood logic
+        if (aliveState[1] == false) {
+            startBloodCountdown[1] = 1;
+        }
+        if (aliveState[2] == false) {
+            startBloodCountdown[2] = 1;
+        }
+        if (aliveState[3] == false) {
+            startBloodCountdown[3] = 1;
+        }
+
+        for (int i = 1; i < PLAYER_NUM; i ++) {
+            if (bloodTime[i] <= 0) {
+                bloodTime[i] = 1.0f;
+                startBloodCountdown[i] = false;
+            }
+            if (startBloodCountdown[i]) {
+                bloodTime[i] -= dt;
+            }
+        }
+
+        //printf("i is %d = %f\n", 2, bloodTime[2]);
+
+        if (startBloodCountdown[1] == true) {
+            bloodparticles1->update(dt, 2, deathpos[1]);
+        }
+        else {
+            bloodparticles1->update(dt, 0, deathpos[1]);
+        }
+        if (startBloodCountdown[2] == true) {
+            bloodparticles2->update(dt, 2, deathpos[2]);
+        }
+        else {
+            bloodparticles2->update(dt, 0, deathpos[2]);
+        }
+        if (startBloodCountdown[3] == true) {
+            bloodparticles3->update(dt, 2, deathpos[3]);
+        }
+        else {
+            bloodparticles3->update(dt, 0, deathpos[3]);
+        }
+
+        if (aliveState[1] == true) {
+            deathpos[1] = micepos1;
+        }
+        if (aliveState[2] == true) {
+            deathpos[2] = micepos2;
+        }
+        if (aliveState[3] == true) {
+            deathpos[3] = micepos3;
+        }
+
+        //bloodparticles1->update(dt, 2, micepos1);
     }
 
     //spdlog::info("pos = {}", cat->getModel()[3]);
@@ -1986,6 +2069,12 @@ void Client::setMovingState(PlayerState* playerstate) {
     for (int i = 0; i < PLAYER_NUM; i++) {
         movingState[i] = playerstate[i].moving;
         //printf("moving state %d is %d\n", i, movingState[i]);
+    }
+}
+
+void Client::setAliveStatus(PlayerState* playerstate) {
+    for (int i = 0; i < PLAYER_NUM; i++) {
+        aliveState[i] = playerstate[i].alive;
     }
 }
 
