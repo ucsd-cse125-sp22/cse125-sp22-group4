@@ -108,6 +108,7 @@ int main(int argc, char** argv) {
     glfwSwapBuffers(window);
     //////////////////////load gui//////////////////////
     
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
     if (!Client::initializeClient()) {
         spdlog::error("Client initialization failed!");

@@ -339,7 +339,7 @@ void Client::setupGLSettings() {
     glEnable(GL_MULTISAMPLE);
     glDepthFunc(GL_LEQUAL);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.99607f, 0.8f, 0.48235f, 1.0f);
 }
 
 // Simple helper function to load an image into a OpenGL texture with common settings
@@ -937,7 +937,7 @@ void Client::LoadingGUI() {
     GLuint loading;
     int retLoad = LoadTextureFromFile("../../objects/ImGui/loading.png", &loading, &w, &h);
 
-
+     
     ImGui::SetNextWindowSize(ImVec2(w, h));
     ImGui::SetNextWindowPos(ImVec2(0, 0), 0, ImVec2(0, 0));
 
