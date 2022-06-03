@@ -11,6 +11,8 @@ static bool hasPlayedMouseCatCollision = false;
 static bool hasPlayedMouse1CatCollision = false;
 static bool hasPlayedMouse2CatCollision = false;
 static bool hasPlayedMouse3CatCollision = false;
+static bool hasPlayedFootstepCat = false;
+
 
 // shader, camera and light
 static GLuint shader;
@@ -718,15 +720,16 @@ void Client::displayCallback() {
 
         int ids[3] = { m1_id, m2_id, m3_id };
 
-        if (movingState[cat_id] == true) {
+        if (movingState[CAT] == true) {
             calcFinalBoneMatrix(catwalkinganimator);
         }
         else {
+            printf("not walk\n");
             calcFinalBoneMatrix(catanimator);
         }
         cat->draw(currCam->viewProjMat, identityMat, shader);
 
-        if (movingState[m1_id] == true) {
+        if (movingState[M1] == true) {
             calcFinalBoneMatrix(mousewalkinganimator1);
         }
         else {
@@ -734,7 +737,7 @@ void Client::displayCallback() {
         }
         mouse1->draw(currCam->viewProjMat, identityMat, shader);
 
-        if (movingState[m2_id] == true) {
+        if (movingState[M2] == true) {
             calcFinalBoneMatrix(mousewalkinganimator2);
         }
         else {
@@ -742,7 +745,7 @@ void Client::displayCallback() {
         }
         mouse2->draw(currCam->viewProjMat, identityMat, shader);
 
-        if (movingState[m3_id] == true) {
+        if (movingState[M3] == true) {
             calcFinalBoneMatrix(mousewalkinganimator3);
         }
         else {
@@ -845,16 +848,17 @@ void Client::idleCallback(float dt) {
         trailModel = mouse3->getModel() * glm::translate(glm::mat4(1), glm::vec3(0, 0.4, 0));
         glm::vec3 micepos3 = trailModel[3];
 
-        if (movingState[cat_id] == true) {
+        if (movingState[CAT] == true) {
             cattrailparticles->update(dt, 2, catpos);
             catwalkinganimator->update(dt);
         }
         else {
+            printf("not walk\n");
             cattrailparticles->update(dt, 0, catpos);
             catanimator->update(dt);
         }    
         
-        if (movingState[m1_id] == true) {
+        if (movingState[M1] == true) {
             micetrailparticles1->update(dt, 2, micepos1);
             mousewalkinganimator1->update(3*dt);
         }
@@ -863,7 +867,7 @@ void Client::idleCallback(float dt) {
             mouseanimator1->update(dt);
         }
     
-        if (movingState[m2_id] == true) {
+        if (movingState[M2] == true) {
             micetrailparticles2->update(dt, 2, micepos2);
             mousewalkinganimator2->update(3*dt);
         }
@@ -872,7 +876,7 @@ void Client::idleCallback(float dt) {
             mouseanimator2->update(dt);
         }
 
-        if (movingState[m3_id] == true) {
+        if (movingState[M3] == true) {
             micetrailparticles3->update(dt, 2, micepos3);
             mousewalkinganimator3->update(3*dt);
         }
@@ -1169,18 +1173,28 @@ void Client::audioUpdate() {
     }
 
     if (!hasPlayedTask1 && task1 && my_id != playerSelection[CAT]) {
-        audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play task1 pickup
+        audioEngine->PlayEvent("event:/powerup_1");
         hasPlayedTask1 = true;
     }
 
     if (!hasPlayedStationary1 && stationary1 && my_id != playerSelection[CAT]) {
-        audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play stationary1 pickup
+        audioEngine->PlayEvent("event:/powerup_1");
         hasPlayedStationary1 = true;
     }
 
     if (!hasPlayedStationary2 && stationary2 && my_id != playerSelection[CAT]) {
-        audioEngine->PlayEvent("event:/powerup_1"); //TODO Audio, play stationary2 pickup
+        audioEngine->PlayEvent("event:/powerup_1");
         hasPlayedStationary2 = true;
+    }
+
+    // Footsteps
+    if (hasPlayedFootstepCat && my_id == playerSelection[CAT] && currTime % 5 != 0) {
+        hasPlayedFootstepCat = false;
+    }
+
+    if (!hasPlayedFootstepCat && my_id == playerSelection[CAT] && currTime % 5 == 0) {
+        audioEngine->PlayEvent("event:/footsteps");
+        hasPlayedFootstepCat = true;
     }
 }
 
@@ -1300,9 +1314,7 @@ void Client::miniMapGUI() {
     for (int i = 0; i < PLAYER_NUM; i++) {
         // If cat, see myself
         if (my_id == playerSelection[CAT]) {
-            printf("Hey i'm supposed to be the cat D:\n");
             if (i == my_id) {
-                printf("render cat\n");
                 displayLocation(players[i]->getModel(), CAT);
             } else {
                 displayLocation(players[i]->getModel(), M1);
@@ -2210,10 +2222,10 @@ void Client::setGameOver(int g, int w) {
 }
 
 void Client::setMovingState(PlayerState* playerstate) {
-    for (int i = 0; i < PLAYER_NUM; i++) {
-        movingState[i] = playerstate[i].moving;
-        //printf("moving state %d is %d\n", i, movingState[i]);
-    }
+    movingState[CAT] = playerstate[playerSelection[CAT]].moving;
+    movingState[M1] = playerstate[playerSelection[M1]].moving;
+    movingState[M2] = playerstate[playerSelection[M2]].moving;
+    movingState[M3] = playerstate[playerSelection[M3]].moving;
 }
 
 void Client::setAliveStatus(PlayerState* playerstate) {
@@ -2471,7 +2483,8 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
                 break;
         }
     }
-    keyHeld = keys[0] || keys[1] || keys[2] || keys[3];
+    //keyHeld = keys[0] || keys[1] || keys[2] || keys[3];
+    keyHeld = true;
 }
 
 static void drawOBB(const OBB& obb, const glm::mat4& viewProjMat, GLuint shader, bool fill) {
