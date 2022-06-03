@@ -225,6 +225,7 @@ void ClientGame::update(MovementState s, RotationState r)
                 Client::setStationaryItemCountdown(packet->item2_state.timeLeftHolding, packet->item2_state.holdId, packet->item2_state.taskSuccess);
                 Client::setStationaryItem2Countdown(packet->item3_state.timeLeftHolding, packet->item3_state.holdId, packet->item3_state.taskSuccess);
                 Client::setCatViewItem(packet->game.catViewItem);
+                Client::setAliveStatus(packet->player_states);
                 //printMat4(packet->item_state.model);
                 
                 setTime(packet->game.gameTime);
